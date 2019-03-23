@@ -1,33 +1,30 @@
 package com.ninfinity.codegen;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import freemarker.template.Configuration;
-import freemarker.template.MalformedTemplateNameException;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateNotFoundException;
+
+
 
 //import freemarker.template.utility.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.cache.MultiTemplateLoader;
-import freemarker.cache.TemplateLoader;
 
 //import freemarker.template.Configuration;
 @SpringBootApplication
@@ -78,7 +75,7 @@ public class CodeGenerator {
 		cfg.setTemplateLoader(mtl);
 
 		try {
-
+			getJarInfo(sourcePath,entityName);
 			EntityDetails fieldsObj = getFieldNames(sourcePath, entityName);
 			Map<String, FieldDetails> actualFieldNames = fieldsObj.getFieldsMap();
 
@@ -259,7 +256,38 @@ public class CodeGenerator {
 
 		return backEndTemplate;
 	}
+  private static void getJarInfo(String jarPath,String entityName) {
+	try{
+	CGenClassLoader loader = new CGenClassLoader(jarPath);
+	ArrayList<Class<?>> list = loader.findClasses("com.ninfinity.entitycodegen");
+    Class<?> cls = loader.findClass(entityName);
+	JarFile jarFile = new JarFile(jarPath);
+	Enumeration e = jarFile.entries();
+	
+	URL[] urls = { new URL("jar:file:" + jarPath+"!/") };
+	URLClassLoader cl = URLClassLoader.newInstance(urls);
+	
+	while (e.hasMoreElements()) {
+		JarEntry je = (JarEntry) e.nextElement(); 
+		
+		/*if(je.isDirectory() || !je.getName().endsWith(".class")){
+			continue;
+		}	*/
+		String className = je.getName(); //.substring(0,je.getName().length()-6);
+		//className = className.replace("!/", ".");
+		//className = className.replace('/','.'); 
+		System.out.println(className);
+		//Class<?> c = cl.loadClass(className);
+	}
+	}
+	catch (ClassNotFoundException e) {
+		e.printStackTrace();
 
+	}
+	catch(Exception ex){
+		String x = ex.getMessage();
+	}
+  }
 	private static EntityDetails getFieldNames(String entityPath, String entityName) {
 
 		File file = new File(entityPath);
@@ -267,13 +295,14 @@ public class CodeGenerator {
 		URL url = FileUtils.toURL(file);
 		URL[] urlList = { url };
 
-		URLClassLoader loader = URLClassLoader.newInstance(urlList);
+		//URLClassLoader loader = URLClassLoader.newInstance(urlList);
+		CGenClassLoader loader = new CGenClassLoader(entityPath);
 		Map<String, FieldDetails> fieldsMap = new HashMap<>();
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 		List<RelationDetails> relationList = new ArrayList<>();
 
 		try {
-			Class<?> clazz = loader.loadClass(entityName);
+			Class<?> clazz = loader.findClass(entityName);// loader.loadClass(entityName);
 			Field[] fields = clazz.getDeclaredFields();
 
 			for (Field field : fields) {
