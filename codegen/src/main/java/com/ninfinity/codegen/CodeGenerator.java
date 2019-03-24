@@ -75,7 +75,7 @@ public class CodeGenerator {
 		cfg.setTemplateLoader(mtl);
 
 		try {
-			getJarInfo(sourcePath,entityName);
+			findClassesFromJar(sourcePath,entityName);
 			EntityDetails fieldsObj = getFieldNames(sourcePath, entityName);
 			Map<String, FieldDetails> actualFieldNames = fieldsObj.getFieldsMap();
 
@@ -256,11 +256,19 @@ public class CodeGenerator {
 
 		return backEndTemplate;
 	}
-  private static void getJarInfo(String jarPath,String entityName) {
+  private static void findClassesFromJar(String jarPath,String entityName) {
 	try{
 	CGenClassLoader loader = new CGenClassLoader(jarPath);
-	ArrayList<Class<?>> list = loader.findClasses("com.ninfinity.entitycodegen");
-    Class<?> cls = loader.findClass(entityName);
+	String packageName = "com.ninfinity.entitycodegen";
+	try {
+	ArrayList<Class<?>> list = loader.findClasses(packageName);
+	}
+	catch(ClassNotFoundException ex){
+		ex.printStackTrace();
+
+	}
+	packageName = packageName.replace(".","/");
+    //Class<?> cls = loader.findClass(entityName);
 	JarFile jarFile = new JarFile(jarPath);
 	Enumeration e = jarFile.entries();
 	
@@ -269,10 +277,10 @@ public class CodeGenerator {
 	
 	while (e.hasMoreElements()) {
 		JarEntry je = (JarEntry) e.nextElement(); 
-		
-		/*if(je.isDirectory() || !je.getName().endsWith(".class")){
+		System.out.println(je.getName());
+		if(je.isDirectory() || !je.getName().contains(packageName) || !je.getName().contains("classes/") || !je.getName().endsWith(".class")){
 			continue;
-		}	*/
+		}
 		String className = je.getName(); //.substring(0,je.getName().length()-6);
 		//className = className.replace("!/", ".");
 		//className = className.replace('/','.'); 
@@ -280,13 +288,11 @@ public class CodeGenerator {
 		//Class<?> c = cl.loadClass(className);
 	}
 	}
-	catch (ClassNotFoundException e) {
+	catch (Exception e) {
 		e.printStackTrace();
 
 	}
-	catch(Exception ex){
-		String x = ex.getMessage();
-	}
+	
   }
 	private static EntityDetails getFieldNames(String entityPath, String entityName) {
 

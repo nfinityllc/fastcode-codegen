@@ -7,6 +7,8 @@ import java.net.URLClassLoader;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.jar.*;
+
 
 public class CGenClassLoader extends ClassLoader {
       public static Map<String,String> retrieveClasses(Path rootDir, String packageName) throws IOException {
@@ -80,16 +82,30 @@ public class CGenClassLoader extends ClassLoader {
             
         File d = new File(this.path);
         try {
-            URL url;            
-            url = d.toURI().toURL();
+            URL url = d.toURI().toURL();            
+           
+            Map<String,String>  classFiles;
+            ClassLoader cld;
+            if(this.path.endsWith(".jar")){
+                classFiles= this.findClassesFromJar(packageName);
+              // cld = new URLClassLoader(new URL[]{url});// URLClassLoader.newInstance(new URL[]{url});
+            }
+            else {
+                url = d.toURI().toURL();
+                classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
+              
+            }
+            cld = new URLClassLoader(new URL[]{url});
             ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-            Map<String,String>  classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
+           // Map<String,String>  classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
            //CGenClassLoader.recursiveList(Paths.get(this.path + "/" + pckgname.replace('.', '/') ));
             
-            classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path),null);
-            ClassLoader cld = new URLClassLoader(new URL[]{url});
+           // classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path),null);
+            //cld = new URLClassLoader(new URL[]{url});
             for (Map.Entry<String, String> entry : classFiles.entrySet()) {
-                Class<?> cs = cld.loadClass(entry.getKey());
+           //    Class<?> cs = cld.loadClass(entry.getKey());//("com.ninfinity.entitycodegen.EntitycodegenApplication");
+               Class<?> cs = cld.loadClass( entry.getKey());
+               // Class<?> cs = Class.forName(entry.getKey());
                 classes.add(cs);
             }
           //  ClassLoader cld = Thread.currentThread().getContextClassLoader();        
@@ -103,6 +119,47 @@ public class CGenClassLoader extends ClassLoader {
         }
     
     }  
+    private   Map<String,String> findClassesFromJar(String packageName) {
+        try {
+        //CGenClassLoader loader = new CGenClassLoader(jarPath);
+        //ArrayList<Class<?>> list = loader.findClasses("com.ninfinity.entitycodegen");
+        //Class<?> cls = loader.findClass(entityName);
+        //File file = new File(this.path);
+        //URL url = file.toURI().toURL();            
+        String packagePath =packageName==null? "" : packageName.replace('.', '/');
+        JarFile jarFile = new JarFile(this.path);
+        Enumeration e = jarFile.entries();
+        
+        URL[] urls = { new URL("jar:file:" + this.path+"!/") };
+        URLClassLoader loader = URLClassLoader.newInstance(urls);
+        ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+        Map<String,String>  classFiles = new HashMap<String,String>();
+        String qalifiedName;
+        while (e.hasMoreElements()) {
+            JarEntry je = (JarEntry) e.nextElement(); 
+            String filePath = je.getName();
+            System.out.println( "filepath:" + filePath);
+            if(je.isDirectory() || (!packagePath.isEmpty() && !filePath.contains(packagePath))  || !filePath.endsWith(".class")){
+                continue;
+            }
+          //.substring(0,je.getName().length()-6);
+          qalifiedName = filePath.indexOf("classes/") > 0? filePath.substring(filePath.indexOf("classes/")+8):filePath;
+          qalifiedName = qalifiedName.replace(".class","").replace("/",".");             
+          qalifiedName = qalifiedName.replace(".class","").replace("/",".");     
+          classFiles.put(qalifiedName,filePath);
+            //className = className.replace("!/", ".");
+            //className = className.replace('/','.'); 
+            System.out.println(qalifiedName + ":" + filePath);
+            //Class<?> c = cl.loadClass(className);
+        }
+        return classFiles;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+       
+      }
    /* public Class<?> findClass(String name) throws ClassNotFoundException {
         byte[] b = loadClassFromFile(name);
         return defineClass(name, b, 0, b.length);
