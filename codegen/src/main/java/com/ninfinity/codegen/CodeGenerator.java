@@ -1,7 +1,10 @@
 package com.ninfinity.codegen;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,19 +13,15 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
+import java.util.jar.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.io.FilenameUtils;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.cache.MultiTemplateLoader;
-import freemarker.cache.TemplateLoader;
+import org.apache.commons.io.FilenameUtils;
 
 @SpringBootApplication
 public class CodeGenerator {
@@ -67,6 +66,8 @@ public class CodeGenerator {
 
 		Map<String,RelationDetails> relationMap = entityDetails.getRelationsMap();
 		List<String> searchFields= new ArrayList<>();
+		
+	  findClassesFromJar(sourcePath,entityName);
 
 
 		for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
@@ -246,18 +247,57 @@ public class CodeGenerator {
 
 		return backEndTemplate;
 	}
+  private static void findClassesFromJar(String jarPath,String entityName) {
+	try{
+	CGenClassLoader loader = new CGenClassLoader(jarPath);
+	String packageName = "com.ninfinity.entitycodegen";
+	try {
+	ArrayList<Class<?>> list = loader.findClasses(packageName);
+	}
+	catch(ClassNotFoundException ex){
+		ex.printStackTrace();
 
-	private static void generateRelationDto(Map<String,RelationDetails> relationMap,Map<String,Object> root, String destPath,String entityName)
-	{
-		Map<String,FieldDetails> relationEntityFields = new HashMap<>();
-		String destFolder = destPath + "/src/main/java/com/nfinity/fastcode/application/Authorization/"
-				+ root.get("PackageName").toString() + "/Dto";
-		new File(destFolder).mkdirs();
 
-		if(!relationMap.isEmpty())
-		{
-			for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+	}
+	packageName = packageName.replace(".","/");
+    //Class<?> cls = loader.findClass(entityName);
+	JarFile jarFile = new JarFile(jarPath);
+	Enumeration e = jarFile.entries();
+	
+	URL[] urls = { new URL("jar:file:" + jarPath+"!/") };
+	URLClassLoader cl = URLClassLoader.newInstance(urls);
+	
+	while (e.hasMoreElements()) {
+		JarEntry je = (JarEntry) e.nextElement(); 
+		System.out.println(je.getName());
+		if(je.isDirectory() || !je.getName().contains(packageName) || !je.getName().contains("classes/") || !je.getName().endsWith(".class")){
+			continue;
+		}
+		String className = je.getName(); //.substring(0,je.getName().length()-6);
+		//className = className.replace("!/", ".");
+		//className = className.replace('/','.'); 
+		System.out.println(className);
+		//Class<?> c = cl.loadClass(className);
+	}
+	}
+	catch (Exception e) {
+		e.printStackTrace();
 
+	}
+	
+  }
+
+				private static void generateRelationDto(Map<String,RelationDetails> relationMap,Map<String,Object> root, String destPath,String entityName)
+				{
+					Map<String,FieldDetails> relationEntityFields = new HashMap<>();
+					String destFolder = destPath + "/src/main/java/com/nfinity/fastcode/application/Authorization/"
+							+ root.get("PackageName").toString() + "/Dto";
+					new File(destFolder).mkdirs();
+
+					if(!relationMap.isEmpty())
+					{
+						for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+			
 				relationEntityFields = getFields(entityName.substring(0, entityName.lastIndexOf(".")).concat("." +entry.getValue().geteName()), entry.getValue().geteName());
 				root.put("RelationEntityFields", relationEntityFields);
 				root.put("RelationEntityName", entry.getValue().geteName());
@@ -281,12 +321,16 @@ public class CodeGenerator {
 	private static EntityDetails getEntityDetails(String entityPath, String entityName) {
 		File file = new File(entityPath);
 		URL url = FileUtils.toURL(file);
-		URL[] urlList ={url};
-		URLClassLoader loader = URLClassLoader.newInstance(urlList);
-		Map<String,FieldDetails> fieldsMap= new HashMap<>();
-		Map<String,RelationDetails> relationsMap = new HashMap<>();
+
+		URL[] urlList = { url };
+
+		//URLClassLoader loader = URLClassLoader.newInstance(urlList);
+		CGenClassLoader loader = new CGenClassLoader(entityPath);
+		Map<String, FieldDetails> fieldsMap = new HashMap<>();
+		Map<String, RelationDetails> relationsMap = new HashMap<>();
+		List<RelationDetails> relationList = new ArrayList<>();
 		try {
-			Class<?> clazz = loader.loadClass(entityName);
+			Class<?> clazz = loader.findClass(entityName);// loader.loadClass(entityName);
 			Field[] fields = clazz.getDeclaredFields();
 
 			for (Field field : fields)
