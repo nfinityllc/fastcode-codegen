@@ -3,6 +3,11 @@ package com.nfinity.fastcode.application.Authorization.${PackageName};
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+<#list Relationship as relationKey, relationValue>
+<#if ClassName != relationValue.eName>
+import com.nfinity.fastcode.domain.Authorization.${relationValue.eName}s.${relationValue.eName}Entity;
+</#if>
+</#list>
 import com.nfinity.fastcode.application.Authorization.${PackageName}.Dto.*;
 import com.nfinity.fastcode.domain.Authorization.${PackageName}.${ClassName}Entity;
 
@@ -22,5 +27,35 @@ public interface ${ClassName}Mapper {
 
     Find${ClassName}ByNameOutput ${ClassName}EntityToFind${ClassName}ByNameOutput(${ClassName}Entity entity);
 
+  <#list Relationship as relationKey, relationValue>
+
+   <#if relationValue.relation == "ManyToOne">
+
+   @Mappings({
+            @Mapping(source = "${relationValue.eName?lower_case}.id", target = "id"),
+            @Mapping(source = "${relationValue.eName?lower_case}.creationTime", target = "creationTime"),
+            @Mapping(source = "${relationValue.eName?lower_case}.creatorUserId", target = "creatorUserId"),
+            @Mapping(source = "${relationValue.eName?lower_case}.lastModifierUserId", target = "lastModifierUserId"),
+            @Mapping(source = "${relationValue.eName?lower_case}.lastModificationTime", target = "lastModificationTime"),
+            @Mapping(source = "${InstanceName}.id", target = "${InstanceName}Id")
+    })
+    Get${relationValue.eName}Output ${relationValue.eName}EntityToGet${relationValue.eName}Output(${relationValue.eName}Entity ${relationValue.eName?lower_case}, ${EntityClassName} ${InstanceName});
+   
+    
+  <#elseif relationValue.relation == "ManyToMany">
+  
+  @Mappings({
+            @Mapping(source = "${relationValue.eName?lower_case}.${relationValue.inverseReferenceColumn}", target = "${relationValue.inverseReferenceColumn}"),
+            @Mapping(source = "${relationValue.eName?lower_case}.creationTime", target = "creationTime"),
+            @Mapping(source = "${relationValue.eName?lower_case}.creatorUserId", target = "creatorUserId"),
+            @Mapping(source = "${relationValue.eName?lower_case}.lastModifierUserId", target = "lastModifierUserId"),
+            @Mapping(source = "${relationValue.eName?lower_case}.lastModificationTime", target = "lastModificationTime"),
+            @Mapping(source = "${InstanceName}.${relationValue.referenceColumn}", target = "${InstanceName}${relationValue.referenceColumn?cap_first}")
+    })
+    Get${relationValue.eName}Output ${relationValue.eName}EntityToGet${relationValue.eName}Output(${relationValue.eName}Entity ${relationValue.eName?lower_case},${EntityClassName} ${InstanceName});
+  
+   </#if>
+  
+  </#list>
 
 }

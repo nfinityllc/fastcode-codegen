@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -31,6 +32,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.nfinity.fastcode.domain.Authorization.${PackageName}.*;
 import com.nfinity.fastcode.application.Authorization.${PackageName}.Dto.*;
 import com.nfinity.fastcode.domain.Authorization.${PackageName}.Q${EntityClassName};
+<#list Relationship as relationKey,relationValue>
+<#if ClassName != relationValue.eName>
+import com.nfinity.fastcode.domain.Authorization.${relationValue.eName}s.${relationValue.eName}Entity;
+import com.nfinity.fastcode.domain.Authorization.${relationValue.eName}s.${relationValue.eName}Manager;
+</#if>
+</#list>
 import com.nfinity.fastcode.logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -42,7 +49,15 @@ public class ${ClassName}AppServiceTest {
 	${ClassName}AppService _appService;
 
 	@Mock
-	private ${ClassName}Manager _manager;
+	private ${ClassName}Manager _${ClassName?lower_case}Manager;
+	
+	<#list Relationship as relationKey,relationValue>
+    <#if ClassName != relationValue.eName && relationValue.eName !="OneToMany">
+    
+    @Mock
+	private ${relationValue.eName}Manager  _${relationValue.eName?lower_case}Manager;
+    </#if>
+    </#list>
 
 	@Mock
 	private ${ClassName}Mapper _mapper;
@@ -67,27 +82,27 @@ public class ${ClassName}AppServiceTest {
 	@Test
 	public void find${ClassName}ById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
 
-		Mockito.when(_manager.FindById(anyLong())).thenReturn(null);
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(null);
 		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(null);
 	}
 	@Test
 	public void find${ClassName}ById_IdIsNotNullAndIdExists_Return${ClassName}() {
 
 		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
-		Mockito.when(_manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
 		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(_mapper.${EntityClassName}ToCreate${ClassName}Output(${ClassName?lower_case}));
 	}
 	@Test
 	public void find${ClassName}ByName_NameIsNotNullAndNameDoesNotExist_ReturnNull() {
 
-		Mockito.when(_manager.FindByName(anyString())).thenReturn(null);
+		Mockito.when(_${ClassName?lower_case}Manager.FindByName(anyString())).thenReturn(null);
 		Assertions.assertThat(_appService.FindByName("xyz")).isEqualTo(null);
 	}
 	@Test
 	public void find${ClassName}ByName_NameIsNotNullAndNameExists_Return${ClassName}() {
 
 		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
-		Mockito.when(_manager.FindByName(anyString())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.FindByName(anyString())).thenReturn(${ClassName?lower_case});
 		Assertions.assertThat(_appService.FindByName("xyz")).isEqualTo(_mapper.${EntityClassName}ToCreate${ClassName}Output(${ClassName?lower_case}));
 	}
 	@Test
@@ -96,16 +111,16 @@ public class ${ClassName}AppServiceTest {
 		${EntityClassName} ${ClassName?lower_case}Entity = mock(${EntityClassName}.class);
 		Create${ClassName}Input ${ClassName?lower_case} = mock(Create${ClassName}Input.class);
 		Mockito.when(_mapper.Create${ClassName}InputTo${EntityClassName}(any(Create${ClassName}Input.class))).thenReturn(${ClassName?lower_case}Entity);
-		Mockito.when(_manager.Create(any(${EntityClassName}.class))).thenReturn(${ClassName?lower_case}Entity);
+		Mockito.when(_${ClassName?lower_case}Manager.Create(any(${EntityClassName}.class))).thenReturn(${ClassName?lower_case}Entity);
 		Assertions.assertThat(_appService.Create(${ClassName?lower_case})).isEqualTo(_mapper.${EntityClassName}ToCreate${ClassName}Output(${ClassName?lower_case}Entity));
 	}
 	@Test
 	public void delete${ClassName}_${ClassName}IsNotNullAnd${ClassName}Exists_${ClassName}Removed() {
 
 		${EntityClassName} ${ClassName?lower_case}= mock(${EntityClassName}.class);
-		Mockito.when(_manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
 		_appService.Delete(ID); 
-		verify(_manager).Delete(${ClassName?lower_case});
+		verify(_${ClassName?lower_case}Manager).Delete(${ClassName?lower_case});
 	}
 	@Test
 	public void update${ClassName}_${ClassName}IdIsNotNullAndIdExists_ReturnUpdated${ClassName}() {
@@ -113,7 +128,7 @@ public class ${ClassName}AppServiceTest {
 		${EntityClassName} ${ClassName?lower_case}Entity = mock(${EntityClassName}.class);
 		Update${ClassName}Input ${ClassName?lower_case}= mock(Update${ClassName}Input.class);
 		Mockito.when(_mapper.Update${ClassName}InputTo${EntityClassName}(any(Update${ClassName}Input.class))).thenReturn(${ClassName?lower_case}Entity);
-		Mockito.when(_manager.Update(any(${EntityClassName}.class))).thenReturn(${ClassName?lower_case}Entity);
+		Mockito.when(_${ClassName?lower_case}Manager.Update(any(${EntityClassName}.class))).thenReturn(${ClassName?lower_case}Entity);
 		Assertions.assertThat(_appService.Update(ID,${ClassName?lower_case})).isEqualTo(_mapper.${EntityClassName}ToUpdate${ClassName}Output(${ClassName?lower_case}Entity));
 	}
 	@Test
@@ -124,7 +139,7 @@ public class ${ClassName}AppServiceTest {
 		Pageable pageable = mock(Pageable.class);
 		List<Find${ClassName}ByIdOutput> output = new ArrayList<>();
 
-		Mockito.when(_manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+		Mockito.when(_${ClassName?lower_case}Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
 	}
 	@Test
@@ -138,7 +153,7 @@ public class ${ClassName}AppServiceTest {
 		List<Find${ClassName}ByIdOutput> output = new ArrayList<>();
 
 		output.add(_mapper.${EntityClassName}ToFind${ClassName}ByIdOutput(${ClassName?lower_case}));
-		Mockito.when(_manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+		Mockito.when(_${ClassName?lower_case}Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
 	}
 	@Test
@@ -180,6 +195,7 @@ public class ${ClassName}AppServiceTest {
 		BooleanBuilder builder = new BooleanBuilder();
 		<#list SearchFields as fields>
         builder.and(${ClassName?lower_case}.${fields}.likeIgnoreCase("%xyz%"));
+        <#break>
 		</#list>
 		Assertions.assertThat(_appService.searchKeyValuePair(${ClassName?lower_case}, map)).isEqualTo(builder);
 	}
@@ -229,5 +245,140 @@ public class ${ClassName}AppServiceTest {
 
 		Assertions.assertThat(_appService.Search(null)).isEqualTo(null);
 	}
+	
+	
+   <#list Relationship as relationKey, relationValue>
+
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+   //${relationValue.eName}
+   
+   @Test
+	public void Add${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}Exists_${relationValue.eName}Assigned() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+		${relationValue.eName}Entity ${relationValue.eName?lower_case} = mock(${relationValue.eName}Entity.class);
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${relationValue.eName?lower_case}Manager.FindById(anyLong())).thenReturn(${relationValue.eName?lower_case});
+		_appService.Add${relationValue.eName}(ID,ID);
+		verify(_${ClassName?lower_case}Manager).Add${relationValue.eName}(${ClassName?lower_case}, ${relationValue.eName?lower_case});
+	}
+
+	@Test
+	public void Remove${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}Exists_${relationValue.eName}Removed() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+		
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		_appService.Remove${relationValue.eName}(ID);
+		verify(_${ClassName?lower_case}Manager).Remove${relationValue.eName}(${ClassName?lower_case});
+	}
+
+	@Test
+	public void Get${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}Exists_Return${relationValue.eName}() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+		${relationValue.eName}Entity ${relationValue.eName?lower_case} = mock(${relationValue.eName}Entity.class);
+
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.Get${relationValue.eName}(anyLong())).thenReturn(${relationValue.eName?lower_case});
+
+		Assertions.assertThat(_appService.Get${relationValue.eName}(ID)).isEqualTo(_mapper.${relationValue.eName}EntityToGet${relationValue.eName}Output(${relationValue.eName?lower_case}, ${ClassName?lower_case}));
+	}
+
+	@Test 
+	public void Get${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}DoesNotExist_ReturnNull() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(null);
+		Assertions.assertThat(_appService.Get${relationValue.eName}(ID)).isEqualTo(null);
+
+	}
+   
+  <#elseif relationValue.relation == "ManyToMany">
+    // Operations With ${relationValue.eName}
+    
+    @Test 
+	public void Add${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}AlreadyHas${relationValue.eName}_ReturnFalse() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+		${relationValue.eName}Entity ${relationValue.eName?lower_case} = mock(${relationValue.eName}Entity.class);
+		${relationValue.eName?lower_case}.add${ClassName}(${ClassName?lower_case});
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${relationValue.eName?lower_case}Manager.FindById(anyLong())).thenReturn(${relationValue.eName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.Add${relationValue.eName}(${ClassName?lower_case}, ${relationValue.eName?lower_case})).thenReturn(false);
+		Assertions.assertThat(_appService.Add${relationValue.eName}(ID, ID)).isEqualTo(false);
+	}
+	@Test
+	public void Add${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}Exists_${relationValue.eName}Granted() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+		${relationValue.eName}Entity ${relationValue.eName?lower_case} = mock(${relationValue.eName}Entity.class);
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${relationValue.eName?lower_case}Manager.FindById(anyLong())).thenReturn(${relationValue.eName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.Add${relationValue.eName}(${ClassName?lower_case}, ${relationValue.eName?lower_case})).thenReturn(true);
+		Assertions.assertThat(_appService.Add${relationValue.eName}(ID, ID)).isEqualTo(true);
+
+	}
+
+	@Test
+	public void Remove${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}Exists_${relationValue.eName}Removed() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+		${relationValue.eName}Entity ${relationValue.eName?lower_case} = mock(${relationValue.eName}Entity.class);
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${relationValue.eName?lower_case}Manager.FindById(anyLong())).thenReturn(${relationValue.eName?lower_case});
+		_appService.Remove${relationValue.eName}(ID,ID);
+		verify(_${ClassName?lower_case}Manager).Remove${relationValue.eName}(${ClassName?lower_case}, ${relationValue.eName?lower_case});
+	}
+
+	@Test 
+	public void Get${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}DoesNotExist_ReturnNull() {
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(null);
+		Assertions.assertThat(_appService.Get${relationValue.eName}(ID, ID)).isEqualTo(null);
+
+	}
+
+	@Test 
+	public void Get${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${relationValue.eName}DoesNotExist_ReturnNull() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${relationValue.eName?lower_case}Manager.FindById(anyLong())).thenReturn(null);
+		Assertions.assertThat(_appService.Get${relationValue.eName}(ID, ID)).isEqualTo(null);
+
+	}
+
+	@Test
+	public void Get${relationValue.eName}_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}Exists_Return${relationValue.eName}() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+		${relationValue.eName}Entity ${relationValue.eName?lower_case} = mock(${relationValue.eName}Entity.class);
+
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${relationValue.eName?lower_case}Manager.FindById(anyLong())).thenReturn(${relationValue.eName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.Get${relationValue.eName}(anyLong(),anyLong())).thenReturn(${relationValue.eName?lower_case});
+		Assertions.assertThat(_appService.Get${relationValue.eName}(ID, ID)).isEqualTo(_mapper.${relationValue.eName}EntityToGet${relationValue.eName}Output(${relationValue.eName?lower_case}, ${ClassName?lower_case}));		
+	}
+
+	@Test 
+	public void Get${relationValue.eName}s_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}DoesNotExist_ReturnNull() {
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(null);
+		Assertions.assertThat(_appService.Get${relationValue.eName}s(ID)).isEqualTo(null);
+	}
+
+	@Test
+	public void Get${relationValue.eName}s_If${ClassName}IdAnd${relationValue.eName}IdIsNotNullAnd${ClassName}Exists_Return${relationValue.eName}() {
+		${EntityClassName} ${ClassName?lower_case} = mock(${EntityClassName}.class);
+
+		Set<${relationValue.eName}Entity> ${relationValue.eName?lower_case}s = ${ClassName?lower_case}.get${relationValue.eName}s();
+		List<Get${relationValue.eName}Output> list = new ArrayList<>();
+		Mockito.when(_${ClassName?lower_case}Manager.FindById(anyLong())).thenReturn(${ClassName?lower_case});
+		Mockito.when(_${ClassName?lower_case}Manager.Get${relationValue.eName}s(any(${ClassName}Entity.class))).thenReturn(${relationValue.eName?lower_case}s);
+		Assertions.assertThat(_appService.Get${relationValue.eName}s(ID)).isEqualTo(list);
+	}
+   </#if>
+  
+  </#list>
+	
+	
 }
 
