@@ -9,6 +9,11 @@ import javax.validation.constraints.Email;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.nfinity.fastcode.domain.BaseClasses.AuditedEntity;
+<#list Relationship as relationKey, relationValue>
+<#if ClassName != relationValue.eName>
+import com.nfinity.fastcode.domain.Authorization.${relationValue.eName}s.${relationValue.eName}Entity;
+</#if>
+</#list>
 
 @Entity
 @Table(name = "${ClassName}", schema = "dbo")
@@ -88,7 +93,62 @@ public class ${ClassName}Entity extends AuditedEntity<String> implements Seriali
   public void set${value.fieldName?cap_first}(String ${value.fieldName}){
   this.${value.fieldName} = ${value.fieldName};
   }
+  
+  <#else>
+  <#list Relationship as relationKey, relationValue>
+  <#if value.fieldType == relationValue.eName>
+  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  @ManyToOne
+  @JoinColumn(name = "${relationValue.joinColumn}")
+  public ${relationValue.eName}Entity get${relationValue.eName}() {
+    return ${relationValue.fName};
+  }
+  public void set${relationValue.eName}(${relationValue.eName}Entity ${relationValue.fName}) {
+    this.${relationValue.fName} = ${relationValue.fName};
+  }
+  
+  private ${relationValue.eName}Entity ${relationValue.fName};
  
+  <#elseif relationValue.relation == "ManyToMany">
+  
+   public void add${relationValue.eName}(${relationValue.eName}Entity input) {
+        ${relationValue.fName}s.add(input);
+        input.get${ClassName}s().add(this);
+    }
+
+    public void remove${relationValue.eName}(${relationValue.eName}Entity input) {
+       ${relationValue.fName}s.remove(input);
+       input.get${ClassName}s().remove(this);
+    }
+
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "${relationValue.joinTable}", schema = "dbo",
+            joinColumns = {@JoinColumn(name = "${relationValue.joinColumn}", referencedColumnName = "${relationValue.referenceColumn}")},
+            inverseJoinColumns = {@JoinColumn(name = "${relationValue.inverseJoinColumn}", referencedColumnName = "${relationValue.inverseReferenceColumn}")})
+    public Set<${relationValue.eName}Entity> get${relationValue.eName}s() {
+        return ${relationValue.fName}s;
+    }
+    public void set${relationValue.eName}(Set<${relationValue.eName}Entity> ${relationValue.fName}s) {
+        this.${relationValue.fName}s = ${relationValue.fName}s;
+    }
+
+    private Set<${relationValue.eName}Entity> ${relationValue.fName}s = new HashSet<>();
+  
+  <#elseif relationValue.relation == "OneToMany">  
+    @OneToMany(mappedBy = "${relationValue.mappedBy}", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<${relationValue.eName}Entity> get${relationValue.eName}s() {
+        return ${relationValue.fName}s;
+    }
+
+    public void set${relationValue.eName}s(Set<${relationValue.eName}Entity> ${relationValue.fName}s) {
+        this.${relationValue.fName}s = ${relationValue.fName}s;
+    }
+
+    private Set<${relationValue.eName}Entity> ${relationValue.fName}s = new HashSet<${relationValue.eName}Entity>();
+  </#if>
+  
+  </#if>
+  </#list>
  </#if> 
 </#list>
  
