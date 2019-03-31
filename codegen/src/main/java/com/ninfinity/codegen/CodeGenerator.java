@@ -20,24 +20,24 @@ import java.util.jar.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
-
-
 //import freemarker.template.utility.StringUtil;
-
 
 //import freemarker.template.Configuration;
 @SpringBootApplication
 public class CodeGenerator {
 
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
+	static String TEMPLATE_FOLDER = "/templates";
+	static String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
+	static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
+	static String CLIENT_ROOT_FOLDER = "/client";
+	static String CLIENT_APP_FOLDER = CLIENT_ROOT_FOLDER + "/src/app";
+	static String BACKEND_ROOT_FOLDER = "/backend";
+	static String BACKEND_APP_FOLDER = BACKEND_ROOT_FOLDER + "/src/main/java";
 
-	public static void Generate(String entityName, String sourcePath, String destPath) {
-		Generate(entityName, sourcePath, destPath, "", "");
-	}
-
-	public static void Generate(String entityName, String sourcePath, String destPath, String type, String modName) {
-
+	private static Map<String, Object> buildEntityInfo(Class<?> entityClass, String entityName, String sourcePath,
+			String type, String modName) {
+		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
 		String packageName = className.concat("s");
@@ -49,7 +49,6 @@ public class CodeGenerator {
 		}
 		String moduleName = StringUtils.isNotEmpty(modName) ? modName : StringUtils.join(splittedNames, "-");
 
-		Map<String, Object> root = new HashMap<>();
 		root.put("ModuleName", moduleName);
 		root.put("EntityClassName", entityClassName);
 		root.put("ClassName", className);
@@ -59,15 +58,53 @@ public class CodeGenerator {
 		root.put("IEntityFile", "i" + moduleName);
 		root.put("ApiPath", className.toLowerCase());
 
-		Map<String, Object> uiTemplate = getUITemplates(root.get("ModuleName").toString());
-		Map<String, Object> otherTemplate = new HashMap<String, Object>();
-		// Map<String, Object> backendDtoTemplate =
-		// getBackendTemplates(root.get("ClassName").toString());
-		// Defining paths for tempaltes
+		EntityDetails fieldsObj = getFieldNames(entityClass, sourcePath, entityName);
+		Map<String, FieldDetails> actualFieldNames = fieldsObj.getFieldsMap();
 
-		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, "/templates/");
-		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, "/templates/backendTemplates/");
-		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, "/templates/backendTemplates/Dto");
+		Map<String, RelationDetails> relationMap = fieldsObj.getRelationsMap();
+		List<String> searchFields = new ArrayList<>();
+
+		// add text fields as search fields
+		for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
+			if (entry.getValue().getFieldType().equalsIgnoreCase("String"))
+				searchFields.add(entry.getValue().getFieldName());
+
+		}
+		root.put("Fields", actualFieldNames);
+		root.put("SearchFields", searchFields);
+		root.put("Relationship", relationMap);
+
+		return root;
+	}
+
+	/// appname= groupid + artifactid
+	public static void GenerateAll(String appName, String sourcePackageName, String sourcePath, String destPath,
+			String type) {
+		CGenClassLoader loader = new CGenClassLoader(sourcePath);
+		// String packageName = "com.ninfinity.entitycodegen.model"; // you can also
+		// pass other package names or root package
+		// name like com.ninfinity.entitycodegen
+		try {
+			ArrayList<Class<?>> entityClasess = loader.findClasses(sourcePackageName);
+			for (Class<?> currentClass : entityClasess) {
+				String entityname = currentClass.getName();
+				Generate(currentClass, appName, sourcePath, destPath, type);
+			}
+
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+
+		}
+	}
+
+	public static void Generate(Class<?> entityClass, String appName, String sourcePath, String destPath, String type) {
+		String entityName = entityClass.getName();
+		Map<String, Object> root = buildEntityInfo(entityClass, entityName, sourcePath, type, "");
+		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
+
+		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/"); // "/templates/");
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
+		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, DTO_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/Dto");
 
 		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2 });
 		cfg.setDefaultEncoding("UTF-8");
@@ -75,41 +112,30 @@ public class CodeGenerator {
 		cfg.setTemplateLoader(mtl);
 
 		try {
-			findClassesFromJar(sourcePath,entityName);
-			EntityDetails fieldsObj = getFieldNames(sourcePath, entityName);
-			Map<String, FieldDetails> actualFieldNames = fieldsObj.getFieldsMap();
 
-			Map<String, RelationDetails> relationMap = fieldsObj.getRelationsMap();
-			List<String> searchFields = new ArrayList<>();
-
-			for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
-				if (entry.getValue().getFieldType().equalsIgnoreCase("String"))
-					searchFields.add(entry.getValue().getFieldName());
-
-			}
-
+			Map<String, Object> otherTemplate2DestMapping = new HashMap<String, Object>();
 			if (type.equalsIgnoreCase("other")) {
-				cfg.setDirectoryForTemplateLoading(new File(sourcePath + "/templates/"));
-				otherTemplate = getOtherTemplates(root.get("ClassName").toString(), sourcePath + "/templates/");
+				cfg.setDirectoryForTemplateLoading(new File(sourcePath + TEMPLATE_FOLDER + "/"));
+				otherTemplate2DestMapping = getOtherTemplates(root.get("ClassName").toString(),
+						sourcePath + TEMPLATE_FOLDER + "/");
 			} else {
 				cfg.setTemplateLoader(mtl);
 			}
 
-			root.put("Fields", actualFieldNames);
-			root.put("SearchFields", searchFields);
-			root.put("Relationship", relationMap);
-
-			String destFolder = destPath + "/fcclient/src/app/" + root.get("ModuleName").toString();
+			String destFolder = destPath + CLIENT_APP_FOLDER + "/" + root.get("ModuleName").toString(); // "/fcclient/src/app/"
 			new File(destFolder).mkdirs();
 			if (type.equalsIgnoreCase("other")) {
-				generateFiles(otherTemplate, root, destFolder);
+				generateFiles(otherTemplate2DestMapping, root, destFolder);
 			} else if (type.equalsIgnoreCase("ui"))
-				generateFiles(uiTemplate, root, destFolder);
+				generateFiles(uiTemplate2DestMapping, root, destFolder);
 			else if (type == "backend") {
-				generateBackendFiles(root, destPath);
+				destFolder = destPath + BACKEND_APP_FOLDER + "/" + appName.replace(".", "/");
+				generateBackendFiles(root, destFolder);
 			} else {
-				generateFiles(uiTemplate, root, destFolder);
-				generateBackendFiles(root, destPath);
+				destFolder = destPath + CLIENT_APP_FOLDER + "/" + root.get("ModuleName").toString();
+				generateFiles(uiTemplate2DestMapping, root, destFolder);
+				destFolder = destPath + BACKEND_APP_FOLDER + "/" + appName.replace(".", "/");
+				generateBackendFiles(root, destFolder);
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -119,25 +145,24 @@ public class CodeGenerator {
 	}
 
 	private static void generateBackendFiles(Map<String, Object> root, String destPath) {
-		String destFolderBackend = destPath + "/src/main/java/com/nfinity/fastcode/application/Authorization/"
-				+ root.get("PackageName").toString();
+		String destFolderBackend = destPath + "/application/Authorization/" + root.get("PackageName").toString();
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getApplicationTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 
-		destFolderBackend = destPath + "/src/main/java/com/nfinity/fastcode/application/Authorization/"
-				+ root.get("PackageName").toString() + "/Dto";
+		destFolderBackend = destPath + "/application/Authorization/" + root.get("PackageName").toString() + "/Dto";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getDtos(root.get("ClassName").toString()), root, destFolderBackend);
 
-		destFolderBackend = destPath + "/src/main/java/com/nfinity/fastcode/domain/Authorization/"
-				+ root.get("PackageName").toString();
+		destFolderBackend = destPath + "/domain/Authorization/" + root.get("PackageName").toString();
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getDomainTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 
-		destFolderBackend = destPath + "/src/main/java/com/nfinity/fastcode/domain/IRepository";
+		destFolderBackend = destPath + "/domain/IRepository";
+		new File(destFolderBackend).mkdirs();
 		generateFiles(getRepositoryTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 
-		destFolderBackend = destPath + "/src/main/java/com/nfinity/fastcode/ReSTControllers";
+		destFolderBackend = destPath + "/ReSTControllers";
+		new File(destFolderBackend).mkdirs();
 		generateFiles(getControllerTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 	}
 
@@ -256,59 +281,60 @@ public class CodeGenerator {
 
 		return backEndTemplate;
 	}
-  private static void findClassesFromJar(String jarPath,String entityName) {
-	try{
-	CGenClassLoader loader = new CGenClassLoader(jarPath);
-	String packageName = "com.ninfinity.entitycodegen";
-	try {
-	ArrayList<Class<?>> list = loader.findClasses(packageName);
-	}
-	catch(ClassNotFoundException ex){
-		ex.printStackTrace();
 
-	}
-	packageName = packageName.replace(".","/");
-    //Class<?> cls = loader.findClass(entityName);
-	JarFile jarFile = new JarFile(jarPath);
-	Enumeration e = jarFile.entries();
-	
-	URL[] urls = { new URL("jar:file:" + jarPath+"!/") };
-	URLClassLoader cl = URLClassLoader.newInstance(urls);
-	
-	while (e.hasMoreElements()) {
-		JarEntry je = (JarEntry) e.nextElement(); 
-		System.out.println(je.getName());
-		if(je.isDirectory() || !je.getName().contains(packageName) || !je.getName().contains("classes/") || !je.getName().endsWith(".class")){
-			continue;
+	private static void findClassesFromJar(String jarPath, String entityName) {
+		try {
+			CGenClassLoader loader = new CGenClassLoader(jarPath);
+			String packageName = "com.ninfinity.entitycodegen";
+			try {
+				ArrayList<Class<?>> list = loader.findClasses(packageName);
+			} catch (ClassNotFoundException ex) {
+				ex.printStackTrace();
+
+			}
+			packageName = packageName.replace(".", "/");
+			// Class<?> cls = loader.findClass(entityName);
+			JarFile jarFile = new JarFile(jarPath);
+			Enumeration e = jarFile.entries();
+
+			URL[] urls = { new URL("jar:file:" + jarPath + "!/") };
+			URLClassLoader cl = URLClassLoader.newInstance(urls);
+
+			while (e.hasMoreElements()) {
+				JarEntry je = (JarEntry) e.nextElement();
+				System.out.println(je.getName());
+				if (je.isDirectory() || !je.getName().contains(packageName) || !je.getName().contains("classes/")
+						|| !je.getName().endsWith(".class")) {
+					continue;
+				}
+				String className = je.getName(); // .substring(0,je.getName().length()-6);
+				// className = className.replace("!/", ".");
+				// className = className.replace('/','.');
+				System.out.println(className);
+				// Class<?> c = cl.loadClass(className);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
 		}
-		String className = je.getName(); //.substring(0,je.getName().length()-6);
-		//className = className.replace("!/", ".");
-		//className = className.replace('/','.'); 
-		System.out.println(className);
-		//Class<?> c = cl.loadClass(className);
-	}
-	}
-	catch (Exception e) {
-		e.printStackTrace();
 
 	}
-	
-  }
-	private static EntityDetails getFieldNames(String entityPath, String entityName) {
+
+	private static EntityDetails getFieldNames(Class<?> entityClass, String entityPath, String entityName) {
 
 		File file = new File(entityPath);
 		// URI uri = file.toURI();
 		URL url = FileUtils.toURL(file);
 		URL[] urlList = { url };
 
-		//URLClassLoader loader = URLClassLoader.newInstance(urlList);
+		// URLClassLoader loader = URLClassLoader.newInstance(urlList);
 		CGenClassLoader loader = new CGenClassLoader(entityPath);
 		Map<String, FieldDetails> fieldsMap = new HashMap<>();
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 		List<RelationDetails> relationList = new ArrayList<>();
 
 		try {
-			Class<?> clazz = loader.findClass(entityName);// loader.loadClass(entityName);
+			Class<?> clazz = entityClass;// loader.findClass(entityName);// loader.loadClass(entityName);
 			Field[] fields = clazz.getDeclaredFields();
 
 			for (Field field : fields) {
@@ -353,8 +379,7 @@ public class CodeGenerator {
 					if (a.annotationType().toString().equals("interface javax.persistence.OneToMany")) {
 						String relationalEntity = a.toString();
 						index = relationalEntity.indexOf("targetEntity");
-						String entityPackage = relationalEntity.substring(index + 19,
-								relationalEntity.indexOf(",", index));
+						String entityPackage = relationalEntity.substring(index + 19, relationalEntity.indexOf(",", index));
 						String targetEntity = entityPackage.substring(entityPackage.lastIndexOf(".") + 1);
 
 						Boolean isJoinTable = checkJoinTable(entityPackage, targetEntity);
@@ -385,8 +410,7 @@ public class CodeGenerator {
 							relation.seteName(targetEntity);
 							relation.setfName(targetEntity.toLowerCase());
 							index = relationalEntity.indexOf("mappedBy");
-							relation.setMappedBy(
-									relationalEntity.substring(index + 9, relationalEntity.indexOf(",", index)));
+							relation.setMappedBy(relationalEntity.substring(index + 9, relationalEntity.indexOf(",", index)));
 
 						}
 
@@ -394,9 +418,8 @@ public class CodeGenerator {
 
 				}
 
-				System.out.println(
-						"\n relation details " + relation.getRelation() + " == en type " + details.getFieldType()
-								+ " -- r entity name" + relation.geteName() + "-- field name " + relation.getfName());
+				System.out.println("\n relation details " + relation.getRelation() + " == en type " + details.getFieldType()
+						+ " -- r entity name" + relation.geteName() + "-- field name " + relation.getfName());
 				if (relation.geteName() != null)
 					relationsMap.put(relation.getRelation(), relation);
 
@@ -406,7 +429,7 @@ public class CodeGenerator {
 
 			}
 
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 
 		}
@@ -525,4 +548,79 @@ public class CodeGenerator {
 		return null;
 	}
 
+	/*
+	 * public static void Generate(String appName, String entityName, String
+	 * sourcePath, String destPath) { Generate(appName, entityName, sourcePath,
+	 * destPath, "", ""); } public static void Generate(String appName, String
+	 * entityName, String sourcePath, String destPath, String type, String modName)
+	 * {
+	 * 
+	 * String className = entityName.substring(entityName.lastIndexOf(".") + 1);
+	 * String entityClassName = className.concat("Entity"); String packageName =
+	 * className.concat("s"); String[] splittedNames =
+	 * StringUtils.splitByCharacterTypeCamelCase(className); splittedNames[0] =
+	 * StringUtils.lowerCase(splittedNames[0]); String instanceName =
+	 * StringUtils.join(splittedNames); for (int i = 0; i < splittedNames.length;
+	 * i++) { splittedNames[i] = StringUtils.lowerCase(splittedNames[i]); } String
+	 * moduleName = StringUtils.isNotEmpty(modName) ? modName :
+	 * StringUtils.join(splittedNames, "-");
+	 * 
+	 * Map<String, Object> root = new HashMap<>(); root.put("ModuleName",
+	 * moduleName); root.put("EntityClassName", entityClassName);
+	 * root.put("ClassName", className); root.put("PackageName", packageName);
+	 * root.put("InstanceName", instanceName); root.put("IEntity", "I" + className);
+	 * root.put("IEntityFile", "i" + moduleName); root.put("ApiPath",
+	 * className.toLowerCase());
+	 * 
+	 * Map<String, Object> uiTemplate =
+	 * getUITemplates(root.get("ModuleName").toString()); Map<String, Object>
+	 * otherTemplate = new HashMap<String, Object>(); // Map<String, Object>
+	 * backendDtoTemplate = //
+	 * getBackendTemplates(root.get("ClassName").toString()); // Defining paths for
+	 * tempaltes
+	 * 
+	 * ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class,
+	 * "/templates/"); ClassTemplateLoader ctl1 = new
+	 * ClassTemplateLoader(CodegenApplication.class,
+	 * "/templates/backendTemplates/"); ClassTemplateLoader ctl2 = new
+	 * ClassTemplateLoader(CodegenApplication.class,
+	 * "/templates/backendTemplates/Dto");
+	 * 
+	 * MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl,
+	 * ctl1, ctl2 }); cfg.setDefaultEncoding("UTF-8");
+	 * 
+	 * cfg.setTemplateLoader(mtl);
+	 * 
+	 * try { findClassesFromJar(sourcePath, entityName); EntityDetails fieldsObj =
+	 * getFieldNames(sourcePath, entityName); Map<String, FieldDetails>
+	 * actualFieldNames = fieldsObj.getFieldsMap();
+	 * 
+	 * Map<String, RelationDetails> relationMap = fieldsObj.getRelationsMap();
+	 * List<String> searchFields = new ArrayList<>();
+	 * 
+	 * for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
+	 * if (entry.getValue().getFieldType().equalsIgnoreCase("String"))
+	 * searchFields.add(entry.getValue().getFieldName());
+	 * 
+	 * }
+	 * 
+	 * if (type.equalsIgnoreCase("other")) { cfg.setDirectoryForTemplateLoading(new
+	 * File(sourcePath + "/templates/")); otherTemplate =
+	 * getOtherTemplates(root.get("ClassName").toString(), sourcePath +
+	 * "/templates/"); } else { cfg.setTemplateLoader(mtl); }
+	 * 
+	 * root.put("Fields", actualFieldNames); root.put("SearchFields", searchFields);
+	 * root.put("Relationship", relationMap);
+	 * 
+	 * String destFolder = destPath + "/fcclient/src/app/" +
+	 * root.get("ModuleName").toString(); new File(destFolder).mkdirs(); if
+	 * (type.equalsIgnoreCase("other")) { generateFiles(otherTemplate, root,
+	 * destFolder); } else if (type.equalsIgnoreCase("ui"))
+	 * generateFiles(uiTemplate, root, destFolder); else if (type == "backend") {
+	 * generateBackendFiles(root, destPath); } else { generateFiles(uiTemplate,
+	 * root, destFolder); generateBackendFiles(root, destPath); } } catch (Exception
+	 * e1) { // TODO Auto-generated catch block e1.printStackTrace(); }
+	 * 
+	 * }
+	 */
 }
