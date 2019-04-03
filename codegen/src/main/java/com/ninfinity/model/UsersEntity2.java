@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-public class UsersEntity {
+public class UsersEntity2 {
     private long id;
     private Timestamp creationtime;
     private String creatoruserid;
