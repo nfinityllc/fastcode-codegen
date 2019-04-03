@@ -42,9 +42,12 @@ public class EntityGenerator {
 		Map<String,RelationDetails> relationMap = entityDetails.getRelationsMap();
 		root.put("Fields", actualFieldNames);
 		root.put("Relationship", relationMap);
-
 		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/");  
-		generateEntity(root, destinationFolder);
+
+		System.out.println(destPath);
+
+		System.out.println(destinationFolder);
+//		generateEntity(root, destinationFolder);
 
 	}
 
