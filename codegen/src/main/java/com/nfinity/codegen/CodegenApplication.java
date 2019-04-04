@@ -43,13 +43,13 @@ public class CodegenApplication implements ApplicationRunner {
 		callEntityGen(configProperties);
 		// CodeGenerator.Generate(root.get("e"),root.get("s"),root.get("d"),"","");
 		// --a com.ninfinity.fastcode. It is a concatenation of groupid and artifact id
-//		String sourcePackageName = root.get("p");
-//		sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
-//		CodeGenerator.GenerateAll(root.get("a"), sourcePackageName, root.get("s"), root.get("d"), root.get("t"));
-		
+		String sourcePackageName = root.get("p");
+		sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
+		CodeGenerator.GenerateAll(root.get("a"), sourcePackageName, root.get("s"), root.get("d"), root.get("t"));
 
 		String destination = "F:\\projects\\New folder\\fbaseTempDes";
-		FronendBaseTemplateGenerator.generate(destination);
+		destination = root.get("d") + "/fbaseTempDes";
+		// FronendBaseTemplateGenerator.generate(destination);
 	}
 
 	private static void callEntityGen(FastCodeProperties configProperties) {

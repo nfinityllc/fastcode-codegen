@@ -84,6 +84,15 @@ public class CodeGenerator {
 		// String packageName = "com.ninfinity.entitycodegen.model"; // you can also
 		// pass other package names or root package
 		// name like com.ninfinity.entitycodegen
+
+		// generate base angular app
+		File directory = new File(destPath + CLIENT_ROOT_FOLDER);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		FronendBaseTemplateGenerator.generate(destPath, CLIENT_ROOT_FOLDER);
+
+		// generate all modules for each entity
 		try {
 			ArrayList<Class<?>> entityClasess = loader.findClasses(sourcePackageName);
 			for (Class<?> currentClass : entityClasess) {
