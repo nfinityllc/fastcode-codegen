@@ -31,10 +31,10 @@ public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 	public static void generate(String destination) {
-		String command = "ng new client";
+		String command = "ng new client --skipInstall=true";
 		runCommand(command, destination);
 		System.out.println(System.getProperty("user.dir"));
-		generate(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/templates/frontendBaseTemplate",FRONTEND_BASE_TEMPLATE_FOLDER, destination + "/client/src/app");
+		generate(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/templates/frontendBaseTemplate",FRONTEND_BASE_TEMPLATE_FOLDER, destination + "/client/");
 //		generate("F:/projects/New folder/codegen/codegen/src/main/resources/templates/frontendBaseTemplate",FRONTEND_BASE_TEMPLATE_FOLDER, destination + "/generatedProject/src/app");
 		
 
@@ -88,6 +88,7 @@ public class FronendBaseTemplateGenerator {
 				PrintWriter writer = new PrintWriter(fileName);
 				template.process(root, writer);
 				writer.flush();
+				writer.close();
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
