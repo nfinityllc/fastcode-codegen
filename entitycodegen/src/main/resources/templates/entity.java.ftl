@@ -5,9 +5,9 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import javax.validation.constraints.Email;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import ${AuditPackage}.AuditedEntity;
 </#if>
 
 @Entity

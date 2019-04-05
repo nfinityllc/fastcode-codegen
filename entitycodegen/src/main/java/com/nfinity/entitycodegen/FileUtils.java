@@ -1,12 +1,7 @@
 package com.nfinity.entitycodegen;
-
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URI;
-import java.net.URLClassLoader;
+import java.io.File;  
+import java.net.MalformedURLException;  
+import java.net.URL;  
 
 public class FileUtils {
     public static URL toURL(File file) {

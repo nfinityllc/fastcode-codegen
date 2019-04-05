@@ -1,101 +1,135 @@
 package com.nfinity.entitycodegen;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import com.google.common.reflect.ClassPath;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 @SpringBootApplication
-public class CodegenApplication {
-	static final String packageName = "com.ninfinity.model";
+public class CodegenApplication{
 
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(String[] args) {
 		SpringApplication.run(CodegenApplication.class, args);
-
+		
 		Scanner scanner = new Scanner(System.in);
 
-		UserInput input = GetUserInput.getInput(scanner);
-		System.out
-				.println(" package name " + input.getPackageName() + "\n destination path " + input.getDestinationPath()
-						+ "\n schema name   " + input.getSchemaName() + " \n audit " + input.getAudit());
+		UserInput input= GetUserInput.getInput(scanner);
+		System.out.println(" package name "  + input.getPackageName() + "\n destination path " + input.getDestinationPath()
+		+ "\n schema name   " + input.getSchemaName() + " \n audit " + input.getAudit() 
+		+ "\n audit package " + input.getAuditPackage());
 
-		String workingDir = System.getProperty("user.dir") + "/src/main/java";
-		ReverseMapping.run(packageName, workingDir, input.getSchemaName());
-		try {
-			Thread.sleep(22000);
-		} catch (InterruptedException e) {
+		final String tempPackageName= input.getPackageName().concat(".Temp");
+		final String destinationPath= input.getDestinationPath().concat("/src/main/java");
+		final String targetPath = input.getDestinationPath().concat("/target/classes");
+
+		ReverseMapping.run(tempPackageName, destinationPath,input.getSchemaName());
+		try
+		{
+			Thread.sleep(25000);
+		}
+		catch (InterruptedException e)
+		{
 			e.printStackTrace();
 		}
 
-		deleteOrm(workingDir);
-		ClassDetails classDetails = getClasses(packageName);
-		List<String> classList = classDetails.getClassesList();
-		List<String> relationClassList = classDetails.getRelationClassesList();
+		deleteFile(destinationPath + "/orm.xml");
+		try {
+			Utils.runCommand("mvn compile",input.getDestinationPath());
+		} catch (Exception e) {
+			System.out.println("Compilation Error");
+			e.printStackTrace();
+		}
+		CGenClassLoader loader = new CGenClassLoader(targetPath);
+		ArrayList<Class<?>> entityClasses;
+		try {
+			entityClasses = loader.findClasses(tempPackageName);
+			ClassDetails classDetails = getClasses(entityClasses);
+			List<Class<?>> classList = classDetails.getClassesList();
+			List<String> relationClassList = classDetails.getRelationClassesList();
+			List<String> relationInputList= GetUserInput.getRelationInput(classList, relationClassList,input.getDestinationPath(),tempPackageName,scanner);
 
-		List<String> relationInputList = GetUserInput.getRelationInput(classList, relationClassList, workingDir,
-				packageName, scanner);
-
-		for (String str : classList) {
-			if (!relationClassList.contains(str)) {
-				String className = packageName.concat("." + str);
-				EntityDetails details = GetEntityDetails.getDetails(workingDir, className);
-				EntityGenerator.Generate(className, details, input.getSchemaName(), input.getPackageName(),
-						input.getDestinationPath(), relationInputList, input.getAudit());
+			for (Class<?> currentClass : classList) {
+				String entityName = currentClass.getName();
+				if(!relationClassList.contains(entityName))
+				{
+					EntityDetails details = GetEntityDetails.getDetails(currentClass,entityName,classList);
+					EntityGenerator.Generate(entityName,details,"sample",input.getPackageName(),input.getDestinationPath()+"/src/main/java",relationInputList,input.getAudit(),input.getAuditPackage());
+				}
 
 			}
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+
 		}
 
-		if (input.getAudit()) {
-			EntityGenerator.generateAuditEntity(input.getDestinationPath(), input.getPackageName());
+		if(input.getAudit())
+		{
+			EntityGenerator.generateAuditEntity(destinationPath, input.getAuditPackage());
 		}
 		scanner.close();
+		deleteDirectory(destinationPath +"/"+ tempPackageName.replaceAll("\\.", "/"));
+		System.out.println(" exit " );
 	}
 
-	public static ClassDetails getClasses(String packageName) {
-		List<String> list = new ArrayList<>();
-		List<String> relationClass = new ArrayList<>();
-		List<String> classList = new ArrayList<>();
-		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-		try {
-			for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
-				if (info.getName().startsWith(packageName)) {
-					final Class<?> clazz = info.load();
-					String className = clazz.toString();
-					className = className.substring(className.lastIndexOf(".") + 1).trim();
-					list.add(className);
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		for (String str : list) {
-			if (str.contains("Id")) {
-				String className = str.substring(0, str.indexOf("Id"));
-				if (!list.contains(className))
-					classList.add(className);
-				else
-					relationClass.add(className);
-			} else
-				classList.add(str);
-		}
-
-		return new ClassDetails(classList, relationClass);
-	}
-
-	public static void deleteOrm(String directory) {
-		File file = new File(directory + "/orm.xml");
-		if (file.exists()) {
+	public static void deleteFile(String directory)
+	{
+		System.out.println(" Directory " + directory);
+		File file =new File(directory );
+		if(file.exists())
+		{
 			file.delete();
 		}
+	}
+
+	public static void deleteDirectory(String directory)
+	{
+		File file =new File(directory );
+		File[] contents = file.listFiles();
+		if (contents != null) {
+			for (File f : contents) {
+				if(f.isDirectory())
+					deleteDirectory(f.getAbsolutePath());
+				else
+					f.delete();
+			}
+		}
+		file.delete();
+	}
+
+	public static ClassDetails getClasses(ArrayList<Class<?>> entityClasses)
+	{
+		List<String> entityClassNames = new ArrayList<>();
+		for (Class<?> currentClass : entityClasses) {
+			String entityName = currentClass.getName();
+			entityClassNames.add(entityName);
+		}
+
+		List<String> relationClass = new ArrayList<>();
+		List<Class<?>> classList = new ArrayList<>();
+
+		for (Class<?> currentClass : entityClasses) {
+			String entityName = currentClass.getName();
+			if(entityName.contains("Id"))
+			{
+				if(!entityName.contains("Tokenizer"))
+				{
+					String className = entityName.substring(0,entityName.indexOf("Id"));
+
+					if(!entityClassNames.contains(className))
+						classList.add(currentClass);
+					else
+						relationClass.add(className);
+				}
+			}
+			else
+			{
+				classList.add(currentClass);
+			}
+		}
+		return new ClassDetails(classList,relationClass);
 	}
 
 }

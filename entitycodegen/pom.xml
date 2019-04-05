@@ -9,11 +9,11 @@
 
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.nfinity</groupId>
+	<groupId>com.ninfinity</groupId>
 	<artifactId>entitycodegen</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>entitycodegen</name>
-	<description>Entity Code Gen </description>
+	<name>codegen</name>
+	<description>Demo project for Spring Boot</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -66,21 +66,29 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>2.0.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+			<version>2.0.2.RELEASE</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-						<classifier>exec</classifier>
-				</configuration>
 			</plugin>
 	    <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <configuration>
-             <mainClass>com.nfinity.entitycodegen.CodegenApplication</mainClass>
+             <mainClass>com.ninfinity.codegen.CodegenApplication</mainClass>
         </configuration>
         </plugin>
       
