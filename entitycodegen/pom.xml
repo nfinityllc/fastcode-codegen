@@ -9,12 +9,12 @@
 
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ninfinity</groupId>
+	<groupId>com.nfinity</groupId>
 	<artifactId>entitycodegen</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>codegen</name>
-	<description>Demo project for Spring Boot</description>
-
+	<name>entitycodegen</name>
+	<description>Entity Code Gen </description>
+	
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -80,15 +80,19 @@
 	</dependencies>
 	<build>
 		<plugins>
+	
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+						<classifier>exec</classifier>
+				</configuration>
 			</plugin>
 	    <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <configuration>
-             <mainClass>com.ninfinity.codegen.CodegenApplication</mainClass>
+             <mainClass>com.ninfinity.entitycodegen.CodegenApplication</mainClass>
         </configuration>
         </plugin>
       
