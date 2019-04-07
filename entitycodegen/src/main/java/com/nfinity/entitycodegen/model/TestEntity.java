@@ -1,9 +1,11 @@
 package com.nfinity.entitycodegen.model;
 
 import java.sql.Timestamp;
+import java.lang.annotation.*;
 
 //import java.util.Objects;
 public class TestEntity {
+    @MyAnnotation(codegen = "getachew")
     private long id;
 
     private String emailAddress;

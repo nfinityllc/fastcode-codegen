@@ -4,6 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - External Terminal",
+            "request": "launch",
+            "console": "externalTerminal",
+            "mainClass": "com.nfinity.entitycodegen.CodegenApplication"
+        },
     {
         "type": "java",
         "name": "Debug (Launch) with Arguments Prompt",
@@ -22,8 +29,10 @@
             "type": "java",
             "name": "Debug (Launch)-CodegenApplication<codegen>",
             "request": "launch",
-            "mainClass": "com.ninfinity.codegen.CodegenApplication",
-            "projectName": "codegen"
+            "mainClass": "com.nfinity.entitycodegen.CodegenApplication",
+            "projectName": "entitycodegen",
+            
         }
-    ]
+    ],
+    "externalConsole": true
 }

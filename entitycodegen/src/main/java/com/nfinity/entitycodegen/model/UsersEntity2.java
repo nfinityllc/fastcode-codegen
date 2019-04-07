@@ -3,6 +3,7 @@ package com.nfinity.entitycodegen.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.lang.annotation.*;
 
 @Entity
 public class UsersEntity2 {

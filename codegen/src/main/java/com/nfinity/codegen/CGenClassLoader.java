@@ -8,6 +8,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.jar.*;
+import javax.persistence.*;
 
 public class CGenClassLoader extends ClassLoader {
     public static Map<String, String> retrieveClasses(Path rootDir, String packageName) throws IOException {
@@ -92,7 +93,8 @@ public class CGenClassLoader extends ClassLoader {
                 classFiles = CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
 
             }
-            cld = new URLClassLoader(new URL[] { url });
+            ClassLoader context = Thread.currentThread().getContextClassLoader();
+            cld = new URLClassLoader(new URL[] { url }, context);
             ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
             // Map<String,String> classFiles=
             // CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);

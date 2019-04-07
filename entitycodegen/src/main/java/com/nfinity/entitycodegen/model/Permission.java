@@ -3,10 +3,12 @@ package com.nfinity.entitycodegen.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.lang.annotation.*;
 
 @Entity
 @Table(name = "permissions", schema = "dbo", catalog = "FCV2Db")
 public class Permission {
+    @MyAnnotation(codegen = "getachew")
     private long id;
     private Timestamp creationtime;
     private String creatoruserid;

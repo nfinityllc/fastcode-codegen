@@ -8,6 +8,7 @@ import freemarker.template.Template;
 import java.io.File;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.*;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.jar.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import javax.persistence.*;
 //import freemarker.template.utility.StringUtil;
 
 //import freemarker.template.Configuration;
