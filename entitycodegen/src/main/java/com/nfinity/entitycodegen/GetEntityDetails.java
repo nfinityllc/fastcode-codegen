@@ -11,8 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 
 public class GetEntityDetails{
 
-
-
 	public static EntityDetails getDetails(Class<?> entityClass, String entityName, List<Class<?>> classList) {
 
 		Map<String,FieldDetails> fieldsMap= new HashMap<>();
@@ -31,7 +29,8 @@ public class GetEntityDetails{
 				int index = str.lastIndexOf(".")+1;
 				details.setFieldName(field.getName());
 				details.setFieldType(str.substring(index));
-				Annotation[] annotations = field.getDeclaredAnnotations();
+				Annotation[] annotations = field.getAnnotations();
+
 				for(Annotation a: annotations)
 				{
 					if(a.annotationType().toString().equals("interface javax.persistence.Column"))

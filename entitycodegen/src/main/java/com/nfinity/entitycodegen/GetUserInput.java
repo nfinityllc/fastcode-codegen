@@ -37,7 +37,7 @@ public class GetUserInput {
 	}
 
 	public static List<String> getRelationInput(List<Class<?>> classList, List<String> relationClassList, String source,
-			String packageName, Scanner scanner) {
+			String packageName) {
 		List<RelationDetails> relationList = getRelationList(classList, relationClassList);
 		List<String> relationInput = new ArrayList<>();
 		for (Class<?> currentClass : classList) {
@@ -51,14 +51,32 @@ public class GetUserInput {
 					for (RelationDetails e : relationList) {
 						if (e.geteName().equals(className) && e.getRelation().equals(entry.getValue().getRelation())) {
 							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
-									+ " having " + entry.getKey() + " relationship , which one is the owner entity ? ");
+									+ " having " + entry.getKey() + " relationship , which one is the owner entity ? Enter 1 or 2 : ");
 
-							String parent = scanner.nextLine();
-
-							if (parent.equalsIgnoreCase(className))
+							Scanner scanner = new Scanner(System.in);
+							int i = scanner.nextInt();
+							while(i<1 && i>2)
+							{
+								System.out.println("\nInvalid Input \nEnter again :");
+								i = scanner.nextInt();
+							}
+							if(i==1)
+							{
 								relationInput.add(className + "-" + entry.getValue().geteName());
-							if (parent.equalsIgnoreCase(entry.getValue().geteName()))
-								relationInput.add(entry.getValue().geteName() + "-" + className);
+							}
+							else if(i==2)
+							{
+								relationInput.add(entry.getValue().geteName() + "-" + className);	
+							}
+							
+//							String parent = scanner.nextLine();
+//
+//							if (parent.equalsIgnoreCase(className))
+//								relationInput.add(className + "-" + entry.getValue().geteName());
+//							if (parent.equalsIgnoreCase(entry.getValue().geteName()))
+//								relationInput.add(entry.getValue().geteName() + "-" + className);
+//							
+							scanner.close();
 
 						}
 					}
