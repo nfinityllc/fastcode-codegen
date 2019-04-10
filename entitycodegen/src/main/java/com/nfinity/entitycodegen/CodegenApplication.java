@@ -16,8 +16,8 @@ public class CodegenApplication{
  
         // added by getachew otheroption = -n=sdemo -j=1.8 
         // You can get the dir, a and g input from the command line 
-      BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo", "com.example", "web,data-jpa,", true, 
-             " -n=sdemo -j=1.8 "); 
+ //    BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo", "com.example", "web,data-jpa,", true, 
+ //           " -n=sdemo -j=1.8 "); 
  
         Scanner scanner = new Scanner(System.in); 
  
@@ -32,7 +32,7 @@ public class CodegenApplication{
  
         ReverseMapping.run(tempPackageName, destinationPath, input.getSchemaName()); 
         try { 
-            Thread.sleep(35000); 
+            Thread.sleep(30000); 
         } catch (InterruptedException e) { 
             e.printStackTrace(); 
         } 
@@ -88,6 +88,7 @@ public class CodegenApplication{
                 " -n=sdemo -j=1.8 "); 
  
         final String tempPackageName = packageName.concat(".Temp"); 
+        destination = destination.replace('\\', '/');
         final String destinationPath = destination.concat("/src/main/java"); 
         final String targetPath = destination.concat("/target/classes"); 
  
