@@ -10,6 +10,10 @@ import org.springframework.context.annotation.Bean;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.nfinity.entitycodegen.BaseAppGen;
+import com.nfinity.entitycodegen.EntityGenerator;
+
 import org.springframework.beans.factory.annotation.Value;
 //import freemarker.template.utility.StringUtil;
 
@@ -45,7 +49,16 @@ public class CodegenApplication implements ApplicationRunner {
 		// --a com.ninfinity.fastcode. It is a concatenation of groupid and artifact id
 		String sourcePackageName = root.get("p");
 		sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
-		CodeGenerator.GenerateAll(root.get("a"), sourcePackageName, root.get("s"), root.get("d"), root.get("t"));
+		String groupArtifactId = root.get("a") == null ? "com.group.demo" : root.get("a");
+		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
+		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));
+		BaseAppGen.CreateBaseApplication(root.get("d"), artifactId, groupId, "web,data-jpa,", true,
+				" -n=sdemo -j=1.8 ");
+		EntityGenerator.generateEntities("sample", root.get("a") + ".model", root.get("d") + "/" + artifactId, false,
+				"");
+
+		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", root.get("a"), sourcePackageName, root.get("s"),
+				root.get("d"), root.get("t"));
 
 		String destination = "F:\\projects\\New folder\\fbaseTempDes";
 		destination = root.get("d") + "/fbaseTempDes";

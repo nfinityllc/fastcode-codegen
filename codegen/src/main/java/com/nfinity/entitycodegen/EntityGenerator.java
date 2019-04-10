@@ -1,89 +1,30 @@
 package com.nfinity.entitycodegen;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
-@SpringBootApplication
-public class CodegenApplication {
+import freemarker.cache.ClassTemplateLoader;
 
-	public static void main(String[] args) {
-		SpringApplication.run(CodegenApplication.class, args);
+//import com.nfinity.codegen.CodegenApplication;
+public class EntityGenerator {
 
-		// added by getachew otheroption = -n=sdemo -j=1.8
-		// You can get the dir, a and g input from the command line
-		BaseAppGen.CreateBaseApplication("/Users/getachew/fc/exer/", "sdemo", "com.nfinity", "web,data-jpa,", true,
-				" -n=sdemo -j=1.8 ");
-		CodegenApplication.run("sample", "com.nfinity.sdemo.model", "/Users/getachew/fc/exer/" + "sdemo", false, "");
+	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 
-		Scanner scanner = new Scanner(System.in);
-
-		UserInput input = GetUserInput.getInput(scanner);
-		System.out.println(" package name " + input.getPackageName() + "\n destination path "
-				+ input.getDestinationPath() + "\n schema name   " + input.getSchemaName() + " \n audit "
-				+ input.getAudit() + "\n audit package " + input.getAuditPackage());
-
-		final String tempPackageName = input.getPackageName().concat(".Temp");
-		final String destinationPath = input.getDestinationPath().concat("/src/main/java");
-		final String targetPath = input.getDestinationPath().concat("/target/classes");
-
-		ReverseMapping.run(tempPackageName, destinationPath, input.getSchemaName());
-		try {
-			Thread.sleep(35000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		deleteFile(destinationPath + "/orm.xml");
-		try {
-			Utils.runCommand("mvn compile", input.getDestinationPath());
-		} catch (Exception e) {
-			System.out.println("Compilation Error");
-			e.printStackTrace();
-		}
-		CGenClassLoader loader = new CGenClassLoader(targetPath);
-
-		ArrayList<Class<?>> entityClasses;
-		try {
-			entityClasses = loader.findClasses(tempPackageName);
-			ClassDetails classDetails = getClasses(entityClasses);
-			List<Class<?>> classList = classDetails.getClassesList();
-			List<String> relationClassList = classDetails.getRelationClassesList();
-			System.out.println("size " + classList.size());
-			for (Class<?> currentClass : classList) {
-				System.out.println("as " + currentClass.getName());
-			}
-			List<String> relationInputList = GetUserInput.getRelationInput(classList, relationClassList,
-					input.getDestinationPath(), tempPackageName);
-
-			for (Class<?> currentClass : classList) {
-				String entityName = currentClass.getName();
-				if (!relationClassList.contains(entityName)) {
-					EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
-					EntityGenerator.Generate(entityName, details, "sample", input.getPackageName(),
-							input.getDestinationPath() + "/src/main/java", relationInputList, input.getAudit(),
-							input.getAuditPackage());
-				}
-
-			}
-		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
-
-		}
-
-		if (input.getAudit()) {
-			EntityGenerator.generateAuditEntity(destinationPath, input.getAuditPackage());
-		}
-		scanner.close();
-		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
-		System.out.println(" exit ");
+	public static void setTemplateLoader() {
+		ClassTemplateLoader ctl = new ClassTemplateLoader(new EntityGenerator().getClass(), "/templates/");
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setTemplateLoader(ctl);
 	}
 
-	public static void run(String schema, String packageName, String destination, Boolean audit, String auditPackage) {
+	public static void generateEntities(String schema, String packageName, String destination, Boolean audit,
+			String auditPackage) {
 		// BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo",
 		// "com.nfinity", "web,data-jpa", true,
 		// " -n=sdemo -j=1.8 ");
@@ -102,7 +43,7 @@ public class CodegenApplication {
 		try {
 			BaseAppGen.CompileApplication(destination);
 			deleteFile(destinationPath + "/orm.xml");
-			Utils.runCommand("mvn compile", destination);
+			// Utils.runCommand("mvn compile", destination);
 		} catch (Exception e) {
 			System.out.println("Compilation Error");
 			e.printStackTrace();
@@ -138,6 +79,74 @@ public class CodegenApplication {
 
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
+	}
+
+	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
+			String destPath, List<String> relationInput, Boolean audit, String auditPackage) {
+
+		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
+		String entityClassName = className.concat("Entity");
+
+		Map<String, Object> root = new HashMap<>();
+
+		root.put("EntityClassName", entityClassName);
+		root.put("ClassName", className);
+		root.put("PackageName", packageName);
+		root.put("RelationInput", relationInput);
+		root.put("SchemaName", schemaName);
+		root.put("Audit", audit);
+		root.put("AuditPackage", auditPackage);
+
+		setTemplateLoader();
+
+		Map<String, FieldDetails> actualFieldNames = entityDetails.getFieldsMap();
+		Map<String, RelationDetails> relationMap = entityDetails.getRelationsMap();
+		root.put("Fields", actualFieldNames);
+		root.put("Relationship", relationMap);
+
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/");
+		generateEntity(root, destinationFolder);
+
+	}
+
+	private static void generateEntity(Map<String, Object> root, String destPath) {
+		new File(destPath).mkdirs();
+		generateFiles(getEntityTemplate(root.get("ClassName").toString()), root, destPath);
+	}
+
+	private static void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
+		for (Map.Entry<String, Object> entry : templateFiles.entrySet()) {
+			try {
+				Template template = cfg.getTemplate(entry.getKey());
+				File fileName = null;
+				fileName = new File(destPath + "/" + entry.getValue().toString());
+				PrintWriter writer = new PrintWriter(fileName);
+				template.process(root, writer);
+				writer.flush();
+
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	private static Map<String, Object> getEntityTemplate(String className) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("entity.java.ftl", className + "Entity.java");
+		return backEndTemplate;
+	}
+
+	public static void generateAuditEntity(String destPath, String packageName) {
+		setTemplateLoader();
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		Map<String, Object> root = new HashMap<>();
+		root.put("PackageName", packageName);
+		backEndTemplate.put("audit.java.ftl", "AuditedEntity.java");
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/");
+		new File(destinationFolder).mkdirs();
+		generateFiles(backEndTemplate, root, destinationFolder);
+
 	}
 
 	public static void deleteFile(String directory) {
@@ -189,5 +198,4 @@ public class CodegenApplication {
 		}
 		return new ClassDetails(classList, relationClass);
 	}
-
 }
