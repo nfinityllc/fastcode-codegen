@@ -17,7 +17,10 @@ public class GetUserInput {
 		input.setPackageName(inputReader.nextLine());
 
 		System.out.print("\nWhat is the destination path for entities? "); // root path of the backend
-		input.setDestinationPath(inputReader.nextLine());
+		String destination= inputReader.nextLine();
+		 destination = destination.replace('\\', '/');
+		input.setDestinationPath(destination);
+		
 
 		System.out.print("\nDo you want to generate Audit Entity (yes/no)? ");// no
 		String value = inputReader.nextLine();
@@ -55,7 +58,7 @@ public class GetUserInput {
 
 							Scanner scanner = new Scanner(System.in);
 							int i = scanner.nextInt();
-							while(i<1 && i>2)
+							while(i<1 || i>2)
 							{
 								System.out.println("\nInvalid Input \nEnter again :");
 								i = scanner.nextInt();
@@ -68,14 +71,7 @@ public class GetUserInput {
 							{
 								relationInput.add(entry.getValue().geteName() + "-" + className);	
 							}
-							
-//							String parent = scanner.nextLine();
-//
-//							if (parent.equalsIgnoreCase(className))
-//								relationInput.add(className + "-" + entry.getValue().geteName());
-//							if (parent.equalsIgnoreCase(entry.getValue().geteName()))
-//								relationInput.add(entry.getValue().geteName() + "-" + className);
-//							
+												
 							scanner.close();
 
 						}

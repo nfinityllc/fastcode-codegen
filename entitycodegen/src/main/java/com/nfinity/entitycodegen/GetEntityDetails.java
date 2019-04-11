@@ -160,7 +160,7 @@ public class GetEntityDetails{
 				try {
 					Class<?> myClass = currentClass;
 					Object classObj = (Object) myClass.newInstance();
-					Annotation[] classAnnotations = classObj.getClass().getAnnotations();
+					Annotation[] classAnnotations = classObj.getClass().getDeclaredAnnotations();
 
 					for (Annotation a : classAnnotations) {
 						if (a.annotationType().toString().equals("interface javax.persistence.IdClass")) {

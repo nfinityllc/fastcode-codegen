@@ -1,35 +1,28 @@
 package com.nfinity.entitycodegen;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
 import org.apache.openjpa.jdbc.conf.JDBCConfiguration;
 import org.apache.openjpa.jdbc.conf.JDBCConfigurationImpl;
 import org.apache.openjpa.jdbc.meta.ReverseMappingTool;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class ReverseMapping {
 
 	 static JDBCConfiguration jdbc = new JDBCConfigurationImpl();
 	 
-	 static ReverseMappingTool reverse;
-	 
-	 public static void run(String packageName, String directory, String tableName)
+	 public static void run(String packageName, String directory, String schemaName)
 	 {
 		 //packageName : "com.nfinity.fastcode.model"
 		 //directory : "src/main/java"
 		 //tableName : "dbo.users,dbo.roles"
 		 
-		 String[] as = {"-pkg", packageName, "-d", directory, "-schema", tableName, "-ann","t" };
+		 String[] array = {"-pkg", packageName, "-d", directory, "-schema", schemaName, "-ann","t" };
 		 
-		 System.out.println("SSS in open jpa \n" );
-		 reverse= new ReverseMappingTool(jdbc);
-		
-		
 		 try {
-			reverse.main(as);
+			 ReverseMappingTool.main(array);
+		
 			System.out.println(" Generating resources ... ");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -38,7 +31,6 @@ public class ReverseMapping {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	   //  reverse.run();
 	 }
 	
 }

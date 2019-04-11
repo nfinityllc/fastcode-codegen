@@ -1,15 +1,10 @@
 package com.nfinity.entitycodegen;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.*;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class BaseAppGen {
     public static ProcessBuilder builder = null;

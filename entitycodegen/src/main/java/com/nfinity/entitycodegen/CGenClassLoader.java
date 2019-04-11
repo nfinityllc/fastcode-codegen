@@ -43,7 +43,7 @@ public class CGenClassLoader extends ClassLoader {
 		});
 		return classFiles;
 	}
-	
+
 	URLClassLoader classLoader;
 	String path =".";
 	String packageName="";
@@ -59,8 +59,8 @@ public class CGenClassLoader extends ClassLoader {
 	@Override
 	public Class<?> findClass(String qualifiedClassName) throws ClassNotFoundException {
 
-			Class<?> loadedClass = classLoader.loadClass(qualifiedClassName);
-			return loadedClass;
+		Class<?> loadedClass = classLoader.loadClass(qualifiedClassName);
+		return loadedClass;
 	}
 
 	public  ArrayList<Class<?>> findClasses(String packageName) throws ClassNotFoundException {
@@ -71,9 +71,9 @@ public class CGenClassLoader extends ClassLoader {
 				classFiles= this.findClassesFromJar(packageName);
 			}
 			else {
-					classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
+				classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
 			}
-		
+
 			ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 
 			for (Map.Entry<String, String> entry : classFiles.entrySet()) {
