@@ -16,8 +16,8 @@ public class CodegenApplication{
  
         // added by getachew otheroption = -n=sdemo -j=1.8 
         // You can get the dir, a and g input from the command line 
- //    BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo", "com.example", "web,data-jpa,", true, 
- //           " -n=sdemo -j=1.8 "); 
+//    BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo", "com.example", "web,data-jpa,", true, 
+//            " -n=sdemo -j=1.8 "); 
  
         Scanner scanner = new Scanner(System.in); 
  
@@ -26,72 +26,36 @@ public class CodegenApplication{
                 + input.getDestinationPath() + "\n schema name   " + input.getSchemaName() + " \n audit " 
                 + input.getAudit() + "\n audit package " + input.getAuditPackage()); 
  
-        final String tempPackageName = input.getPackageName().concat(".Temp"); 
-        final String destinationPath = input.getDestinationPath().concat("/src/main/java"); 
-        final String targetPath = input.getDestinationPath().concat("/target/classes"); 
- 
-        ReverseMapping.run(tempPackageName, destinationPath, input.getSchemaName()); 
-        try { 
-            Thread.sleep(30000); 
-        } catch (InterruptedException e) { 
-            e.printStackTrace(); 
-        } 
- 
-        deleteFile(destinationPath + "/orm.xml"); 
-        try { 
-            Utils.runCommand("mvn compile", input.getDestinationPath()); 
-        } catch (Exception e) { 
-            System.out.println("Compilation Error"); 
-            e.printStackTrace(); 
-        } 
-        CGenClassLoader loader = new CGenClassLoader(targetPath); 
-        
-        ArrayList<Class<?>> entityClasses; 
-        try { 
-            entityClasses = loader.findClasses(tempPackageName); 
-            ClassDetails classDetails = getClasses(entityClasses); 
-            List<Class<?>> classList = classDetails.getClassesList(); 
-            List<String> relationClassList = classDetails.getRelationClassesList(); 
-            System.out.println("size " + classList.size());
-            for (Class<?> currentClass : classList) { 
-            System.out.println("as " + currentClass.getName());
-            }
-            List<String> relationInputList = GetUserInput.getRelationInput(classList, relationClassList, 
-                    input.getDestinationPath(), tempPackageName); 
- 
-            for (Class<?> currentClass : classList) { 
-                String entityName = currentClass.getName(); 
-                if (!relationClassList.contains(entityName)) { 
-                    EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList); 
-                    EntityGenerator.Generate(entityName, details, "sample", input.getPackageName(), 
-                            input.getDestinationPath() + "/src/main/java", relationInputList, input.getAudit(), 
-                            input.getAuditPackage()); 
-                } 
- 
-            } 
-        } catch (ClassNotFoundException ex) { 
-            ex.printStackTrace(); 
- 
-        } 
- 
-        if (input.getAudit()) { 
-            EntityGenerator.generateAuditEntity(destinationPath, input.getAuditPackage()); 
-        } 
-        scanner.close(); 
-        deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/")); 
-        System.out.println(" exit "); 
+        run(input.getSchemaName(),input.getTablesList(),input.getPackageName(),input.getDestinationPath(),input.getAudit(),input.getAuditPackage());
+     
     } 
     
-    public static void run(String schema,String packageName,String destination,Boolean audit,String auditPackage)
+    public static void run(String schema,List<String> tableList,String packageName,String destination,Boolean audit,String auditPackage)
     {
     	BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo", "com.nfinity", "web,data-jpa", true, 
-                " -n=sdemo -j=1.8 "); 
+               " -n=sdemo -j=1.8 "); 
  
         final String tempPackageName = packageName.concat(".Temp"); 
         destination = destination.replace('\\', '/');
         final String destinationPath = destination.concat("/src/main/java"); 
         final String targetPath = destination.concat("/target/classes"); 
+        String tables="";
+        for(int i=0;i<tableList.size();i++)
+        {
+        	if(!tableList.get(i).isEmpty())
+        	{
+        	if(i<tableList.size()-1)
+        	tables= tables + schema.concat("." + tableList.get(i) + ",");
+        	else
+            tables= tables + schema.concat("." + tableList.get(i) );
+        	}
+        }
  
+        if(!tables.isEmpty())
+        {
+        	ReverseMapping.run(tempPackageName, destinationPath, tables); 
+        }
+        else
         ReverseMapping.run(tempPackageName, destinationPath, schema); 
         try { 
             Thread.sleep(28000); 

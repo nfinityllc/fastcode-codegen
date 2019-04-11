@@ -17,8 +17,8 @@ public class ReverseMapping {
 		 //packageName : "com.nfinity.fastcode.model"
 		 //directory : "src/main/java"
 		 //tableName : "dbo.users,dbo.roles"
-		 
-		 String[] array = {"-pkg", packageName, "-d", directory, "-schema", schemaName, "-ann","t" };
+		 String schemaKey= schemaName.contains(",")?"-s":"-schema";
+		 String[] array = {"-pkg", packageName, "-d", directory, schemaKey, schemaName, "-ann","t" };
 		 
 		 try {
 			 ReverseMappingTool.main(array);
