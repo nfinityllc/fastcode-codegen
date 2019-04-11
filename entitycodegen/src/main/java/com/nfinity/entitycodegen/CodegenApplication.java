@@ -153,5 +153,4 @@ public class CodegenApplication{
 		return new ClassDetails(classList, relationClass);
 	}
 
-
 }

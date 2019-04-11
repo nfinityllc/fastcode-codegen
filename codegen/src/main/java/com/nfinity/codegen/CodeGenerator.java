@@ -79,8 +79,10 @@ public class CodeGenerator {
 	}
 
 	/// appname= groupid + artifactid
-	public static void GenerateAll(String appName, String sourcePackageName, String sourcePath, String destPath,
-			String type) {
+	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,
+			String sourcePackageName, String sourcePath, String destPath, String type) {
+		BACKEND_APP_FOLDER = backEndRootFolder + "/src/main/java";
+		CLIENT_APP_FOLDER = clientRootFolder + "/src/app";
 		CGenClassLoader loader = new CGenClassLoader(sourcePath);
 		// String packageName = "com.ninfinity.entitycodegen.model"; // you can also
 		// pass other package names or root package
