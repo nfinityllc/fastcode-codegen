@@ -12,28 +12,47 @@ import freemarker.template.Template;
 
 import freemarker.cache.ClassTemplateLoader;
 
-//import com.nfinity.codegen.CodegenApplication;
 public class EntityGenerator {
 
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 
 	public static void setTemplateLoader() {
-		ClassTemplateLoader ctl = new ClassTemplateLoader(new EntityGenerator().getClass(), "/templates/");
+		ClassTemplateLoader ctl = new ClassTemplateLoader(new EntityGenerator().getClass(), "/templates/entityTemplate");
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setTemplateLoader(ctl);
 	}
 
-	public static void generateEntities(String schema, String packageName, String destination, Boolean audit,
+	public static Map<String,EntityDetails> generateEntities(String schema,List<String> tableList, String packageName, String destination, Boolean audit,
 			String auditPackage) {
 		// BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo",
 		// "com.nfinity", "web,data-jpa", true,
 		// " -n=sdemo -j=1.8 ");
 
-		final String tempPackageName = packageName.concat(".Temp");
-		final String destinationPath = destination.concat("/src/main/java");
-		final String targetPath = destination.concat("/target/classes");
-
-		ReverseMapping.run(tempPackageName, destinationPath, schema);
+		 final String tempPackageName = packageName.concat(".Temp"); 
+	        destination = destination.replace('\\', '/');
+	        final String destinationPath = destination.concat("/src/main/java"); 
+	        final String targetPath = destination.concat("/target/classes"); 
+	        String tables="";
+	        if(tableList !=null)
+	        {
+	        for(int i=0;i<tableList.size();i++)
+	        {
+	        	if(!tableList.get(i).isEmpty())
+	        	{
+	        	if(i<tableList.size()-1)
+	        	tables= tables + schema.concat("." + tableList.get(i) + ",");
+	        	else
+	            tables= tables + schema.concat("." + tableList.get(i) );
+	        	}
+	        }
+	        }
+	 
+	        if(!tables.isEmpty())
+	        {
+	        	ReverseMapping.run(tempPackageName, destinationPath, tables); 
+	        }
+	        else
+	        ReverseMapping.run(tempPackageName, destinationPath, schema); 
 		try {
 			Thread.sleep(28000);
 		} catch (InterruptedException e) {
@@ -43,7 +62,7 @@ public class EntityGenerator {
 		try {
 			BaseAppGen.CompileApplication(destination);
 			deleteFile(destinationPath + "/orm.xml");
-			// Utils.runCommand("mvn compile", destination);
+			//Utils.runCommand("mvn compile", destination);
 		} catch (Exception e) {
 			System.out.println("Compilation Error");
 			e.printStackTrace();
@@ -51,6 +70,8 @@ public class EntityGenerator {
 		CGenClassLoader loader = new CGenClassLoader(targetPath);
 
 		ArrayList<Class<?>> entityClasses;
+		Map<String,EntityDetails> entityDetailsMap = new HashMap<>();
+		//EntityDetails details;
 		try {
 			entityClasses = loader.findClasses(tempPackageName);
 			ClassDetails classDetails = getClasses(entityClasses);
@@ -63,8 +84,10 @@ public class EntityGenerator {
 				String entityName = currentClass.getName();
 				if (!relationClassList.contains(entityName)) {
 					EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
-					EntityGenerator.Generate(entityName, details, "sample", packageName, destinationPath,
-							relationInputList, audit, auditPackage);
+					details.setRelationInput(relationInputList);
+					entityDetailsMap.put(entityName,details);
+					EntityGenerator.Generate(entityName, details, "sample", packageName, destinationPath, audit, auditPackage);
+				
 				}
 
 			}
@@ -79,10 +102,11 @@ public class EntityGenerator {
 
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
+		return entityDetailsMap;
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
-			String destPath, List<String> relationInput, Boolean audit, String auditPackage) {
+			String destPath, Boolean audit, String auditPackage) {
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -92,7 +116,7 @@ public class EntityGenerator {
 		root.put("EntityClassName", entityClassName);
 		root.put("ClassName", className);
 		root.put("PackageName", packageName);
-		root.put("RelationInput", relationInput);
+		root.put("RelationInput", entityDetails.getRelationInput());
 		root.put("SchemaName", schemaName);
 		root.put("Audit", audit);
 		root.put("AuditPackage", auditPackage);

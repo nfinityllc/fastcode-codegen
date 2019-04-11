@@ -1,6 +1,8 @@
 package com.nfinity.entitycodegen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -8,6 +10,7 @@ public class EntityDetails {
 
 	Map<String,FieldDetails> fieldsMap= new HashMap<>();
 	Map<String,RelationDetails> relationsMap = new HashMap<>();
+	List<String> relationInput = new ArrayList<>();
 	
 	public EntityDetails(Map<String, FieldDetails> fieldsMap, Map<String, RelationDetails> relationsMap) {
 		super();
@@ -26,5 +29,12 @@ public class EntityDetails {
 	public void setRelationsMap(Map<String, RelationDetails> relationsMap) {
 		this.relationsMap = relationsMap;
 	}
+	public List<String> getRelationInput() {
+		return relationInput;
+	}
+	public void setRelationInput(List<String> relationInput) {
+		this.relationInput = relationInput;
+	}
+	
 	
 }

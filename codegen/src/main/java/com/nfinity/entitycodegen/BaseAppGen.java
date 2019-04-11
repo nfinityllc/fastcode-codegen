@@ -77,11 +77,11 @@ public class BaseAppGen {
     /*
      * dir="/Users/getachew/fc/exer" a="sdemo" g="com.nfinity" d="web,data-jpa"
      */
-    public static void CreateBaseApplication(String dir, String a, String g, String d, boolean overRide,
+    public static void CreateBaseApplication(String directory, String appName, String groupId, String dependency, boolean overRide,
             String otherOptions) {
-        String appName = a.substring(a.lastIndexOf(".") + 1);
+      //  String appName = a.substring(a.lastIndexOf(".") + 1);
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-        String cliCommand = " -a=" + a + " -g=" + g + " -d=" + d + " " + appName + " " + otherOptions;
+        String cliCommand = " -a=" + appName + " -g=" + groupId + " -d=" + dependency + " " + appName + " " + otherOptions;
         String[] builderCommand;
         if (isWindows) {
             builderCommand = new String[] { "cmd.exe", "/c", "spring" + " init" + cliCommand };
@@ -89,16 +89,21 @@ public class BaseAppGen {
             builderCommand = new String[] { "sh", "-c", "spring" + " init" + cliCommand };
         }
         String cmdDirectory;
-        if (!dir.isEmpty()) {
-            cmdDirectory = dir;
+        if (!directory.isEmpty()) {
+            cmdDirectory = directory;
         } else {
             cmdDirectory = System.getProperty("user.home");
         }
 
         try {
             File destDir = new File(cmdDirectory + "/" + appName);
+//            if(!destDir.exists())
+//            	 destDir.mkdirs();
+//            	
             if (destDir.exists() && overRide)
                 FileSystemUtils.deleteRecursively(destDir);
+            
+           
 
             RunProcess(builderCommand, cmdDirectory);
 
