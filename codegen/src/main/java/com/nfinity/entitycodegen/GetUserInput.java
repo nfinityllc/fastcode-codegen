@@ -12,12 +12,26 @@ public class GetUserInput {
 		System.out.print("\nFor which schema do you want to generate entities ? "); // sample
 		input.setSchemaName(inputReader.nextLine());
 
+		System.out.print("\nFor which tables do you want to generate entities ? "); // sample
+		List<String> tableList = new ArrayList<>();
+		String tables= inputReader.nextLine();
+		String[] words = tables.split(",");
+		for(String str : words)
+		{
+			tableList.add(str);
+			System.out.println(" TABLES " + str);
+		}
+		input.setTablesList(tableList);
+
 		System.out.print("\nWhat is the package name for entities ? "); // com.nfinity.microsoft.model
 		// Getting input in String format
 		input.setPackageName(inputReader.nextLine());
 
 		System.out.print("\nWhat is the destination path for entities? "); // root path of the backend
-		input.setDestinationPath(inputReader.nextLine());
+		String destination= inputReader.nextLine();
+		destination = destination.replace('\\', '/');
+		input.setDestinationPath(destination);
+
 
 		System.out.print("\nDo you want to generate Audit Entity (yes/no)? ");// no
 		String value = inputReader.nextLine();
@@ -51,11 +65,11 @@ public class GetUserInput {
 					for (RelationDetails e : relationList) {
 						if (e.geteName().equals(className) && e.getRelation().equals(entry.getValue().getRelation())) {
 							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
-									+ " having " + entry.getKey() + " relationship , which one is the owner entity ? Enter 1 or 2 : ");
+									+ " having " + entry.getKey() + " relationship , which one is the owner entity ? Enter 1 ("+ className +") or 2 ("+ entry.getValue().geteName()+ ") : ");
 
 							Scanner scanner = new Scanner(System.in);
 							int i = scanner.nextInt();
-							while(i<1 && i>2)
+							while(i<1 || i>2)
 							{
 								System.out.println("\nInvalid Input \nEnter again :");
 								i = scanner.nextInt();
@@ -68,14 +82,7 @@ public class GetUserInput {
 							{
 								relationInput.add(entry.getValue().geteName() + "-" + className);	
 							}
-							
-//							String parent = scanner.nextLine();
-//
-//							if (parent.equalsIgnoreCase(className))
-//								relationInput.add(className + "-" + entry.getValue().geteName());
-//							if (parent.equalsIgnoreCase(entry.getValue().geteName()))
-//								relationInput.add(entry.getValue().geteName() + "-" + className);
-//							
+
 							scanner.close();
 
 						}

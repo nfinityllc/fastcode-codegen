@@ -12,24 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ReverseMapping {
 
-	 static JDBCConfiguration jdbc = new JDBCConfigurationImpl();
+	static JDBCConfiguration jdbc = new JDBCConfigurationImpl();
 	 
-	 static ReverseMappingTool reverse;
-	 
-	 public static void run(String packageName, String directory, String tableName)
+	 public static void run(String packageName, String directory, String schemaName)
 	 {
 		 //packageName : "com.nfinity.fastcode.model"
 		 //directory : "src/main/java"
 		 //tableName : "dbo.users,dbo.roles"
+		 String schemaKey= schemaName.contains(",")?"-s":"-schema";
+		 String[] array = {"-pkg", packageName, "-d", directory, schemaKey, schemaName, "-ann","t" };
 		 
-		 String[] as = {"-pkg", packageName, "-d", directory, "-schema", tableName, "-ann","t" };
-		 
-		 System.out.println("SSS in open jpa \n" );
-		 reverse= new ReverseMappingTool(jdbc);
-		
-		
 		 try {
-			reverse.main(as);
+			 ReverseMappingTool.main(array);
+		
 			System.out.println(" Generating resources ... ");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -38,7 +33,6 @@ public class ReverseMapping {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	   //  reverse.run();
 	 }
-	
+
 }

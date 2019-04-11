@@ -41,7 +41,7 @@ public class FronendBaseTemplateGenerator {
 		generate(
 				System.getProperty("user.dir").replace("\\", "/")
 						+ "/src/main/resources/templates/frontendBaseTemplate",
-				FRONTEND_BASE_TEMPLATE_FOLDER, destination + clientSubfolder + "/");
+				FRONTEND_BASE_TEMPLATE_FOLDER, destination + "/"+ clientSubfolder + "/");
 		// generate("F:/projects/New
 		// folder/codegen/codegen/src/main/resources/templates/frontendBaseTemplate",FRONTEND_BASE_TEMPLATE_FOLDER,
 		// destination + "/generatedProject/src/app");

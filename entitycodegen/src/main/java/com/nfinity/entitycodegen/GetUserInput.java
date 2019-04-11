@@ -11,7 +11,18 @@ public class GetUserInput {
 		UserInput input = new UserInput();
 		System.out.print("\nFor which schema do you want to generate entities ? "); // sample
 		input.setSchemaName(inputReader.nextLine());
-
+		
+		System.out.print("\nFor which tables do you want to generate entities ? "); // sample
+		List<String> tableList = new ArrayList<>();
+		String tables= inputReader.nextLine();
+		String[] words = tables.split(",");
+		for(String str : words)
+		{
+	    tableList.add(str);
+	   System.out.println(" TABLE S " + str);
+		}
+        input.setTablesList(tableList);
+		
 		System.out.print("\nWhat is the package name for entities ? "); // com.nfinity.microsoft.model
 		// Getting input in String format
 		input.setPackageName(inputReader.nextLine());
@@ -54,7 +65,7 @@ public class GetUserInput {
 					for (RelationDetails e : relationList) {
 						if (e.geteName().equals(className) && e.getRelation().equals(entry.getValue().getRelation())) {
 							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
-									+ " having " + entry.getKey() + " relationship , which one is the owner entity ? Enter 1 or 2 : ");
+									+ " having " + entry.getKey() + " relationship , which one is the owner entity ? Enter 1 ("+ className +") or 2 ("+ entry.getValue().geteName()+ ") : ");
 
 							Scanner scanner = new Scanner(System.in);
 							int i = scanner.nextInt();

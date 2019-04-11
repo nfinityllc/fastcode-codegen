@@ -1,10 +1,13 @@
 package com.nfinity.entitycodegen;
 
+import java.util.List;
+
 public class UserInput {
 
 	String packageName;
 	String destinationPath;
 	String schemaName;
+	List<String> tablesList;
 	Boolean audit;
 	String auditPackage;
 	
@@ -37,7 +40,14 @@ public class UserInput {
 	}
 	public void setAuditPackage(String auditPackage) {
 		this.auditPackage = auditPackage;
+	}
+	public List<String> getTablesList() {
+		return tablesList;
+	}
+	public void setTablesList(List<String> tablesList) {
+		this.tablesList = tablesList;
 	}	
 	
 	
 }
+

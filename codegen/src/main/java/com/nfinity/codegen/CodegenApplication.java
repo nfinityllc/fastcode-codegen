@@ -7,11 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.nfinity.entitycodegen.BaseAppGen;
+import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -54,14 +54,15 @@ public class CodegenApplication implements ApplicationRunner {
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));
 		BaseAppGen.CreateBaseApplication(root.get("d"), artifactId, groupId, "web,data-jpa,", true,
 				" -n=sdemo -j=1.8 ");
-		EntityGenerator.generateEntities("sample", root.get("a") + ".model", root.get("d") + "/" + artifactId, false,
+		Map<String,EntityDetails> details = EntityGenerator.generateEntities("sample",null, groupId + ".model", root.get("d") + "/" + artifactId, false,
 				"");
 
-		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", root.get("a"), sourcePackageName, root.get("s"),
-				root.get("d"), root.get("t"));
+		//String destination = root.get("d") + "/" + artifactId;
+		CodeGenerator.GenerateAll(artifactId, artifactId + "/Client", root.get("a"), sourcePackageName, root.get("s"),
+				root.get("d"), root.get("t") , details);
 
-		String destination = "F:\\projects\\New folder\\fbaseTempDes";
-		destination = root.get("d") + "/fbaseTempDes";
+		//String destination = "F:\\projects\\New folder\\fbaseTempDes";
+		//destination = root.get("d") + "/fbaseTempDes";
 		// FronendBaseTemplateGenerator.generate(destination);
 	}
 
