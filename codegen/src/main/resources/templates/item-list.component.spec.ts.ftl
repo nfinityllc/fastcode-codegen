@@ -5,7 +5,7 @@ import {  HttpTestingController } from '@angular/common/http/testing';
 import { Observable, throwError,of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import {Component, Directive, ChangeDetectorRef} from '@angular/core';
-import {${IEntity},${ClassName}ListComponent,${ClassName}Service } from './index';
+import {[=IEntity],[=ClassName]ListComponent,[=ClassName]Service } from './index';
 import { TestingModule,EntryComponents } from '../../testing/utils';
 import { environment } from '../../environments/environment';
 
@@ -17,7 +17,7 @@ class MockRouter { navigate = ()=> {}; }
 class MockGlobals { }
       
 @Injectable()
-class Mock${ClassName}Service { }
+class Mock[=ClassName]Service { }
       
 @Injectable()
 class MockPickerDialogService { }
@@ -32,27 +32,27 @@ export  class RouterLinkDirectiveStub {
     this.navigatedTo = this.linkParams;
   }
 }
-describe('${ClassName}ListComponent', () => {
-  let fixture:ComponentFixture<${ClassName}ListComponent>;
-  let component:${ClassName}ListComponent;
+describe('[=ClassName]ListComponent', () => {
+  let fixture:ComponentFixture<[=ClassName]ListComponent>;
+  let component:[=ClassName]ListComponent;
   let httpTestingController: HttpTestingController;
-  let ${InstanceName}Service: ${ClassName}Service;
-  let url:string = environment.apiUrl + '/${InstanceName}s';
+  let [=InstanceName]Service: [=ClassName]Service;
+  let url:string = environment.apiUrl + '/[=InstanceName]s';
   let mockGlobal = {
     isSmallDevice$: of({value:true})
   }; 
-  let data:${IEntity} [] = [
+  let data:[=IEntity] [] = [
       <#list [1,2] as index>     
       {   
             <#list Fields as key, value>             
                     <#if key == "id">    
-                      ${key}:${index},
+                      [=key]:[=index],
                     <#elseif value.fieldType == "Date">           
-                        ${key}: new Date().toLocaleDateString("en-US") ,
+                        [=key]: new Date().toLocaleDateString("en-US") ,
                     <#elseif value.fieldType?lower_case == "boolean">              
-                        ${key}: true,
+                        [=key]: true,
                     <#else>              
-                          ${key}: '${key}${index}',
+                          [=key]: '[=key][=index]',
                     </#if> 
               </#list>    
         },
@@ -63,11 +63,11 @@ describe('${ClassName}ListComponent', () => {
     
     TestBed.configureTestingModule({
       declarations: [
-        ${ClassName}ListComponent       
+        [=ClassName]ListComponent       
       ].concat(EntryComponents),
       imports: [TestingModule],
       providers: [
-      ${ClassName}Service,      
+      [=ClassName]Service,      
         ChangeDetectorRef,
       ]      
    
@@ -75,9 +75,9 @@ describe('${ClassName}ListComponent', () => {
   
   }));
   beforeEach(() => {
-    fixture = TestBed.createComponent(${ClassName}ListComponent);
+    fixture = TestBed.createComponent([=ClassName]ListComponent);
     httpTestingController = TestBed.get(HttpTestingController);
-    ${InstanceName}Service = TestBed.get(${ClassName}Service);
+    [=InstanceName]Service = TestBed.get([=ClassName]Service);
     component = fixture.componentInstance;
   });
 

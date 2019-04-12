@@ -2,30 +2,30 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 
 import { TestingModule,EntryComponents } from '../../testing/utils';
-import {${IEntity},${ClassName}Service, ${ClassName}DetailComponent} from './index';
+import {[=IEntity],[=ClassName]Service, [=ClassName]DetailComponent} from './index';
 import { MatDialogRef } from '@angular/material';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../environments/environment';
 import { Validators, FormBuilder } from '@angular/forms';
 
 
-describe('${ClassName}DetailComponent', () => {
-  let component: ${ClassName}DetailComponent;
-  let fixture: ComponentFixture<${ClassName}DetailComponent>;
+describe('[=ClassName]DetailComponent', () => {
+  let component: [=ClassName]DetailComponent;
+  let fixture: ComponentFixture<[=ClassName]DetailComponent>;
   let httpTestingController: HttpTestingController;
-  let url:string = environment.apiUrl + "/${InstanceName}s/";
+  let url:string = environment.apiUrl + "/[=InstanceName]s/";
     
-  let data:${IEntity} = {
+  let data:[=IEntity] = {
       <#assign counter = 1>
      <#list Fields as key, value>           
             <#if key == "id">    
-              ${key}:${counter},
+              [=key]:[=counter],
             <#elseif value.fieldType == "Date">           
-                ${key}: new Date().toLocaleDateString("en-US") ,
+                [=key]: new Date().toLocaleDateString("en-US") ,
             <#elseif value.fieldType?lower_case == "boolean">              
-                ${key}: true,
+                [=key]: true,
             <#else>              
-                   ${key}: '${key}${counter}',
+                   [=key]: '[=key][=counter]',
             </#if> 
       </#list>    };
   beforeEach(async(() => {
@@ -33,11 +33,11 @@ describe('${ClassName}DetailComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [
-        ${ClassName}DetailComponent       
+        [=ClassName]DetailComponent       
       ].concat(EntryComponents),
       imports: [TestingModule],
       providers: [
-      ${ClassName}Service,  
+      [=ClassName]Service,  
        
        {provide: MatDialogRef, useValue: {close: (dialogResult: any) => { }} },
       ]      
@@ -46,7 +46,7 @@ describe('${ClassName}DetailComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(${ClassName}DetailComponent);
+    fixture = TestBed.createComponent([=ClassName]DetailComponent);
     httpTestingController = TestBed.get(HttpTestingController);
     component = fixture.componentInstance;
     fixture.detectChanges();

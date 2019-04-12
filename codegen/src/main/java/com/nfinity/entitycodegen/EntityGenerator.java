@@ -18,6 +18,7 @@ public class EntityGenerator {
 
 	public static void setTemplateLoader() {
 		ClassTemplateLoader ctl = new ClassTemplateLoader(new EntityGenerator().getClass(), "/templates/entityTemplate");
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setTemplateLoader(ctl);
 	}
