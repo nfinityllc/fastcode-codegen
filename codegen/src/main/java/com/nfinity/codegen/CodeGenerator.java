@@ -42,12 +42,12 @@ public class CodeGenerator {
 	static String BACKEND_ROOT_FOLDER = "/backend";
 	static String BACKEND_APP_FOLDER = BACKEND_ROOT_FOLDER + "/src/main/java";
 
-	private static Map<String, Object> buildEntityInfo(String entityName, String sourcePath,
+	private static Map<String, Object> buildEntityInfo(String entityName,String packageName, String sourcePath,
 			String type, String modName,EntityDetails details) {
 		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
-		String packageName = className.concat("s");
+		//String packageName = className.concat("s");
 		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(className);
 		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
 		String instanceName = StringUtils.join(splittedNames);
@@ -105,7 +105,7 @@ public class CodeGenerator {
 		// generate all modules for each entity
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
-			Generate(entry.getKey(), appName, sourcePath, destPath, type,entry.getValue());
+			Generate(entry.getKey(), appName, sourcePackageName, sourcePath, destPath, type,entry.getValue());
 			
 		}
 //		try {
@@ -121,9 +121,9 @@ public class CodeGenerator {
 //		}
 	}
 
-	public static void Generate(String entityName, String appName, String sourcePath, String destPath, String type,EntityDetails details) {
+	public static void Generate(String entityName, String appName,String packageName, String sourcePath, String destPath, String type,EntityDetails details) {
 	//	String entityName = entityClass.getName();
-		Map<String, Object> root = buildEntityInfo(entityName, sourcePath, type, "",details);
+		Map<String, Object> root = buildEntityInfo(entityName,packageName, sourcePath, type, "",details);
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/"); // "/templates/");
@@ -169,15 +169,15 @@ public class CodeGenerator {
 	}
 
 	private static void generateBackendFiles(Map<String, Object> root, String destPath) {
-		String destFolderBackend = destPath + "/application/Authorization/" + root.get("PackageName").toString();
+		String destFolderBackend = destPath + "/application/" + root.get("PackageName").toString();
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getApplicationTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 
-		destFolderBackend = destPath + "/application/Authorization/" + root.get("PackageName").toString() + "/Dto";
+		destFolderBackend = destPath + "/application/" + root.get("PackageName").toString() + "/Dto";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getDtos(root.get("ClassName").toString()), root, destFolderBackend);
 
-		destFolderBackend = destPath + "/domain/Authorization/" + root.get("PackageName").toString();
+		destFolderBackend = destPath + "/domain/" + root.get("PackageName").toString();
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getDomainTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 
@@ -185,7 +185,7 @@ public class CodeGenerator {
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getRepositoryTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 
-		destFolderBackend = destPath + "/ReSTControllers";
+		destFolderBackend = destPath + "/RestControllers";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getControllerTemplates(root.get("ClassName").toString()), root, destFolderBackend);
 	}

@@ -44,7 +44,7 @@ public class CodegenApplication implements ApplicationRunner {
 		// CodeGenerator.Generate(root.get("e"),root.get("s"),root.get("d"),"","");
 		// --a com.ninfinity.fastcode. It is a concatenation of groupid and artifact id
 		UserInput input  = composeInput();
-		Scanner scanner = new Scanner(System.in);  
+		//Scanner scanner = new Scanner(System.in);  
 		
 		String sourcePackageName = root.get("p");
 		sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
@@ -58,7 +58,7 @@ public class CodegenApplication implements ApplicationRunner {
 		input.getDestinationPath() + "/" + artifactId, false, "");
 
 		// String destination = root.get("d") + "/" + artifactId;
-		CodeGenerator.GenerateAll(artifactId, artifactId + "/Client", groupArtifactId, sourcePackageName,
+		CodeGenerator.GenerateAll(artifactId, artifactId + "/Client", groupArtifactId, groupArtifactId + ".model",
 		 input.getDestinationPath()+"/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
 		input.getDestinationPath(), input.getGenerationType(), details);
 
