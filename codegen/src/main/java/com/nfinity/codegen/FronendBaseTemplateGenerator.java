@@ -56,7 +56,7 @@ public class FronendBaseTemplateGenerator {
 		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
 		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
 		cfg.setDefaultEncoding("UTF-8");
-
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setTemplateLoader(mtl);
 
 		if (fl.length > 0) {
