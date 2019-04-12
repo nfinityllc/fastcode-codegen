@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.jar.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -105,9 +107,9 @@ public class CodeGenerator {
 		// generate all modules for each entity
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
-			Generate(entry.getKey(), appName, sourcePath, destPath, type,entry.getValue());
-			
+			Generate(entry.getKey(), appName, sourcePath, destPath, type,entry.getValue());	
 		}
+		generateAuditorController(details, appName, destPath);
 //		try {
 //			ArrayList<Class<?>> entityClasess = loader.findClasses(sourcePackageName);
 //			for (Class<?> currentClass : entityClasess) {
@@ -119,6 +121,44 @@ public class CodeGenerator {
 //			ex.printStackTrace();
 //
 //		}
+	}
+	
+	private static void generateAuditorController(Map<String, EntityDetails> details, String appName, String destPath){
+		Map<String, Object> entitiesMap = new HashMap<String,Object>();
+		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
+		{
+			
+			Map<String, String> entityMap = new HashMap<String,String>();
+			String key = entry.getKey();
+			String name = key.substring(key.lastIndexOf(".") + 1);
+			
+			entityMap.put("entity" , name + "Entity");
+			entityMap.put("importPkg" , appName + ".model." + name + "Entity");
+			entityMap.put("requestMapping" , "/" + name.toLowerCase());
+			entityMap.put("method" , "get" + name + "Changes");
+			
+			entitiesMap.put(name, entityMap);
+			
+		}
+		
+		Map<String, Object> root = new HashMap<>();
+		root.put("entitiesMap", entitiesMap);
+		
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 });
+		
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setTemplateLoader(mtl);
+		
+		Map<String, Object> template = new HashMap<>();
+		// Map<String, Object> backEndTemplate = new HashMap<>();
+		template.put("AuditController.java.ftl", "AuditController.java");
+		
+		String destFolder = destPath + "/" + BACKEND_APP_FOLDER + "/" + appName.replace(".", "/") + "/ReSTControllers";
+		new File(destFolder).mkdirs();
+		generateFiles(template, root, destFolder);
+		
 	}
 
 	public static void Generate(String entityName, String appName, String sourcePath, String destPath, String type,EntityDetails details) {
