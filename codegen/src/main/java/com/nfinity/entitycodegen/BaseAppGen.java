@@ -1,15 +1,10 @@
 package com.nfinity.entitycodegen;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.FileSystemUtils;
-
 import java.io.*;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import org.springframework.util.FileSystemUtils;
+
 
 public class BaseAppGen {
     public static ProcessBuilder builder = null;
@@ -77,11 +72,12 @@ public class BaseAppGen {
     /*
      * dir="/Users/getachew/fc/exer" a="sdemo" g="com.nfinity" d="web,data-jpa"
      */
-    public static void CreateBaseApplication(String directory, String appName, String groupId, String dependency, boolean overRide,
-            String otherOptions) {
-      //  String appName = a.substring(a.lastIndexOf(".") + 1);
+    public static void CreateBaseApplication(String directory, String appName, String groupId, String dependency,
+            boolean overRide, String otherOptions) {
+        // String appName = a.substring(a.lastIndexOf(".") + 1);
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-        String cliCommand = " -a=" + appName + " -g=" + groupId + " -d=" + dependency + " " + appName + " " + otherOptions;
+        String cliCommand = " -a=" + appName + " -g=" + groupId + " -d=" + dependency + " " + otherOptions + " "
+                + appName;
         String[] builderCommand;
         if (isWindows) {
             builderCommand = new String[] { "cmd.exe", "/c", "spring" + " init" + cliCommand };
@@ -97,13 +93,11 @@ public class BaseAppGen {
 
         try {
             File destDir = new File(cmdDirectory + "/" + appName);
-//            if(!destDir.exists())
-//            	 destDir.mkdirs();
-//            	
+          // if(!destDir.exists())
+          //  destDir.mkdirs();
+            
             if (destDir.exists() && overRide)
                 FileSystemUtils.deleteRecursively(destDir);
-            
-           
 
             RunProcess(builderCommand, cmdDirectory);
 

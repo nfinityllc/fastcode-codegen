@@ -7,6 +7,12 @@ import java.util.Scanner;
 
 public class GetUserInput {
 
+	public static String getInput(Scanner inputReader, String inputType) {
+		
+		System.out.print("Please enter value for " + inputType + ":"); 
+		String value = inputReader.nextLine();
+		return value;
+	}
 	public static UserInput getInput(Scanner inputReader) {
 		UserInput input = new UserInput();
 		System.out.print("\nFor which schema do you want to generate entities ? "); // sample
