@@ -12,16 +12,16 @@
 		<#list Fields as key,value>
 		<#if value.fieldName?lower_case == "id">    
 		<#elseif value.fieldType?lower_case == "boolean">    
-			<mat-checkbox formControlName="${value.fieldName}">${value.fieldName}</mat-checkbox>            
+			<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>            
 		<#elseif value.fieldType == "Date">
 			<mat-form-field>
-				<input formControlName="${value.fieldName}" matInput placeholder="Enter ${value.fieldName}">
-				<mat-error *ngIf="!itemForm.get('${value.fieldName}').valid && itemForm.get('${value.fieldName}').touched">${value.fieldName} is required</mat-error>
+				<input formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
+				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
 			</mat-form-field>
 		<#elseif value.fieldType?lower_case == "string">
 			<mat-form-field>
-				<input formControlName="${value.fieldName}" matInput placeholder="Enter ${value.fieldName}">
-				<mat-error *ngIf="!itemForm.get('${value.fieldName}').valid && itemForm.get('${value.fieldName}').touched">${value.fieldName} is required</mat-error>
+				<input formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
+				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
 			</mat-form-field>
 		</#if>
 		</#list>

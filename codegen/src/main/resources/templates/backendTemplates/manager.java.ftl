@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.domain.Authorization.${PackageName};
+package com.nfinity.fastcode.domain.Authorization.[=PackageName];
 
 import java.util.Iterator;
 import java.util.Set;
@@ -9,120 +9,120 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
-import com.nfinity.fastcode.domain.Authorization.${relationValue.eName}s.${relationValue.eName}Entity;
-import com.nfinity.fastcode.domain.IRepository.I${relationValue.eName}Repository;
+import com.nfinity.fastcode.domain.Authorization.[=relationValue.eName]s.[=relationValue.eName]Entity;
+import com.nfinity.fastcode.domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
 </#list>
 
-import com.nfinity.fastcode.domain.IRepository.I${ClassName}Repository;
+import com.nfinity.fastcode.domain.IRepository.I[=ClassName]Repository;
 import com.querydsl.core.types.Predicate;
 
 @Repository
-public class ${ClassName}Manager implements I${ClassName}Manager {
+public class [=ClassName]Manager implements I[=ClassName]Manager {
 
     @Autowired
-    I${ClassName}Repository  _${ClassName?lower_case}Repository;
+    I[=ClassName]Repository  _[=ClassName?lower_case]Repository;
 	<#list Relationship as relationKey,relationValue>
     <#if ClassName != relationValue.eName>
     
     @Autowired
-	I${relationValue.eName}Repository  _${relationValue.eName?lower_case}Repository;
+	I[=relationValue.eName]Repository  _[=relationValue.eName?lower_case]Repository;
     </#if>
     </#list>
     
 	@Transactional
-	public ${EntityClassName} Create(${EntityClassName} ${InstanceName}) {
+	public [=EntityClassName] Create([=EntityClassName] [=InstanceName]) {
 
-		return _${ClassName?lower_case}Repository.save(${InstanceName});
+		return _[=ClassName?lower_case]Repository.save([=InstanceName]);
 	}
 
 	@Transactional
-	public void Delete(${EntityClassName} ${InstanceName}) {
+	public void Delete([=EntityClassName] [=InstanceName]) {
 
-		_${ClassName?lower_case}Repository.delete(${InstanceName});	
+		_[=ClassName?lower_case]Repository.delete([=InstanceName]);	
 	}
 
 	@Transactional
-	public ${EntityClassName} Update(${EntityClassName} ${InstanceName}) {
+	public [=EntityClassName] Update([=EntityClassName] [=InstanceName]) {
 
-		return _${ClassName?lower_case}Repository.save(${InstanceName});
+		return _[=ClassName?lower_case]Repository.save([=InstanceName]);
 	}
 
 	@Transactional
-	public ${EntityClassName} FindById(Long id) {
+	public [=EntityClassName] FindById(Long id) {
 
-		return _${ClassName?lower_case}Repository.findById(id.longValue());
+		return _[=ClassName?lower_case]Repository.findById(id.longValue());
 	}
 
 	@Transactional
-	public Page<${EntityClassName}> FindAll(Predicate predicate, Pageable pageable) {
+	public Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable) {
 
-		return _${ClassName?lower_case}Repository.findAll(predicate,pageable);
+		return _[=ClassName?lower_case]Repository.findAll(predicate,pageable);
 	}
 
 	@Transactional
-	public ${EntityClassName} FindByName(String name) {
+	public [=EntityClassName] FindByName(String name) {
 
-		return _${ClassName?lower_case}Repository.findByName(name);
+		return _[=ClassName?lower_case]Repository.findByName(name);
 	}
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-   //${relationValue.eName}
+   //[=relationValue.eName]
   @Transactional
-	public void Add${relationValue.eName}(${EntityClassName} ${InstanceName}, ${relationValue.eName}Entity ${relationValue.eName?lower_case}) {
+	public void Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
 
-		${InstanceName}.set${relationValue.eName}(${relationValue.eName?lower_case});
-		_${ClassName?lower_case}Repository.save(${InstanceName});
-		_${relationValue.eName?lower_case}Repository.save(${relationValue.eName?lower_case});
+		[=InstanceName].set[=relationValue.eName]([=relationValue.eName?lower_case]);
+		_[=ClassName?lower_case]Repository.save([=InstanceName]);
+		_[=relationValue.eName?lower_case]Repository.save([=relationValue.eName?lower_case]);
 	}
 
 	@Transactional
-	public void Remove${relationValue.eName}(${EntityClassName} ${InstanceName}) {
+	public void Remove[=relationValue.eName]([=EntityClassName] [=InstanceName]) {
 	
-		${InstanceName}.set${relationValue.eName}(null);
-		_${ClassName?lower_case}Repository.save(${InstanceName});
+		[=InstanceName].set[=relationValue.eName](null);
+		_[=ClassName?lower_case]Repository.save([=InstanceName]);
 	}
 
 	@Transactional
-	public ${relationValue.eName}Entity Get${relationValue.eName}(Long ${InstanceName}Id) {
+	public [=relationValue.eName]Entity Get[=relationValue.eName](Long [=InstanceName]Id) {
 		
-		${EntityClassName} entity = _${ClassName?lower_case}Repository.findById(${InstanceName}Id.longValue());
-		return entity.get${relationValue.eName}();
+		[=EntityClassName] entity = _[=ClassName?lower_case]Repository.findById([=InstanceName]Id.longValue());
+		return entity.get[=relationValue.eName]();
 	}
   <#elseif relationValue.relation == "ManyToMany">
-    //${relationValue.eName}
+    //[=relationValue.eName]
     @Transactional
-	public Boolean Add${relationValue.eName}(${EntityClassName} ${InstanceName}, ${relationValue.eName}Entity ${relationValue.eName?lower_case}) {
+	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
 		
-		Set<${EntityClassName}> entitySet = ${relationValue.eName?lower_case}.get${ClassName}s();
+		Set<[=EntityClassName]> entitySet = [=relationValue.eName?lower_case].get[=ClassName]s();
 
-		if (!entitySet.contains(${InstanceName})) {
-			${relationValue.eName?lower_case}.add${ClassName}(${InstanceName});
+		if (!entitySet.contains([=InstanceName])) {
+			[=relationValue.eName?lower_case].add[=ClassName]([=InstanceName]);
 		} else {
 			return false;
-		//	throw new EntityExistsException("The ${ClassName?lower_case} already has the ${relationValue.eName?lower_case}");
+		//	throw new EntityExistsException("The [=ClassName?lower_case] already has the [=relationValue.eName?lower_case]");
 		}
-		_${relationValue.eName?lower_case}Repository.save(${relationValue.eName?lower_case});
+		_[=relationValue.eName?lower_case]Repository.save([=relationValue.eName?lower_case]);
 		return true;
 	}
 
 	@Transactional
-	public void Remove${relationValue.eName}(${EntityClassName} ${InstanceName}, ${relationValue.eName}Entity ${relationValue.eName?lower_case}) {
+	public void Remove[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
 
-		${relationValue.eName?lower_case}.remove${ClassName}(${InstanceName});
-		_${relationValue.eName?lower_case}Repository.save(${relationValue.eName?lower_case});
+		[=relationValue.eName?lower_case].remove[=ClassName]([=InstanceName]);
+		_[=relationValue.eName?lower_case]Repository.save([=relationValue.eName?lower_case]);
 	}
 
 	@Transactional
-	public ${relationValue.eName}Entity Get${relationValue.eName}(Long ${InstanceName}Id, Long ${relationValue.eName?lower_case}Id) {
+	public [=relationValue.eName]Entity Get[=relationValue.eName](Long [=InstanceName]Id, Long [=relationValue.eName?lower_case]Id) {
 
-		${EntityClassName} foundRecord = _${ClassName?lower_case}Repository.findById(${InstanceName}Id.longValue());
+		[=EntityClassName] foundRecord = _[=ClassName?lower_case]Repository.findById([=InstanceName]Id.longValue());
 		
-		Set<${relationValue.eName}Entity> ${relationValue.eName?lower_case}s = foundRecord.get${relationValue.eName}s();
-		Iterator iterator = ${relationValue.eName?lower_case}s.iterator();
+		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]s = foundRecord.get[=relationValue.eName]s();
+		Iterator iterator = [=relationValue.eName?lower_case]s.iterator();
 		while (iterator.hasNext()) { 
-			${relationValue.eName}Entity pe = (${relationValue.eName}Entity) iterator.next();
-			if (pe.getId() == ${relationValue.eName?lower_case}Id) {
+			[=relationValue.eName]Entity pe = ([=relationValue.eName]Entity) iterator.next();
+			if (pe.getId() == [=relationValue.eName?lower_case]Id) {
 				return pe;
 			}
 		}
@@ -130,10 +130,10 @@ public class ${ClassName}Manager implements I${ClassName}Manager {
 	}
 
 	@Transactional
-	public Set<${relationValue.eName}Entity> Get${relationValue.eName}s(${EntityClassName} ${InstanceName}) {
+	public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]s([=EntityClassName] [=InstanceName]) {
 		
-		${EntityClassName} foundRecord = _${ClassName?lower_case}Repository.findById(${InstanceName}.getId().longValue());
-		return foundRecord.get${relationValue.eName}s();
+		[=EntityClassName] foundRecord = _[=ClassName?lower_case]Repository.findById([=InstanceName].getId().longValue());
+		return foundRecord.get[=relationValue.eName]s();
 	}
    </#if>
   </#list>
