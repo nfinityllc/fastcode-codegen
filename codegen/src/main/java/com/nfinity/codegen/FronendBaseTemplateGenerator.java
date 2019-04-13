@@ -8,7 +8,6 @@ import freemarker.template.Template;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,7 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.springframework.util.ResourceUtils;
 
 
 
@@ -40,7 +38,9 @@ public class FronendBaseTemplateGenerator {
 
 		// create client folder if it doesn't exist
 
-		generate(getTemplateFolder() +	"/frontendBaseTemplate",
+		generate(
+				System.getProperty("user.dir").replace("\\", "/")
+						+ "/src/main/resources/templates/frontendBaseTemplate",
 				FRONTEND_BASE_TEMPLATE_FOLDER, destination + "/"+ clientSubfolder + "/");
 		// generate("F:/projects/New
 		// folder/codegen/codegen/src/main/resources/templates/frontendBaseTemplate",FRONTEND_BASE_TEMPLATE_FOLDER,
@@ -49,7 +49,6 @@ public class FronendBaseTemplateGenerator {
 	}
 
 	private static void generate(String path, String parent, String destination) {
-		System.out.println("path:" + path);
 		File[] fl = getFilesFromFolder(path);
 		Map<String, Object> templates = new HashMap<>();
 
@@ -59,8 +58,7 @@ public class FronendBaseTemplateGenerator {
 		cfg.setDefaultEncoding("UTF-8");
 
 		cfg.setTemplateLoader(mtl);
-		System.out.println("destination:" + destination);
-		System.out.println("files:" + fl.length);
+
 		if (fl.length > 0) {
 
 			for (File file : fl) {
@@ -174,15 +172,5 @@ public class FronendBaseTemplateGenerator {
 			new BufferedReader(new InputStreamReader(inputStream)).lines().forEach(consumer);
 		}
 	}
-	public static String getTemplateFolder() {
-		String path= 	System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/templates";
-			try {
-			 path = ResourceUtils.getFile("classpath:templates").getPath();
-			return path;
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return path;
-	}
+
 }
