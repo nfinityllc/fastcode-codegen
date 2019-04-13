@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
-import { ${IEntity} } from './${IEntityFile}';
-import { ${ClassName}Service } from './${ModuleName}.service';
+import { [=IEntity] } from './[=IEntityFile]';
+import { [=ClassName]Service } from './[=ModuleName].service';
 import { Router, ActivatedRoute } from '@angular/router';
-import {${ClassName}NewComponent} from './${ModuleName}-new.component';
+import {[=ClassName]NewComponent} from './[=ModuleName]-new.component';
 import {BaseListComponent} from '../base/base-list.component';
 import { Globals } from '../globals';
 import { IListColumn, listColumnType } from '../common/ilistColumn';
@@ -14,20 +14,20 @@ import { IAssociationEntry } from '../core/iassociationentry';
 </#if>
 
 @Component({
-  selector: 'app-${ModuleName}-list',
-  templateUrl: './${ModuleName}-list.component.html',
-  styleUrls: ['./${ModuleName}-list.component.scss']
+  selector: 'app-[=ModuleName]-list',
+  templateUrl: './[=ModuleName]-list.component.html',
+  styleUrls: ['./[=ModuleName]-list.component.scss']
 })
-export class ${ClassName}ListComponent extends BaseListComponent<${IEntity}> implements OnInit {
+export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> implements OnInit {
 
-	title:string = "${ClassName}s";
+	title:string = "[=ClassName]s";
   
 	columns: IListColumn[] = [
 	<#list Fields as key,value>
 	<#if value.fieldType?lower_case == "string">
 		{
-			column: '${value.fieldName}',
-			label: '${value.fieldName}',
+			column: '[=value.fieldName]',
+			label: '[=value.fieldName]',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
@@ -54,9 +54,9 @@ export class ${ClassName}ListComponent extends BaseListComponent<${IEntity}> imp
 		public dialog: MatDialog,
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
-		public ${InstanceName}Service: ${ClassName}Service,
+		public [=InstanceName]Service: [=ClassName]Service,
 	) { 
-		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, ${InstanceName}Service)
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, [=InstanceName]Service)
   }
 
 	ngOnInit() {
@@ -75,14 +75,14 @@ export class ${ClassName}ListComponent extends BaseListComponent<${IEntity}> imp
 			{
 				column: {
 		<#if relationValue.relation == "ManyToMany">
-					key: '${relationValue.inverseJoinColumn}',
+					key: '[=relationValue.inverseJoinColumn]',
 	    <#else>
-					key: '${relationValue.fName}',
+					key: '[=relationValue.fName]',
 		</#if>
 					value: undefined
 				},
-				table: '${relationValue.eName?lower_case}',
-				type: '${relationValue.relation}'
+				table: '[=relationValue.eName?lower_case]',
+				type: '[=relationValue.relation]'
 			},
 		</#if>
 		</#list>
@@ -91,7 +91,7 @@ export class ${ClassName}ListComponent extends BaseListComponent<${IEntity}> imp
   </#if>
   
 	addNew() {
-		super.addNew(${ClassName}NewComponent);
+		super.addNew([=ClassName]NewComponent);
 	}
   
 }

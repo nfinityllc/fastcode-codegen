@@ -8,6 +8,7 @@ import freemarker.template.Template;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,13 +20,25 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-
-
+import org.springframework.util.ResourceUtils;
 
 public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
+	static String getTemplateFolderPath() {
+		String path = "";
+
+		try {
+			path = ResourceUtils.getFile("classpath:templates").getPath();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return path;
+		
+	}
 	public static void generate(String destination, String clientSubfolder) {
 		File directory = new File(destination + "/"+ clientSubfolder);
 		if (!directory.exists()) {
@@ -38,16 +51,14 @@ public class FronendBaseTemplateGenerator {
 
 		// create client folder if it doesn't exist
 
-		generate(
-				System.getProperty("user.dir").replace("\\", "/")
-						+ "/src/main/resources/templates/frontendBaseTemplate",
+		generate(getTemplateFolderPath() + "/frontendBaseTemplate",
 				FRONTEND_BASE_TEMPLATE_FOLDER, destination + "/"+ clientSubfolder + "/");
 		// generate("F:/projects/New
 		// folder/codegen/codegen/src/main/resources/templates/frontendBaseTemplate",FRONTEND_BASE_TEMPLATE_FOLDER,
 		// destination + "/generatedProject/src/app");
 
 	}
-
+    
 	private static void generate(String path, String parent, String destination) {
 		File[] fl = getFilesFromFolder(path);
 		Map<String, Object> templates = new HashMap<>();
@@ -56,7 +67,7 @@ public class FronendBaseTemplateGenerator {
 		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
 		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
 		cfg.setDefaultEncoding("UTF-8");
-
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setTemplateLoader(mtl);
 
 		if (fl.length > 0) {

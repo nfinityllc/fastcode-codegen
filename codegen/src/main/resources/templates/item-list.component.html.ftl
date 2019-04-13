@@ -13,15 +13,15 @@
 	<#list Fields as key,value>
 	<#if value.fieldName?lower_case == "id">                 
 	<#elseif value.fieldType == "Date">
-	<ng-container matColumnDef="${value.fieldName}">
-		<th mat-header-cell *matHeaderCellDef> ${value.fieldName} </th>
-		<td mat-cell *matCellDef="let item"> {{item.${value.fieldName} | date:'short'}} </td>
+	<ng-container matColumnDef="[=value.fieldName]">
+		<th mat-header-cell *matHeaderCellDef> [=value.fieldName] </th>
+		<td mat-cell *matCellDef="let item"> {{item.[=value.fieldName] | date:'short'}} </td>
 	</ng-container>
 	<#else>
-	<ng-container matColumnDef="${value.fieldName}">
-		<th mat-header-cell *matHeaderCellDef> ${value.fieldName}</th>
+	<ng-container matColumnDef="[=value.fieldName]">
+		<th mat-header-cell *matHeaderCellDef> [=value.fieldName]</th>
 		<td mat-cell *matCellDef="let item">
-		<a routerLink="/${ApiPath}/{{item.id}}">{{ item.${value.fieldName} }}</a>
+		<a routerLink="/[=ApiPath]/{{item.id}}">{{ item.[=value.fieldName] }}</a>
 		</td>
 	</ng-container>
 	</#if> 

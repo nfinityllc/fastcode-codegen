@@ -104,6 +104,7 @@ public class CodeGenerator {
 			Generate(entry.getKey(), appName, backEndRootFolder,clientRootFolder, sourcePath, destPath, type,entry.getValue());
 			
 		}
+		generateAuditorController(details, appName, backEndRootFolder,destPath);
 //		try {
 //			ArrayList<Class<?>> entityClasess = loader.findClasses(sourcePackageName);
 //			for (Class<?> currentClass : entityClasess) {
@@ -115,6 +116,45 @@ public class CodeGenerator {
 //			ex.printStackTrace();
 //
 //		}
+	}
+	
+	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String backEndRootFolder, String destPath){
+		String backendAppFolder = backEndRootFolder + "/src/main/java";
+		Map<String, Object> entitiesMap = new HashMap<String,Object>();
+		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
+		{
+			
+			Map<String, String> entityMap = new HashMap<String,String>();
+			String key = entry.getKey();
+			String name = key.substring(key.lastIndexOf(".") + 1);
+			
+			entityMap.put("entity" , name + "Entity");
+			entityMap.put("importPkg" , appName + ".model." + name + "Entity");
+			entityMap.put("requestMapping" , "/" + name.toLowerCase());
+			entityMap.put("method" , "get" + name + "Changes");
+			
+			entitiesMap.put(name, entityMap);
+			
+		}
+		
+		Map<String, Object> root = new HashMap<>();
+		root.put("entitiesMap", entitiesMap);
+		
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 });
+		
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setTemplateLoader(mtl);
+		
+		Map<String, Object> template = new HashMap<>();
+		// Map<String, Object> backEndTemplate = new HashMap<>();
+		template.put("AuditController.java.ftl", "AuditController.java");
+		
+		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/") + "/ReSTControllers";
+		new File(destFolder).mkdirs();
+		generateFiles(template, root, destFolder);
+		
 	}
 
 	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder, String sourcePath, String destPath, String type,EntityDetails details) {
@@ -129,8 +169,9 @@ public class CodeGenerator {
 		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, DTO_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/Dto");
 
 		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2 });
+		
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
-
 		cfg.setTemplateLoader(mtl);
 
 		try {
