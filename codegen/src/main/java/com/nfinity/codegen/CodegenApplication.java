@@ -29,6 +29,7 @@ public class CodegenApplication implements ApplicationRunner {
 	public static UserInput composeInput() {
 		UserInput input = new UserInput();
 		Scanner scanner = new Scanner(System.in);  
+		input.setSchemaName(root.get("s") == null ? GetUserInput.getInput(scanner,"Db schema") :root.get("s"));
 		input.setDestinationPath(root.get("d") == null ? GetUserInput.getInput(scanner,"destination folder") :root.get("d"));
 		input.setGroupArtifactId(root.get("a") == null ? GetUserInput.getInput(scanner,"application name") :root.get("a"));
 		input.setGenerationType(root.get("t") == null ? GetUserInput.getInput(scanner,"generation type") :root.get("t"));
@@ -37,7 +38,15 @@ public class CodegenApplication implements ApplicationRunner {
 	public static void main(String[] args) throws ClassNotFoundException {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
-
+		/*try {
+		String ff = ResourceUtils.getFile("classpath:templates").getPath();
+		System.out.println(ff);
+		}
+		catch(Exception ee){
+			ee.printStackTrace();
+		}*/
+		System.out.println(System.getProperty("java.class.path"));
+		System.out.println(System.getProperty("user.dir"));
 		String prop = configProperties.getConnectionStr();
 		boolean b = configProperties.getForce();
 		callEntityGen(configProperties);
@@ -56,9 +65,11 @@ public class CodegenApplication implements ApplicationRunner {
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa", true, " -n=sdemo -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities("sample", null, groupArtifactId + ".model",
 		input.getDestinationPath() + "/" + artifactId, false, "");
-
+		BaseAppGen.CompileApplication(input.getDestinationPath()+ "/" + artifactId);
+		
+		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
 		// String destination = root.get("d") + "/" + artifactId;
-		CodeGenerator.GenerateAll(artifactId, artifactId + "/Client", groupArtifactId, sourcePackageName,
+		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, 
 		 input.getDestinationPath()+"/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
 		input.getDestinationPath(), input.getGenerationType(), details);
 
