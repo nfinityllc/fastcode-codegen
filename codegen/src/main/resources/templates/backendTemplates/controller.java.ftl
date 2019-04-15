@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.ReSTControllers;
+package [=PackageName].RestControllers;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nfinity.fastcode.application.OffsetBasedPageRequest;
-import com.nfinity.fastcode.application.Authorization.[=PackageName].[=ClassName]AppService;
-import com.nfinity.fastcode.application.Authorization.[=PackageName].[=ClassName]Mapper;
-import com.nfinity.fastcode.application.Authorization.[=PackageName].Dto.*;
+import [=PackageName].application.OffsetBasedPageRequest;
+import [=PackageName].application.[=ClassName].[=ClassName]AppService;
+import [=PackageName].application.[=ClassName].[=ClassName]Mapper;
+import [=PackageName].application.[=ClassName].Dto.*;
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import com.nfinity.fastcode.application.Authorization.[=relationValue.eName]s.Dto.Find[=relationValue.eName]ByIdOutput;
-import com.nfinity.fastcode.application.Authorization.[=relationValue.eName]s.[=relationValue.eName]AppService;
+import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
 </#list>
-import com.nfinity.fastcode.logging.LoggingHelper;
+import [=PackageName].logging.LoggingHelper;
 
 @RestController
 @RequestMapping("/[=ApiPath]")
@@ -113,7 +113,7 @@ public class [=ClassName]Controller {
 
 <#list Relationship as relationKey, relationValue>
 
-   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+   <#if relationValue.relation == "ManyToOne">
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.POST)
 	public void Add[=relationValue.eName](@PathVariable @Valid String [=InstanceName]id, @RequestBody @Valid String [=relationValue.eName?lower_case]id) {
@@ -162,6 +162,9 @@ public class [=ClassName]Controller {
    
    
   <#elseif relationValue.relation == "ManyToMany">
+  <#list RelationInput as relationInput>
+  <#assign parent = relationInput>
+  <#if parent?keep_before("-") == relationValue.eName>
     // [=relationValue.eName] related methods
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.POST)
@@ -229,7 +232,8 @@ public class [=ClassName]Controller {
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
-
+   </#if>
+   </#list>
    </#if>
   
   </#list>

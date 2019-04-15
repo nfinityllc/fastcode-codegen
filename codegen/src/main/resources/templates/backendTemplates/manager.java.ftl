@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.domain.Authorization.[=PackageName];
+package [=PackageName].domain.[=ClassName];
 
 import java.util.Iterator;
 import java.util.Set;
@@ -7,14 +7,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import [=PackageName].domain.model.[=EntityClassName];
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
-import com.nfinity.fastcode.domain.Authorization.[=relationValue.eName]s.[=relationValue.eName]Entity;
-import com.nfinity.fastcode.domain.IRepository.I[=relationValue.eName]Repository;
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
 </#list>
 
-import com.nfinity.fastcode.domain.IRepository.I[=ClassName]Repository;
+import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 import com.querydsl.core.types.Predicate;
 
 @Repository
@@ -66,7 +67,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		return _[=ClassName?lower_case]Repository.findByName(name);
 	}
   <#list Relationship as relationKey,relationValue>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
   @Transactional
 	public void Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
@@ -90,6 +91,9 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		return entity.get[=relationValue.eName]();
 	}
   <#elseif relationValue.relation == "ManyToMany">
+   <#list RelationInput as relationInput>
+    <#assign parent = relationInput>
+    <#if parent?keep_before("-") == relationValue.eName>
     //[=relationValue.eName]
     @Transactional
 	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
@@ -135,6 +139,8 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		[=EntityClassName] foundRecord = _[=ClassName?lower_case]Repository.findById([=InstanceName].getId().longValue());
 		return foundRecord.get[=relationValue.eName]s();
 	}
+	</#if>
+    </#list>
    </#if>
   </#list>
 }

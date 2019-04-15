@@ -19,8 +19,8 @@ describe('[=ClassName]NewComponent', () => {
   let data:[=IEntity] = {
       <#assign counter = 1>
      <#list Fields as key, value>           
-            <#if key == "id">    
-              [=key]:[=counter],
+            <#if value.fieldType == "id">    
+              [=value.fieldType]:[=counter],
             <#elseif value.fieldType == "Date">           
                 [=key]: new Date().toLocaleDateString("en-US") ,
             <#elseif value.fieldType?lower_case == "boolean">              

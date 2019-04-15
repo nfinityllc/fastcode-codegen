@@ -1,17 +1,17 @@
-package com.nfinity.fastcode.application.Authorization.[=PackageName];
+package [=PackageName].application.[=ClassName];
 
-import com.nfinity.fastcode.application.Authorization.[=PackageName].Dto.*;
-import com.nfinity.fastcode.domain.Authorization.[=PackageName].I[=ClassName]Manager;
-import com.nfinity.fastcode.domain.Authorization.[=PackageName].Q[=EntityClassName];
-import com.nfinity.fastcode.domain.Authorization.[=PackageName].[=EntityClassName];
-import com.nfinity.fastcode.domain.IRepository.I[=ClassName]Repository;
+import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].domain.[=ClassName].I[=ClassName]Manager;
+import [=PackageName].domain.model.Q[=EntityClassName];
+import [=PackageName].domain.model.[=EntityClassName];
+import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import com.nfinity.fastcode.domain.Authorization.[=relationValue.eName]s.[=relationValue.eName]Entity;
-import com.nfinity.fastcode.domain.Authorization.[=relationValue.eName]s.[=relationValue.eName]Manager;
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 </#list>
-import com.nfinity.fastcode.logging.LoggingHelper;
+import [=PackageName].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
 import java.util.Set;
@@ -90,7 +90,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	}
 	<#list Relationship as relationKey,relationValue>
-	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+	<#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
    // ReST API Call - POST /[=ClassName?lower_case]/1/roles/4
 
@@ -123,7 +123,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
   <#elseif relationValue.relation == "ManyToMany">
     //[=relationValue.eName]
-    
+    <#list RelationInput as relationInput>
+    <#assign parent = relationInput>
+    <#if parent?keep_before("-") == relationValue.eName>
     public Boolean Add[=relationValue.eName](Long [=ClassName?lower_case]Id, Long [=relationValue.eName?lower_case]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
@@ -183,6 +185,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
     
+     </#if>
+  </#list>
      </#if>
   
   </#list>

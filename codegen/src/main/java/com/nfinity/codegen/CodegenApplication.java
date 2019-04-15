@@ -17,11 +17,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 
-
-
-//import freemarker.template.utility.StringUtil;
-
-//import freemarker.template.Configuration;
 @SpringBootApplication
 public class CodegenApplication implements ApplicationRunner {
 	static Map<String, String> root = new HashMap<>();
@@ -38,6 +33,7 @@ public class CodegenApplication implements ApplicationRunner {
 	public static void main(String[] args) throws ClassNotFoundException {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
+
 		/*try {
 		String ff = ResourceUtils.getFile("classpath:templates").getPath();
 		System.out.println(ff);
@@ -47,13 +43,14 @@ public class CodegenApplication implements ApplicationRunner {
 		}*/
 		System.out.println(System.getProperty("java.class.path"));
 		System.out.println(System.getProperty("user.dir"));
+
 		String prop = configProperties.getConnectionStr();
 		boolean b = configProperties.getForce();
 		callEntityGen(configProperties);
 		// CodeGenerator.Generate(root.get("e"),root.get("s"),root.get("d"),"","");
 		// --a com.ninfinity.fastcode. It is a concatenation of groupid and artifact id
 		UserInput input  = composeInput();
-		Scanner scanner = new Scanner(System.in);  
+		//Scanner scanner = new Scanner(System.in);  
 		
 		String sourcePackageName = root.get("p");
 		sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
@@ -62,14 +59,15 @@ public class CodegenApplication implements ApplicationRunner {
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));	
 		
 		
-		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa", true, " -n=sdemo -j=1.8 ");
-		Map<String, EntityDetails> details = EntityGenerator.generateEntities("sample", null, groupArtifactId + ".model",
+		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa,data-rest", true, " -n=sdemo -j=1.8 ");
+		Map<String, EntityDetails> details = EntityGenerator.generateEntities("sample", null, groupArtifactId + ".domain.model",
 		input.getDestinationPath() + "/" + artifactId, false, "");
 		BaseAppGen.CompileApplication(input.getDestinationPath()+ "/" + artifactId);
 		
-		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
+		//FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
 		// String destination = root.get("d") + "/" + artifactId;
-		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, 
+
+		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId ,false,
 		 input.getDestinationPath()+"/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
 		input.getDestinationPath(), input.getGenerationType(), details);
 

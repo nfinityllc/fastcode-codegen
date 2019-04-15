@@ -1,9 +1,9 @@
-package com.nfinity.fastcode.application.Authorization.[=PackageName].Dto;
+package [=PackageName].application.[=ClassName].Dto;
 
 import java.util.Date;
 
 public class Get[=RelationEntityName]Output {
- <#list RelationEntityFields as key,value>
+ <#list RelationEntityFields as value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
   private Long [=value.fieldName];
   <#elseif value.fieldType?lower_case == "boolean">
@@ -14,10 +14,12 @@ public class Get[=RelationEntityName]Output {
   private String [=value.fieldName];
   </#if>
 </#list>
+<#if Audit!false>
   private String creatorUserId;
   private java.util.Date creationTime;
   private String lastModifierUserId;
   private java.util.Date lastModificationTime;
+</#if>
 <#list Fields as fkey,fvalue>
  <#if fvalue.isPrimaryKey?string('true','false') == "true" >
  <#if fvalue.fieldType?lower_case == "long" || fvalue.fieldType?lower_case == "int">
@@ -64,7 +66,7 @@ public class Get[=RelationEntityName]Output {
  </#if>
 </#list>
   
-  <#list RelationEntityFields as key,value>
+  <#list RelationEntityFields as value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
   public Long get[=value.fieldName?cap_first]() {
   return [=value.fieldName];
@@ -100,6 +102,7 @@ public class Get[=RelationEntityName]Output {
  </#if> 
 </#list>
   
+ <#if Audit!false>
   public java.util.Date getCreationTime() {
       return creationTime;
   }
@@ -131,6 +134,6 @@ public class Get[=RelationEntityName]Output {
   public void setCreatorUserId(String creatorUserId) {
       this.creatorUserId = creatorUserId;
   }
-  
+</#if> 
 
 }

@@ -1,5 +1,8 @@
 package com.nfinity.entitycodegen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RelationDetails {
 	
 	String relation;
@@ -12,6 +15,7 @@ public class RelationDetails {
 	String mappedBy;
 	String fName;
 	Boolean isParent;
+	List<FieldDetails> fDetails=new ArrayList<>();
 	
 	public String getRelation() {
 		return relation;
@@ -73,6 +77,12 @@ public class RelationDetails {
 	public void setIsParent(Boolean isParent) {
 		this.isParent = isParent;
 	}
+	public List<FieldDetails> getfDetails() {
+		return fDetails;
+	}
+	public void setfDetails(List<FieldDetails> fDetails) {
+		this.fDetails = fDetails;
+	}
 	
-	
+
 }
