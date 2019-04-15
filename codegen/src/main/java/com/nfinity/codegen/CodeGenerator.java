@@ -1,5 +1,9 @@
 package com.nfinity.codegen;
 
+import com.nfinity.entitycodegen.CGenClassLoader;
+import com.nfinity.entitycodegen.EntityDetails;
+import com.nfinity.entitycodegen.FieldDetails;
+import com.nfinity.entitycodegen.RelationDetails;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -14,10 +18,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.nfinity.entitycodegen.EntityDetails;
-import com.nfinity.entitycodegen.FieldDetails;
-import com.nfinity.entitycodegen.RelationDetails;
-
 @SpringBootApplication
 public class CodeGenerator {
 
@@ -26,9 +26,9 @@ public class CodeGenerator {
 	static String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
 	static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	static String CLIENT_ROOT_FOLDER = "/client";
-	static String CLIENT_APP_FOLDER = CLIENT_ROOT_FOLDER + "/src/app";
-	static String BACKEND_ROOT_FOLDER = "/backend";
-	static String BACKEND_APP_FOLDER = BACKEND_ROOT_FOLDER + "/src/main/java";
+//	static String clientAppFolder = CLIENT_ROOT_FOLDER + "/src/app";
+//	static String BACKEND_ROOT_FOLDER = "/backend";
+//	static String backendAppFolder = BACKEND_ROOT_FOLDER + "/src/main/java";
 
 	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit, String sourcePath,
 			String type, String modName,EntityDetails details) {
@@ -78,31 +78,78 @@ public class CodeGenerator {
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,
 			String sourcePackageName,Boolean audit, String sourcePath, String destPath, String type,Map<String,EntityDetails> details) {
-		BACKEND_APP_FOLDER = backEndRootFolder + "/src/main/java";
-		CLIENT_APP_FOLDER = clientRootFolder + "/src/app";
+
+		//backendAppFolder = backEndRootFolder + "/src/main/java";
+		//clientAppFolder = clientRootFolder + "/src/app";
 		//CGenClassLoader loader = new CGenClassLoader(sourcePath);
 		// String packageName = "com.ninfinity.entitycodegen.model"; // you can also
 		// pass other package names or root package
 		// name like com.ninfinity.entitycodegen
 
 		// generate base angular app
-		File directory = new File(destPath + "/"+ CLIENT_ROOT_FOLDER);
+		/*File directory = new File(destPath + "/"+ clientRootFolder);
 		if (!directory.exists()) {
 			directory.mkdir();
-		}
-		FronendBaseTemplateGenerator.generate(destPath, CLIENT_ROOT_FOLDER);
+		}*/
+		//FronendBaseTemplateGenerator.generate(destPath, CLIENT_ROOT_FOLDER);
 
 		// generate all modules for each entity
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
-			Generate(entry.getKey(), appName, sourcePackageName,audit, sourcePath, destPath, type,entry.getValue());
+
+			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit, sourcePath, destPath, type,entry.getValue());
 
 		}
+
+		generateAuditorController(details, appName, backEndRootFolder,destPath);
+
+	}
+	
+	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String backEndRootFolder, String destPath){
+		String backendAppFolder = backEndRootFolder + "/src/main/java";
+		Map<String, Object> entitiesMap = new HashMap<String,Object>();
+		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
+		{
+			
+			Map<String, String> entityMap = new HashMap<String,String>();
+			String key = entry.getKey();
+			String name = key.substring(key.lastIndexOf(".") + 1);
+			
+			entityMap.put("entity" , name + "Entity");
+			entityMap.put("importPkg" , appName + ".model." + name + "Entity");
+			entityMap.put("requestMapping" , "/" + name.toLowerCase());
+			entityMap.put("method" , "get" + name + "Changes");
+			
+			entitiesMap.put(name, entityMap);
+			
+		}
+		
+		Map<String, Object> root = new HashMap<>();
+		root.put("entitiesMap", entitiesMap);
+		
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 });
+		
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setTemplateLoader(mtl);
+		
+		Map<String, Object> template = new HashMap<>();
+		// Map<String, Object> backEndTemplate = new HashMap<>();
+		template.put("AuditController.java.ftl", "AuditController.java");
+		
+		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/") + "/ReSTControllers";
+		new File(destFolder).mkdirs();
+		generateFiles(template, root, destFolder);
 		
 	}
 
-	public static void Generate(String entityName, String appName,String packageName,Boolean audit, String sourcePath, String destPath, String type,EntityDetails details) {
+	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit, String sourcePath, String destPath, String type,EntityDetails details) {
+	
+		String backendAppFolder = backEndRootFolder + "/src/main/java";
+		String clientAppFolder = clientRootFolder + "/src/app";
 		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit, sourcePath, type, "",details);
+		
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/"); // "/templates/");
@@ -126,19 +173,19 @@ public class CodeGenerator {
 				cfg.setTemplateLoader(mtl);
 			}
 
-			String destFolder = destPath +"/"+ CLIENT_APP_FOLDER + "/" + root.get("ModuleName").toString(); // "/fcclient/src/app/"
+			String destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString(); // "/fcclient/src/app/"
 			new File(destFolder).mkdirs();
 			if (type.equalsIgnoreCase("other")) {
 				generateFiles(otherTemplate2DestMapping, root, destFolder);
 			} else if (type.equalsIgnoreCase("ui"))
 				generateFiles(uiTemplate2DestMapping, root, destFolder);
 			else if (type == "backend") {
-				destFolder = destPath + "/" + BACKEND_APP_FOLDER + "/" + appName.replace(".", "/");
+				destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 			} else {
-				destFolder = destPath +"/"+ CLIENT_APP_FOLDER + "/" + root.get("ModuleName").toString();
+				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
 				generateFiles(uiTemplate2DestMapping, root, destFolder);
-				destFolder = destPath +"/"+ BACKEND_APP_FOLDER + "/" + appName.replace(".", "/");
+				destFolder = destPath +"/"+ backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
 			}

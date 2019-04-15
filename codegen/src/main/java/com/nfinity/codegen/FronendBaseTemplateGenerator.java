@@ -1,53 +1,64 @@
 package com.nfinity.codegen;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.IOCase;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.springframework.util.ResourceUtils;
 
 public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
+	static String getTemplateFolderPath() {
+		String path = "";
+
+		try {
+			path = ResourceUtils.getFile("classpath:templates").getPath();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return path;
+		
+	}
 	public static void generate(String destination, String clientSubfolder) {
-		String command = "ng new client --skipInstall=true";
+		File directory = new File(destination + "/"+ clientSubfolder);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		//String command = "ng new client --skipInstall=true";
+		String command = "ng new "+ clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
 		System.out.println(System.getProperty("user.dir"));
 
 		// create client folder if it doesn't exist
 
-		generate(
-				System.getProperty("user.dir").replace("\\", "/")
-						+ "/src/main/resources/templates/frontendBaseTemplate",
+		generate(getTemplateFolderPath() + "/frontendBaseTemplate",
 				FRONTEND_BASE_TEMPLATE_FOLDER, destination + "/"+ clientSubfolder + "/");
 		// generate("F:/projects/New
 		// folder/codegen/codegen/src/main/resources/templates/frontendBaseTemplate",FRONTEND_BASE_TEMPLATE_FOLDER,
 		// destination + "/generatedProject/src/app");
 
 	}
-
+    
 	private static void generate(String path, String parent, String destination) {
 		File[] fl = getFilesFromFolder(path);
 		Map<String, Object> templates = new HashMap<>();
@@ -56,7 +67,7 @@ public class FronendBaseTemplateGenerator {
 		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
 		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
 		cfg.setDefaultEncoding("UTF-8");
-
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setTemplateLoader(mtl);
 
 		if (fl.length > 0) {
@@ -110,7 +121,7 @@ public class FronendBaseTemplateGenerator {
 		if (isWindows) {
 			builder.command("cmd.exe", "/c", command);
 		} else {
-			builder.command("sh", "-c", "ls");
+			builder.command("sh", "-c", "ls", command);
 		}
 		// builder.directory(new File(System.getProperty("user.home")));
 		builder.directory(new File(directory));

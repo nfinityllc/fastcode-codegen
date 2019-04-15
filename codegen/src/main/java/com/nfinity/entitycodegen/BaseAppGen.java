@@ -40,7 +40,7 @@ public class BaseAppGen {
         assert exitCode == 0;
     }
 
-    public static void CompileApplication(String destDirectory) throws Exception {
+    public static void CompileApplication(String destDirectory)  {
 
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
@@ -52,7 +52,7 @@ public class BaseAppGen {
         }
 
         // String[] builderCommand = new String[] { "cmd.exe", "/c", "mvn" + " clean" };
-
+        try {
         RunProcess(builderCommand, destDirectory);
 
         builderCommand = isWindows ? new String[] { "cmd.exe", "/c", "mvn" + " compile" }
@@ -62,11 +62,10 @@ public class BaseAppGen {
 
         RunProcess(builderCommand, destDirectory);
 
-        /*
-         * builderCommand = new String[] { "cmd.exe", "/c", "mvn" + " install" };
-         * 
-         * RunProcess(builderCommand, destDirectory);
-         */
+         }
+         catch(Exception ex){
+            ex.printStackTrace();
+         }
     }
 
     /*
