@@ -17,11 +17,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 
-
-
-//import freemarker.template.utility.StringUtil;
-
-//import freemarker.template.Configuration;
 @SpringBootApplication
 public class CodegenApplication implements ApplicationRunner {
 	static Map<String, String> root = new HashMap<>();
@@ -37,7 +32,8 @@ public class CodegenApplication implements ApplicationRunner {
 	public static void main(String[] args) throws ClassNotFoundException {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
-
+//		FronendBaseTemplateGenerator.generate("/home/farah","/client");
+		
 		String prop = configProperties.getConnectionStr();
 		boolean b = configProperties.getForce();
 		callEntityGen(configProperties);
@@ -53,12 +49,12 @@ public class CodegenApplication implements ApplicationRunner {
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));	
 		
 		
-		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa", true, " -n=sdemo -j=1.8 ");
-		Map<String, EntityDetails> details = EntityGenerator.generateEntities("sample", null, groupArtifactId + ".model",
+		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa,data-rest", true, " -n=sdemo -j=1.8 ");
+		Map<String, EntityDetails> details = EntityGenerator.generateEntities("sample", null, groupArtifactId + ".domain.model",
 		input.getDestinationPath() + "/" + artifactId, false, "");
 
 		// String destination = root.get("d") + "/" + artifactId;
-		CodeGenerator.GenerateAll(artifactId, artifactId + "/Client", groupArtifactId, groupArtifactId + ".model",
+		CodeGenerator.GenerateAll(artifactId, artifactId + "/Client", groupArtifactId, groupArtifactId ,false,
 		 input.getDestinationPath()+"/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
 		input.getDestinationPath(), input.getGenerationType(), details);
 

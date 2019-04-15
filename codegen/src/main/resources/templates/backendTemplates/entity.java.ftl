@@ -97,7 +97,7 @@ public class [=ClassName]Entity extends AuditedEntity<String> implements Seriali
   <#else>
   <#list Relationship as relationKey, relationValue>
   <#if value.fieldType == relationValue.eName>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne">
   @ManyToOne
   @JoinColumn(name = "[=relationValue.joinColumn]")
   public [=relationValue.eName]Entity get[=relationValue.eName]() {

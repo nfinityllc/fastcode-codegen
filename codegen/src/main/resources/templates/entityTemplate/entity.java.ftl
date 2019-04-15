@@ -80,7 +80,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   this.[=value.fieldName] = [=value.fieldName];
   }
   
-  <#else>
+ <#else>
   <#list Relationship as relationKey, relationValue>
   <#if value.fieldType == relationValue.eName>
   <#if relationValue.relation == "ManyToOne">

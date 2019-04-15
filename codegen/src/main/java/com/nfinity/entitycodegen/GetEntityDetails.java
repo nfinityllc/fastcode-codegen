@@ -21,7 +21,6 @@ public class GetEntityDetails{
 			Class<?> myClass=entityClass;
 			Object classObj = (Object) myClass.newInstance();
 			Field[] fields = classObj.getClass().getDeclaredFields();
-
 			for (Field field : fields) {
 				FieldDetails details = new FieldDetails();
 				RelationDetails relation = new RelationDetails();
@@ -134,7 +133,11 @@ public class GetEntityDetails{
 				}
 
 				if(relation.geteName() != null)
+				{
+					relation.setfDetails(getFields(relation.geteName(),classList));
+					//	System.out.println(" FEILD DETAILS :" + details.getFieldName());
 					relationsMap.put(relation.getRelation(),relation);
+				}
 
 				fieldsMap.put(details.getFieldName(),details);
 			}
@@ -261,6 +264,40 @@ public class GetEntityDetails{
 			}
 		}
 		return null;
+	}
+
+	private static List<FieldDetails> getFields(String relationEntityName, List<Class<?>> classList)
+	{
+		List<FieldDetails> fieldsList= new ArrayList<>();
+		for(Class<?> currentClass : classList)
+		{
+			String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1);
+			if(entityName.equals(relationEntityName))
+			{
+				try {
+					Class<?> myClass = currentClass;
+					Object classObj = (Object) myClass.newInstance();
+					Field[] fields = classObj.getClass().getDeclaredFields();
+					for (Field field : fields) {
+						FieldDetails details = new FieldDetails();
+						String str = field.getType().toString();
+						int index = str.lastIndexOf(".")+1;
+						details.setFieldName(field.getName());
+						details.setFieldType(str.substring(index));
+						fieldsList.add(details);
+					}
+
+
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return fieldsList;
+
 	}
 
 

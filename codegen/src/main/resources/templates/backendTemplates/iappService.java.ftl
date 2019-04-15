@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.application.Authorization.[=PackageName];
+package [=PackageName].application.[=ClassName];
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import javax.validation.constraints.Positive;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.nfinity.fastcode.application.Authorization.[=PackageName].Dto.*;
+import [=PackageName].application.[=ClassName].Dto.*;
 
 @Service
 public interface I[=ClassName]AppService {
@@ -26,7 +26,7 @@ public interface I[=ClassName]AppService {
 	
 	<#list Relationship as relationKey, relationValue>
 
-   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+   <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
     void Add[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id,@Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]id);
 
@@ -35,6 +35,9 @@ public interface I[=ClassName]AppService {
     void Remove[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
    
   <#elseif relationValue.relation == "ManyToMany">
+  <#list RelationInput as relationInput>
+  <#assign parent = relationInput>
+  <#if parent?keep_before("-") == relationValue.eName>
     // Operations With [=relationValue.eName]
     Boolean Add[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id, @Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]id);
 
@@ -43,7 +46,8 @@ public interface I[=ClassName]AppService {
     Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id, @Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]id);
 
     List<Get[=relationValue.eName]Output> Get[=relationValue.eName]s(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
-
+   </#if>
+   </#list>
    </#if>
   
   </#list>

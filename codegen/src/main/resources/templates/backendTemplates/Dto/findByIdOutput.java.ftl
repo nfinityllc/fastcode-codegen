@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.application.Authorization.[=PackageName].Dto;
+package [=PackageName].application.[=ClassName].Dto;
 
 import java.util.Date;
 public class Find[=ClassName]ByIdOutput {
@@ -14,10 +14,12 @@ public class Find[=ClassName]ByIdOutput {
   private String [=value.fieldName];
  </#if> 
 </#list>
+<#if Audit!false>
   private String creatorUserId;
   private java.util.Date creationTime;
   private String lastModifierUserId;
   private java.util.Date lastModificationTime;
+</#if>
 
 
 <#list Fields as key,value>
@@ -55,6 +57,7 @@ public class Find[=ClassName]ByIdOutput {
   }
  </#if> 
 </#list>
+<#if Audit!false>
   public java.util.Date getCreationTime() {
       return creationTime;
   }
@@ -86,5 +89,6 @@ public class Find[=ClassName]ByIdOutput {
   public void setCreatorUserId(String creatorUserId) {
       this.creatorUserId = creatorUserId;
   }
+</#if>
  
 }
