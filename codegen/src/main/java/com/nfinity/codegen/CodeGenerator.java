@@ -227,6 +227,7 @@ public class CodeGenerator {
 				System.out.println("\nRoot  " + root.toString());
 				template.process(root, writer);
 				writer.flush();
+				writer.close();
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
