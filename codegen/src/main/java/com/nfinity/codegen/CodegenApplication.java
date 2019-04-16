@@ -39,9 +39,29 @@ public class CodegenApplication implements ApplicationRunner {
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		/*
-		 * try { String ff = ResourceUtils.getFile("classpath:templates").getPath();
-		 * System.out.println(ff); } catch(Exception ee){ ee.printStackTrace(); }
-		 */
+		ResourceScanner scanner = new ResourceScanner();
+		String[] files;
+		try {
+			files = scanner.getResourcesNamesIn("templates/frontendBaseTemplate/");
+			for(String f: files){
+				System.out.println("res uri:" + f);
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource[] resources;
+		try {
+			resources = resolver.getResources("classpath:templates/frontendBaseTemplate/*");
+			for(Resource r: resources){
+				System.out.println("res uri:" + r.getURI());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		
 		System.out.println(System.getProperty("java.class.path"));
 		System.out.println(System.getProperty("user.dir"));
