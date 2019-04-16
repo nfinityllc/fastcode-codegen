@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.application.Authorization.[=PackageName];
+package [=PackageName].application.[=ClassName];
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -29,16 +29,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.nfinity.fastcode.domain.Authorization.[=PackageName].*;
-import com.nfinity.fastcode.application.Authorization.[=PackageName].Dto.*;
-import com.nfinity.fastcode.domain.Authorization.[=PackageName].Q[=EntityClassName];
+import [=PackageName].domain.[=ClassName].*;
+import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].domain.model.Q[=EntityClassName];
+import [=PackageName].domain.model.[=EntityClassName];
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import com.nfinity.fastcode.domain.Authorization.[=relationValue.eName]s.[=relationValue.eName]Entity;
-import com.nfinity.fastcode.domain.Authorization.[=relationValue.eName]s.[=relationValue.eName]Manager;
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 </#list>
-import com.nfinity.fastcode.logging.LoggingHelper;
+import [=PackageName].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
@@ -249,7 +250,7 @@ public class [=ClassName]AppServiceTest {
 	
    <#list Relationship as relationKey, relationValue>
 
-   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+   <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
    
    @Test
@@ -294,6 +295,9 @@ public class [=ClassName]AppServiceTest {
 	}
    
   <#elseif relationValue.relation == "ManyToMany">
+  <#list RelationInput as relationInput>
+  <#assign parent = relationInput>
+  <#if parent?keep_before("-") == relationValue.eName>
     // Operations With [=relationValue.eName]
     
     @Test 
@@ -375,6 +379,8 @@ public class [=ClassName]AppServiceTest {
 		Mockito.when(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]s(any([=ClassName]Entity.class))).thenReturn([=relationValue.eName?lower_case]s);
 		Assertions.assertThat(_appService.Get[=relationValue.eName]s(ID)).isEqualTo(list);
 	}
+	</#if>
+   </#list>
    </#if>
   
   </#list>

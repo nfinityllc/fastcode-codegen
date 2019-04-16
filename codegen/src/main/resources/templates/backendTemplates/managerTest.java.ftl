@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.domain.Authorization.[=PackageName];
+package [=PackageName].domain.[=ClassName];
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -23,14 +23,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Set;
 
+import [=PackageName].domain.model.[=EntityClassName];
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
-import com.nfinity.fastcode.domain.Authorization.[=relationValue.eName]s.[=relationValue.eName]Entity;
-import com.nfinity.fastcode.domain.IRepository.I[=relationValue.eName]Repository;
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
 </#list>
-import com.nfinity.fastcode.domain.IRepository.I[=ClassName]Repository;
-import com.nfinity.fastcode.logging.LoggingHelper;
+import [=PackageName].domain.IRepository.I[=ClassName]Repository;
+import [=PackageName].logging.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -170,6 +171,9 @@ public class [=ClassName]ManagerTest {
 	}
 	
   <#elseif relationValue.relation == "ManyToMany">
+   <#list RelationInput as relationInput>
+    <#assign parent = relationInput>
+    <#if parent?keep_before("-") == relationValue.eName>
     //[=relationValue.eName]
     @Test
 	public void add[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNull_[=relationValue.eName]Assigned() {
@@ -238,7 +242,8 @@ public class [=ClassName]ManagerTest {
 		Mockito.when([=ClassName?lower_case].get[=relationValue.eName]s()).thenReturn([=relationValue.eName?lower_case]s);
 		Assertions.assertThat(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]s([=ClassName?lower_case])).isEqualTo([=relationValue.eName?lower_case]s);
 	}
-    
+    </#if>
+    </#list>
    </#if>
   </#list>
 }

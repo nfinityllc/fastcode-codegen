@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.application.Authorization.[=PackageName].Dto;
+package [=PackageName].application.[=ClassName].Dto;
 
 import java.util.Date;
 public class Update[=ClassName]Input {

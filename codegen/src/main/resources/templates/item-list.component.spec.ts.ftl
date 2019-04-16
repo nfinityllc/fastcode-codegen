@@ -45,8 +45,8 @@ describe('[=ClassName]ListComponent', () => {
       <#list [1,2] as index>     
       {   
             <#list Fields as key, value>             
-                    <#if key == "id">    
-                      [=key]:[=index],
+                    <#if value.fieldType == "id">    
+                      [=value.fieldType]:[=index],
                     <#elseif value.fieldType == "Date">           
                         [=key]: new Date().toLocaleDateString("en-US") ,
                     <#elseif value.fieldType?lower_case == "boolean">              
