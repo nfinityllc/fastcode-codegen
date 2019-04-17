@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
@@ -23,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +39,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 </#list>
-import [=PackageName].logging.LoggingHelper;
+import [=PackageName].Utils.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
@@ -187,7 +187,7 @@ public class [=ClassName]AppServiceTest {
 	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
 
 		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=ClassName?lower_case]Entity;
-	    Map map = new HashedMap();
+	    Map map = new HashMap();
 	    <#list SearchFields as fields>
         map.put("[=fields]","xyz");
         <#break>

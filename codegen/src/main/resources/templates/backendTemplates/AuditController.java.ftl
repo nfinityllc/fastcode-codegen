@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.ReSTControllers;
+package [=PackageName].RestControllers;
 
 <#list entitiesMap as entityKey, entityMap>
 import [=entityMap.importPkg];

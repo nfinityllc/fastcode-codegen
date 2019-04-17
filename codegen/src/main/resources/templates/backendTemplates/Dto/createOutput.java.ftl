@@ -21,8 +21,6 @@ public class Create[=ClassName]Output {
   private java.util.Date lastModificationTime;
 </#if>
 
-
-
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
   public Long get[=value.fieldName?cap_first]() {

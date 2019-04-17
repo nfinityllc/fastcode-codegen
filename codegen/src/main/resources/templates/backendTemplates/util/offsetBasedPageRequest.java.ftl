@@ -1,4 +1,4 @@
-package [=PackageName].application;
+package [=PackageName].Utils;
 
 
 import org.apache.commons.lang3.builder.EqualsBuilder;

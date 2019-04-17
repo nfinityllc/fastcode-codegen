@@ -1,6 +1,5 @@
 package com.nfinity.codegen;
 
-import com.nfinity.entitycodegen.CGenClassLoader;
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.FieldDetails;
 import com.nfinity.entitycodegen.RelationDetails;
@@ -25,6 +24,7 @@ public class CodeGenerator {
 	static String TEMPLATE_FOLDER = "/templates";
 	static String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
 	static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
+	static String UTIL_TEMPLATE_FOLDER = "/templates/backendTemplates/util";
 	static String CLIENT_ROOT_FOLDER = "/client";
 //	static String clientAppFolder = CLIENT_ROOT_FOLDER + "/src/app";
 //	static String BACKEND_ROOT_FOLDER = "/backend";
@@ -101,11 +101,12 @@ public class CodeGenerator {
 
 		}
 
-		generateAuditorController(details, appName, backEndRootFolder,destPath);
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
+		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
+
 	}
 	
-	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String backEndRootFolder, String destPath){
+	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath){
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
@@ -116,7 +117,7 @@ public class CodeGenerator {
 			String name = key.substring(key.lastIndexOf(".") + 1);
 			
 			entityMap.put("entity" , name + "Entity");
-			entityMap.put("importPkg" , appName + ".model." + name + "Entity");
+			entityMap.put("importPkg" , appName + ".domain.model." + name + "Entity");
 			entityMap.put("requestMapping" , "/" + name.toLowerCase());
 			entityMap.put("method" , "get" + name + "Changes");
 			
@@ -126,6 +127,7 @@ public class CodeGenerator {
 		
 		Map<String, Object> root = new HashMap<>();
 		root.put("entitiesMap", entitiesMap);
+		root.put("PackageName", packageName);
 		
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
 		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 });
@@ -138,7 +140,7 @@ public class CodeGenerator {
 		// Map<String, Object> backEndTemplate = new HashMap<>();
 		template.put("AuditController.java.ftl", "AuditController.java");
 		
-		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/") + "/ReSTControllers";
+		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/") + "/RestControllers";
 		new File(destFolder).mkdirs();
 		generateFiles(template, root, destFolder);
 		
@@ -155,8 +157,9 @@ public class CodeGenerator {
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/"); // "/templates/");
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
 		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, DTO_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/Dto");
-
-		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2 });
+		ClassTemplateLoader ctl3 = new ClassTemplateLoader(CodegenApplication.class, UTIL_TEMPLATE_FOLDER + "/");
+		
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2,ctl3 });
 
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
@@ -182,12 +185,15 @@ public class CodeGenerator {
 			else if (type == "backend") {
 				destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
+				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
+				generateUtils(root, destFolder);
 			} else {
 				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
 				generateFiles(uiTemplate2DestMapping, root, destFolder);
 				destFolder = destPath +"/"+ backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
+				generateUtils(root, destFolder);
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -300,10 +306,12 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
+
 	private static Map<String, Object> getControllerTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("controller.java.ftl", className + "Controller.java");
+		backEndTemplate.put("emptyJsonResponse.java.ftl","EmptyJsonResponse.java");
 
 		return backEndTemplate;
 	}
@@ -332,6 +340,17 @@ public class CodeGenerator {
 
 		return backEndTemplate;
 	}
+	
+	private static void generateUtils(Map<String, Object> root, String destPath)
+	{
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("loggingHelper.java.ftl", "LoggingHelper.java");
+		backEndTemplate.put("offsetBasedPageRequest.java.ftl", "OffsetBasedPageRequest.java");
+		String destFolder = destPath + "/Utils";
+		new File(destFolder).mkdirs();
+		generateFiles(backEndTemplate, root, destFolder);
+		
+	}
 
 	private static void generateRelationDto(EntityDetails details,Map<String,Object> root, String destPath,String entityName)
 	{
@@ -351,7 +370,6 @@ public class CodeGenerator {
 				root.put("RelationEntityName", entry.getValue().geteName());
 				try {
 					Template template = cfg.getTemplate("getOutput.java.ftl");
-					System.out.println("\n in try ");
 					File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
 					PrintWriter writer = new PrintWriter(fileName);
 					System.out.println("\nRoot  " + root.toString() );
@@ -374,7 +392,6 @@ public class CodeGenerator {
 						root.put("RelationEntityName", entry.getValue().geteName());
 						try {
 							Template template = cfg.getTemplate("getOutput.java.ftl");
-							System.out.println("\n in try ");
 							File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
 							PrintWriter writer = new PrintWriter(fileName);
 							System.out.println("\nRoot  " + root.toString() );

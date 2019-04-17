@@ -31,7 +31,7 @@ import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
 </#list>
 import [=PackageName].domain.IRepository.I[=ClassName]Repository;
-import [=PackageName].logging.LoggingHelper;
+import [=PackageName].Utils.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
