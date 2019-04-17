@@ -8,6 +8,11 @@ import com.nfinity.entitycodegen.UserInput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -43,7 +48,7 @@ public class CodegenApplication implements ApplicationRunner {
 		}*/
 		System.out.println(System.getProperty("java.class.path"));
 		System.out.println(System.getProperty("user.dir"));
-
+		
 		String prop = configProperties.getConnectionStr();
 		boolean b = configProperties.getForce();
 		callEntityGen(configProperties);

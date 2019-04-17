@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import [=PackageName].application.OffsetBasedPageRequest;
+import [=PackageName].Utils.OffsetBasedPageRequest;
 import [=PackageName].application.[=ClassName].[=ClassName]AppService;
 import [=PackageName].application.[=ClassName].[=ClassName]Mapper;
 import [=PackageName].application.[=ClassName].Dto.*;
@@ -30,7 +30,7 @@ import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue
 import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
 </#list>
-import [=PackageName].logging.LoggingHelper;
+import [=PackageName].Utils.LoggingHelper;
 
 @RestController
 @RequestMapping("/[=ApiPath]")
@@ -55,12 +55,7 @@ public class [=ClassName]Controller {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?lower_case]) {
-		Find[=ClassName]ByNameOutput found[=ClassName] = _[=ClassName?lower_case]AppService.FindByName([=ClassName?lower_case].getName());
-		if (found[=ClassName] != null) {
-			logHelper.getLogger().error("There already exists a [=ClassName?lower_case] with a name=%s", [=ClassName?lower_case].getName());
-			throw new EntityExistsException(
-					String.format("There already exists a [=ClassName?lower_case] with name=%s", [=ClassName?lower_case].getName()));
-		}
+		
 		return new ResponseEntity(_[=ClassName?lower_case]AppService.Create([=ClassName?lower_case]), HttpStatus.OK);
 	}
 

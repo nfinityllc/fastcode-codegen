@@ -1,4 +1,4 @@
-package [=PackageName].logging;
+package [=PackageName].Utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

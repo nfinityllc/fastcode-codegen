@@ -11,7 +11,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 </#list>
-import [=PackageName].logging.LoggingHelper;
+import [=PackageName].Utils.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
 import java.util.Set;

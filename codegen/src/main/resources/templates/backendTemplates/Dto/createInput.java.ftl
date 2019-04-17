@@ -14,10 +14,8 @@ public class Create[=ClassName]Input {
  <#elseif value.fieldType?lower_case == "string">
   private String [=value.fieldName];
  </#if> 
- 
 </#if>
 </#list>
-
 
 <#list Fields as key,value>
  <#if value.fieldName?lower_case != "id">
