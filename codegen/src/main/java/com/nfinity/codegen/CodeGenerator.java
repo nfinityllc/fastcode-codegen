@@ -102,7 +102,7 @@ public class CodeGenerator {
 		}
 
 		generateAuditorController(details, appName, backEndRootFolder,destPath);
-
+		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
 	}
 	
 	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String backEndRootFolder, String destPath){
