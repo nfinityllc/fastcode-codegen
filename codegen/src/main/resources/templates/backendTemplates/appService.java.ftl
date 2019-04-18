@@ -33,13 +33,13 @@ import org.springframework.stereotype.Service;
 public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	@Autowired
-	private I[=ClassName]Manager _[=ClassName?lower_case]Manager;
+	private I[=ClassName]Manager _[=ClassName?uncap_first]Manager;
   
     <#list Relationship as relationKey,relationValue>
     <#if ClassName != relationValue.eName && relationValue.eName !="OneToMany">
     
     @Autowired
-	private [=relationValue.eName]Manager  _[=relationValue.eName?lower_case]Manager;
+	private [=relationValue.eName]Manager  _[=relationValue.eName?uncap_first]Manager;
     </#if>
     </#list>
     
@@ -52,26 +52,26 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	public Create[=ClassName]Output Create(Create[=ClassName]Input input) {
 
-		[=EntityClassName] [=ClassName?lower_case] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
-		[=EntityClassName] created[=ClassName] = _[=ClassName?lower_case]Manager.Create([=ClassName?lower_case]);
+		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
+		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
 	}
 	public Update[=ClassName]Output Update(Long id , Update[=ClassName]Input input) {
 
-		[=EntityClassName] [=ClassName?lower_case] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
-		[=EntityClassName] updated[=ClassName] = _[=ClassName?lower_case]Manager.Update([=ClassName?lower_case]);
+		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
+		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToUpdate[=ClassName]Output(updated[=ClassName]);
 	}
 	public void Delete(Long id) {
 
-		[=EntityClassName] existing = _[=ClassName?lower_case]Manager.FindById(id) ; 
+		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById(id) ; 
 
-		_[=ClassName?lower_case]Manager.Delete(existing);
+		_[=ClassName?uncap_first]Manager.Delete(existing);
 
 	}
 	public Find[=ClassName]ByIdOutput FindById(Long id) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById(id);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById(id);
 
 		if (found[=ClassName] == null)  
 			return null ; 
@@ -81,7 +81,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	public Find[=ClassName]ByNameOutput FindByName(String name) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindByName(name);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindByName(name);
 
 		if (found[=ClassName] == null) 
 			return null ; 
@@ -92,33 +92,33 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-   // ReST API Call - POST /[=ClassName?lower_case]/1/roles/4
+   // ReST API Call - POST /[=ClassName?uncap_first]/1/roles/4
 
-	public void Add[=relationValue.eName](Long [=ClassName?lower_case]Id,Long [=relationValue.eName?lower_case]Id) {
+	public void Add[=relationValue.eName](Long [=ClassName?uncap_first]Id,Long [=relationValue.eName?uncap_first]Id) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?lower_case]Manager.FindById([=relationValue.eName?lower_case]Id);
-		_[=ClassName?lower_case]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
-
-	}
-
-	// ReST API Call - DELETE /[=ClassName?lower_case]/1/[=relationValue.eName?lower_case]
-	public void Remove[=relationValue.eName](Long [=ClassName?lower_case]Id) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
-		_[=ClassName?lower_case]Manager.Remove[=relationValue.eName](found[=ClassName]);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
+		_[=ClassName?uncap_first]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
 
 	}
 
-	// ReST API Call - GET /[=ClassName?lower_case]/1/[=relationValue.eName?lower_case]
+	// ReST API Call - DELETE /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
+	public void Remove[=relationValue.eName](Long [=ClassName?uncap_first]Id) {
 
-	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?lower_case]Id) {
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		_[=ClassName?uncap_first]Manager.Remove[=relationValue.eName](found[=ClassName]);
+
+	}
+
+	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
+
+	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id) {
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?lower_case]r wth a id=%s", [=ClassName?lower_case]Id);
+			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] wth a id=%s", [=ClassName?uncap_first]Id);
 			return null;
 		}
-		[=relationValue.eName]Entity re = _[=ClassName?lower_case]Manager.Get[=relationValue.eName]([=ClassName?lower_case]Id);
+		[=relationValue.eName]Entity re = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id);
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(re, found[=ClassName]);
 	}
   <#elseif relationValue.relation == "ManyToMany">
@@ -126,61 +126,61 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
     <#if parent?keep_before("-") == relationValue.eName>
-    public Boolean Add[=relationValue.eName](Long [=ClassName?lower_case]Id, Long [=relationValue.eName?lower_case]Id) {
+    public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?lower_case]Manager.FindById([=relationValue.eName?lower_case]Id);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
 
-		return _[=ClassName?lower_case]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
-
-	}
-
-	public void Remove[=relationValue.eName](Long [=ClassName?lower_case]Id, Long [=relationValue.eName?lower_case]Id) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?lower_case]Manager.FindById([=relationValue.eName?lower_case]Id);
-
-		_[=ClassName?lower_case]Manager.Remove[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
+		return _[=ClassName?uncap_first]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
 
 	}
 
-	// ReST API Call => GET /[=ClassName?lower_case]/1/[=relationValue.eName?lower_case]/3
+	public void Remove[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
-	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?lower_case]Id, Long [=relationValue.eName?lower_case]Id) {
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
+		_[=ClassName?uncap_first]Manager.Remove[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
+
+	}
+
+	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]/3
+
+	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist [=ClassName?lower_case] with a id=%s", [=ClassName?lower_case]Id);
+			logHelper.getLogger().error("There does not exist [=ClassName?uncap_first] with a id=%s", [=ClassName?uncap_first]Id);
 			return null;
 
 		}
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?lower_case]Manager.FindById([=relationValue.eName?lower_case]Id);
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
 		if (found[=relationValue.eName] == null) {
-			logHelper.getLogger().error("There does not exist [=relationValue.eName?lower_case] with a name=%s", found[=relationValue.eName]);
+			logHelper.getLogger().error("There does not exist [=relationValue.eName?uncap_first] with a name=%s", found[=relationValue.eName]);
 			return null;
 		}
 
-		[=relationValue.eName]Entity pe = _[=ClassName?lower_case]Manager.Get[=relationValue.eName]([=ClassName?lower_case]Id, [=relationValue.eName?lower_case]Id);
+		[=relationValue.eName]Entity pe = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id, [=relationValue.eName?uncap_first]Id);
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(pe, found[=ClassName]);
 	}
 
 
-	// ReST API Call => GET /[=ClassName?lower_case]/1/[=relationValue.eName?lower_case]
+	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
 
-	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]s(Long [=ClassName?lower_case]Id) {
+	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]s(Long [=ClassName?uncap_first]Id) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?lower_case]Manager.FindById([=ClassName?lower_case]Id);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=ClassName?lower_case]Id);
+			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=ClassName?uncap_first]Id);
 			return null;
 		}
 
-		Set<[=relationValue.eName]Entity> pe = _[=ClassName?lower_case]Manager.Get[=relationValue.eName]s(found[=ClassName]);
-		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]Iterator = pe.iterator();
+		Set<[=relationValue.eName]Entity> pe = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]s(found[=ClassName]);
+		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = pe.iterator();
 		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
 
-		while ([=relationValue.eName?lower_case]Iterator.hasNext()) {
-			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?lower_case]Iterator.next(), found[=ClassName]));
+		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
+			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next(), found[=ClassName]));
 		}
 		return output;
 	}
@@ -194,13 +194,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	public List<Find[=ClassName]ByIdOutput> Find(String search, Pageable pageable) throws Exception  {
 
-		Page<[=EntityClassName]> found[=ClassName] = _[=ClassName?lower_case]Manager.FindAll(Search(search), pageable);
-		List<[=EntityClassName]> [=ClassName?lower_case]List = found[=ClassName].getContent();
-		Iterator<[=EntityClassName]> [=ClassName?lower_case]Iterator = [=ClassName?lower_case]List.iterator(); 
+		Page<[=EntityClassName]> found[=ClassName] = _[=ClassName?uncap_first]Manager.FindAll(Search(search), pageable);
+		List<[=EntityClassName]> [=ClassName?uncap_first]List = found[=ClassName].getContent();
+		Iterator<[=EntityClassName]> [=ClassName?uncap_first]Iterator = [=ClassName?uncap_first]List.iterator(); 
 		List<Find[=ClassName]ByIdOutput> output = new ArrayList<>();
 
-		while ([=ClassName?lower_case]Iterator.hasNext()) {
-			output.add(mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?lower_case]Iterator.next()));
+		while ([=ClassName?uncap_first]Iterator.hasNext()) {
+			output.add(mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?uncap_first]Iterator.next()));
 		}
 		return output;
 
@@ -211,10 +211,10 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		String[] words = null;
 		Map map = new HashMap<>();
 		BooleanBuilder builder = new BooleanBuilder();
-		Q[=EntityClassName] [=ClassName?lower_case]= Q[=EntityClassName].[=ClassName?lower_case]Entity;
+		Q[=EntityClassName] [=ClassName?uncap_first]= Q[=EntityClassName].[=EntityClassName?uncap_first];
 		if(search != null) {
 			if(!(search.contains(",")) && !(search.contains(";"))) {
-				return searchAllProperties([=ClassName?lower_case],search);
+				return searchAllProperties([=ClassName?uncap_first],search);
 			} 
 			else {
 				words = search.split(",");
@@ -225,24 +225,24 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					}
 					List<String> keysList = new ArrayList<String> (map.keySet());
 					checkProperties(keysList);
-					return searchKeyValuePair([=ClassName?lower_case], map);
+					return searchKeyValuePair([=ClassName?uncap_first], map);
 				}
 				else {
 				String value= words[0];
 				List<String> list =new ArrayList(Arrays.asList(words));
 				list.remove(0);
 				checkProperties(list);
-				return searchSpecificProperty([=ClassName?lower_case], list,value);
+				return searchSpecificProperty([=ClassName?uncap_first], list,value);
 			}
 		}
 	}
 	return null;
 	}
 
-	public BooleanBuilder searchAllProperties(Q[=EntityClassName] [=ClassName?lower_case],String search) {
+	public BooleanBuilder searchAllProperties(Q[=EntityClassName] [=ClassName?uncap_first],String search) {
 		BooleanBuilder builder = new BooleanBuilder();
 		<#list SearchFields as fields>
-		builder.or([=ClassName?lower_case].[=fields].likeIgnoreCase("%"+ search + "%"));
+		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ search + "%"));
 		</#list>
 		return builder;
 	}
@@ -264,13 +264,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 	}
 
-	public BooleanBuilder searchSpecificProperty(Q[=EntityClassName] [=ClassName?lower_case],List<String> list,String value)  {
+	public BooleanBuilder searchSpecificProperty(Q[=EntityClassName] [=ClassName?uncap_first],List<String> list,String value)  {
 		BooleanBuilder builder = new BooleanBuilder();
 		for (int i = 0; i < list.size(); i++) {
 		
 		<#list SearchFields as fields>
         if(list.get(i).replace("%20","").trim().equals("[=fields]")) {
-		builder.or([=ClassName?lower_case].[=fields].likeIgnoreCase("%"+ value + "%"));
+		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ value + "%"));
 		 }
 		 		
 		</#list>
@@ -278,7 +278,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		return builder;
 	}
-	public BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?lower_case], Map map) {
+	public BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map map) {
 		BooleanBuilder builder = new BooleanBuilder();
 		Iterator iterator = map.entrySet().iterator();
 		while (iterator.hasNext()) {
@@ -286,7 +286,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			
 		 <#list SearchFields as fields>
           if(pair2.getKey().toString().replace("%20","").trim().equals("[=fields]")) {
-			builder.and([=ClassName?lower_case].[=fields].likeIgnoreCase("%"+ pair2.getValue() + "%"));
+			builder.and([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ pair2.getValue() + "%"));
 			}
       
 		</#list>

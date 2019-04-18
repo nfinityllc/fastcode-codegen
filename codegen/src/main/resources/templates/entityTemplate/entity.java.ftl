@@ -122,7 +122,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
     input.get[=ClassName]s().remove(this);
   }
     
-  @ManyToMany(mappedBy = "[=ClassName?lower_case]")
+  @ManyToMany(mappedBy = "[=ClassName?lower_case]s")
   public Set<[=relationValue.eName]Entity> get[=relationValue.eName]s() {
     return [=relationValue.fName]s;
   }

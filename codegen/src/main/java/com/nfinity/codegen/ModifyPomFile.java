@@ -34,13 +34,17 @@ public class ModifyPomFile {
 
 		Dependency javers = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
 		Dependency mapstruct = new Dependency("org.mapstruct", "mapstruct", "1.2.0.Final");
-		Dependency querydsl = new Dependency("com.querydsl", "querydsl-jpa", "4.2.1");
+		Dependency querydsljpa = new Dependency("com.querydsl", "querydsl-jpa", "4.2.1");
+		Dependency querydslapt= new Dependency("com.querydsl", "querydsl-apt", "4.2.1");
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
-
+        Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
+	
 		dependencies.add(javers);
 		dependencies.add(mapstruct);
-		dependencies.add(querydsl);
+		dependencies.add(querydsljpa);
+		dependencies.add(querydslapt);
 		dependencies.add(apache_commons);
+		dependencies.add(postgres);
 
 		ModifyPomFile.addDependenciesAndPluginsToPom(path,dependencies);
 
@@ -139,17 +143,15 @@ public class ModifyPomFile {
 		goals.appendChild(goal);
 		execution.appendChild(goals);
 		
-		Element configurations = doc.createElement("configurations");
 		Element configuration = doc.createElement("configuration");
 		Element outputDirectory = doc.createElement("outputDirectory");
-		outputDirectory.appendChild(doc.createTextNode("apt-maven-plugin"));
+		outputDirectory.appendChild(doc.createTextNode("target/generated-sources"));
 		Element processor = doc.createElement("processor");
 		processor.appendChild(doc.createTextNode("com.querydsl.apt.jpa.JPAAnnotationProcessor"));
 		
 		configuration.appendChild(outputDirectory);
 		configuration.appendChild(processor);
-		configurations.appendChild(configuration);
-		execution.appendChild(configurations);
+		execution.appendChild(configuration);
 		
 		elem.appendChild(execution);		
 		mysema.appendChild(elem);
