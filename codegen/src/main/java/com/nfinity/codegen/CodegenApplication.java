@@ -55,7 +55,7 @@ public class CodegenApplication implements ApplicationRunner {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		Resource[] resources;
 		try {
@@ -67,10 +67,10 @@ public class CodegenApplication implements ApplicationRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		
+
 		System.out.println(System.getProperty("java.class.path"));
 		System.out.println(System.getProperty("user.dir"));
-		
+
 		String prop = configProperties.getConnectionStr();
 		boolean b = configProperties.getForce();
 		callEntityGen(configProperties);
@@ -78,25 +78,28 @@ public class CodegenApplication implements ApplicationRunner {
 		// --a com.ninfinity.fastcode. It is a concatenation of groupid and artifact id
 		UserInput input  = composeInput();
 		//Scanner scanner = new Scanner(System.in);  
-		
+
 		String sourcePackageName = root.get("p");
 		sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
 		String groupArtifactId =  input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));	
-		
-		
+
+		//c=jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
+		String connectionString = root.get("c");
+
+
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa,data-rest", true,"-n=" + artifactId +"  -j=1.8 ");
-		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getSchemaName(), null, groupArtifactId + ".domain.model",
-		input.getDestinationPath() + "/" + artifactId, false, "");
+		Map<String, EntityDetails> details = EntityGenerator.generateEntities(connectionString ,input.getSchemaName(), null, groupArtifactId + ".domain.model",
+				input.getDestinationPath() + "/" + artifactId, false, "");
 		BaseAppGen.CompileApplication(input.getDestinationPath()+ "/" + artifactId);
-		
+
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
 		// String destination = root.get("d") + "/" + artifactId;
 
 		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId ,false,
-		 input.getDestinationPath()+"/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
-		input.getDestinationPath(), input.getGenerationType(), details);
+				input.getDestinationPath()+"/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
+				input.getDestinationPath(), input.getGenerationType(), details);
 
 		// String destination = "F:\\projects\\New folder\\fbaseTempDes";
 		// destination = root.get("d") + "/fbaseTempDes";

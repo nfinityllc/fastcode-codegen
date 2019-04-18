@@ -23,37 +23,38 @@ public class EntityGenerator {
 		cfg.setTemplateLoader(ctl);
 	}
 
-	public static Map<String,EntityDetails> generateEntities(String schema,List<String> tableList, String packageName, String destination, Boolean audit,
+	public static Map<String,EntityDetails> generateEntities(String connectionString, String schema,List<String> tableList, String packageName, String destination, Boolean audit,
 			String auditPackage) {
 		// BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo",
 		// "com.nfinity", "web,data-jpa", true,
 		// " -n=sdemo -j=1.8 ");
 
-		 final String tempPackageName = packageName.concat(".Temp"); 
-	        destination = destination.replace('\\', '/');
-	        final String destinationPath = destination.concat("/src/main/java"); 
-	        final String targetPath = destination.concat("/target/classes"); 
-	        String tables="";
-	        if(tableList !=null)
-	        {
-	        for(int i=0;i<tableList.size();i++)
-	        {
-	        	if(!tableList.get(i).isEmpty())
-	        	{
-	        	if(i<tableList.size()-1)
-	        	tables= tables + schema.concat("." + tableList.get(i) + ",");
-	        	else
-	            tables= tables + schema.concat("." + tableList.get(i) );
-	        	}
-	        }
-	        }
-	 
-	        if(!tables.isEmpty())
-	        {
-	        	ReverseMapping.run(tempPackageName, destinationPath, tables); 
-	        }
-	        else
-	        ReverseMapping.run(tempPackageName, destinationPath, schema); 
+		Map<String,String> connectionProps = parseConnectionString(connectionString);
+		final String tempPackageName = packageName.concat(".Temp"); 
+		destination = destination.replace('\\', '/');
+		final String destinationPath = destination.concat("/src/main/java"); 
+		final String targetPath = destination.concat("/target/classes"); 
+		String tables="";
+		if(tableList !=null)
+		{
+			for(int i=0;i<tableList.size();i++)
+			{
+				if(!tableList.get(i).isEmpty())
+				{
+					if(i<tableList.size()-1)
+						tables= tables + schema.concat("." + tableList.get(i) + ",");
+					else
+						tables= tables + schema.concat("." + tableList.get(i) );
+				}
+			}
+		}
+
+		if(!tables.isEmpty())
+		{
+			ReverseMapping.run(tempPackageName, destinationPath, tables, connectionProps); 
+		}
+		else
+			ReverseMapping.run(tempPackageName, destinationPath, schema, connectionProps); 
 		try {
 			Thread.sleep(28000);
 		} catch (InterruptedException e) {
@@ -88,7 +89,7 @@ public class EntityGenerator {
 					details.setRelationInput(relationInputList);
 					entityDetailsMap.put(entityName,details);
 					EntityGenerator.Generate(entityName, details, "sample", packageName, destinationPath, audit, auditPackage);
-				
+
 				}
 
 			}
@@ -222,5 +223,20 @@ public class EntityGenerator {
 			}
 		}
 		return new ClassDetails(classList, relationClass);
+	}
+
+	public static Map<String,String> parseConnectionString(String connectionString){
+		Map<String,String> connectionStringMap = new HashMap<String,String>();
+
+		String[] urlArr = connectionString.split("\\?");
+		connectionStringMap.put("url", urlArr[0]);
+
+		String[] paramsArr = urlArr[1].split("\\;");
+		for(String param:paramsArr) {
+			String[] paramArr = param.split("\\=");
+			connectionStringMap.put(paramArr[0], paramArr[1]);
+		}
+
+		return connectionStringMap;
 	}
 }
