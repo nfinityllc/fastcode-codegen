@@ -105,6 +105,7 @@ public class CodeGenerator {
 
 		}
 
+		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
 		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
         updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
         updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
