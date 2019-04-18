@@ -161,7 +161,7 @@ public class [=ClassName]AppServiceTest {
 	public void searchAllProperties_SearchIsNotNull_ReturnBooleanBuilder() {
 
 		String search= "xyz";
-		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=ClassName?lower_case]Entity;
+		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		BooleanBuilder builder = new BooleanBuilder();
 		<#list SearchFields as fields>
 		builder.or([=ClassName?lower_case].[=fields].likeIgnoreCase("%"+ search + "%"));
@@ -175,7 +175,7 @@ public class [=ClassName]AppServiceTest {
 		<#list SearchFields as fields>
 		list.add("[=fields]");
 		</#list>
-		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=ClassName?lower_case]Entity;
+		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		BooleanBuilder builder = new BooleanBuilder();
 		 <#list SearchFields as fields>
 		builder.or([=ClassName?lower_case].[=fields].likeIgnoreCase("%xyz%"));
@@ -186,7 +186,7 @@ public class [=ClassName]AppServiceTest {
 	@Test
 	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
 
-		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=ClassName?lower_case]Entity;
+		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 	    Map map = new HashMap();
 	    <#list SearchFields as fields>
         map.put("[=fields]","xyz");
@@ -219,7 +219,7 @@ public class [=ClassName]AppServiceTest {
 	@Test
 	public void search_StringIsNotNullAndStringContainsKey_ReturnBooleanBuilder() throws Exception {
 
-		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=ClassName?lower_case]Entity;
+		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		String search= "xyz";
 		BooleanBuilder builder = new BooleanBuilder();
 		<#list SearchFields as fields>
@@ -230,7 +230,7 @@ public class [=ClassName]AppServiceTest {
 	@Test
 	public void  search_StringIsNotNullAndStringContainsMoreThanOneKey_ReturnBooleanBuilder() throws Exception {
 
-		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=ClassName?lower_case]Entity;
+		Q[=EntityClassName] [=ClassName?lower_case] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		String search= "xyz";
 		<#list SearchFields as fields>
         search.concat(",[=fields]");

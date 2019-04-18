@@ -22,7 +22,7 @@ import com.querydsl.core.types.Predicate;
 public class [=ClassName]Manager implements I[=ClassName]Manager {
 
     @Autowired
-    I[=ClassName]Repository  _[=ClassName?lower_case]Repository;
+    I[=ClassName]Repository  _[=InstanceName]Repository;
 	<#list Relationship as relationKey,relationValue>
     <#if ClassName != relationValue.eName>
     
@@ -34,37 +34,37 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	@Transactional
 	public [=EntityClassName] Create([=EntityClassName] [=InstanceName]) {
 
-		return _[=ClassName?lower_case]Repository.save([=InstanceName]);
+		return _[=InstanceName]Repository.save([=InstanceName]);
 	}
 
 	@Transactional
 	public void Delete([=EntityClassName] [=InstanceName]) {
 
-		_[=ClassName?lower_case]Repository.delete([=InstanceName]);	
+		_[=InstanceName]Repository.delete([=InstanceName]);	
 	}
 
 	@Transactional
 	public [=EntityClassName] Update([=EntityClassName] [=InstanceName]) {
 
-		return _[=ClassName?lower_case]Repository.save([=InstanceName]);
+		return _[=InstanceName]Repository.save([=InstanceName]);
 	}
 
 	@Transactional
 	public [=EntityClassName] FindById(Long id) {
 
-		return _[=ClassName?lower_case]Repository.findById(id.longValue());
+		return _[=InstanceName]Repository.findById(id.longValue());
 	}
 
 	@Transactional
 	public Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable) {
 
-		return _[=ClassName?lower_case]Repository.findAll(predicate,pageable);
+		return _[=InstanceName]Repository.findAll(predicate,pageable);
 	}
 
 	@Transactional
 	public [=EntityClassName] FindByName(String name) {
 
-		return _[=ClassName?lower_case]Repository.findByName(name);
+		return _[=InstanceName]Repository.findByName(name);
 	}
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne">
@@ -73,7 +73,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	public void Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
 
 		[=InstanceName].set[=relationValue.eName]([=relationValue.eName?lower_case]);
-		_[=ClassName?lower_case]Repository.save([=InstanceName]);
+		_[=InstanceName]Repository.save([=InstanceName]);
 		_[=relationValue.eName?lower_case]Repository.save([=relationValue.eName?lower_case]);
 	}
 
@@ -81,13 +81,13 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	public void Remove[=relationValue.eName]([=EntityClassName] [=InstanceName]) {
 	
 		[=InstanceName].set[=relationValue.eName](null);
-		_[=ClassName?lower_case]Repository.save([=InstanceName]);
+		_[=InstanceName]Repository.save([=InstanceName]);
 	}
 
 	@Transactional
 	public [=relationValue.eName]Entity Get[=relationValue.eName](Long [=InstanceName]Id) {
 		
-		[=EntityClassName] entity = _[=ClassName?lower_case]Repository.findById([=InstanceName]Id.longValue());
+		[=EntityClassName] entity = _[=InstanceName]Repository.findById([=InstanceName]Id.longValue());
 		return entity.get[=relationValue.eName]();
 	}
   <#elseif relationValue.relation == "ManyToMany">
@@ -120,7 +120,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	@Transactional
 	public [=relationValue.eName]Entity Get[=relationValue.eName](Long [=InstanceName]Id, Long [=relationValue.eName?lower_case]Id) {
 
-		[=EntityClassName] foundRecord = _[=ClassName?lower_case]Repository.findById([=InstanceName]Id.longValue());
+		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName]Id.longValue());
 		
 		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]s = foundRecord.get[=relationValue.eName]s();
 		Iterator iterator = [=relationValue.eName?lower_case]s.iterator();
@@ -136,7 +136,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	@Transactional
 	public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]s([=EntityClassName] [=InstanceName]) {
 		
-		[=EntityClassName] foundRecord = _[=ClassName?lower_case]Repository.findById([=InstanceName].getId().longValue());
+		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName].getId().longValue());
 		return foundRecord.get[=relationValue.eName]s();
 	}
 	</#if>

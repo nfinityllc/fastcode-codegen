@@ -9,12 +9,14 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
@@ -94,15 +96,19 @@ public class CodeGenerator {
 		//FronendBaseTemplateGenerator.generate(destPath, CLIENT_ROOT_FOLDER);
 
 		// generate all modules for each entity
+		List<String> entityNames=new ArrayList<String>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
-
+			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
+			entityNames.add(className);
 			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit, sourcePath, destPath, type,entry.getValue());
 
 		}
 
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
 		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
+        updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+        updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 
 	}
 	
@@ -406,6 +412,81 @@ public class CodeGenerator {
 				}
 				
 		    }
+		}
+	}
+	
+	public static void updateAppModule(String destPath,String appName,List<String> entityName)
+	{
+		StringBuilder sourceBuilder=new StringBuilder();
+		sourceBuilder.setLength(0);
+
+		for(String str: entityName)
+		{
+		sourceBuilder.append("\n    " + str + "ListComponent," );
+		sourceBuilder.append("\n    " + str + "DetailsComponent,");
+		sourceBuilder.append("\n    " + str + "NewComponent,");
+		}
+		String data = " ";
+		try {
+			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/app/app.module.ts"),"UTF8");
+
+			StringBuilder builder = new StringBuilder();
+			for(String str: entityName)
+			{
+			builder.append("import { " + str + "ListComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-list.component';" + "\n");
+			builder.append("import { " + str + "DetailsComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-details.component';" + "\n");
+			builder.append("import { " + str + "NewComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-new.component';" + "\n");
+			}
+			builder.append(data);
+			int index = builder.lastIndexOf("declarations");
+			index = builder.indexOf("[", index);
+			builder.insert(index + 1 , sourceBuilder.toString());
+			File fileName = new File(destPath + "/" + appName + "Client/src/app/app.module.ts");
+
+			try (PrintWriter writer = new PrintWriter(fileName)) {
+				writer.println(builder.toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static void updateAppRouting(String destPath,String appName, List<String> entityName)
+	{
+		StringBuilder sourceBuilder=new StringBuilder();
+		sourceBuilder.setLength(0);
+		for(String str: entityName)
+		{
+		sourceBuilder.append("\n  " +" { path: '" + str.toLowerCase() + "s', component: " + str + "ListComponent, canActivate: [ AuthGuard ]  },");
+		sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ]  }," );
+		sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n");
+		}
+		String data = " ";
+		try {
+			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/app/app.routing.ts"),"UTF8");
+
+			StringBuilder builder = new StringBuilder();
+			for(String str: entityName)
+			{
+			builder.append("import { " + str + "ListComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-list.component';" + "\n");
+			builder.append("import { " + str + "DetailsComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-details.component';" + "\n");
+			builder.append("import { " + str + "NewComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-new.component';" + "\n");
+			}
+			builder.append(data);
+			int index = builder.lastIndexOf("]");
+			builder.insert(index - 1, sourceBuilder.toString());
+			File fileName = new File(destPath + "/" + appName + "Client/src/app/app.routing.ts");
+
+			try (PrintWriter writer = new PrintWriter(fileName)) {
+				writer.println(builder.toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

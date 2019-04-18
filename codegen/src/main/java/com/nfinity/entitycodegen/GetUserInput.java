@@ -71,9 +71,10 @@ public class GetUserInput {
 					for (RelationDetails e : relationList) {
 						if (e.geteName().equals(className) && e.getRelation().equals(entry.getValue().getRelation())) {
 							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
-									+ " having " + entry.getKey() + " relationship , which one is the owner entity ? Enter 1 ("+ className +") or 2 ("+ entry.getValue().geteName()+ ") : ");
+									+ " having " + entry.getValue().getRelation() + " relationship , which one is the owner entity ? Enter 1 ("+ className +") or 2 ("+ entry.getValue().geteName()+ ") : ");
 
 							Scanner scanner = new Scanner(System.in);
+							
 							int i = scanner.nextInt();
 							while(i<1 || i>2)
 							{
@@ -88,8 +89,6 @@ public class GetUserInput {
 							{
 								relationInput.add(entry.getValue().geteName() + "-" + className);	
 							}
-
-							scanner.close();
 
 						}
 					}
@@ -110,11 +109,11 @@ public class GetUserInput {
 				EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
 				Map<String, RelationDetails> relationInput = details.getRelationsMap();
 				for (Map.Entry<String, RelationDetails> entry : relationInput.entrySet()) {
-					if (entry.getKey().equals("ManyToMany")) {
+					if (entry.getValue().getRelation().equals("ManyToMany")) {
 						relationList.add(entry.getValue());
 						for (int i = 0; i < relationList.size(); i++) {
 							if (relationList.get(i).geteName().contains(className)
-									&& relationList.get(i).getRelation().equals(entry.getKey())) {
+									&& relationList.get(i).getRelation().equals(entry.getValue().getRelation())) {
 								relationList.remove(i);
 							}
 						}

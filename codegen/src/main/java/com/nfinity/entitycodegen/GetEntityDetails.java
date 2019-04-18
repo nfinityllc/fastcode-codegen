@@ -15,6 +15,7 @@ public class GetEntityDetails{
 
 		Map<String,FieldDetails> fieldsMap= new HashMap<>();
 		Map<String,RelationDetails> relationsMap = new HashMap<>();
+		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 
 		try {
 
@@ -96,8 +97,7 @@ public class GetEntityDetails{
 							relation.setRelation("ManyToMany");
 							relation.setJoinTable(targetEntity);
 							for (Map<String, String> map : joinInfo) {
-								String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-
+								
 								if (className.equals(map.get("fieldType"))) {
 									relation.setJoinColumn(map.get("joinColumn"));
 									relation.setReferenceColumn(map.get("referenceColumn"));
@@ -136,7 +136,7 @@ public class GetEntityDetails{
 				{
 					relation.setfDetails(getFields(relation.geteName(),classList));
 					//	System.out.println(" FEILD DETAILS :" + details.getFieldName());
-					relationsMap.put(relation.getRelation(),relation);
+					relationsMap.put(className + "-" + relation.geteName(),relation);
 				}
 
 				fieldsMap.put(details.getFieldName(),details);

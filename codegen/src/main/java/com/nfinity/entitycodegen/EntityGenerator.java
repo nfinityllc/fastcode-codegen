@@ -25,9 +25,6 @@ public class EntityGenerator {
 
 	public static Map<String,EntityDetails> generateEntities(String connectionString, String schema,List<String> tableList, String packageName, String destination, Boolean audit,
 			String auditPackage) {
-		// BaseAppGen.CreateBaseApplication("/home/farah/fastCodeGit", "sdemo",
-		// "com.nfinity", "web,data-jpa", true,
-		// " -n=sdemo -j=1.8 ");
 
 		Map<String,String> connectionProps = parseConnectionString(connectionString);
 		final String tempPackageName = packageName.concat(".Temp"); 
