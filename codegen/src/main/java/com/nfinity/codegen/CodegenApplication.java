@@ -7,8 +7,12 @@ import com.nfinity.entitycodegen.GetUserInput;
 import com.nfinity.entitycodegen.UserInput;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -18,29 +22,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 
-
-
-
 @SpringBootApplication
 public class CodegenApplication implements ApplicationRunner {
 	static Map<String, String> root = new HashMap<>();
 
-	public static UserInput composeInput(FastCodeProperties configProperties) {
+	public static UserInput composeInput() {
 		UserInput input = new UserInput();
 		Scanner scanner = new Scanner(System.in);
-		System.out.println(" v " + root.get("c") + "\n ss "  + root.get("s") );
-		//jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
-		input.setConnectionStr(
-				root.get("c") != null ? 
-				root.get("c") : (configProperties.getConnectionStr()!=null?
-		 configProperties.getConnectionStr(): GetUserInput.getInput(scanner, "DB Connection String")) );
 		input.setSchemaName(root.get("s") == null ? GetUserInput.getInput(scanner, "Db schema") : root.get("s"));
 		input.setDestinationPath(
 				root.get("d") == null ? GetUserInput.getInput(scanner, "destination folder") : root.get("d"));
 		input.setGroupArtifactId(
 				root.get("a") == null ? GetUserInput.getInput(scanner, "application name") : root.get("a"));
-		input.setGenerationType(root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
-			
+		input.setGenerationType(
+				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
 		return input;
 	}
 
@@ -48,31 +43,54 @@ public class CodegenApplication implements ApplicationRunner {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
-		
+		/*
+		ResourceScanner scanner = new ResourceScanner();
+		String[] files;
+		try {
+			files = scanner.getResourcesNamesIn("templates/frontendBaseTemplate/");
+			for(String f: files){
+				System.out.println("res uri:" + f);
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
-		//System.out.println(System.getProperty("java.class.path"));
-		//System.out.println(System.getProperty("user.dir"));
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource[] resources;
+		try {
+			resources = resolver.getResources("classpath:templates/frontendBaseTemplate/*");
+			for(Resource r: resources){
+				System.out.println("res uri:" + r.getURI());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 
-		//String prop = configProperties.getConnectionStr();
-		//boolean b = configProperties.getForce();
-		//callEntityGen(configProperties);
+		System.out.println(System.getProperty("java.class.path"));
+		System.out.println(System.getProperty("user.dir"));
+
+		String prop = configProperties.getConnectionStr();
+		boolean b = configProperties.getForce();
+		callEntityGen(configProperties);
 		// CodeGenerator.Generate(root.get("e"),root.get("s"),root.get("d"),"","");
 		// --a com.ninfinity.fastcode. It is a concatenation of groupid and artifact id
-		UserInput input  = composeInput(configProperties);
-		
+		UserInput input  = composeInput();
+		//Scanner scanner = new Scanner(System.in);  
 
-		//String sourcePackageName = root.get("p");
-		//sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
+		String sourcePackageName = root.get("p");
+		sourcePackageName = (sourcePackageName == null) ? root.get("e") : sourcePackageName;
 		String groupArtifactId =  input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));	
 
 		//c=jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
-	//	String connectionString = root.get("c");
+		String connectionString = root.get("c");
 
 
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa,data-rest", true,"-n=" + artifactId +"  -j=1.8 ");
-		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),input.getSchemaName(), null, groupArtifactId + ".domain.model",
+		Map<String, EntityDetails> details = EntityGenerator.generateEntities(connectionString ,input.getSchemaName(), null, groupArtifactId + ".domain.model",
 				input.getDestinationPath() + "/" + artifactId, false, "");
 		BaseAppGen.CompileApplication(input.getDestinationPath()+ "/" + artifactId);
 
@@ -104,21 +122,18 @@ public class CodegenApplication implements ApplicationRunner {
 		});
 	}
 
-	
+	private static void callEntityGen(FastCodeProperties configProperties) {
+		String prop = configProperties.getConnectionStr();
+		boolean b = configProperties.getForce();
+	}
 
 	private static class FastCodeProperties {
 
-		@Value("${fastCode.connectionStr:#{null}}")
-		private Optional<String>  connectionStr;
-		@Value("${fastCode.username:#{null}}")
-		private Optional<String>  username;
-		@Value("${fastCode.password:#{null}}")
-		private Optional<String>  password;
+		@Value("${fastCode.connectionStr}")
+		private String connectionStr;
 
 		public String getConnectionStr() {
-			
-			return connectionStr.isPresent()? (connectionStr.get() + "username=" + username.get() + ";password=" + password.get()):
-			null;
+			return connectionStr;
 		}
 
 		@Value("${fastCode.bootVersion}")
