@@ -185,7 +185,7 @@ public class ModifyPomFile {
 		Element target = doc.createElement("target");
 		target.appendChild(doc.createTextNode("1.8"));
 		
-		Element annotationProcessorPaths = doc.createElement("annotationProcessorPath");
+		Element annotationProcessorPaths = doc.createElement("annotationProcessorPaths");
 		Element path = doc.createElement("path");
 		elem = doc.createElement("groupId");
 		elem.appendChild(doc.createTextNode("org.mapstruct"));

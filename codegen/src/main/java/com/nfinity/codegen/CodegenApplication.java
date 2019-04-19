@@ -28,8 +28,11 @@ public class CodegenApplication implements ApplicationRunner {
 	public static UserInput composeInput(FastCodeProperties configProperties) {
 		UserInput input = new UserInput();
 		Scanner scanner = new Scanner(System.in);
+		System.out.println(" v " + root.get("c") + "\n ss "  + root.get("s") );
 		//jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
-		input.setConnectionStr(root.get("c") != null ? root.get("c") : (configProperties.getConnectionStr()!=null?
+		input.setConnectionStr(
+				root.get("c") != null ? 
+				root.get("c") : (configProperties.getConnectionStr()!=null?
 		 configProperties.getConnectionStr(): GetUserInput.getInput(scanner, "DB Connection String")) );
 		input.setSchemaName(root.get("s") == null ? GetUserInput.getInput(scanner, "Db schema") : root.get("s"));
 		input.setDestinationPath(

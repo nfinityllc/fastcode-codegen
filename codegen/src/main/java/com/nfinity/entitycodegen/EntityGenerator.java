@@ -99,7 +99,7 @@ public class EntityGenerator {
 			EntityGenerator.generateAuditEntity(destinationPath, auditPackage);
 		}
 
-		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+	//	deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 		return entityDetailsMap;
 	}

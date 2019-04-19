@@ -105,11 +105,13 @@ public class CodeGenerator {
 			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit, sourcePath, destPath, type,entry.getValue());
 
 		}
+		
+		
 
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
 		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
-        updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
-        updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 
 	}
 	
@@ -194,7 +196,7 @@ public class CodeGenerator {
 				destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
-				generateUtils(root, destFolder);
+				generateUtilsAndCorsConfig(root, destFolder);
 				generateError(root, destFolder);
 			} else {
 				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
@@ -202,7 +204,7 @@ public class CodeGenerator {
 				destFolder = destPath +"/"+ backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
-				generateUtils(root, destFolder);
+				generateUtilsAndCorsConfig(root, destFolder);
 				generateError(root, destFolder);
 			}
 		} catch (Exception e1) {
@@ -349,7 +351,7 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 	
-	private static void generateUtils(Map<String, Object> root, String destPath)
+	private static void generateUtilsAndCorsConfig(Map<String, Object> root, String destPath)
 	{
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("loggingHelper.java.ftl", "LoggingHelper.java");
@@ -357,6 +359,10 @@ public class CodeGenerator {
 		String destFolder = destPath + "/Utils";
 		new File(destFolder).mkdirs();
 		generateFiles(backEndTemplate, root, destFolder);
+		backEndTemplate=new HashMap<>();
+		backEndTemplate.put("corsConfig.java.ftl","CorsConfig.java");
+		generateFiles(backEndTemplate, root, destPath);
+		
 		
 	}
 	private static void generateError(Map<String, Object> root, String destPath)
@@ -443,13 +449,8 @@ public class CodeGenerator {
 		try {
 			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/app/app.module.ts"),"UTF8");
 
-			StringBuilder builder = new StringBuilder();
-			for(String str: entityName)
-			{
-			builder.append("import { " + str + "ListComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-list.component';" + "\n");
-			builder.append("import { " + str + "DetailsComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-details.component';" + "\n");
-			builder.append("import { " + str + "NewComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-new.component';" + "\n");
-			}
+			StringBuilder builder = addImports(entityName);
+			
 			builder.append(data);
 			int index = builder.lastIndexOf("declarations");
 			index = builder.indexOf("[", index);
@@ -469,7 +470,7 @@ public class CodeGenerator {
 	public static void updateAppRouting(String destPath,String appName, List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
-		sourceBuilder.setLength(0);
+
 		for(String str: entityName)
 		{
 		sourceBuilder.append("\n  " +" { path: '" + str.toLowerCase() + "s', component: " + str + "ListComponent, canActivate: [ AuthGuard ]  },");
@@ -480,15 +481,10 @@ public class CodeGenerator {
 		try {
 			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/app/app.routing.ts"),"UTF8");
 
-			StringBuilder builder = new StringBuilder();
-			for(String str: entityName)
-			{
-			builder.append("import { " + str + "ListComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-list.component';" + "\n");
-			builder.append("import { " + str + "DetailsComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-details.component';" + "\n");
-			builder.append("import { " + str + "NewComponent } from './" + str.toLowerCase() + "/" + str.toLowerCase() + "-new.component';" + "\n");
-			}
+			StringBuilder builder = addImports(entityName);
+			
 			builder.append(data);
-			int index = builder.lastIndexOf("]");
+			int index = builder.lastIndexOf("{");
 			builder.insert(index - 1, sourceBuilder.toString());
 			File fileName = new File(destPath + "/" + appName + "Client/src/app/app.routing.ts");
 
@@ -501,6 +497,24 @@ public class CodeGenerator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static StringBuilder addImports(List<String> entityName)
+	{
+		StringBuilder builder=new StringBuilder();
+		for(String str: entityName)
+		{
+			String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
+			for (int i = 0; i < splittedNames.length; i++) {
+				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
+			}
+			String moduleName=StringUtils.join(splittedNames, "-");
+		builder.append("import { " + str + "ListComponent } from './" + moduleName + "/" + moduleName + "-list.component';" + "\n");
+		builder.append("import { " + str + "DetailsComponent } from './" + moduleName + "/" + moduleName + "-details.component';" + "\n");
+		builder.append("import { " + str + "NewComponent } from './" + moduleName + "/" + moduleName + "-new.component';" + "\n");
+		}
+		
+		return builder;
 	}
 
 }
