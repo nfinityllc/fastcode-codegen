@@ -1,24 +1,6 @@
-<mat-card *ngIf="filterFields.length > 0">
-  <!-- <form [formGroup]="detailsFilterForm" class="filter-form" [hidden]="!showFilters">
-    <div class="full-width">
-      <mat-form-field *ngFor="let field of filterFields">
-        <input formControlName="{{field.column}}" matInput placeholder="{{field.label}}">
-      </mat-form-field>
-    </div>
-  </form> -->
-
-  
+<mat-card *ngIf="!noFilterableFields">
   <form [formGroup]="basicFilterForm" class="filter-form" [hidden]="showFilters">
     <div class="full-width">
-      <!-- <mat-form-field>
-        <input formControlName="searchText" matInput placeholder="Search">
-      </mat-form-field> -->
-      <!-- <mat-form-field>
-        <input formControlName="addFilter" matInput placeholder="add Filter" [matMenuTriggerFor]="menu">
-        <mat-menu #menu="matMenu">
-          <button  (click)="addFilter(field)" mat-menu-item *ngFor="let field of filterFields">{{field.label}}</button>
-        </mat-menu>
-      </mat-form-field> -->
 
       <mat-form-field class="example-chip-list">
         <mat-chip-list #chipList>

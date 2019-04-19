@@ -6,13 +6,12 @@ import { IBase } from './ibase';
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { IRole, RoleService } from '../roles/index';
 import { Observable } from 'rxjs';
 import { Globals } from '../globals';
 import { IAssociationEntry } from '../core/iassociationentry';
 import { IAssociation } from '../core/iassociation';
 
-import { PickerComponent } from '../picker/picker.component'
+import { PickerComponent } from '../common/components/picker/picker.component'
 @Component({
 
   template: ''

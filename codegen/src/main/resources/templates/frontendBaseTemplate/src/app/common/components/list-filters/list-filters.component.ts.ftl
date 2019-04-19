@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { IListColumn, listColumnType } from '../common/ilistColumn';
+import { IListColumn, listColumnType } from '../../../common/ilistColumn';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { AddFilterFieldComponent } from './add-filter-field/add-filter-field.component';
 
@@ -20,6 +20,7 @@ export class ListFiltersComponent implements OnInit {
   filterFields: IListColumn[] = [];
   selectedFilterFields: any[] = [];
 
+  noFilterableFields: boolean = true;
   filterValues = {};
 
   basicFilterForm: FormGroup;
@@ -52,6 +53,7 @@ export class ListFiltersComponent implements OnInit {
 
     this.columnsList.forEach((column) => {
       if (column.filter && column.type == (listColumnType.String || listColumnType.Number)) {
+        this.noFilterableFields = false;
         this.filterFields.push(column);
       }
     });
