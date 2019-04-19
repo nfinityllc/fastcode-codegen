@@ -84,22 +84,6 @@ public class [=ClassName]ManagerTest {
 	}
 	
 	@Test
-	public void find[=ClassName]ByName_NameIsNotNullAndNameExists_Return[=ClassName]() {
-		[=ClassName]Entity [=ClassName?lower_case] =mock([=ClassName]Entity.class);
-
-		Mockito.when(_[=ClassName?lower_case]Repository.findByName(anyString())).thenReturn([=ClassName?lower_case]);
-		Assertions.assertThat(_[=ClassName?lower_case]Manager.FindByName("xyz")).isEqualTo([=ClassName?lower_case]);
-	}
-
-	@Test 
-	public void find[=ClassName?lower_case]ByName_NameIsNotNullAndNameDoesNotExist_ReturnNull() {
-
-		Mockito.when(_[=ClassName?lower_case]Repository.findByName(anyString())).thenReturn(null);
-		Assertions.assertThat(_[=ClassName?lower_case]Manager.FindByName("xyz")).isEqualTo(null);
-	
-	}
-	
-	@Test
 	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExist_Store[=ClassName]() {
 
 		[=ClassName]Entity [=ClassName?lower_case] =mock([=ClassName]Entity.class);

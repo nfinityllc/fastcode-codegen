@@ -8,6 +8,7 @@ public class UserInput {
 	String generationType;
 	String destinationPath;
 	String schemaName;
+	String connectionStr;
 	List<String> tablesList;
 	Boolean audit;
 	String auditPackage;
@@ -43,6 +44,12 @@ public class UserInput {
 	}
 	public void setSchemaName(String schemaName) {
 		this.schemaName = schemaName;
+	}
+	public String getConnectionStr() {
+		return connectionStr;
+	}
+	public void setConnectionStr(String connectionStr) {
+		this.connectionStr = connectionStr;
 	}
 	public Boolean getAudit() {
 		return audit;

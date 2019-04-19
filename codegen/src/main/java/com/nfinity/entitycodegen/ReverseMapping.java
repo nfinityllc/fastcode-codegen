@@ -1,16 +1,13 @@
 package com.nfinity.entitycodegen;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
-
 import org.apache.openjpa.jdbc.conf.JDBCConfiguration;
 import org.apache.openjpa.jdbc.conf.JDBCConfigurationImpl;
 import org.apache.openjpa.jdbc.meta.ReverseMappingTool;
-import org.apache.openjpa.lib.conf.Configurations;
 import org.apache.openjpa.lib.util.Options;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 
 public class ReverseMapping {
