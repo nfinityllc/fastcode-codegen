@@ -27,6 +27,7 @@ public class CodeGenerator {
 	static String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
 	static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	static String UTIL_TEMPLATE_FOLDER = "/templates/backendTemplates/util";
+	static String ERROR_TEMPLATE_FOLDER = "/templates/backendTemplates/error";
 	static String CLIENT_ROOT_FOLDER = "/client";
 //	static String clientAppFolder = CLIENT_ROOT_FOLDER + "/src/app";
 //	static String BACKEND_ROOT_FOLDER = "/backend";
@@ -164,8 +165,9 @@ public class CodeGenerator {
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
 		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, DTO_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/Dto");
 		ClassTemplateLoader ctl3 = new ClassTemplateLoader(CodegenApplication.class, UTIL_TEMPLATE_FOLDER + "/");
+		ClassTemplateLoader ctl4 = new ClassTemplateLoader(CodegenApplication.class, ERROR_TEMPLATE_FOLDER + "/");
 		
-		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2,ctl3 });
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2,ctl3,ctl4 });
 
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
@@ -193,6 +195,7 @@ public class CodeGenerator {
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
 				generateUtils(root, destFolder);
+				generateError(root, destFolder);
 			} else {
 				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
 				generateFiles(uiTemplate2DestMapping, root, destFolder);
@@ -200,6 +203,7 @@ public class CodeGenerator {
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
 				generateUtils(root, destFolder);
+				generateError(root, destFolder);
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -342,8 +346,6 @@ public class CodeGenerator {
 		backEndTemplate.put("updateInput.java.ftl", "Update" + className + "Input.java");
 		backEndTemplate.put("updateOutput.java.ftl", "Update" + className + "Output.java");
 		backEndTemplate.put("findByIdOutput.java.ftl", "Find" + className + "ByIdOutput.java");
-		backEndTemplate.put("findByNameOutput.java.ftl", "Find" + className + "ByNameOutput.java");
-
 		return backEndTemplate;
 	}
 	
@@ -356,6 +358,17 @@ public class CodeGenerator {
 		new File(destFolder).mkdirs();
 		generateFiles(backEndTemplate, root, destFolder);
 		
+	}
+	private static void generateError(Map<String, Object> root, String destPath)
+	{
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("apiError.java.ftl", "ApiError.java");
+		backEndTemplate.put("apiSubError.java.ftl", "ApiSubError.java");
+		backEndTemplate.put("apiValidationError.java.ftl", "ApiValidationError.java");
+		backEndTemplate.put("restExceptionHandler.java.ftl", "RestExceptionHandler.java");
+		String destFolder = destPath + "/Error";
+		new File(destFolder).mkdirs();
+		generateFiles(backEndTemplate, root, destFolder);
 	}
 
 	private static void generateRelationDto(EntityDetails details,Map<String,Object> root, String destPath,String entityName)

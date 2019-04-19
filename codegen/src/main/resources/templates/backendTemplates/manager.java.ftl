@@ -61,11 +61,6 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		return _[=InstanceName]Repository.findAll(predicate,pageable);
 	}
 
-	@Transactional
-	public [=EntityClassName] FindByName(String name) {
-
-		return _[=InstanceName]Repository.findByName(name);
-	}
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]

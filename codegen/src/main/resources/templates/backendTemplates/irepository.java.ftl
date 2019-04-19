@@ -14,8 +14,5 @@ public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName
 
 	   @Query("select e from [=EntityClassName] e where e.id = ?1")
 	   [=EntityClassName] findById(long id);
-
-	   @Query("select e from [=EntityClassName] e where e.name = ?1")
-	   [=EntityClassName] findByName(String name);
-	
+	   
 }

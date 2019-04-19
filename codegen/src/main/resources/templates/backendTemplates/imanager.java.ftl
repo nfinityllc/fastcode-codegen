@@ -23,9 +23,6 @@ public interface I[=ClassName]Manager {
     [=EntityClassName] FindById(@Positive(message ="Id should be a positive value")Long [=InstanceName]Id);
 
     Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable);
-
-    //Internal operation
-   [=EntityClassName] FindByName(String name);
    
   <#list Relationship as relationKey, relationValue>
 

@@ -19,8 +19,6 @@ public interface I[=ClassName]AppService {
     Update[=ClassName]Output Update(@Positive(message ="Id should be a positive value") Long id,Update[=ClassName]Input [=ClassName?lower_case]);
 
     Find[=ClassName]ByIdOutput FindById(@Positive(message ="Id should be a positive value")Long id);
-
-    Find[=ClassName]ByNameOutput FindByName(String name);
     
     List<Find[=ClassName]ByIdOutput> Find(String search, Pageable pageable) throws Exception;
 	

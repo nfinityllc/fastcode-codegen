@@ -77,15 +77,18 @@ public class [=ClassName]AppServiceTest {
 		when(logHelper.getLogger()).thenReturn(loggerMock);
 		doNothing().when(loggerMock).error(anyString());
 	}
+	
 	@After
 	public void tearDown() throws Exception {
 	}
+	
 	@Test
 	public void find[=ClassName]ById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
 
 		Mockito.when(_[=ClassName?lower_case]Manager.FindById(anyLong())).thenReturn(null);
 		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(null);
 	}
+	
 	@Test
 	public void find[=ClassName]ById_IdIsNotNullAndIdExists_Return[=ClassName]() {
 
@@ -93,19 +96,7 @@ public class [=ClassName]AppServiceTest {
 		Mockito.when(_[=ClassName?lower_case]Manager.FindById(anyLong())).thenReturn([=ClassName?lower_case]);
 		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?lower_case]));
 	}
-	@Test
-	public void find[=ClassName]ByName_NameIsNotNullAndNameDoesNotExist_ReturnNull() {
-
-		Mockito.when(_[=ClassName?lower_case]Manager.FindByName(anyString())).thenReturn(null);
-		Assertions.assertThat(_appService.FindByName("xyz")).isEqualTo(null);
-	}
-	@Test
-	public void find[=ClassName]ByName_NameIsNotNullAndNameExists_Return[=ClassName]() {
-
-		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
-		Mockito.when(_[=ClassName?lower_case]Manager.FindByName(anyString())).thenReturn([=ClassName?lower_case]);
-		Assertions.assertThat(_appService.FindByName("xyz")).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?lower_case]));
-	}
+	
 	@Test
 	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExist_Store[=ClassName]() {
 
@@ -115,6 +106,7 @@ public class [=ClassName]AppServiceTest {
 		Mockito.when(_[=ClassName?lower_case]Manager.Create(any([=EntityClassName].class))).thenReturn([=ClassName?lower_case]Entity);
 		Assertions.assertThat(_appService.Create([=ClassName?lower_case])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?lower_case]Entity));
 	}
+	
 	@Test
 	public void delete[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]Exists_[=ClassName]Removed() {
 
@@ -123,6 +115,7 @@ public class [=ClassName]AppServiceTest {
 		_appService.Delete(ID); 
 		verify(_[=ClassName?lower_case]Manager).Delete([=ClassName?lower_case]);
 	}
+	
 	@Test
 	public void update[=ClassName]_[=ClassName]IdIsNotNullAndIdExists_ReturnUpdated[=ClassName]() {
 
@@ -132,6 +125,7 @@ public class [=ClassName]AppServiceTest {
 		Mockito.when(_[=ClassName?lower_case]Manager.Update(any([=EntityClassName].class))).thenReturn([=ClassName?lower_case]Entity);
 		Assertions.assertThat(_appService.Update(ID,[=ClassName?lower_case])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?lower_case]Entity));
 	}
+	
 	@Test
 	public void Find_ListIsEmpty_ReturnList() throws Exception {
 
@@ -143,6 +137,7 @@ public class [=ClassName]AppServiceTest {
 		Mockito.when(_[=ClassName?lower_case]Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
 	}
+	
 	@Test
 	public void Find_ListIsNotEmpty_ReturnList() throws Exception {
 
@@ -157,6 +152,7 @@ public class [=ClassName]AppServiceTest {
 		Mockito.when(_[=ClassName?lower_case]Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
 	}
+	
 	@Test
 	public void searchAllProperties_SearchIsNotNull_ReturnBooleanBuilder() {
 
@@ -168,6 +164,7 @@ public class [=ClassName]AppServiceTest {
 		</#list>
 		Assertions.assertThat(_appService.searchAllProperties([=ClassName?lower_case], search)).isEqualTo(builder);
 	}
+	
 	@Test
 	public void searchSpecificProperty_PropertyExists_ReturnBooleanBuilder() {
 
@@ -183,6 +180,7 @@ public class [=ClassName]AppServiceTest {
 		
 		Assertions.assertThat(_appService.searchSpecificProperty([=ClassName?lower_case], list,"xyz")).isEqualTo(builder);
 	}
+	
 	@Test
 	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
 
@@ -200,6 +198,7 @@ public class [=ClassName]AppServiceTest {
 		</#list>
 		Assertions.assertThat(_appService.searchKeyValuePair([=ClassName?lower_case], map)).isEqualTo(builder);
 	}
+	
 	@Test (expected = Exception.class)
 	public void checkProperties_PropertyDoesNotExist_ThrowException() throws Exception {
 
@@ -207,6 +206,7 @@ public class [=ClassName]AppServiceTest {
 		list.add("xyz");
 		_appService.checkProperties(list);
 	}
+	
 	@Test
 	public void checkProperties_PropertyExists_ReturnNothing() throws Exception {
 
@@ -216,6 +216,7 @@ public class [=ClassName]AppServiceTest {
 		</#list>
 		_appService.checkProperties(list);
 	}
+	
 	@Test
 	public void search_StringIsNotNullAndStringContainsKey_ReturnBooleanBuilder() throws Exception {
 
@@ -227,6 +228,7 @@ public class [=ClassName]AppServiceTest {
 		</#list>
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
+	
 	@Test
 	public void  search_StringIsNotNullAndStringContainsMoreThanOneKey_ReturnBooleanBuilder() throws Exception {
 
@@ -241,6 +243,7 @@ public class [=ClassName]AppServiceTest {
 		</#list>
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
+	
 	@Test
 	public void  search_StringIsNull_ReturnNull() throws Exception {
 

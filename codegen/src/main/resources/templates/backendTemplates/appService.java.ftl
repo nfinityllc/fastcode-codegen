@@ -79,16 +79,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]);
 
 	}
-	public Find[=ClassName]ByNameOutput FindByName(String name) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindByName(name);
-
-		if (found[=ClassName] == null) 
-			return null ; 
- 			
-		return mapper.[=EntityClassName]ToFind[=ClassName]ByNameOutput(found[=ClassName]);
-
-	}
+	
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]

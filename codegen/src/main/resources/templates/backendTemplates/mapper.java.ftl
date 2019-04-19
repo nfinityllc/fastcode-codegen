@@ -25,8 +25,6 @@ public interface [=ClassName]Mapper {
 
     Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
-    Find[=ClassName]ByNameOutput [=ClassName]EntityToFind[=ClassName]ByNameOutput([=ClassName]Entity entity);
-
   <#list Relationship as relationKey, relationValue>
 
    <#if relationValue.relation == "ManyToOne">
