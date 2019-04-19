@@ -19,7 +19,7 @@
         </mat-nav-list>
       </mat-expansion-panel>
 
-      <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
+      <!-- <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
 
       <mat-expansion-panel class="expansion-panel">
         <mat-expansion-panel-header class="subnav-header">
@@ -70,7 +70,7 @@
             | translate }} </a>
 
         </mat-nav-list>
-      </mat-expansion-panel>
+      </mat-expansion-panel> -->
 
       <mat-expansion-panel class="expansion-panel">
         <mat-expansion-panel-header class="subnav-header">
@@ -78,8 +78,6 @@
         </mat-expansion-panel-header>
 
         <mat-nav-list class="subnav">
-
-          <!--      <a mat-list-item class="mat-sub-list-item" *ngFor="let lang of translate.getLangs()" (click)="switchLanguage(lang)">{{lang | translate}}</a> -->
           <mat-radio-group class="radio-group" [(ngModel)]="selectedLanguage">
             <mat-radio-button class="radio-button" *ngFor="let lang of translate.getLangs()" (click)="switchLanguage(lang)"
               [value]="lang">
@@ -90,7 +88,7 @@
         </mat-nav-list>
       </mat-expansion-panel>
 
-      <a mat-list-item class="sidenav-list-item" routerLink="entities">{{'MainNav.Monitoring' | translate }}</a>
+      <!-- <a mat-list-item class="sidenav-list-item" routerLink="entities">{{'MainNav.Monitoring' | translate }}</a> -->
 
     </mat-nav-list>
   </mat-sidenav>
