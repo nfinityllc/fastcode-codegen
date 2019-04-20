@@ -3,7 +3,7 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
-import {Globals} from '../globals';
+import {Globals} from '../../../globals';
 import entities from './entities.json';
 
 @Component({
@@ -14,7 +14,7 @@ import entities from './entities.json';
 export class MainNavComponent {
 	selectedLanguage = "en";
 	entityList = entities;
-    
+	  
 	isSmallDevice$: Observable<boolean> ;
 	isMediumDevice$: Observable<boolean> ;
 	constructor(private breakpointObserver: BreakpointObserver,

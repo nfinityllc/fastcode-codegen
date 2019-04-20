@@ -5,9 +5,9 @@ import { IFCDialogConfig } from './ifc-dialog-config';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals } from '../globals';
+import { Globals } from '../../../globals';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {PermissionService} from '../permissions/permission.service';
+// import {PermissionService} from '../permissions/permission.service';
 import { Observable } from 'rxjs';
 import { MatSelectionList, MatListOption } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -28,7 +28,7 @@ export class PickerComponent implements OnInit {
   selectedItems:IPickerItem[]=[];
   errorMessage = '';
     constructor( private router: Router,
-       private global:Globals, private permissionService:PermissionService,
+       private global:Globals,
        public dialogRef: MatDialogRef<PickerComponent>,
        @Inject(MAT_DIALOG_DATA) public data: IFCDialogConfig
      //  @Inject(MAT_DIALOG_DATA) public data: Observable<IPickerItem[]>

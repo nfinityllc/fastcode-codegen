@@ -1,7 +1,7 @@
 import { Injectable, ChangeDetectorRef } from '@angular/core';
 
 import { Observable, throwError } from 'rxjs';
-import { Globals } from '../globals';
+import { Globals } from '../../../globals';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { IPickerItem } from './ipicker-item';
 //import { PermissionService } from '../permissions/permission.service';

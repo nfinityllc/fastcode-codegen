@@ -11,7 +11,7 @@ import { IListColumn, listColumnType } from '../common/ilistColumn';
 //import { ComponentType } from '@angular/cdk/overlay';
 import { ComponentType } from '@angular/cdk/portal';
 import { IAssociationEntry } from '../core/iassociationentry';
-import { PickerDialogService, IFCDialogConfig } from '../picker/picker-dialog.service';
+import { PickerDialogService, IFCDialogConfig } from '../common/components/picker/picker-dialog.service';
 
 @Component({
 

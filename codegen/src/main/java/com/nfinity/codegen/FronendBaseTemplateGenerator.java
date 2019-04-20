@@ -2,6 +2,9 @@ package com.nfinity.codegen;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +25,18 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -35,6 +50,8 @@ public class FronendBaseTemplateGenerator {
 	public static void generate(String destination, String clientSubfolder) {
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
+		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json");
+		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder);
 
 		List<String> fl = getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
@@ -204,4 +221,81 @@ public class FronendBaseTemplateGenerator {
 		}
 	}
 
+	public static void editAngularJsonFile(String path, String clientSubfolder) {
+		
+		try {
+
+			JSONObject jsonObject = readJsonFile(path);
+			
+            JSONObject projects = (JSONObject) jsonObject.get("projects");
+            JSONObject project = (JSONObject) projects.get(clientSubfolder);
+            JSONObject architect = (JSONObject) project.get("architect");
+            JSONObject build = (JSONObject) architect.get("build");
+            JSONObject options = (JSONObject) build.get("options");
+            JSONArray styles = (JSONArray) options.get("styles");
+            styles.clear();
+            
+            JSONObject input = new JSONObject();
+            input.put("input", "src/styles/lightgreen-amber.scss");
+            
+            styles.add(input);
+            styles.add("src/styles/styles.scss");
+            
+            String prettyJsonString = beautifyJson(jsonObject); 
+            writeJsonToFile(path,prettyJsonString);         
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+	
+	public static void editTsConfigJsonFile(String path) {
+
+		try {
+
+
+            JSONObject jsonObject = readJsonFile(path);
+            JSONObject compilerOptions = (JSONObject) jsonObject.get("compilerOptions");
+            compilerOptions.put("resolveJsonModule",true);
+            compilerOptions.put("esModuleInterop",true);
+            
+            String prettyJsonString = beautifyJson(jsonObject); 
+            writeJsonToFile(path,prettyJsonString);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+	
+	public static JSONObject readJsonFile(String path) throws IOException, ParseException {
+
+		JSONParser parser = new JSONParser();
+		FileReader fr = new FileReader(path);
+        Object obj = parser.parse(fr);
+        fr.close();
+        return (JSONObject) obj;
+	}
+
+	public static String beautifyJson(JSONObject jsonObject)  {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(jsonObject.toJSONString());
+        return gson.toJson(je);
+	}
+	
+	public static void writeJsonToFile(String path, String jsonString) throws IOException {
+		FileWriter file = new FileWriter(path);
+		file.write(jsonString);
+        file.close();
+	}
 }

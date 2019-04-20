@@ -8,7 +8,7 @@ import {[=ClassName]NewComponent} from './[=ModuleName]-new.component';
 import {BaseListComponent} from '../base/base-list.component';
 import { Globals } from '../globals';
 import { IListColumn, listColumnType } from '../common/ilistColumn';
-import { PickerDialogService } from '../picker/picker-dialog.service';
+import { PickerDialogService } from '../common/components/picker/picker-dialog.service';
 <#if Relationship?has_content>
 import { IAssociationEntry } from '../core/iassociationentry';
 </#if>

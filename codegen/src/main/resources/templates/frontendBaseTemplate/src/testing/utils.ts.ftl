@@ -14,8 +14,8 @@ import {Component, Directive, ChangeDetectorRef} from '@angular/core';
 import {Router, ActivatedRoute,} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Globals} from '../app/globals';
-import {PickerDialogService} from '../app/picker/picker-dialog.service';
-import {PickerComponent} from '../app/picker/picker.component';
+import {PickerDialogService} from '../app/common/components/picker/picker-dialog.service';
+import {PickerComponent} from '../app/common/components/picker/picker.component';
 
 import {MatDialog, MatDialogRef,MatButtonModule, MatToolbarModule, MatSidenavModule,
   MatIconModule, MatListModule, MatRadioModule, MatTableModule,
@@ -25,13 +25,9 @@ import {MatDialog, MatDialogRef,MatButtonModule, MatToolbarModule, MatSidenavMod
   MatChipsModule, MatSortModule
 } from '@angular/material';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { UserNewComponent } from 'src/app/users';
-import {PermissionNewComponent} from 'src/app/permissions';
-import { JobNewComponent } from 'src/app/jobs/job-new/job-new.component';
-import { TriggerNewComponent } from 'src/app/triggers/trigger-new/trigger-new.component';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { ListFiltersComponent } from 'src/app/list-filters/list-filters.component';
-import { AddFilterFieldComponent } from 'src/app/list-filters/add-filter-field/add-filter-field.component';
+import { ListFiltersComponent } from 'src/app/common/components/list-filters/list-filters.component';
+import { AddFilterFieldComponent } from 'src/app/common/components/list-filters/add-filter-field/add-filter-field.component';
   @Injectable()
   class MockRouter { navigate = (commands:any)=> {}; }
   @Injectable()
@@ -102,11 +98,11 @@ import { AddFilterFieldComponent } from 'src/app/list-filters/add-filter-field/a
    
   ],
   entryComponents: [
-    PickerComponent,ListFiltersComponent, AddFilterFieldComponent,UserNewComponent,PermissionNewComponent,JobNewComponent,TriggerNewComponent
+    PickerComponent,ListFiltersComponent, AddFilterFieldComponent
   ]  
  
 })
 export class TestingModule {  
   constructor() {}
 }
-export var EntryComponents:any[]=[PickerComponent,ListFiltersComponent, AddFilterFieldComponent,UserNewComponent,PermissionNewComponent,JobNewComponent,TriggerNewComponent];
+export var EntryComponents:any[]=[PickerComponent,ListFiltersComponent, AddFilterFieldComponent];

@@ -46,14 +46,6 @@ public class CodegenApplication implements ApplicationRunner {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
-		// System.out.println(System.getProperty("java.class.path"));
-		// System.out.println(System.getProperty("user.dir"));
-
-		// String prop = configProperties.getConnectionStr();
-		// boolean b = configProperties.getForce();
-		// callEntityGen(configProperties);
-		// CodeGenerator.Generate(root.get("e"),root.get("s"),root.get("d"),"","");
-		// --a com.ninfinity.fastcode. It is a concatenation of groupid and artifact id
 		UserInput input = composeInput(configProperties);
 
 		// String sourcePackageName = root.get("p");
