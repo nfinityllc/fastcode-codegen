@@ -115,7 +115,7 @@ export class ListFiltersComponent implements OnInit {
         // adding value for this column to filter values object 
         this.filterValues[field.column] = result;
 
-        this.selectedFilterFields.push(event.option.viewValue + ": \"" + result + "\"");
+        this.selectedFilterFields.push(event.option.viewValue + "; \"" + result + "\"");
         this.filterInput.nativeElement.value = '';
         this.filterCtrl.setValue(null);
 
@@ -130,7 +130,7 @@ export class ListFiltersComponent implements OnInit {
 
     // get listcolumn object from filter field
     let filterField = this.columnsList.find(x => {
-      return x.label == field.split(':')[0];
+      return x.label == field.split(';')[0];
     });
 
     // re-add field to filter fields
@@ -146,7 +146,7 @@ export class ListFiltersComponent implements OnInit {
     let filterString = "";
     if(filterObj){
       Object.keys(filterObj).forEach((key)=>{
-        filterString = filterString + key + ":" + filterObj[key] + ',';
+        filterString = filterString + key + ";" + filterObj[key] + ',';
       })
       filterString = filterString.slice(0, -1);
     }

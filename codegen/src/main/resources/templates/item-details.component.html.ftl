@@ -6,7 +6,7 @@
 	<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()">
     Save </button>
 </mat-toolbar>
-<mat-card *ngIf="item">
+<mat-card>
 	<mat-card-content>
 		<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">
 		<#list Fields as key,value>

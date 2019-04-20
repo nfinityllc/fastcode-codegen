@@ -74,11 +74,13 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "ManyToMany">
 			{
 				column: {
-		<#if relationValue.relation == "ManyToMany">
+					<#if relationValue.relation == "ManyToMany">
 					key: '[=relationValue.inverseJoinColumn]',
-	    <#else>
+	  			<#elseif relationValue.relation == "ManyToOne">
+					key: '[=relationValue.fName]_id',
+					<#else>
 					key: '[=relationValue.fName]',
-		</#if>
+					</#if>
 					value: undefined
 				},
 				table: '[=relationValue.eName?lower_case]',

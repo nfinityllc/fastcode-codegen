@@ -159,7 +159,7 @@ public class [=ClassName]Controller {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_before("-") == relationValue.eName>
+  <#if parent?keep_after("-") == relationValue.eName>
     // [=relationValue.eName] related methods
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.POST)
@@ -218,7 +218,7 @@ public class [=ClassName]Controller {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]s", method = RequestMethod.GET)
+	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.GET)
 	public ResponseEntity Get[=relationValue.eName]s(@PathVariable String [=InstanceName]id) {
 		List<Get[=relationValue.eName]Output> output = _[=ClassName?lower_case]AppService.Get[=relationValue.eName]s(Long.valueOf([=InstanceName]id));
 		if (output == null) {

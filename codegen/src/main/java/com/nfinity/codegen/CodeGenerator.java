@@ -410,7 +410,7 @@ public class CodeGenerator {
 			{
 				for(String str : relationInput)
 				{
-					if(entityName.equals(str.substring(str.lastIndexOf("-")+1).toString()))
+					if(entityName.equals(str.substring(0,str.lastIndexOf("-")).toString()))
 					{
 						List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
 				     	root.put("RelationEntityFields",relationEntityFields);
@@ -473,9 +473,9 @@ public class CodeGenerator {
 
 		for(String str: entityName)
 		{
-		sourceBuilder.append("\n  " +" { path: '" + str.toLowerCase() + "s', component: " + str + "ListComponent, canActivate: [ AuthGuard ]  },");
+		sourceBuilder.append("\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canActivate: [ AuthGuard ]  },");
+		sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n");
 		sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ]  }," );
-		sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n");
 		}
 		String data = " ";
 		try {

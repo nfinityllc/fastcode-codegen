@@ -116,7 +116,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     //[=relationValue.eName]
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
-    <#if parent?keep_before("-") == relationValue.eName>
+    <#if parent?keep_after("-") == relationValue.eName>
     public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);

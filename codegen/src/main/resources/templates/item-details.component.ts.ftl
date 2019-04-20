@@ -25,7 +25,7 @@ import { Globals } from '../globals';
 })
 export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity]> implements OnInit {
   title:string='[=ClassName]';
-  parentUrl:string='[=ApiPath]s';
+  parentUrl:string='[=ApiPath]';
   //roles: IRole[];  
 	constructor(
 		public formBuilder: FormBuilder,
@@ -87,11 +87,25 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				column: {
 					<#if relationValue.relation == "ManyToMany">
 					key: '[=relationValue.joinColumn]',
-	    			<#else>
-					key: '[=relationValue.fName]',
+	    		<#elseif relationValue.relation == "OneToMany">
+					key: '[=ModuleName]_id',
 					</#if>
 					value: undefined
 				},
+				<#if relationValue.relation == "ManyToMany">
+				<#list RelationInput as relationInput>
+  			<#assign parent = relationInput>
+  			<#if parent?keep_after("-") == relationValue.eName>
+				isParent: true,
+				<#else>
+				isParent: false,
+				</#if>
+				</#list>
+				<#elseif relationValue.relation == "OneToMany">
+				isParent: true,
+				<#else >
+				isParent: false,
+				</#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]',
 				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -101,11 +115,11 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		</#list>
 		];
 		this.toMany = this.associations.filter(association => {
-			return ((['ManyToMany','OneToMany'].indexOf(association.type) > - 1) && !association.isParent);
+			return ((['ManyToMany','OneToMany'].indexOf(association.type) > - 1) && association.isParent);
 		});
 
 		this.toOne = this.associations.filter(association => {
-			return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1) && !association.isParent);
+			return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1));
 		});
 	}
   </#if>

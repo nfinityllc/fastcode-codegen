@@ -98,7 +98,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_before("-") == relationValue.eName>
+  <#if parent?keep_after("-") == relationValue.eName>
   @ManyToMany(cascade = {CascadeType.ALL})
   @JoinTable(name = "[=relationValue.joinTable]", schema = "[=SchemaName]",
             joinColumns = {@JoinColumn(name = "[=relationValue.joinColumn]", referencedColumnName = "[=relationValue.referenceColumn]")},
@@ -111,7 +111,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
 
   private Set<[=relationValue.eName]Entity> [=relationValue.fName]s = new HashSet<>();
-  <#elseif parent?keep_after("-") == relationValue.eName>
+  <#elseif parent?keep_before("-") == relationValue.eName>
   public void add[=relationValue.eName]([=relationValue.eName]Entity input) {
     [=relationValue.fName]s.add(input);
     input.get[=ClassName]s().add(this);

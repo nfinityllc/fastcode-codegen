@@ -300,7 +300,7 @@ public class [=ClassName]AppServiceTest {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_before("-") == relationValue.eName>
+  <#if parent?keep_after("-") == relationValue.eName>
     // Operations With [=relationValue.eName]
     
     @Test 

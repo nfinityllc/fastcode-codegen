@@ -180,9 +180,9 @@ export class BaseListComponent<E> implements OnInit {
       });
     }
     else {
-      // this.dataService.delete(item.id).subscribe(result => {
-      //   this.getItems();
-      // });
+    	this.dataService.delete(item.id).subscribe(result => {
+      	this.getItems();
+      });
     }
   }
 
