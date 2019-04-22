@@ -93,7 +93,8 @@ public class ModifyPomFile {
 			for(Element plugin:pluginList) {
 				pluginsNode.appendChild(plugin);
 			}
-
+			
+			removeScopeTagFromTestDependency(dependenciesNode);
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -205,5 +206,35 @@ public class ModifyPomFile {
 		mapStruct.appendChild(configuration);
 		
 		return mapStruct;
+	}
+
+	private static void removeScopeTagFromTestDependency(Node dependenciesNode) {
+		
+		
+		NodeList dependencies = dependenciesNode.getChildNodes();
+		
+		for (int i = 0; i < dependencies.getLength(); i++) {
+			
+            Node dependency = dependencies.item(i);
+            NodeList dependencyChilds = dependency.getChildNodes();
+            
+            Map<String,Object> nodeMap = new HashMap<String,Object>();
+            for (int j = 0; j < dependencyChilds.getLength(); j++) {
+            	Node dependencyChild = dependencyChilds.item(j);
+            	Map<Integer,String> nm = new HashMap<Integer,String>();
+            	nm.put(j,dependencyChild.getTextContent());
+            	nodeMap.put(dependencyChild.getNodeName(), nm);
+            }
+            if(nodeMap.containsKey("scope")) {
+            	Map<Integer,String> nm = (Map<Integer, String>) nodeMap.get("artifactId");
+            	if(nm.containsValue("spring-boot-starter-test")) {
+            		nm = (Map<Integer, String>) nodeMap.get("scope");
+            		int nodeIndex = nm.keySet().iterator().next();
+            		Node scope = dependencyChilds.item(nodeIndex);
+            		dependency.removeChild(scope);
+            	}
+            }
+		}
+		
 	}
 }
