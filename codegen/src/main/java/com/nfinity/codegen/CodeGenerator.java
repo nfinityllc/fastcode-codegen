@@ -1,5 +1,9 @@
 package com.nfinity.codegen;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.FieldDetails;
 import com.nfinity.entitycodegen.RelationDetails;
@@ -10,12 +14,19 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -112,6 +123,7 @@ public class CodeGenerator {
 		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+	    updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
 
 	}
 	
@@ -515,6 +527,60 @@ public class CodeGenerator {
 		}
 		
 		return builder;
+	}
+	
+	public static void updateEntitiesJsonFile(String path,List<String> entityNames) {
+
+		try {
+
+
+            JSONArray entityArray = (JSONArray) readJsonFile(path);
+            for(String entityName: entityNames)
+    		{
+            	entityArray.add(entityName.toLowerCase());
+    		}
+            
+            String prettyJsonString = beautifyJson(entityArray, "Array"); 
+            writeJsonToFile(path,prettyJsonString);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        
+	}
+	
+	public static Object readJsonFile(String path) throws IOException, ParseException {
+
+		JSONParser parser = new JSONParser();
+		FileReader fr = new FileReader(path);
+        Object obj = parser.parse(fr);
+        fr.close();
+        return obj;
+	}
+
+	// type: "Object" , "Array"
+	public static String beautifyJson(Object jsonObject, String type)  {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je;
+        if(type == "Array") {
+        	je = jp.parse(((JSONArray)jsonObject).toJSONString());
+        }
+        else {
+        	je = jp.parse(((JSONObject)jsonObject).toJSONString());
+        }
+        return gson.toJson(je);
+	}
+	
+	public static void writeJsonToFile(String path, String jsonString) throws IOException {
+		FileWriter file = new FileWriter(path);
+		file.write(jsonString);
+        file.close();
 	}
 
 }
