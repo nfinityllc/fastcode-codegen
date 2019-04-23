@@ -1,6 +1,11 @@
 package com.nfinity.codegen;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.nfinity.entitycodegen.EntityDetails;
+import com.nfinity.entitycodegen.EntityGenerator;
 import com.nfinity.entitycodegen.FieldDetails;
 import com.nfinity.entitycodegen.RelationDetails;
 import freemarker.cache.ClassTemplateLoader;
@@ -10,12 +15,19 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -80,7 +92,7 @@ public class CodeGenerator {
 
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,
-			String sourcePackageName,Boolean audit, String sourcePath, String destPath, String type,Map<String,EntityDetails> details) {
+			String sourcePackageName,Boolean audit, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString, String schema) {
 
 		//backendAppFolder = backEndRootFolder + "/src/main/java";
 		//clientAppFolder = clientRootFolder + "/src/app";
@@ -112,7 +124,21 @@ public class CodeGenerator {
 		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+	    updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
+	    
+	    Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema);
+		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 
+	}
+	
+	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema){
+		Map<String,Object> propertyInfo = new HashMap<String,Object>();
+		
+		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
+		propertyInfo.put("appName", appName);
+		propertyInfo.put("schema", schema);
+		
+		return propertyInfo;
 	}
 	
 	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath){
@@ -318,7 +344,6 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
-
 	private static Map<String, Object> getControllerTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -365,6 +390,7 @@ public class CodeGenerator {
 		
 		
 	}
+	
 	private static void generateError(Map<String, Object> root, String destPath)
 	{
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -434,6 +460,14 @@ public class CodeGenerator {
 		}
 	}
 	
+	private static void generateApplicationProperties(Map<String, Object> root, String destPath)
+	{
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("application.properties.ftl", "application.properties");
+		new File(destPath).mkdirs();
+		generateFiles(backEndTemplate, root, destPath);
+	}
+	
 	public static void updateAppModule(String destPath,String appName,List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
@@ -467,6 +501,7 @@ public class CodeGenerator {
 			e.printStackTrace();
 		}
 	}
+	
 	public static void updateAppRouting(String destPath,String appName, List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
@@ -515,6 +550,60 @@ public class CodeGenerator {
 		}
 		
 		return builder;
+	}
+	
+	public static void updateEntitiesJsonFile(String path,List<String> entityNames) {
+
+		try {
+
+
+            JSONArray entityArray = (JSONArray) readJsonFile(path);
+            for(String entityName: entityNames)
+    		{
+            	entityArray.add(entityName.toLowerCase());
+    		}
+            
+            String prettyJsonString = beautifyJson(entityArray, "Array"); 
+            writeJsonToFile(path,prettyJsonString);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        
+	}
+	
+	public static Object readJsonFile(String path) throws IOException, ParseException {
+
+		JSONParser parser = new JSONParser();
+		FileReader fr = new FileReader(path);
+        Object obj = parser.parse(fr);
+        fr.close();
+        return obj;
+	}
+
+	// type: "Object" , "Array"
+	public static String beautifyJson(Object jsonObject, String type)  {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je;
+        if(type == "Array") {
+        	je = jp.parse(((JSONArray)jsonObject).toJSONString());
+        }
+        else {
+        	je = jp.parse(((JSONObject)jsonObject).toJSONString());
+        }
+        return gson.toJson(je);
+	}
+	
+	public static void writeJsonToFile(String path, String jsonString) throws IOException {
+		FileWriter file = new FileWriter(path);
+		file.write(jsonString);
+        file.close();
 	}
 
 }
