@@ -88,12 +88,12 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
   <#elseif relationValue.relation == "ManyToMany">
    <#list RelationInput as relationInput>
     <#assign parent = relationInput>
-    <#if parent?keep_after("-") == relationValue.eName>
+    <#if parent?keep_before("-") == relationValue.eName>
     //[=relationValue.eName]
     @Transactional
 	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
 		
-		Set<[=EntityClassName]> entitySet = [=relationValue.eName?lower_case].get[=ClassName]s();
+		Set<[=EntityClassName]> entitySet = [=relationValue.eName?lower_case].get[=ClassName]();
 
 		if (!entitySet.contains([=InstanceName])) {
 			[=relationValue.eName?lower_case].add[=ClassName]([=InstanceName]);
@@ -117,8 +117,8 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 
 		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName]Id.longValue());
 		
-		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]s = foundRecord.get[=relationValue.eName]s();
-		Iterator iterator = [=relationValue.eName?lower_case]s.iterator();
+		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case] = foundRecord.get[=relationValue.eName]();
+		Iterator iterator = [=relationValue.eName?lower_case].iterator();
 		while (iterator.hasNext()) { 
 			[=relationValue.eName]Entity pe = ([=relationValue.eName]Entity) iterator.next();
 			if (pe.getId() == [=relationValue.eName?lower_case]Id) {
@@ -132,7 +132,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]s([=EntityClassName] [=InstanceName]) {
 		
 		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName].getId().longValue());
-		return foundRecord.get[=relationValue.eName]s();
+		return foundRecord.get[=relationValue.eName]();
 	}
 	</#if>
     </#list>

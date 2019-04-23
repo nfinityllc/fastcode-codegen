@@ -85,6 +85,8 @@ public class EntityGenerator {
 					EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
 					details.setRelationInput(relationInputList);
 					entityDetailsMap.put(entityName,details);
+					Map<String,RelationDetails> relationMap =details.getRelationsMap();
+				    details.setRelationsMap(GetEntityDetails.setJoinColumn(relationMap, classList));
 					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit, auditPackage);
 
 				}
@@ -97,7 +99,7 @@ public class EntityGenerator {
 
 		if (audit) {
 			EntityGenerator.generateAuditEntity(destinationPath, auditPackage);
-		}
+		} 
 
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");

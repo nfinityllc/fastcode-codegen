@@ -85,11 +85,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		<#list Relationship as relationKey, relationValue>
 			{
 				column: {
-					<#if relationValue.relation == "ManyToMany">
 					key: '[=relationValue.joinColumn]',
-	    		<#elseif relationValue.relation == "OneToMany">
-					key: '[=ModuleName]_id',
-					</#if>
 					value: undefined
 				},
 				<#if relationValue.relation == "ManyToMany">
@@ -103,7 +99,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				</#list>
 				<#elseif relationValue.relation == "OneToMany">
 				isParent: true,
-				<#else >
+				<#else>
 				isParent: false,
 				</#if>
 				table: '[=relationValue.eName?lower_case]',

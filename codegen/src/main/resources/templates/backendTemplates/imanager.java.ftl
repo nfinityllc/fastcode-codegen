@@ -37,7 +37,7 @@ public interface I[=ClassName]Manager {
    <#elseif relationValue.relation == "ManyToMany">
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
-    <#if parent?keep_after("-") == relationValue.eName>
+    <#if parent?keep_before("-") == relationValue.eName>
     //[=relationValue.eName]
     public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]);
 

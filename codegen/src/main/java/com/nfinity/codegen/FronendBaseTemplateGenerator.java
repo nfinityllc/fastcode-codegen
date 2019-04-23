@@ -111,7 +111,7 @@ public class FronendBaseTemplateGenerator {
 		if (isWindows) {
 			builder.command("cmd.exe", "/c", command);
 		} else {
-			builder.command("sh", "-c", "ls");
+			builder.command("sh", "-c", command);
 		}
 		// builder.directory(new File(System.getProperty("user.home")));
 		builder.directory(new File(directory));

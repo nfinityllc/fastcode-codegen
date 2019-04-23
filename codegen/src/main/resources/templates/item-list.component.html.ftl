@@ -17,7 +17,7 @@
 		<th mat-header-cell *matHeaderCellDef> [=value.fieldName] </th>
 		<td mat-cell *matCellDef="let item"> {{item.[=value.fieldName] | date:'short'}} </td>
 	</ng-container>
-	<#else>
+	<#elseif value.fieldType?lower_case == "string">
 	<ng-container matColumnDef="[=value.fieldName]">
 		<th mat-header-cell *matHeaderCellDef> [=value.fieldName]</th>
 		<td mat-cell *matCellDef="let item">

@@ -24,7 +24,7 @@ describe('[=ClassName]DetailComponent', () => {
                 [=key]: new Date().toLocaleDateString("en-US") ,
             <#elseif value.fieldType?lower_case == "boolean">              
                 [=key]: true,
-            <#else>              
+            <#elseif value.fieldType?lower_case == "string">              
                    [=key]: '[=key][=counter]',
             </#if> 
       </#list>    };

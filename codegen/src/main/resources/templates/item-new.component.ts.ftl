@@ -32,7 +32,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
                 [=value.fieldName]: ['', Validators.required],
             <#elseif value.fieldName?lower_case == "boolean">              
                 [=value.fieldName]: [false, Validators.required],
-            <#else>              
+            <#elseif value.fieldType?lower_case == "string">              
                 [=value.fieldName]: ['', Validators.required],
             </#if> 
       </#list>    

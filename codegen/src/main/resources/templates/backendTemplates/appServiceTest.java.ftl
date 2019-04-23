@@ -300,7 +300,7 @@ public class [=ClassName]AppServiceTest {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_after("-") == relationValue.eName>
+  <#if parent?keep_before("-") == relationValue.eName>
     // Operations With [=relationValue.eName]
     
     @Test 
@@ -376,10 +376,10 @@ public class [=ClassName]AppServiceTest {
 	public void Get[=relationValue.eName]s_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() {
 		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
 
-		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]s = [=ClassName?lower_case].get[=relationValue.eName]s();
+		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]List = [=ClassName?lower_case].get[=relationValue.eName]();
 		List<Get[=relationValue.eName]Output> list = new ArrayList<>();
 		Mockito.when(_[=ClassName?lower_case]Manager.FindById(anyLong())).thenReturn([=ClassName?lower_case]);
-		Mockito.when(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]s(any([=ClassName]Entity.class))).thenReturn([=relationValue.eName?lower_case]s);
+		Mockito.when(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]s(any([=ClassName]Entity.class))).thenReturn([=relationValue.eName?lower_case]List);
 		Assertions.assertThat(_appService.Get[=relationValue.eName]s(ID)).isEqualTo(list);
 	}
 	</#if>

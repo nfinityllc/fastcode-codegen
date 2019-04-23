@@ -98,52 +98,41 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_after("-") == relationValue.eName>
+  <#if parent?keep_before("-") == relationValue.eName>
   @ManyToMany(cascade = {CascadeType.ALL})
   @JoinTable(name = "[=relationValue.joinTable]", schema = "[=SchemaName]",
             joinColumns = {@JoinColumn(name = "[=relationValue.joinColumn]", referencedColumnName = "[=relationValue.referenceColumn]")},
             inverseJoinColumns = {@JoinColumn(name = "[=relationValue.inverseJoinColumn]", referencedColumnName = "[=relationValue.inverseReferenceColumn]")})
-  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]s() {
-    return [=relationValue.fName]s;
+  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]() {
+    return [=relationValue.fName];
   }
-  public void set[=relationValue.eName]s(Set<[=relationValue.eName]Entity> [=relationValue.fName]s) {
-    this.[=relationValue.fName]s = [=relationValue.fName]s;
+  public void set[=relationValue.eName](Set<[=relationValue.eName]Entity> [=relationValue.fName]) {
+    this.[=relationValue.fName] = [=relationValue.fName];
   }
 
-  private Set<[=relationValue.eName]Entity> [=relationValue.fName]s = new HashSet<>();
-  <#elseif parent?keep_before("-") == relationValue.eName>
+  private Set<[=relationValue.eName]Entity> [=relationValue.fName] = new HashSet<>();
+  <#elseif parent?keep_after("-") == relationValue.eName>
   public void add[=relationValue.eName]([=relationValue.eName]Entity input) {
-    [=relationValue.fName]s.add(input);
-    input.get[=ClassName]s().add(this);
+    [=relationValue.fName].add(input);
+    input.get[=ClassName]().add(this);
   }
 
   public void remove[=relationValue.eName]([=relationValue.eName]Entity input) {
-    [=relationValue.fName]s.remove(input);
-    input.get[=ClassName]s().remove(this);
+    [=relationValue.fName].remove(input);
+    input.get[=ClassName]().remove(this);
   }
     
-  @ManyToMany(mappedBy = "[=ClassName?lower_case]s")
-  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]s() {
-    return [=relationValue.fName]s;
+  @ManyToMany(mappedBy = "[=ClassName?lower_case]")
+  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]() {
+    return [=relationValue.fName];
   }
-  public void set[=relationValue.eName]s(Set<[=relationValue.eName]Entity> [=relationValue.fName]s) {
-    this.[=relationValue.fName]s = [=relationValue.fName]s;
+  public void set[=relationValue.eName](Set<[=relationValue.eName]Entity> [=relationValue.fName]) {
+    this.[=relationValue.fName] = [=relationValue.fName];
   }
 
-  private Set<[=relationValue.eName]Entity> [=relationValue.fName]s = new HashSet<>();
+  private Set<[=relationValue.eName]Entity> [=relationValue.fName] = new HashSet<>();
   </#if>
   </#list>
-  <#elseif relationValue.relation == "OneToMany">  
-  @OneToMany(mappedBy = "[=relationValue.mappedBy]", cascade = CascadeType.ALL, orphanRemoval = true)
-  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]s() {
-    return [=relationValue.fName]s;
-  }
-
-  public void set[=relationValue.eName]s(Set<[=relationValue.eName]Entity> [=relationValue.fName]s) {
-    this.[=relationValue.fName]s = [=relationValue.fName]s;
-  }
-
-  private Set<[=relationValue.eName]Entity> [=relationValue.fName]s = new HashSet<[=relationValue.eName]Entity>();
   </#if>
   </#if>
   </#list>

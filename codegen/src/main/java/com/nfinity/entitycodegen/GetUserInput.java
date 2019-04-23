@@ -71,7 +71,7 @@ public class GetUserInput {
 					for (RelationDetails e : relationList) {
 						if (e.geteName().equals(className) && e.getRelation().equals(entry.getValue().getRelation())) {
 							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
-									+ " having " + entry.getValue().getRelation() + " relationship , which one is the owner entity ? Enter 1 ("+ className +") or 2 ("+ entry.getValue().geteName()+ ") : ");
+									+ " having " + entry.getValue().getRelation() + " relationship , which one is the parent entity ? Enter 1 ("+ className +") or 2 ("+ entry.getValue().geteName()+ ") : ");
 
 							Scanner scanner = new Scanner(System.in);
 							

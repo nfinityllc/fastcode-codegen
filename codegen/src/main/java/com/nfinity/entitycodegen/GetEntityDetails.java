@@ -135,7 +135,6 @@ public class GetEntityDetails{
 				if(relation.geteName() != null)
 				{
 					relation.setfDetails(getFields(relation.geteName(),classList));
-					//	System.out.println(" FEILD DETAILS :" + details.getFieldName());
 					relationsMap.put(className + "-" + relation.geteName(),relation);
 				}
 
@@ -298,6 +297,57 @@ public class GetEntityDetails{
 
 		return fieldsList;
 
+	}
+	
+	public static Map<String,RelationDetails> setJoinColumn(Map<String,RelationDetails> relationMap,List<Class<?>> classList)
+	{
+		for(Map.Entry<String, RelationDetails> entry : relationMap.entrySet())
+			{
+				if(entry.getValue().getRelation()=="OneToMany")
+				{
+					for(Class<?> currentClass : classList)
+					{
+						String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1);
+						if(entityName.equals(entry.getValue().geteName()))
+						{
+							try {
+								Class<?> myClass = currentClass;
+								Object classObj = (Object) myClass.newInstance();
+								Field[] fields = classObj.getClass().getDeclaredFields();
+								for (Field field : fields) {
+									Annotation[] annotations = field.getAnnotations();
+
+									for(Annotation a: annotations)
+									{
+										if (a.annotationType().toString().equals("interface javax.persistence.JoinColumn")) {
+											String joinColumn = a.toString();
+											String[] word = joinColumn.split("[\\(,//)]");
+											for(String s : word){
+												if(s.contains("name"))
+												{
+													String[] value=s.split("="); 
+													
+													entry.getValue().setJoinColumn(value[1]);
+													break;
+												}
+											}
+										}
+									}
+								}
+
+							} catch (InstantiationException e) {
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								e.printStackTrace();
+							}
+
+						}
+					}
+					
+				}
+			}
+
+		return relationMap;
 	}
 
 

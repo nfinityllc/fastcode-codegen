@@ -20,7 +20,7 @@
                         <input formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
                         <mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
                 </mat-form-field>
-            <#else>
+            <#elseif value.fieldType?lower_case == "string">
                   <mat-form-field>
                         <input formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
                         <mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>

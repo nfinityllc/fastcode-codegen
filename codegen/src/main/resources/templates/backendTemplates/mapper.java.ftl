@@ -44,7 +44,7 @@ public interface [=ClassName]Mapper {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_after("-") == relationValue.eName>
+  <#if parent?keep_before("-") == relationValue.eName>
   @Mappings({
   <#list relationValue.fDetails as fValue>
   <#list Fields as key,value> 

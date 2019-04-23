@@ -157,15 +157,15 @@ public class [=ClassName]ManagerTest {
   <#elseif relationValue.relation == "ManyToMany">
    <#list RelationInput as relationInput>
     <#assign parent = relationInput>
-    <#if parent?keep_after("-") == relationValue.eName>
+    <#if parent?keep_before("-") == relationValue.eName>
     //[=relationValue.eName]
     @Test
 	public void add[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNull_[=relationValue.eName]Assigned() {
 		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?lower_case] = mock([=relationValue.eName]Entity.class);
 		
-		Set<[=EntityClassName]> su = [=relationValue.eName?lower_case].get[=ClassName]s();
-		Mockito.when([=relationValue.eName?lower_case].get[=ClassName]s()).thenReturn(su);
+		Set<[=EntityClassName]> su = [=relationValue.eName?lower_case].get[=ClassName]();
+		Mockito.when([=relationValue.eName?lower_case].get[=ClassName]()).thenReturn(su);
         Assertions.assertThat(_[=ClassName?lower_case]Manager.Add[=relationValue.eName]([=ClassName?lower_case], [=relationValue.eName?lower_case])).isEqualTo(true);
 
 	}
@@ -175,10 +175,10 @@ public class [=ClassName]ManagerTest {
 		
 		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?lower_case] = mock([=relationValue.eName]Entity.class);
-		Set<[=EntityClassName]> su = [=relationValue.eName?lower_case].get[=ClassName]s();
+		Set<[=EntityClassName]> su = [=relationValue.eName?lower_case].get[=ClassName]();
 		su.add([=ClassName?lower_case]);
 		
-		 Mockito.when([=relationValue.eName?lower_case].get[=ClassName]s()).thenReturn(su);
+		 Mockito.when([=relationValue.eName?lower_case].get[=ClassName]()).thenReturn(su);
 		 Assertions.assertThat(_[=ClassName?lower_case]Manager.Add[=relationValue.eName]([=ClassName?lower_case], [=relationValue.eName?lower_case])).isEqualTo(false);
 
 	}
@@ -207,11 +207,11 @@ public class [=ClassName]ManagerTest {
 		[=relationValue.eName]Entity [=relationValue.eName?lower_case] = new [=relationValue.eName]Entity();
 		[=relationValue.eName?lower_case].setId(ID);
 	
-		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]s = [=ClassName?lower_case].get[=relationValue.eName]s();
-		[=relationValue.eName?lower_case]s.add([=relationValue.eName?lower_case]);
+		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]List = [=ClassName?lower_case].get[=relationValue.eName]();
+		[=relationValue.eName?lower_case]List.add([=relationValue.eName?lower_case]);
 
 		Mockito.when(_[=ClassName?lower_case]Repository.findById(ID)).thenReturn([=ClassName?lower_case]);
-		Mockito.when([=ClassName?lower_case].get[=relationValue.eName]s()).thenReturn([=relationValue.eName?lower_case]s);
+		Mockito.when([=ClassName?lower_case].get[=relationValue.eName]()).thenReturn([=relationValue.eName?lower_case]List);
 
 		Assertions.assertThat(_[=ClassName?lower_case]Manager.Get[=relationValue.eName](ID,ID)).isEqualTo([=relationValue.eName?lower_case]);
 
@@ -220,11 +220,11 @@ public class [=ClassName]ManagerTest {
 	@Test
 	public void Get[=relationValue.eName]_[=ClassName]IsNotNull_Return[=relationValue.eName]s() {
 		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
-		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case]s = [=ClassName?lower_case].get[=relationValue.eName]s();
+		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case] = [=ClassName?lower_case].get[=relationValue.eName]();
 		
 		Mockito.when(_[=ClassName?lower_case]Repository.findById(anyLong())).thenReturn([=ClassName?lower_case]);
-		Mockito.when([=ClassName?lower_case].get[=relationValue.eName]s()).thenReturn([=relationValue.eName?lower_case]s);
-		Assertions.assertThat(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]s([=ClassName?lower_case])).isEqualTo([=relationValue.eName?lower_case]s);
+		Mockito.when([=ClassName?lower_case].get[=relationValue.eName]()).thenReturn([=relationValue.eName?lower_case]);
+		Assertions.assertThat(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]s([=ClassName?lower_case])).isEqualTo([=relationValue.eName?lower_case]);
 	}
     </#if>
     </#list>
