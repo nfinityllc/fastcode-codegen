@@ -71,7 +71,7 @@ public class CodegenApplication implements ApplicationRunner {
 		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, false,
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
-				input.getDestinationPath(), input.getGenerationType(), details);
+				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(), input.getSchemaName());
 
 		// String destination = "F:\\projects\\New folder\\fbaseTempDes";
 		// destination = root.get("d") + "/fbaseTempDes";

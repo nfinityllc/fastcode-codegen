@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.nfinity.entitycodegen.EntityDetails;
+import com.nfinity.entitycodegen.EntityGenerator;
 import com.nfinity.entitycodegen.FieldDetails;
 import com.nfinity.entitycodegen.RelationDetails;
 import freemarker.cache.ClassTemplateLoader;
@@ -91,7 +92,7 @@ public class CodeGenerator {
 
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,
-			String sourcePackageName,Boolean audit, String sourcePath, String destPath, String type,Map<String,EntityDetails> details) {
+			String sourcePackageName,Boolean audit, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString, String schema) {
 
 		//backendAppFolder = backEndRootFolder + "/src/main/java";
 		//clientAppFolder = clientRootFolder + "/src/app";
@@ -124,7 +125,20 @@ public class CodeGenerator {
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
+	    
+	    Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema);
+		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 
+	}
+	
+	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema){
+		Map<String,Object> propertyInfo = new HashMap<String,Object>();
+		
+		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
+		propertyInfo.put("appName", appName);
+		propertyInfo.put("schema", schema);
+		
+		return propertyInfo;
 	}
 	
 	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath){
@@ -330,7 +344,6 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
-
 	private static Map<String, Object> getControllerTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -377,6 +390,7 @@ public class CodeGenerator {
 		
 		
 	}
+	
 	private static void generateError(Map<String, Object> root, String destPath)
 	{
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -446,6 +460,14 @@ public class CodeGenerator {
 		}
 	}
 	
+	private static void generateApplicationProperties(Map<String, Object> root, String destPath)
+	{
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("application.properties.ftl", "application.properties");
+		new File(destPath).mkdirs();
+		generateFiles(backEndTemplate, root, destPath);
+	}
+	
 	public static void updateAppModule(String destPath,String appName,List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
@@ -479,6 +501,7 @@ public class CodeGenerator {
 			e.printStackTrace();
 		}
 	}
+	
 	public static void updateAppRouting(String destPath,String appName, List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
