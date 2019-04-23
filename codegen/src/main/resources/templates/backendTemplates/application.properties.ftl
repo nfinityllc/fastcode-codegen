@@ -13,7 +13,6 @@ spring.application.name=[=appName]
 server.port=5555
 spring.main.banner-mode=off
 javers.mapping-style=BEAN
-spring.jackson.serialization.fail-on-empty-beans=false
 
 fastCode.offset.default=0
 fastCode.limit.default=10

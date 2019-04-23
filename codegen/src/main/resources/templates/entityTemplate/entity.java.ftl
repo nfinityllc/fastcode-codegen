@@ -1,13 +1,14 @@
-package [=PackageName];
+package [=PackageName].domain.model;
 
 import java.io.Serializable;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Date;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=AuditPackage].AuditedEntity;
+import [=PackageName].Audit.AuditedEntity;
 </#if>
 
 @Entity

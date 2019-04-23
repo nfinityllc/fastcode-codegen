@@ -47,12 +47,6 @@ public class GetUserInput {
 		else
 			input.setAudit(false);
 
-		if (input.getAudit()) {
-			System.out.print("\nWhat is the package name for Audit Entity ?");
-			String auditPackage = inputReader.nextLine();
-			input.setAuditPackage(auditPackage.isEmpty() ? input.getPackageName().concat(".Audit") : auditPackage);
-		}
-
 		return input;
 	}
 

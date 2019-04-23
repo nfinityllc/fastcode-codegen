@@ -45,7 +45,7 @@ public class CodeGenerator {
 //	static String BACKEND_ROOT_FOLDER = "/backend";
 //	static String backendAppFolder = BACKEND_ROOT_FOLDER + "/src/main/java";
 
-	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit, String sourcePath,
+	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit,Boolean history, String sourcePath,
 			String type, String modName,EntityDetails details) {
 		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
@@ -66,6 +66,7 @@ public class CodeGenerator {
 		root.put("InstanceName", instanceName);
 		root.put("RelationInput",details.getRelationInput());
 		root.put("Audit", audit);
+		root.put("History", history);
 		root.put("IEntity", "I" + className);
 		root.put("IEntityFile", "i" + moduleName);
 		root.put("ApiPath", className.toLowerCase());
@@ -92,7 +93,7 @@ public class CodeGenerator {
 
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,
-			String sourcePackageName,Boolean audit, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString, String schema) {
+			String sourcePackageName,Boolean audit,Boolean history, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString, String schema) {
 
 		//backendAppFolder = backEndRootFolder + "/src/main/java";
 		//clientAppFolder = clientRootFolder + "/src/app";
@@ -114,14 +115,16 @@ public class CodeGenerator {
 		{
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			entityNames.add(className);
-			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit, sourcePath, destPath, type,entry.getValue());
+			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit,history, sourcePath, destPath, type,entry.getValue());
 
 		}
 		
 		
 
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
+		if(history)
 		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
+		
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
@@ -172,7 +175,6 @@ public class CodeGenerator {
 		cfg.setTemplateLoader(mtl);
 		
 		Map<String, Object> template = new HashMap<>();
-		// Map<String, Object> backEndTemplate = new HashMap<>();
 		template.put("AuditController.java.ftl", "AuditController.java");
 		
 		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/") + "/RestControllers";
@@ -181,11 +183,11 @@ public class CodeGenerator {
 		
 	}
 
-	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit, String sourcePath, String destPath, String type,EntityDetails details) {
+	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit,Boolean history, String sourcePath, String destPath, String type,EntityDetails details) {
 	
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		String clientAppFolder = clientRootFolder + "/src/app";
-		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit, sourcePath, type, "",details);
+		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details);
 		
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 

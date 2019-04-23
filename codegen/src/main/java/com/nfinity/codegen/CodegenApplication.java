@@ -38,6 +38,10 @@ public class CodegenApplication implements ApplicationRunner {
 				root.get("a") == null ? GetUserInput.getInput(scanner, "application name") : root.get("a"));
 		input.setGenerationType(
 				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
+		input.setAudit(
+				root.get("audit") == null ? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false ) : (root.get("audit").toLowerCase().equals("true") ? true : false));
+		input.setHistory(
+				root.get("h") == null ? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false ) : (root.get("h").toLowerCase().equals("true") ? true : false));
 
 		return input;
 	}
@@ -61,21 +65,17 @@ public class CodegenApplication implements ApplicationRunner {
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa,data-rest",
 				true, "-n=" + artifactId + "  -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
-				input.getSchemaName(), null, groupArtifactId + ".domain.model",
-				input.getDestinationPath() + "/" + artifactId, false, "");
+				input.getSchemaName(), null, groupArtifactId,
+				input.getDestinationPath() + "/" + artifactId, input.getAudit());
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
 
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
-		// String destination = root.get("d") + "/" + artifactId;
-
-		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, false,
+		
+		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),input.getHistory(),
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
 				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(), input.getSchemaName());
 
-		// String destination = "F:\\projects\\New folder\\fbaseTempDes";
-		// destination = root.get("d") + "/fbaseTempDes";
-		// FronendBaseTemplateGenerator.generate(destination);
 	}
 
 	@Override

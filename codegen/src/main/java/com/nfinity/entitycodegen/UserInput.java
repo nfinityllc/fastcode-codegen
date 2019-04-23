@@ -11,7 +11,7 @@ public class UserInput {
 	String connectionStr;
 	List<String> tablesList;
 	Boolean audit;
-	String auditPackage;
+	Boolean history;
 	
 	
 	public String getGroupArtifactId() {
@@ -57,19 +57,18 @@ public class UserInput {
 	public void setAudit(Boolean audit) {
 		this.audit = audit;
 	}
-	public String getAuditPackage() {
-		return auditPackage;
-	}
-	public void setAuditPackage(String auditPackage) {
-		this.auditPackage = auditPackage;
-	}
 	public List<String> getTablesList() {
 		return tablesList;
 	}
 	public void setTablesList(List<String> tablesList) {
 		this.tablesList = tablesList;
+	}
+	public Boolean getHistory() {
+		return history;
+	}
+	public void setHistory(Boolean history) {
+		this.history = history;
 	}	
-	
 	
 }
 

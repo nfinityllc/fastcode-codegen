@@ -1,6 +1,8 @@
 package [=PackageName].application.[=ClassName].Dto;
 
+<#if Audit!false>
 import java.util.Date;
+</#if>
 public class Find[=ClassName]ByIdOutput {
 
 <#list Fields as key,value>

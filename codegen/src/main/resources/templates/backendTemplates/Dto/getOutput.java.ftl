@@ -14,12 +14,7 @@ public class Get[=RelationEntityName]Output {
   private String [=value.fieldName];
   </#if>
 </#list>
-<#if Audit!false>
-  private String creatorUserId;
-  private java.util.Date creationTime;
-  private String lastModifierUserId;
-  private java.util.Date lastModificationTime;
-</#if>
+
 <#list Fields as fkey,fvalue>
  <#if fvalue.isPrimaryKey?string('true','false') == "true" >
  <#if fvalue.fieldType?lower_case == "long" || fvalue.fieldType?lower_case == "int">
@@ -101,39 +96,5 @@ public class Get[=RelationEntityName]Output {
   }
  </#if> 
 </#list>
-  
- <#if Audit!false>
-  public java.util.Date getCreationTime() {
-      return creationTime;
-  }
-
-  public void setCreationTime(java.util.Date creationTime) {
-      this.creationTime = creationTime;
-  }
-
-  public String getLastModifierUserId() {
-      return lastModifierUserId;
-  }
-
-  public void setLastModifierUserId(String lastModifierUserId) {
-      this.lastModifierUserId = lastModifierUserId;
-  }
-
-  public java.util.Date getLastModificationTime() {
-      return lastModificationTime;
-  }
-
-  public void setLastModificationTime(java.util.Date lastModificationTime) {
-      this.lastModificationTime = lastModificationTime;
-  }
-
-  public String getCreatorUserId() {
-      return creatorUserId;
-  }
-
-  public void setCreatorUserId(String creatorUserId) {
-      this.creatorUserId = creatorUserId;
-  }
-</#if> 
 
 }

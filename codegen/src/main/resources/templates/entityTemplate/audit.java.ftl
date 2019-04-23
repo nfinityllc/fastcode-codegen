@@ -1,4 +1,4 @@
-package [=PackageName];
+package [=PackageName].Audit;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;

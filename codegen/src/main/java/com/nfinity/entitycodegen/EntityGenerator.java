@@ -23,11 +23,12 @@ public class EntityGenerator {
 		cfg.setTemplateLoader(ctl);
 	}
 
-	public static Map<String,EntityDetails> generateEntities(String connectionString, String schema,List<String> tableList, String packageName, String destination, Boolean audit,
-			String auditPackage) {
+	public static Map<String,EntityDetails> generateEntities(String connectionString, String schema,List<String> tableList, String packageName, String destination,
+			Boolean audit) {
 
 		Map<String,String> connectionProps = parseConnectionString(connectionString);
-		final String tempPackageName = packageName.concat(".Temp"); 
+		String entityPackage = packageName + ".domain.model";
+		final String tempPackageName = entityPackage.concat(".Temp"); 
 		destination = destination.replace('\\', '/');
 		final String destinationPath = destination.concat("/src/main/java"); 
 		final String targetPath = destination.concat("/target/classes"); 
@@ -87,7 +88,7 @@ public class EntityGenerator {
 					entityDetailsMap.put(entityName,details);
 					Map<String,RelationDetails> relationMap =details.getRelationsMap();
 				    details.setRelationsMap(GetEntityDetails.setJoinColumn(relationMap, classList));
-					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit, auditPackage);
+					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit);
 
 				}
 
@@ -98,7 +99,7 @@ public class EntityGenerator {
 		}
 
 		if (audit) {
-			EntityGenerator.generateAuditEntity(destinationPath, auditPackage);
+			EntityGenerator.generateAuditEntity(destinationPath, packageName);
 		} 
 
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
@@ -107,7 +108,7 @@ public class EntityGenerator {
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
-			String destPath, Boolean audit, String auditPackage) {
+			String destPath, Boolean audit) {
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -120,7 +121,7 @@ public class EntityGenerator {
 		root.put("RelationInput", entityDetails.getRelationInput());
 		root.put("SchemaName", schemaName);
 		root.put("Audit", audit);
-		root.put("AuditPackage", auditPackage);
+
 
 		setTemplateLoader();
 
@@ -129,7 +130,7 @@ public class EntityGenerator {
 		root.put("Fields", actualFieldNames);
 		root.put("Relationship", relationMap);
 
-		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/");
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
 		generateEntity(root, destinationFolder);
 
 	}
@@ -168,7 +169,7 @@ public class EntityGenerator {
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
 		backEndTemplate.put("audit.java.ftl", "AuditedEntity.java");
-		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/");
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/")+ "/Audit";
 		new File(destinationFolder).mkdirs();
 		generateFiles(backEndTemplate, root, destinationFolder);
 
