@@ -32,14 +32,16 @@ public class ModifyPomFile {
 	public static void update(String path) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
-		Dependency javers = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
+		Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
+		Dependency javersCore = new Dependency("org.javers","javers-core","3.10.2");
 		Dependency mapstruct = new Dependency("org.mapstruct", "mapstruct", "1.2.0.Final");
 		Dependency querydsljpa = new Dependency("com.querydsl", "querydsl-jpa", "4.2.1");
 		Dependency querydslapt= new Dependency("com.querydsl", "querydsl-apt", "4.2.1");
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
         Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
 	
-		dependencies.add(javers);
+		dependencies.add(javersSql);
+		dependencies.add(javersCore);
 		dependencies.add(mapstruct);
 		dependencies.add(querydsljpa);
 		dependencies.add(querydslapt);
