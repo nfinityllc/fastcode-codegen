@@ -5,8 +5,11 @@ import java.util.List;
 
 public class RelationDetails {
 	
+	String cName;
 	String relation;
 	String joinColumn;
+	String joinColumnType;
+	Boolean isJoinColumnOptional;
 	String referenceColumn;
 	String joinTable;
 	String inverseJoinColumn;
@@ -28,6 +31,12 @@ public class RelationDetails {
 	}
 	public void setJoinColumn(String joinColumn) {
 		this.joinColumn = joinColumn;
+	}
+	public String getcName() {
+		return cName;
+	}
+	public void setcName(String cName) {
+		this.cName = cName;
 	}
 	public String geteName() {
 		return eName;
@@ -82,6 +91,18 @@ public class RelationDetails {
 	}
 	public void setfDetails(List<FieldDetails> fDetails) {
 		this.fDetails = fDetails;
+	}
+	public String getJoinColumnType() {
+		return joinColumnType;
+	}
+	public void setJoinColumnType(String joinColumnType) {
+		this.joinColumnType = joinColumnType;
+	}
+	public Boolean getIsJoinColumnOptional() {
+		return isJoinColumnOptional;
+	}
+	public void setIsJoinColumnOptional(Boolean isJoinColumnOptional) {
+		this.isJoinColumnOptional = isJoinColumnOptional;
 	}
 	
 

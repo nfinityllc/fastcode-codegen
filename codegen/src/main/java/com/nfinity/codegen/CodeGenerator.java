@@ -439,7 +439,7 @@ public class CodeGenerator {
 			{
 				for(String str : relationInput)
 				{
-					if(entityName.equals(str.substring(str.lastIndexOf("-")+1).toString()))
+					if(entityName.equals(str.substring(0,str.lastIndexOf("-")).toString()))
 					{
 						List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
 				     	root.put("RelationEntityFields",relationEntityFields);

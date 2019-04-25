@@ -14,7 +14,26 @@ public class Update[=ClassName]Input {
   private String [=value.fieldName];
  </#if> 
 </#list>
+<#list Relationship as relationKey,relationValue>
+<#if relationValue.relation == "ManyToOne">
+ private [=relationValue.joinColumnType] [=relationValue.joinColumn];
+</#if>
+</#list>
 
+
+<#list Relationship as relationKey,relationValue>
+<#if relationValue.relation == "ManyToOne">
+<#if relationValue.joinColumnType?lower_case == "long">
+  public Long get[=relationValue.joinColumn?cap_first]() {
+  return [=relationValue.joinColumn];
+  }
+
+  public void set[=relationValue.joinColumn?cap_first](Long [=relationValue.joinColumn]){
+  this.[=relationValue.joinColumn] = [=relationValue.joinColumn];
+  }
+</#if> 
+</#if>
+</#list>
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
   public Long get[=value.fieldName?cap_first]() {

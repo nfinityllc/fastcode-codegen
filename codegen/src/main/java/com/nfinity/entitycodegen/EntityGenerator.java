@@ -88,6 +88,11 @@ public class EntityGenerator {
 					entityDetailsMap.put(entityName,details);
 					Map<String,RelationDetails> relationMap =details.getRelationsMap();
 				    details.setRelationsMap(GetEntityDetails.setJoinColumn(relationMap, classList));
+				    for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+				    	System.out.println("\nRelation KEy " + entry.getKey()+" Relation name " + entry.getValue().getRelation() + " - join Column " + entry.getValue().getJoinColumn()
+				    			+ " -Type " + entry.getValue().getJoinColumnType() + " -Nullable "+ entry.getValue().getIsJoinColumnOptional());
+						
+					}
 					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit);
 
 				}

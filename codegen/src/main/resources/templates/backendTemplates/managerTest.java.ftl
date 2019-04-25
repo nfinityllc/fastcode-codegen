@@ -157,7 +157,7 @@ public class [=ClassName]ManagerTest {
   <#elseif relationValue.relation == "ManyToMany">
    <#list RelationInput as relationInput>
     <#assign parent = relationInput>
-    <#if parent?keep_before("-") == relationValue.eName>
+    <#if parent?keep_after("-") == relationValue.eName>
     //[=relationValue.eName]
     @Test
 	public void add[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNull_[=relationValue.eName]Assigned() {

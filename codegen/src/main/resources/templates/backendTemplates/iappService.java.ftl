@@ -35,7 +35,7 @@ public interface I[=ClassName]AppService {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_before("-") == relationValue.eName>
+  <#if parent?keep_after("-") == relationValue.eName>
     // Operations With [=relationValue.eName]
     Boolean Add[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id, @Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]id);
 

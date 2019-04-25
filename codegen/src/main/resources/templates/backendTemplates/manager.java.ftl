@@ -88,7 +88,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
   <#elseif relationValue.relation == "ManyToMany">
    <#list RelationInput as relationInput>
     <#assign parent = relationInput>
-    <#if parent?keep_before("-") == relationValue.eName>
+    <#if parent?keep_after("-") == relationValue.eName>
     //[=relationValue.eName]
     @Transactional
 	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
