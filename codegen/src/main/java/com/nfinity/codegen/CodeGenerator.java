@@ -285,6 +285,7 @@ public class CodeGenerator {
 	private static Map<String, Object> getUITemplates(String moduleName) {
 		Map<String, Object> uiTemplate = new HashMap<>();
 		uiTemplate.put("iitem.ts.ftl", "i" + moduleName + ".ts");
+		uiTemplate.put("index.ts.ftl", "index.ts");
 		uiTemplate.put("item.service.ts.ftl", moduleName + ".service.ts");
 
 		uiTemplate.put("item-list.component.ts.ftl", moduleName + "-list.component.ts");
@@ -546,9 +547,7 @@ public class CodeGenerator {
 				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
 			}
 			String moduleName=StringUtils.join(splittedNames, "-");
-		builder.append("import { " + str + "ListComponent } from './" + moduleName + "/" + moduleName + "-list.component';" + "\n");
-		builder.append("import { " + str + "DetailsComponent } from './" + moduleName + "/" + moduleName + "-details.component';" + "\n");
-		builder.append("import { " + str + "NewComponent } from './" + moduleName + "/" + moduleName + "-new.component';" + "\n");
+		builder.append("import { " + str + "ListComponent , " + str + "DetailsComponent, " + str + "NewComponent } from './" + moduleName + "/index';" + "\n");
 		}
 		
 		return builder;
