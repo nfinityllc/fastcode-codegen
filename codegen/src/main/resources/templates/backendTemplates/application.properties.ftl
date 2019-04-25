@@ -2,7 +2,6 @@ spring.datasource.url=[=connectionStringInfo.url]
 spring.datasource.username=[=connectionStringInfo.username]
 spring.datasource.password=[=connectionStringInfo.password]
 spring.datasource.driverClassName=org.postgresql.Driver
-spring.jpa.properties.hibernate.default_schema=[=schema]
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 spring.jpa.show-sql=true
 spring.jpa.generate-ddl=true

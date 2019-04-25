@@ -53,6 +53,23 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	public Create[=ClassName]Output Create(Create[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
+		
+		<#list Relationship as relationKey,relationValue>
+		<#if relationValue.relation == "ManyToOne">
+	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
+		{
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
+		if(found[=relationValue.eName]!=null)
+		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+		<#if relationValue.isJoinColumnOptional!false>
+		else
+		return null;
+		</#if>
+		}
+
+		</#if>
+		</#list>
+		
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
 	}
@@ -116,7 +133,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     //[=relationValue.eName]
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
-    <#if parent?keep_before("-") == relationValue.eName>
+    <#if parent?keep_after("-") == relationValue.eName>
     public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);

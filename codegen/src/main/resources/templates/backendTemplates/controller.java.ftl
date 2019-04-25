@@ -55,8 +55,15 @@ public class [=ClassName]Controller {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?lower_case]) {
+		Create[=ClassName]Output output=_[=ClassName?lower_case]AppService.Create([=ClassName?lower_case]);
+		if(output==null)
+		{
+			logHelper.getLogger().error("No record found");
+		throw new EntityNotFoundException(
+				String.format("No record found"));
+	    }
 		
-		return new ResponseEntity(_[=ClassName?lower_case]AppService.Create([=ClassName?lower_case]), HttpStatus.OK);
+		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
 	// ------------ Delete [=ClassName?lower_case] ------------
@@ -159,7 +166,7 @@ public class [=ClassName]Controller {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
-  <#if parent?keep_before("-") == relationValue.eName>
+  <#if parent?keep_after("-") == relationValue.eName>
     // [=relationValue.eName] related methods
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.POST)

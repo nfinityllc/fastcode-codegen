@@ -42,7 +42,7 @@ public class CodegenApplication implements ApplicationRunner {
 				root.get("audit") == null ? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false ) : (root.get("audit").toLowerCase().equals("true") ? true : false));
 		input.setHistory(
 				root.get("h") == null ? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false ) : (root.get("h").toLowerCase().equals("true") ? true : false));
-
+		
 		return input;
 	}
 
