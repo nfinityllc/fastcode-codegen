@@ -61,11 +61,15 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
 		if(found[=relationValue.eName]!=null)
 		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-		<#if relationValue.isJoinColumnOptional!false>
+		<#if relationValue.isJoinColumnOptional==false>
 		else
 		return null;
 		</#if>
 		}
+		<#if relationValue.isJoinColumnOptional==false>
+		else
+		return null;
+		</#if>
 
 		</#if>
 		</#list>

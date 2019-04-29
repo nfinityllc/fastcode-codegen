@@ -126,11 +126,10 @@ public class GetEntityDetails{
 
 								if (className.equals(map.get("fieldType"))) {
 									relation.setJoinColumn(map.get("joinColumn"));
-									relation.setJoinColumn(map.get("joinColumn"));
 									relation.setJoinColumnType(map.get("joinColumnType"));
 									relation.setIsJoinColumnOptional(Boolean.valueOf(map.get("isJoinColumnOptional")));
 									relation.setReferenceColumn(map.get("referenceColumn"));
-								}
+			    					}
 								else
 								{
 									relation.setfName(map.get("fieldName"));
@@ -138,8 +137,6 @@ public class GetEntityDetails{
 									details.setFieldType(map.get("fieldType"));
 									relation.seteName(map.get("fieldType"));
 									relation.setInverseJoinColumn(map.get("joinColumn"));
-									relation.setJoinColumn(map.get("joinColumn"));
-									relation.setJoinColumnType(map.get("joinColumnType"));
 									relation.setIsJoinColumnOptional(Boolean.valueOf(map.get("isJoinColumnOptional")));
 									relation.setInverseReferenceColumn(map.get("referenceColumn"));
 								}
