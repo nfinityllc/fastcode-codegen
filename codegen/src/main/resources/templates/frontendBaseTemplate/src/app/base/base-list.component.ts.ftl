@@ -24,7 +24,7 @@ export class GenericDialog {
   selector: 'app-base-list',
   template: ''
 })
-export class BaseListComponent<E> implements OnInit {
+export class BaseListComponent<E extends IBase> implements OnInit {
 
   defaultDateFormat: string = "short";
   associations: IAssociationEntry[];

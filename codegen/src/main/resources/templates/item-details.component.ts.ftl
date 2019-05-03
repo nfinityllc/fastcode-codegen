@@ -66,7 +66,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-			[=relationValue.fName]: ['', Validators.required],
+			[=relationValue.joinColumn]: ['', Validators.required],
 			</#if>
 			</#list>
 			</#if>
@@ -129,6 +129,13 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			[=value.fieldName]:item.[=value.fieldName],
 			</#if>
 		</#list>
+		<#if Relationship?has_content>
+			<#list Relationship as relationKey, relationValue>
+			<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+			[=relationValue.joinColumn]: item.[=relationValue.joinColumn],
+			</#if>
+			</#list>
+		</#if>
 		});
 	}
   

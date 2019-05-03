@@ -263,6 +263,7 @@ public class FronendBaseTemplateGenerator {
             JSONObject compilerOptions = (JSONObject) jsonObject.get("compilerOptions");
             compilerOptions.put("resolveJsonModule",true);
             compilerOptions.put("esModuleInterop",true);
+            compilerOptions.put("allowSyntheticDefaultImports",true);
             
             String prettyJsonString = beautifyJson(jsonObject); 
             writeJsonToFile(path,prettyJsonString);
