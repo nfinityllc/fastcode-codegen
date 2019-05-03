@@ -27,7 +27,7 @@ public interface [=ClassName]Mapper {
 
   <#list Relationship as relationKey, relationValue>
 
-   <#if relationValue.relation == "ManyToOne">
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToMany">
   @Mappings({
   <#list relationValue.fDetails as fValue>
   <#list Fields as key,value> 

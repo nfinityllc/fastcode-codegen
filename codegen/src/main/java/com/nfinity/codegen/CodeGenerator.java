@@ -416,7 +416,7 @@ public class CodeGenerator {
 		List<String> relationInput = details.getRelationInput();
 
 		for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
-			if(entry.getValue().getRelation().equals("ManyToOne"))
+			if(entry.getValue().getRelation().equals("ManyToOne") || entry.getValue().getRelation().equals("OneToMany"))
 			{
 				List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
 		     	root.put("RelationEntityFields",relationEntityFields);

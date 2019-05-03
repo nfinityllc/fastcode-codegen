@@ -36,10 +36,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	private I[=ClassName]Manager _[=ClassName?uncap_first]Manager;
   
     <#list Relationship as relationKey,relationValue>
-    <#if ClassName != relationValue.eName && relationValue.eName !="OneToMany">
+    <#if ClassName != relationValue.eName && relationValue.relation !="OneToMany">
     
     @Autowired
 	private [=relationValue.eName]Manager  _[=relationValue.eName?uncap_first]Manager;
+    <#elseif relationValue.relation == "OneToMany">
+    @Autowired
+    private I[=ClassName]Repository  _[=ClassName?uncap_first]Repository;
     </#if>
     </#list>
     
@@ -80,6 +83,26 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	public Update[=ClassName]Output Update(Long id , Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
+		<#list Relationship as relationKey,relationValue>
+		<#if relationValue.relation == "ManyToOne">
+	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
+		{
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
+		if(found[=relationValue.eName]!=null)
+		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+		<#if relationValue.isJoinColumnOptional==false>
+		else
+		return null;
+		</#if>
+		}
+		<#if relationValue.isJoinColumnOptional==false>
+		else
+		return null;
+		</#if>
+
+		</#if>
+		</#list>
+		
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToUpdate[=ClassName]Output(updated[=ClassName]);
 	}
@@ -104,23 +127,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-   // ReST API Call - POST /[=ClassName?uncap_first]/1/roles/4
-
-	public void Add[=relationValue.eName](Long [=ClassName?uncap_first]Id,Long [=relationValue.eName?uncap_first]Id) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
-		_[=ClassName?uncap_first]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
-
-	}
-
-	// ReST API Call - DELETE /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
-	public void Remove[=relationValue.eName](Long [=ClassName?uncap_first]Id) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		_[=ClassName?uncap_first]Manager.Remove[=relationValue.eName](found[=ClassName]);
-
-	}
 
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
 
@@ -133,6 +139,27 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=relationValue.eName]Entity re = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id);
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(re, found[=ClassName]);
 	}
+	<#elseif relationValue.relation == "OneToMany">
+	public List<Get[=relationValue.eName]Output> Get[=ClassName]List(Long [=ClassName?uncap_first]Id) {
+	 
+	   List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Entity= _[=ClassName?uncap_first]Repository.findByPostDetails([=ClassName?uncap_first]Id);
+	   
+	   [=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		if (found[=ClassName] == null) {
+			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=ClassName?uncap_first]Id);
+			return null;
+		}
+	
+		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]Entity.iterator();
+		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
+
+		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
+			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next(),found[=ClassName]));
+			
+		}
+		return output;
+   }
+	
   <#elseif relationValue.relation == "ManyToMany">
     //[=relationValue.eName]
     <#list RelationInput as relationInput>

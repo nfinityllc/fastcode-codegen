@@ -11,4 +11,13 @@ export interface [=IEntity] {
       [=value.fieldName]?: string;
  </#if> 
 </#list>
+<#list Relationship as relationKey,relationValue>
+<#if relationValue.relation == "ManyToOne">
+<#if relationValue.isJoinColumnOptional==false>
+      [=relationValue.joinColumn]: [=relationValue.joinColumnType];
+<#elseif relationValue.isJoinColumnOptional!false>   
+      [=relationValue.joinColumn]?: [=relationValue.joinColumnType];   
+</#if>
+</#if>
+</#list>
   }

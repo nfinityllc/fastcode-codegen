@@ -255,27 +255,6 @@ public class [=ClassName]AppServiceTest {
 
    <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-   
-   @Test
-	public void Add[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_[=relationValue.eName]Assigned() {
-		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?lower_case] = mock([=relationValue.eName]Entity.class);
-
-		Mockito.when(_[=ClassName?lower_case]Manager.FindById(anyLong())).thenReturn([=ClassName?lower_case]);
-		Mockito.when(_[=relationValue.eName?lower_case]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?lower_case]);
-		_appService.Add[=relationValue.eName](ID,ID);
-		verify(_[=ClassName?lower_case]Manager).Add[=relationValue.eName]([=ClassName?lower_case], [=relationValue.eName?lower_case]);
-	}
-
-	@Test
-	public void Remove[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_[=relationValue.eName]Removed() {
-		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
-		
-		Mockito.when(_[=ClassName?lower_case]Manager.FindById(anyLong())).thenReturn([=ClassName?lower_case]);
-		_appService.Remove[=relationValue.eName](ID);
-		verify(_[=ClassName?lower_case]Manager).Remove[=relationValue.eName]([=ClassName?lower_case]);
-	}
-
 	@Test
 	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() {
 		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);

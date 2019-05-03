@@ -28,10 +28,6 @@ public interface I[=ClassName]Manager {
 
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
    //[=relationValue.eName]
-   public void Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]);
-
-   public void Remove[=relationValue.eName]([=EntityClassName] [=InstanceName]);
-
    public [=relationValue.eName]Entity Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]Id);
   
    <#elseif relationValue.relation == "ManyToMany">

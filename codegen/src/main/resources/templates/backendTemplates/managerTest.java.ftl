@@ -121,27 +121,6 @@ public class [=ClassName]ManagerTest {
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
    //[=relationValue.eName]
-   @Test
-	public void add[=relationValue.eName]_If[=ClassName]And[=relationValue.eName]IsNotNull_AssignA[=relationValue.eName]() {
-		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?lower_case] = mock([=relationValue.eName]Entity.class);
-
-		_[=ClassName?lower_case]Manager.Add[=relationValue.eName]([=ClassName?lower_case], [=relationValue.eName?lower_case]);
-		verify(_[=ClassName?lower_case]Repository).save([=ClassName?lower_case]);
-		verify(_[=relationValue.eName?lower_case]Repository).save([=relationValue.eName?lower_case]);
-
-	}
-
-	@Test
-	public void remove[=relationValue.eName]_if_[=ClassName]IsNotNullAnd_[=ClassName]Exists_[=relationValue.eName]Removed() {
-
-		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
-
-		Mockito.when(_[=ClassName?lower_case]Repository.findById(anyLong())).thenReturn([=ClassName?lower_case]);
-		_[=ClassName?lower_case]Manager.Remove[=relationValue.eName]([=ClassName?lower_case]);
-		verify(_[=ClassName?lower_case]Repository).save([=ClassName?lower_case]);
-	}
-
 	@Test
 	public void get[=relationValue.eName]_if_[=ClassName]IdIsNotNull_return[=relationValue.eName]() {
 

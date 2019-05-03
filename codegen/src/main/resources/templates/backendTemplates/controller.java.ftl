@@ -37,7 +37,7 @@ import [=PackageName].Utils.LoggingHelper;
 public class [=ClassName]Controller {
 
 	@Autowired
-	private [=ClassName]AppService _[=ClassName?lower_case]AppService;
+	private [=ClassName]AppService _[=ClassName?uncap_first]AppService;
     <#list Relationship as relationKey,relationValue>
     <#if ClassName != relationValue.eName && relationValue.eName !="OneToMany">
     
@@ -54,8 +54,8 @@ public class [=ClassName]Controller {
 
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?lower_case]) {
-		Create[=ClassName]Output output=_[=ClassName?lower_case]AppService.Create([=ClassName?lower_case]);
+	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?uncap_first]) {
+		Create[=ClassName]Output output=_[=ClassName?uncap_first]AppService.Create([=ClassName?uncap_first]);
 		if(output==null)
 		{
 			logHelper.getLogger().error("No record found");
@@ -66,35 +66,35 @@ public class [=ClassName]Controller {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
-	// ------------ Delete [=ClassName?lower_case] ------------
+	// ------------ Delete [=ClassName?uncap_first] ------------
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
-		Find[=ClassName]ByIdOutput output = _[=ClassName?lower_case]AppService.FindById(Long.valueOf(id));
+		Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf(id));
 
 		if (output == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?lower_case] with a id=%s", id);
+			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] with a id=%s", id);
 			throw new EntityNotFoundException(
-					String.format("There does not exist a [=ClassName?lower_case] with a id=%s", id));
+					String.format("There does not exist a [=ClassName?uncap_first] with a id=%s", id));
 		}
-		_[=ClassName?lower_case]AppService.Delete(Long.valueOf(id));
+		_[=ClassName?uncap_first]AppService.Delete(Long.valueOf(id));
 	}
-	// ------------ Update [=ClassName?lower_case] ------------
+	// ------------ Update [=ClassName?uncap_first] ------------
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Update[=ClassName]Output> Update(@PathVariable String id, @RequestBody @Valid Update[=ClassName]Input [=ClassName?lower_case]) {
-		Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?lower_case]AppService.FindById(Long.valueOf(id));
+	public ResponseEntity<Update[=ClassName]Output> Update(@PathVariable String id, @RequestBody @Valid Update[=ClassName]Input [=ClassName?uncap_first]) {
+		Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf(id));
 		if (current[=ClassName] == null) {
 			logHelper.getLogger().error("Unable to update. [=ClassName] with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity(_[=ClassName?lower_case]AppService.Update(Long.valueOf(id),[=ClassName?lower_case]), HttpStatus.OK);
+		return new ResponseEntity(_[=ClassName?uncap_first]AppService.Update(Long.valueOf(id),[=ClassName?uncap_first]), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Find[=ClassName]ByIdOutput> FindById(@PathVariable String id) {
 
-		Find[=ClassName]ByIdOutput output = _[=ClassName?lower_case]AppService.FindById(Long.valueOf(id));
+		Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf(id));
 
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
@@ -110,58 +110,32 @@ public class [=ClassName]Controller {
 
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 
-		return ResponseEntity.ok(_[=ClassName?lower_case]AppService.Find(search,Pageable));
+		return ResponseEntity.ok(_[=ClassName?uncap_first]AppService.Find(search,Pageable));
 	}
 
 <#list Relationship as relationKey, relationValue>
 
    <#if relationValue.relation == "ManyToOne">
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.POST)
-	public void Add[=relationValue.eName](@PathVariable @Valid String [=InstanceName]id, @RequestBody @Valid String [=relationValue.eName?lower_case]id) {
-		Find[=ClassName]ByIdOutput found[=ClassName] = _[=ClassName?lower_case]AppService.FindById(Long.valueOf([=InstanceName]id));
-
-		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?lower_case] with a id=%s", [=InstanceName]id);
-       	 throw new EntityNotFoundException(
-	                    String.format("There does not exist a [=ClassName?lower_case] with a id=%s", [=InstanceName]id));
-		}
-		Find[=relationValue.eName]ByIdOutput found[=relationValue.eName] = _[=relationValue.eName?lower_case]AppService.FindById(Long.valueOf([=relationValue.eName?lower_case]id));
-
-        if (found[=relationValue.eName] == null) {
-            logHelper.getLogger().error("There does not exist a [=relationValue.eName?lower_case] with a id=%s", [=relationValue.eName?lower_case]id);
-            throw new EntityNotFoundException(
-                    String.format("There does not exist a [=relationValue.eName?lower_case] with a id=%s", [=relationValue.eName?lower_case]id));
-        }
-		_[=ClassName?lower_case]AppService.Add[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?lower_case]id));
-		
-	}
-	
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.DELETE)
-	public void Remove[=relationValue.eName](@PathVariable String [=InstanceName]id) {
-		Find[=ClassName]ByIdOutput found[=ClassName] = _[=ClassName?lower_case]AppService.FindById(Long.valueOf([=InstanceName]id));
-
-		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?lower_case] with a id=%s", [=InstanceName]id);
-       	 throw new EntityNotFoundException(
-	                    String.format("There does not exist a [=ClassName?lower_case] with a id=%s", [=InstanceName]id));
-		}
-		_[=ClassName?lower_case]AppService.Remove[=relationValue.eName](Long.valueOf([=InstanceName]id));
-		
-	}
 
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.GET)
 	public ResponseEntity<Get[=relationValue.eName]Output> Get[=relationValue.eName](@PathVariable String [=InstanceName]id) {
-		Get[=relationValue.eName]Output output= _[=ClassName?lower_case]AppService.Get[=relationValue.eName](Long.valueOf([=InstanceName]id));
+		Get[=relationValue.eName]Output output= _[=ClassName?uncap_first]AppService.Get[=relationValue.eName](Long.valueOf([=InstanceName]id));
 		
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
-   
-   
+   <#elseif relationValue.relation == "OneToMany">
+   	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.GET)
+	public ResponseEntity Get[=relationValue.eName](@PathVariable String [=InstanceName]id) {
+		List<Get[=relationValue.eName]Output> output = _[=ClassName?uncap_first]AppService.Get[=ClassName]List(Long.valueOf([=InstanceName]id));
+		if (output == null) {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity(output, HttpStatus.OK);
+	}
    
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
@@ -171,12 +145,12 @@ public class [=ClassName]Controller {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.POST)
 	public void Add[=relationValue.eName](@PathVariable String [=InstanceName]id, @RequestBody @Valid String [=relationValue.eName?lower_case]id) {
-		Find[=ClassName]ByIdOutput found[=ClassName] = _[=ClassName?lower_case]AppService.FindById(Long.valueOf([=InstanceName]id));
+		Find[=ClassName]ByIdOutput found[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf([=InstanceName]id));
 
 		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?lower_case] with a id=%s", [=InstanceName]id);
+			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] with a id=%s", [=InstanceName]id);
        	 throw new EntityNotFoundException(
-	                    String.format("There does not exist a [=ClassName?lower_case] with a id=%s", [=InstanceName]id));
+	                    String.format("There does not exist a [=ClassName?uncap_first] with a id=%s", [=InstanceName]id));
 		}
 		Find[=relationValue.eName]ByIdOutput found[=relationValue.eName] = _[=relationValue.eName?lower_case]AppService.FindById(Long.valueOf([=relationValue.eName?lower_case]id));
 
@@ -185,11 +159,11 @@ public class [=ClassName]Controller {
             throw new EntityNotFoundException(
                     String.format("There does not exist a [=relationValue.eName?lower_case] with a id=%s", [=relationValue.eName?lower_case]id));
         }
-		Boolean status = _[=ClassName?lower_case]AppService.Add[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?lower_case]id));
+		Boolean status = _[=ClassName?uncap_first]AppService.Add[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?lower_case]id));
 		if(status == false)
 	       {
-	    	   logHelper.getLogger().error("The [=ClassName?lower_case] already has the [=relationValue.eName?lower_case]");
-	    	   throw new EntityExistsException("The [=ClassName?lower_case] already has the [=relationValue.eName?lower_case]");
+	    	   logHelper.getLogger().error("The [=ClassName?uncap_first] already has the [=relationValue.eName?lower_case]");
+	    	   throw new EntityExistsException("The [=ClassName?uncap_first] already has the [=relationValue.eName?lower_case]");
 	   		 }
 	
 	}
@@ -197,12 +171,12 @@ public class [=ClassName]Controller {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]/{[=relationValue.eName?lower_case]id}", method = RequestMethod.DELETE)
 	public void Remove[=relationValue.eName](@PathVariable String [=InstanceName]id, @PathVariable String [=relationValue.eName?lower_case]id) {
-		Find[=ClassName]ByIdOutput found[=ClassName] = _[=ClassName?lower_case]AppService.FindById(Long.valueOf([=InstanceName]id));
+		Find[=ClassName]ByIdOutput found[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf([=InstanceName]id));
 
 		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?lower_case] with a id = " + [=InstanceName]id);
+			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] with a id = " + [=InstanceName]id);
        	 throw new EntityNotFoundException(
-	                    String.format("There does not exist a [=ClassName?lower_case] with a id=%s", [=InstanceName]id));
+	                    String.format("There does not exist a [=ClassName?uncap_first] with a id=%s", [=InstanceName]id));
 		}
 		Find[=relationValue.eName]ByIdOutput found[=relationValue.eName] = _[=relationValue.eName?lower_case]AppService.FindById(Long.valueOf([=relationValue.eName?lower_case]id));
 
@@ -211,13 +185,13 @@ public class [=ClassName]Controller {
             throw new EntityNotFoundException(
                     String.format("There does not exist a [=relationValue.eName?lower_case] with a id=%s", [=relationValue.eName?lower_case]id));
         }
-		_[=ClassName?lower_case]AppService.Remove[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?lower_case]id));
+		_[=ClassName?uncap_first]AppService.Remove[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?lower_case]id));
 		
 	}
 
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]/{[=relationValue.eName?lower_case]id}", method = RequestMethod.GET)
 	public ResponseEntity<Get[=relationValue.eName]Output> Get[=relationValue.eName]ById(@PathVariable String [=InstanceName]id, @PathVariable String [=relationValue.eName?lower_case]id) {
-		Get[=relationValue.eName]Output output= _[=ClassName?lower_case]AppService.Get[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?lower_case]id));
+		Get[=relationValue.eName]Output output= _[=ClassName?uncap_first]AppService.Get[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?lower_case]id));
 		
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
@@ -227,7 +201,7 @@ public class [=ClassName]Controller {
 
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.GET)
 	public ResponseEntity Get[=relationValue.eName]s(@PathVariable String [=InstanceName]id) {
-		List<Get[=relationValue.eName]Output> output = _[=ClassName?lower_case]AppService.Get[=relationValue.eName]s(Long.valueOf([=InstanceName]id));
+		List<Get[=relationValue.eName]Output> output = _[=ClassName?uncap_first]AppService.Get[=relationValue.eName]s(Long.valueOf([=InstanceName]id));
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

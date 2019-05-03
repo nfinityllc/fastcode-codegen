@@ -26,12 +26,10 @@ public interface I[=ClassName]AppService {
 
    <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-    void Add[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id,@Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]id);
-
     Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
-
-    void Remove[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
-   
+  <#elseif relationValue.relation == "OneToMany">
+    List<Get[=relationValue.eName]Output> Get[=ClassName]List(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=ClassName?uncap_first]Id);
+	 
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>

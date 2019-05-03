@@ -64,21 +64,6 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-  @Transactional
-	public void Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
-
-		[=InstanceName].set[=relationValue.eName]([=relationValue.eName?lower_case]);
-		_[=InstanceName]Repository.save([=InstanceName]);
-		_[=relationValue.eName?lower_case]Repository.save([=relationValue.eName?lower_case]);
-	}
-
-	@Transactional
-	public void Remove[=relationValue.eName]([=EntityClassName] [=InstanceName]) {
-	
-		[=InstanceName].set[=relationValue.eName](null);
-		_[=InstanceName]Repository.save([=InstanceName]);
-	}
-
 	@Transactional
 	public [=relationValue.eName]Entity Get[=relationValue.eName](Long [=InstanceName]Id) {
 		
