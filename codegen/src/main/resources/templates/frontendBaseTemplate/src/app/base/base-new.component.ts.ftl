@@ -23,7 +23,7 @@ export class BaseNewComponent<E> implements OnInit {
     submitted = false;
     title:string = "title";
 
-    dialogRef: MatDialogRef<any>;
+    pickerDialogRef: MatDialogRef<any>;
 
     associations: IAssociationEntry[];
     toMany: IAssociationEntry[];
@@ -38,7 +38,8 @@ export class BaseNewComponent<E> implements OnInit {
         public formBuilder: FormBuilder,
         public router: Router,
         public route: ActivatedRoute,
-        public dialog: MatDialog,
+        public dialog: MatDialog,        
+				public dialogRef: MatDialogRef<any>,
         public global: Globals,
         public dataService: GenericApiService<E>
         ) { }
@@ -82,12 +83,12 @@ export class BaseNewComponent<E> implements OnInit {
                 });
     }
     onCancel(): void {
-        this.dialogRef.close();
-      }
+			this.dialogRef.close();
+		}
     
     selectAssociation(association) {
     console.log(association);
-    this.dialogRef = this.dialog.open(PickerComponent, {
+    this.pickerDialogRef = this.dialog.open(PickerComponent, {
         disableClose: true,
         height: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize,
         width: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
@@ -99,7 +100,7 @@ export class BaseNewComponent<E> implements OnInit {
         IsSingleSelection: true
         }
     });
-    this.dialogRef.afterClosed().subscribe(associatedItem => {
+    this.pickerDialogRef.afterClosed().subscribe(associatedItem => {
         if (associatedItem) {
         this.itemForm.get(association.column.key).setValue(associatedItem.id);
         }

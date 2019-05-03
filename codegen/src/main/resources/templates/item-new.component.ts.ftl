@@ -30,6 +30,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			public router: Router,
 			public route: ActivatedRoute,
 			public dialog: MatDialog,
+			public dialogRef: MatDialogRef<[=ClassName]NewComponent>,
 			public global: Globals,
 			public dataService: [=ClassName]Service,
 			<#if Relationship?has_content>
@@ -40,7 +41,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#list>
 			</#if>
 		) {
-			super(formBuilder, router, route, dialog, global, dataService);
+			super(formBuilder, router, route, dialog, dialogRef, global, dataService);
 	  }
  
     ngOnInit() {
@@ -62,7 +63,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				<#if Relationship?has_content>
 				<#list Relationship as relationKey, relationValue>
 				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-				[=relationValue.fName]: ['', Validators.required],
+				[=relationValue.joinColumn]: ['', Validators.required],
 				</#if>
 				</#list>
 				</#if>
@@ -102,8 +103,8 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				},
 			</#list>
 			];
-			this.toMany = this.associations.filter(association => {
-				return ((['ManyToMany','OneToMany'].indexOf(association.type) > - 1) && association.isParent);
+			this.toOne = this.associations.filter(association => {
+				return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1) && !association.isParent);
 			});
 	
 		}
