@@ -125,7 +125,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	    <#if relationValue.relation == "ManyToOne">
 	    <#list relationValue.fDetails as details>
 	    <#if details.isPrimaryKey!false>
-	    if(found[=ClassName].get[=relationValue.eName]().get[=details.fieldName?cap_first]() != null)
+	    if(found[=ClassName].get[=relationValue.eName]() != null)
 	    output.set[=relationValue.joinColumn?cap_first](found[=ClassName].get[=relationValue.eName]().get[=details.fieldName?cap_first]());
 	    </#if>
 	    </#list>
