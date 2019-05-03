@@ -114,7 +114,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	}
 
 	@Transactional
-	public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]s([=EntityClassName] [=InstanceName]) {
+	public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]List([=EntityClassName] [=InstanceName]) {
 		
 		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName].getId().longValue());
 		return foundRecord.get[=relationValue.eName]();

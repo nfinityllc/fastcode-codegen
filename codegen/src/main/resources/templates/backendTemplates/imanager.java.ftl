@@ -41,7 +41,7 @@ public interface I[=ClassName]Manager {
 
     public [=relationValue.eName]Entity Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]Id,@Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]Id);
 
-    public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]s([=EntityClassName] [=InstanceName]);
+    public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]List([=EntityClassName] [=InstanceName]);
     </#if>
     </#list>
    </#if>

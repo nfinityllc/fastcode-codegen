@@ -197,13 +197,13 @@ public class [=ClassName]ManagerTest {
 	}
 
 	@Test
-	public void Get[=relationValue.eName]_[=ClassName]IsNotNull_Return[=relationValue.eName]s() {
+	public void Get[=relationValue.eName]_[=ClassName]IsNotNull_Return[=relationValue.eName]List() {
 		[=EntityClassName] [=ClassName?lower_case] = mock([=EntityClassName].class);
 		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case] = [=ClassName?lower_case].get[=relationValue.eName]();
 		
 		Mockito.when(_[=ClassName?lower_case]Repository.findById(anyLong())).thenReturn([=ClassName?lower_case]);
 		Mockito.when([=ClassName?lower_case].get[=relationValue.eName]()).thenReturn([=relationValue.eName?lower_case]);
-		Assertions.assertThat(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]s([=ClassName?lower_case])).isEqualTo([=relationValue.eName?lower_case]);
+		Assertions.assertThat(_[=ClassName?lower_case]Manager.Get[=relationValue.eName]List([=ClassName?lower_case])).isEqualTo([=relationValue.eName?lower_case]);
 	}
     </#if>
     </#list>

@@ -200,8 +200,8 @@ public class [=ClassName]Controller {
 	}
 
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?lower_case]", method = RequestMethod.GET)
-	public ResponseEntity Get[=relationValue.eName]s(@PathVariable String [=InstanceName]id) {
-		List<Get[=relationValue.eName]Output> output = _[=ClassName?uncap_first]AppService.Get[=relationValue.eName]s(Long.valueOf([=InstanceName]id));
+	public ResponseEntity Get[=relationValue.eName]List(@PathVariable String [=InstanceName]id) {
+		List<Get[=relationValue.eName]Output> output = _[=ClassName?uncap_first]AppService.Get[=relationValue.eName]List(Long.valueOf([=InstanceName]id));
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

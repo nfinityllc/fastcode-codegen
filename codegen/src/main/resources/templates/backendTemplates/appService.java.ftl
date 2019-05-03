@@ -142,7 +142,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	<#elseif relationValue.relation == "OneToMany">
 	public List<Get[=relationValue.eName]Output> Get[=ClassName]List(Long [=ClassName?uncap_first]Id) {
 	 
-	   List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Entity= _[=ClassName?uncap_first]Repository.findByPostDetails([=ClassName?uncap_first]Id);
+	   List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Entity= _[=ClassName?uncap_first]Repository.findBy[=relationValue.eName]([=ClassName?uncap_first]Id);
 	   
 	   [=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
@@ -206,7 +206,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
 
-	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]s(Long [=ClassName?uncap_first]Id) {
+	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
@@ -214,7 +214,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			return null;
 		}
 
-		Set<[=relationValue.eName]Entity> pe = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]s(found[=ClassName]);
+		Set<[=relationValue.eName]Entity> pe = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]List(found[=ClassName]);
 		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = pe.iterator();
 		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
 

@@ -14,8 +14,14 @@ export interface [=IEntity] {
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToOne">
 <#if relationValue.isJoinColumnOptional==false>
-      [=relationValue.joinColumn]: [=relationValue.joinColumnType];
-<#elseif relationValue.isJoinColumnOptional!false>   
+ <#if relationValue.joinColumnType?lower_case == "long" ||  relationValue.joinColumnType?lower_case == "int"> 
+      [=relationValue.joinColumn]: number;
+  <#elseif relationValue.joinColumnType?lower_case == "boolean">
+      [=relationValue.joinColumn]: boolean;
+  <#else>    
+      [=relationValue.joinColumn]: string;
+  </#if>
+  <#else>   
       [=relationValue.joinColumn]?: [=relationValue.joinColumnType];   
 </#if>
 </#if>
