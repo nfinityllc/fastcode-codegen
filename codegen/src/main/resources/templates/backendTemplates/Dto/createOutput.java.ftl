@@ -21,24 +21,72 @@ public class Create[=ClassName]Output {
   private java.util.Date lastModificationTime;
 </#if>
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
- private [=relationValue.joinColumnType] [=relationValue.joinColumn];
-</#if>
+    <#if relationValue.relation == "ManyToOne">
+          private [=relationValue.joinColumnType] [=relationValue.joinColumn];
+         
+    </#if>
+    <#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
+          private [=relationValue.joinColumnType] [=relationValue.joinColumn];
+          <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
+            private Long [=relationValue.entityDescriptionField.fieldName];
+          <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
+            private Boolean [=relationValue.entityDescriptionField.fieldName];
+          <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "date">
+            private Date [=relationValue.entityDescriptionField.fieldName];
+          <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
+            private String [=relationValue.entityDescriptionField.fieldName];
+          </#if> 
+    </#if>
 </#list>
 
 
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
-<#if relationValue.joinColumnType?lower_case == "long">
-  public Long get[=relationValue.joinColumn?cap_first]() {
-  return [=relationValue.joinColumn];
-  }
+    <#if relationValue.relation == "ManyToOne">
+        <#if relationValue.joinColumnType?lower_case == "long">
+          public Long get[=relationValue.joinColumn?cap_first]() {
+          return [=relationValue.joinColumn];
+          }
 
-  public void set[=relationValue.joinColumn?cap_first](Long [=relationValue.joinColumn]){
-  this.[=relationValue.joinColumn] = [=relationValue.joinColumn];
-  }
-</#if> 
-</#if>
+          public void set[=relationValue.joinColumn?cap_first](Long [=relationValue.joinColumn]){
+          this.[=relationValue.joinColumn] = [=relationValue.joinColumn];
+          }
+        </#if> 
+    </#if>
+     <#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
+              <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
+                public Long get[=relationValue.entityDescriptionField.fieldName?cap_first]() {
+                return [=relationValue.entityDescriptionField.fieldName];
+                }
+
+                public void set[=relationValue.entityDescriptionField.fieldName?cap_first](Long [=relationValue.entityDescriptionField.fieldName]){
+                this.[=relationValue.entityDescriptionField.fieldName] = [=relationValue.entityDescriptionField.fieldName];
+                }
+              <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
+                public Boolean get[=relationValue.entityDescriptionField.fieldName?cap_first]() {
+                return [=relationValue.entityDescriptionField.fieldName];
+                }
+
+                public void set[=relationValue.entityDescriptionField.fieldName?cap_first](Boolean [=relationValue.entityDescriptionField.fieldName]){
+                this.[=relationValue.entityDescriptionField.fieldName] = [=relationValue.entityDescriptionField.fieldName];
+                }
+              <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "date">
+                public Date get[=relationValue.entityDescriptionField.fieldName?cap_first]() {
+                return [=relationValue.entityDescriptionField.fieldName];
+                }
+
+                public void set[=relationValue.entityDescriptionField.fieldName?cap_first](Date [=relationValue.entityDescriptionField.fieldName]){
+                this.[=relationValue.entityDescriptionField.fieldName] = [=relationValue.entityDescriptionField.fieldName];
+                }
+              <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
+                public String get[=relationValue.entityDescriptionField.fieldName?cap_first]() {
+                return [=relationValue.entityDescriptionField.fieldName];
+                }
+
+                public void set[=relationValue.entityDescriptionField.fieldName?cap_first](String [=relationValue.entityDescriptionField.fieldName]){
+                this.[=relationValue.entityDescriptionField.fieldName] = [=relationValue.entityDescriptionField.fieldName];
+                }
+              </#if> 
+    </#if>
 </#list>
 
 <#list Fields as key,value>

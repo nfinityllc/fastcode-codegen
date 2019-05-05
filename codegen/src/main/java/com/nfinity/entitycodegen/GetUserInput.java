@@ -1,5 +1,6 @@
 package com.nfinity.entitycodegen;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,11 +9,12 @@ import java.util.Scanner;
 public class GetUserInput {
 
 	public static String getInput(Scanner inputReader, String inputType) {
-		
-		System.out.print("Please enter value for " + inputType + ":"); 
+
+		System.out.print("Please enter value for " + inputType + ":");
 		String value = inputReader.nextLine();
 		return value;
 	}
+
 	public static UserInput getInput(Scanner inputReader) {
 		UserInput input = new UserInput();
 		System.out.print("\nFor which schema do you want to generate entities ? "); // sample
@@ -20,10 +22,9 @@ public class GetUserInput {
 
 		System.out.print("\nFor which tables do you want to generate entities ? "); // sample
 		List<String> tableList = new ArrayList<>();
-		String tables= inputReader.nextLine();
+		String tables = inputReader.nextLine();
 		String[] words = tables.split(",");
-		for(String str : words)
-		{
+		for (String str : words) {
 			tableList.add(str);
 			System.out.println(" TABLES " + str);
 		}
@@ -34,10 +35,9 @@ public class GetUserInput {
 		input.setPackageName(inputReader.nextLine());
 
 		System.out.print("\nWhat is the destination path for entities? "); // root path of the backend
-		String destination= inputReader.nextLine();
+		String destination = inputReader.nextLine();
 		destination = destination.replace('\\', '/');
 		input.setDestinationPath(destination);
-
 
 		System.out.print("\nDo you want to generate Audit Entity (yes/no)? ");// no
 		String value = inputReader.nextLine();
@@ -48,6 +48,31 @@ public class GetUserInput {
 			input.setAudit(false);
 
 		return input;
+	}
+
+	public static FieldDetails getEntityDescriptionField(String entityName, List<FieldDetails> fields) {
+		int i = 1;
+		StringBuilder b = new StringBuilder(MessageFormat
+				.format("Select a descriptive field of {0} entity by typing their corresponding number: ", entityName));
+		for (FieldDetails f : fields) {
+			b.append(MessageFormat.format("{0}.{1} ", i, f.getFieldName()));
+			i++;
+		}
+		System.out.println(b.toString());
+		Scanner scanner = new Scanner(System.in);
+		i = scanner.nextInt();
+		while (i < 1 || i > fields.size()) {
+			System.out.println("\nInvalid Input \nEnter again :");
+			i = scanner.nextInt();
+		}
+		FieldDetails r = new FieldDetails();
+		FieldDetails selected = fields.get(i - 1);
+		r.setFieldName(selected.getFieldName());
+		r.setFieldType(selected.getFieldType());
+		r.setIsNullable(selected.getIsNullable());
+		r.setIsPrimaryKey(selected.getIsPrimaryKey());
+		r.setLength(selected.getLength());
+		return r;
 	}
 
 	public static List<String> getRelationInput(List<Class<?>> classList, List<String> relationClassList, String source,
@@ -65,23 +90,21 @@ public class GetUserInput {
 					for (RelationDetails e : relationList) {
 						if (e.geteName().equals(className) && e.getRelation().equals(entry.getValue().getRelation())) {
 							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
-									+ " having " + entry.getValue().getRelation() + " relationship , which one is the parent entity ? Enter 1 ("+ className +") or 2 ("+ entry.getValue().geteName()+ ") : ");
+									+ " having " + entry.getValue().getRelation()
+									+ " relationship , which one is the parent entity ? Enter 1 (" + className
+									+ ") or 2 (" + entry.getValue().geteName() + ") : ");
 
 							Scanner scanner = new Scanner(System.in);
-							
+
 							int i = scanner.nextInt();
-							while(i<1 || i>2)
-							{
+							while (i < 1 || i > 2) {
 								System.out.println("\nInvalid Input \nEnter again :");
 								i = scanner.nextInt();
 							}
-							if(i==1)
-							{
+							if (i == 1) {
 								relationInput.add(className + "-" + entry.getValue().geteName());
-							}
-							else if(i==2)
-							{
-								relationInput.add(entry.getValue().geteName() + "-" + className);	
+							} else if (i == 2) {
+								relationInput.add(entry.getValue().geteName() + "-" + className);
 							}
 
 						}
