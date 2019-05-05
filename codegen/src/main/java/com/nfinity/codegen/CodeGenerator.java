@@ -69,7 +69,7 @@ public class CodeGenerator {
 		root.put("History", history);
 		root.put("IEntity", "I" + className);
 		root.put("IEntityFile", "i" + moduleName);
-		root.put("ApiPath", className.toLowerCase());
+		root.put("ApiPath", className.substring(0, 1).toLowerCase() + className.substring(1));
 
 
 		Map<String, FieldDetails> actualFieldNames = details.getFieldsMap();

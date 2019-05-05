@@ -26,7 +26,7 @@ public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName
 	   
 	 <#list Relationship as relationKey, relationValue>
      <#if relationValue.relation == "OneToMany">
-	   @Query("select e from [=relationValue.eName]Entity e where e.[=ClassName?lower_case].id = ?1")
+	   @Query("select e from [=relationValue.eName]Entity e where e.[=ClassName?uncap_first].id = ?1")
 	   List<[=relationValue.eName]Entity> findBy[=relationValue.eName]([=relationValue.joinColumnType] id);
 	 </#if>
      </#list>

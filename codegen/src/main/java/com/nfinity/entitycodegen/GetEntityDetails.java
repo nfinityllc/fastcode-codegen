@@ -336,6 +336,15 @@ public class GetEntityDetails {
 						int index = str.lastIndexOf(".") + 1;
 						details.setFieldName(field.getName());
 						details.setFieldType(str.substring(index));
+						Annotation[] annotations = field.getAnnotations();
+						for(Annotation a: annotations)
+						{
+						
+							if (a.annotationType().toString().equals("interface javax.persistence.Id"))
+							{
+								details.setIsPrimaryKey(true);
+							}
+						}
 						fieldsList.add(details);
 					}
 
