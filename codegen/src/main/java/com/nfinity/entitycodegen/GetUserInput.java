@@ -53,20 +53,28 @@ public class GetUserInput {
 	public static FieldDetails getEntityDescriptionField(String entityName, List<FieldDetails> fields) {
 		int i = 1;
 		StringBuilder b = new StringBuilder(MessageFormat
-				.format("Select a descriptive field of {0} entity by typing their corresponding number: ", entityName));
+				.format("\nSelect a descriptive field of {0} entity by typing their corresponding number: ", entityName));
+		
+		List<FieldDetails> fieldsList =new ArrayList<>();
 		for (FieldDetails f : fields) {
+			if(f.fieldType.equalsIgnoreCase("long") ||f.fieldType.equalsIgnoreCase("string") ||
+			f.fieldType.equalsIgnoreCase("boolean") || f.fieldType.equalsIgnoreCase("date") )
+				fieldsList.add(f);
+		}
+		
+		for (FieldDetails f : fieldsList) {
 			b.append(MessageFormat.format("{0}.{1} ", i, f.getFieldName()));
 			i++;
 		}
 		System.out.println(b.toString());
 		Scanner scanner = new Scanner(System.in);
 		i = scanner.nextInt();
-		while (i < 1 || i > fields.size()) {
+		while (i < 1 || i > fieldsList.size()) {
 			System.out.println("\nInvalid Input \nEnter again :");
 			i = scanner.nextInt();
 		}
 		FieldDetails r = new FieldDetails();
-		FieldDetails selected = fields.get(i - 1);
+		FieldDetails selected = fieldsList.get(i - 1);
 		r.setFieldName(selected.getFieldName());
 		r.setFieldType(selected.getFieldType());
 		r.setIsNullable(selected.getIsNullable());

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -89,6 +91,14 @@ public class EntityGenerator {
 					Map<String,RelationDetails> relationMap =details.getRelationsMap();
 				    details.setRelationsMap(GetEntityDetails.setJoinColumn(relationMap, classList));
 				    for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+				    	if (entry.getValue().getRelation() == "ManyToOne") {
+							FieldDetails descrpitiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
+									entry.getValue().getfDetails());
+//							descrpitiveField.setFieldName(WordUtils.uncapitalize(entry.getValue().getfName())
+//									+ WordUtils.capitalize(descrpitiveField.getFieldName()));
+							entry.getValue().setEntityDescriptionField(descrpitiveField);
+
+						}
 				    	System.out.println("\nRelation KEy " + entry.getKey()+" Relation name " + entry.getValue().getRelation() + " - join Column " + entry.getValue().getJoinColumn()
 				    			+ " -Type " + entry.getValue().getJoinColumnType() + " -Nullable "+ entry.getValue().getIsJoinColumnOptional());
 						
@@ -181,7 +191,6 @@ public class EntityGenerator {
 	}
 
 	public static void deleteFile(String directory) {
-		System.out.println(" Directory " + directory);
 		File file = new File(directory);
 		if (file.exists()) {
 			file.delete();

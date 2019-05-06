@@ -66,7 +66,6 @@ public class GetEntityDetails {
 
 					if (a.annotationType().toString().equals("interface javax.persistence.JoinColumn")) {
 						String joinColumn = a.toString();
-						System.out.println("Join Annotation " + a);
 						String[] word = joinColumn.split("[\\(,//)]");
 						for (String s : word) {
 							if (s.contains("name")) {
@@ -152,16 +151,6 @@ public class GetEntityDetails {
 
 				if (relation.geteName() != null) {
 					relation.setfDetails(getFields(relation.geteName(), classList));
-					if (relation.relation == "ManyToOne") {
-						FieldDetails descrpitiveField = GetUserInput.getEntityDescriptionField(relation.geteName(),
-								relation.getfDetails());
-						descrpitiveField.setFieldName(WordUtils.uncapitalize(relation.getfName())
-								+ WordUtils.capitalize(descrpitiveField.getFieldName()));
-						relation.setEntityDescriptionField(descrpitiveField);
-
-					}
-					// if (relation.relation == "ManyToOne")
-					// relation.setEntityDescriptionField(findEntityDescriptionField(relation.getfDetails()));
 					relationsMap.put(className + "-" + relation.geteName(), relation);
 				}
 
