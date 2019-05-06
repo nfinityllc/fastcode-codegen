@@ -5,6 +5,7 @@ export interface IAssociationEntry {
   isParent?: boolean,
   service?: any,
   data?: any,
-  type?: string
+  type?: string,
+  descriptiveField?: string
 
 }
