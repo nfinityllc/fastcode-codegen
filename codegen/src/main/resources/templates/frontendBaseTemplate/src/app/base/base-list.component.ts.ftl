@@ -85,10 +85,14 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   }
 
   getItems() {
+    this.isLoadingResults = true;
+    this.initializePageInfo();
     if (this.selectedAssociation !== undefined) {
       this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, '', 0, 20).subscribe(
         items => {
+          this.isLoadingResults = false;
           this.items = items;
+          this.updatePageInfo(items);
         },
         error => this.errorMessage = <any>error
       );
@@ -96,8 +100,9 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     else {
       this.dataService.getAll(null, 0, 20).subscribe(
         items => {
-          console.log(items)
+          this.isLoadingResults = false;
           this.items = items;
+          this.updatePageInfo(items);
         },
         error => this.errorMessage = <any>error
       );
@@ -120,7 +125,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     });
   }
   addNew(k) {
-    if (!this.selectedAssociation) {
+    if (!this.selectedAssociation || this.selectedAssociation.type != "ManytoMany") {
       this.openDialog(k);
       return;
     }
@@ -146,19 +151,30 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   }
 
   applyFilter(filterCritaria): void {
-    console.log(filterCritaria);
-    this.dataService.getAll(filterCritaria).subscribe(
-      items => {
-        this.items = items;
-        // this.users[0].firstName
-        /* this.userService.getMainUsers().subscribe(log=> {
-           let l = log;
-         },error => {
-           this.errorMessage = <any>error
-          });*/
-      },
-      error => this.errorMessage = <any>error
-    );
+    this.searchValue = filterCritaria;
+    this.isLoadingResults = true;
+    this.initializePageInfo();
+    if (this.selectedAssociation !== undefined) {
+      this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, filterCritaria, 0, 20).subscribe(
+        items => {
+          this.isLoadingResults = false;
+          this.items = items;
+          this.updatePageInfo(items);
+        },
+        error => this.errorMessage = <any>error
+      );
+    }
+    else {
+      this.dataService.getAll(filterCritaria).subscribe(
+        items => {
+          this.isLoadingResults = false;
+          this.items = items;
+          this.updatePageInfo(items);
+        },
+        error => this.errorMessage = <any>error
+      );
+    }
+    
   }
 
   checkForAssociations(params) {
@@ -186,4 +202,47 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     }
   }
 
+  isLoadingResults = true;
+
+  currentPage: number;
+  pageSize: number;
+  lastProcessedOffset: number;
+  hasMoreRecords: boolean;
+  searchValue: any = "";
+
+  initializePageInfo() {
+    this.hasMoreRecords = true;
+    this.pageSize = 20;
+    this.lastProcessedOffset = -1;
+    this.currentPage = 0;
+  }
+
+  //manage pages for virtual scrolling
+  updatePageInfo(data) {
+    if (data.length > 0) {
+      this.currentPage++;
+      this.lastProcessedOffset += data.length;
+    }
+    else {
+      this.hasMoreRecords = false;
+    }
+  }
+
+  onTableScroll() {
+    if (!this.isLoadingResults && this.hasMoreRecords && this.lastProcessedOffset < this.items.length) {
+      this.isLoadingResults = true;
+      this.dataService.getAll(
+        this.searchValue,
+        this.currentPage * this.pageSize,
+        this.pageSize
+      ).subscribe(
+        data => {
+          this.isLoadingResults = false;
+          this.items = this.items.concat(data);
+          this.updatePageInfo(data);
+        },
+        error => this.errorMessage = <any>error
+      );
+    }
+  }
 }
