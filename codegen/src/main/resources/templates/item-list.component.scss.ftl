@@ -1,7 +1,7 @@
 @import 'src/styles/base.scss';
 .container {
     margin:$fc-margin3;
-    
+    height: 100%;
 }
 .action-tool-bar {    
     height:$fc-row-height5;
@@ -15,3 +15,9 @@
   table {
     width: 100%;
   }
+  
+	.table-container{
+		overflow: auto;
+		width: 100%;
+		max-height: calc(100% - 280px);
+	}
