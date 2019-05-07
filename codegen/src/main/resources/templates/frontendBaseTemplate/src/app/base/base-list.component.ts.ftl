@@ -120,7 +120,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     });
   }
   addNew(k) {
-    if (!this.selectedAssociation) {
+    if (!this.selectedAssociation || this.selectedAssociation.type != "ManytoMany") {
       this.openDialog(k);
       return;
     }
@@ -146,19 +146,23 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   }
 
   applyFilter(filterCritaria): void {
-    console.log(filterCritaria);
-    this.dataService.getAll(filterCritaria).subscribe(
-      items => {
-        this.items = items;
-        // this.users[0].firstName
-        /* this.userService.getMainUsers().subscribe(log=> {
-           let l = log;
-         },error => {
-           this.errorMessage = <any>error
-          });*/
-      },
-      error => this.errorMessage = <any>error
-    );
+    if (this.selectedAssociation !== undefined) {
+      this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, filterCritaria, 0, 20).subscribe(
+        items => {
+          this.items = items;
+        },
+        error => this.errorMessage = <any>error
+      );
+    }
+    else {
+      this.dataService.getAll(filterCritaria).subscribe(
+        items => {
+          this.items = items;
+        },
+        error => this.errorMessage = <any>error
+      );
+    }
+    
   }
 
   checkForAssociations(params) {
