@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -73,7 +71,7 @@ public class EntityGenerator {
 
 		ArrayList<Class<?>> entityClasses;
 		Map<String,EntityDetails> entityDetailsMap = new HashMap<>();
-		//EntityDetails details;
+		Map<String,FieldDetails> descriptiveMap = new HashMap<>();
 		try {
 			entityClasses = loader.findClasses(tempPackageName);
 			ClassDetails classDetails = getClasses(entityClasses);
@@ -82,27 +80,26 @@ public class EntityGenerator {
 			List<String> relationInputList = GetUserInput.getRelationInput(classList, relationClassList, destination,
 					tempPackageName);
 
+			
 			for (Class<?> currentClass : classList) {
 				String entityName = currentClass.getName();
 				if (!relationClassList.contains(entityName)) {
 					EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
 					details.setRelationInput(relationInputList);
-					entityDetailsMap.put(entityName,details);
+					
 					Map<String,RelationDetails> relationMap =details.getRelationsMap();
-				    details.setRelationsMap(GetEntityDetails.setJoinColumn(relationMap, classList));
+				    relationMap=GetEntityDetails.setJoinColumn(relationMap, classList);
 				    for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
 				    	if (entry.getValue().getRelation() == "ManyToOne") {
 							FieldDetails descrpitiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
 									entry.getValue().getfDetails());
-//							descrpitiveField.setFieldName(WordUtils.uncapitalize(entry.getValue().getfName())
-//									+ WordUtils.capitalize(descrpitiveField.getFieldName()));
 							entry.getValue().setEntityDescriptionField(descrpitiveField);
-
+							descriptiveMap.put(entry.getKey() ,entry.getValue().getEntityDescriptionField());
 						}
-				    	System.out.println("\nRelation KEy " + entry.getKey()+" Relation name " + entry.getValue().getRelation() + " - join Column " + entry.getValue().getJoinColumn()
-				    			+ " -Type " + entry.getValue().getJoinColumnType() + " -Nullable "+ entry.getValue().getIsJoinColumnOptional());
-						
-					}
+				    }
+				    details.setRelationsMap(relationMap);
+				    entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1),details);
+
 					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit);
 
 				}
@@ -119,7 +116,38 @@ public class EntityGenerator {
 
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
-		return entityDetailsMap;
+		return setDescriptiveField(entityDetailsMap,descriptiveMap);
+	}
+	
+	public static Map<String,EntityDetails> setDescriptiveField(Map<String,EntityDetails> entityDetailsMap, Map<String,FieldDetails> descriptiveMap)
+	{
+	    for (Map.Entry<String, EntityDetails> details : entityDetailsMap.entrySet()) {
+			System.out.println("Here entityName " +  details.getKey());	
+	    Map<String,RelationDetails>  relationMap =details.getValue().getRelationsMap();
+		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+			if(entry.getValue().getRelation()=="OneToMany")
+			{
+				for(Map.Entry<String, FieldDetails> str: descriptiveMap.entrySet())
+				{
+				int indexOfDash = str.getKey().indexOf('-');
+				String before = str.getKey().substring(0, indexOfDash);
+				String after = str.getKey().substring(indexOfDash + 1);
+				System.out.println("after " + after + " cName" + entry.getValue().getcName()+
+						"eName " + entry.getValue().geteName());
+				
+				if(after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
+						&& str.getKey() !=null)
+				{
+				  System.out.println(" here " +str.getValue().getFieldName() );
+				  entry.getValue().setEntityDescriptionField(str.getValue());
+				}
+				}
+			}
+		}
+		details.getValue().setRelationsMap(relationMap);
+	    }
+	    
+	    return entityDetailsMap;
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,

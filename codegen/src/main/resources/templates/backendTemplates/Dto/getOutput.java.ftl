@@ -14,51 +14,100 @@ public class Get[=RelationEntityName]Output {
   private String [=value.fieldName];
   </#if>
 </#list>
-
+<#list Relationship as relationKey,relationValue>
+ <#if relationValue.relation == "OneToMany" && relationValue.entityDescriptionField?? >
+  <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
+  private Long [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
+  private Boolean [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "date">
+  private Date [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
+  private String [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  </#if> 
+  </#if>
+</#list>
 <#list Fields as fkey,fvalue>
  <#if fvalue.isPrimaryKey?string('true','false') == "true" >
  <#if fvalue.fieldType?lower_case == "long" || fvalue.fieldType?lower_case == "int">
-  private Long [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  private Long [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   
   public Long get[=ClassName?cap_first][=fvalue.fieldName?cap_first]() {
-  return [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  return [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
 
-  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](Long [=ClassName?lower_case][=fvalue.fieldName?cap_first]){
-  this.[=ClassName?lower_case][=fvalue.fieldName?cap_first] = [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](Long [=ClassName?uncap_first][=fvalue.fieldName?cap_first]){
+  this.[=ClassName?uncap_first][=fvalue.fieldName?cap_first] = [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
   <#elseif fvalue.fieldType?lower_case == "boolean">
-  private Boolean [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  private Boolean [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   
   public Boolean get[=ClassName?cap_first][=fvalue.fieldName?cap_first]() {
-  return [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  return [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
 
-  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](Boolean [=ClassName?lower_case][=fvalue.fieldName?cap_first]){
-  this.[=ClassName?lower_case][=fvalue.fieldName?cap_first] = [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](Boolean [=ClassName?uncap_first][=fvalue.fieldName?cap_first]){
+  this.[=ClassName?uncap_first][=fvalue.fieldName?cap_first] = [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
   <#elseif fvalue.fieldType?lower_case == "date">
-  private Date [=ClassName?lower_case][=fvalue.fieldName];
+  private Date [=ClassName?uncap_first][=fvalue.fieldName];
   
   public Date get[=ClassName?cap_first][=fvalue.fieldName?cap_first]() {
-  return [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  return [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
 
-  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](Date [=ClassName?lower_case][=fvalue.fieldName?cap_first]){
-  this.[=ClassName?lower_case][=fvalue.fieldName?cap_first] = [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](Date [=ClassName?uncap_first][=fvalue.fieldName?cap_first]){
+  this.[=ClassName?uncap_first][=fvalue.fieldName?cap_first] = [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
   <#elseif fvalue.fieldType?lower_case == "string">
-  private String [=ClassName?lower_case][=fvalue.fieldName];
+  private String [=ClassName?uncap_first][=fvalue.fieldName];
   
   public String get[=ClassName?cap_first][=fvalue.fieldName?cap_first]() {
-  return [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  return [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
 
-  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](String [=ClassName?lower_case][=fvalue.fieldName?cap_first]){
-  this.[=ClassName?lower_case][=fvalue.fieldName?cap_first] = [=ClassName?lower_case][=fvalue.fieldName?cap_first];
+  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first](String [=ClassName?uncap_first][=fvalue.fieldName?cap_first]){
+  this.[=ClassName?uncap_first][=fvalue.fieldName?cap_first] = [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
  </#if> 
  </#if>
+</#list>
+<#list Relationship as relationKey,relationValue>
+  <#if relationValue.relation == "OneToMany" && relationValue.entityDescriptionField?? >
+  <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
+  public Long get[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
+   return [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+
+  public void set[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first](Long [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
+   this.[=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
+  public Boolean get[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
+   return [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+
+  public void set[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first](Boolean [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
+   this.[=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "date">
+  public Date get[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
+   return [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+
+  public void setget[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first](Date [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
+   this.[=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
+  public String get[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
+   return [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+
+  public void set[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first](String [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
+   this.[=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  }
+  </#if> 
+  </#if>
 </#list>
   
   <#list RelationEntityFields as value>
