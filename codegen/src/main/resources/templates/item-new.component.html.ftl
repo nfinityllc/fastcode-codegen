@@ -30,7 +30,7 @@
       </#list>
       			<div *ngFor="let association of toOne" class="button-row">
 							<button mat-raised-button color="accent" (click)="$event.preventDefault();selectAssociation(association)">Select {{association.table}}</button>:
-							<a [routerLink]="['/' + association.table + '/' + itemForm.get(association.column.key).value]" *ngIf="itemForm.get(association.column.key).value">{{itemForm.get(association.column.key).value}}</a>
+							<a [routerLink]="['/' + association.table + '/' + itemForm.get(association.column.key).value]" *ngIf="itemForm.get(association.column.key).value">{{itemForm.get(association.descriptiveField).value}}</a>
 							<label *ngIf="!itemForm.get(association.column.key).value">No {{association.table}} selected</label>
 						</div>
             
