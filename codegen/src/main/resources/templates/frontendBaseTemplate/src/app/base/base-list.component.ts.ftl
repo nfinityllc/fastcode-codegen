@@ -125,7 +125,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     });
   }
   addNew(k) {
-    if (!this.selectedAssociation || this.selectedAssociation.type != "ManytoMany") {
+    if (!this.selectedAssociation || this.selectedAssociation.type != "ManyToMany") {
       this.openDialog(k);
       return;
     }
