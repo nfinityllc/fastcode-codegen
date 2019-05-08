@@ -57,8 +57,8 @@ public class GetUserInput {
 		
 		List<FieldDetails> fieldsList =new ArrayList<>();
 		for (FieldDetails f : fields) {
-			if(f.fieldType.equalsIgnoreCase("long") ||f.fieldType.equalsIgnoreCase("string") ||
-			f.fieldType.equalsIgnoreCase("boolean") || f.fieldType.equalsIgnoreCase("date") )
+			if(f.fieldType.equalsIgnoreCase("long") || f.fieldType.contains("int") || f.fieldType.equalsIgnoreCase("string") ||
+			f.fieldType.equalsIgnoreCase("boolean") || f.fieldType.equalsIgnoreCase("timestamp") )
 				fieldsList.add(f);
 		}
 		
@@ -76,7 +76,15 @@ public class GetUserInput {
 		FieldDetails r = new FieldDetails();
 		FieldDetails selected = fieldsList.get(i - 1);
 		r.setFieldName(selected.getFieldName());
+		if(selected.getFieldType().contains("int"))
+		{
+		r.setFieldType("Long");
+		}
+		else if(selected.getFieldType().contains("timestamp"))
+			r.setFieldType("Date");	
+		else
 		r.setFieldType(selected.getFieldType());
+		
 		r.setIsNullable(selected.getIsNullable());
 		r.setIsPrimaryKey(selected.getIsPrimaryKey());
 		r.setLength(selected.getLength());

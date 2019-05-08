@@ -15,7 +15,8 @@ public class Get[=RelationEntityName]Output {
   </#if>
 </#list>
 <#list Relationship as relationKey,relationValue>
- <#if relationValue.relation == "OneToMany" && relationValue.entityDescriptionField?? >
+ <#if relationValue.relation == "OneToMany" || relationValue.relation == "ManyToMany"   && relationValue.entityDescriptionField?? >
+  <#if relationValue.entityDescriptionField.fieldName != "id">
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   private Long [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
@@ -25,6 +26,7 @@ public class Get[=RelationEntityName]Output {
   <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
   private String [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   </#if> 
+  </#if>
   </#if>
 </#list>
 <#list Fields as fkey,fvalue>
@@ -73,7 +75,8 @@ public class Get[=RelationEntityName]Output {
  </#if>
 </#list>
 <#list Relationship as relationKey,relationValue>
-  <#if relationValue.relation == "OneToMany" && relationValue.entityDescriptionField?? >
+  <#if relationValue.relation == "OneToMany" || relationValue.relation == "ManyToMany"   && relationValue.entityDescriptionField?? >
+  <#if relationValue.entityDescriptionField.fieldName != "id">
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   public Long get[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
    return [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
@@ -107,6 +110,7 @@ public class Get[=RelationEntityName]Output {
    this.[=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   }
   </#if> 
+  </#if>
   </#if>
 </#list>
   

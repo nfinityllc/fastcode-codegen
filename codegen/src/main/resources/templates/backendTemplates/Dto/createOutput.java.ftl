@@ -21,10 +21,11 @@ public class Create[=ClassName]Output {
   private java.util.Date lastModificationTime;
 </#if>
 <#list Relationship as relationKey,relationValue>
- <#if relationValue.relation == "ManyToOne">
+  <#if relationValue.relation == "ManyToOne">
   private [=relationValue.joinColumnType] [=relationValue.joinColumn];       
   </#if>
- <#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
+  <#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField??>
+  <#if relationValue.entityDescriptionField.fieldName != "id">
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   private Long [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
@@ -33,7 +34,8 @@ public class Create[=ClassName]Output {
   private Date [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
   private String [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  </#if> 
+  </#if>
+  </#if>
   </#if>
 </#list>
 
@@ -50,6 +52,7 @@ public class Create[=ClassName]Output {
   </#if> 
   </#if>
   <#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
+  <#if relationValue.entityDescriptionField.fieldName != "id">
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   public Long get[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
    return [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
@@ -82,7 +85,8 @@ public class Create[=ClassName]Output {
   public void set[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first](String [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
    this.[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   }
-  </#if> 
+  </#if>
+  </#if>
   </#if>
 </#list>
 
