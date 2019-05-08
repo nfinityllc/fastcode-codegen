@@ -27,6 +27,7 @@ export class PickerComponent implements OnInit {
   selectedItem:IPickerItem;
   selectedItems:IPickerItem[]=[];
   errorMessage = '';
+  displayField: string;
     constructor( private router: Router,
        private global:Globals,
        public dialogRef: MatDialogRef<PickerComponent>,
@@ -38,6 +39,7 @@ export class PickerComponent implements OnInit {
       if(this.data.IsSingleSelection)
         this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
       this.title = this.data.Title;
+      this.displayField = this.data.DisplayField;
       this.data.DataSource.subscribe(  items => {
         this.items = items;
        // this.users[0].firstName

@@ -108,7 +108,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				service: this.[=relationValue.eName?lower_case]Service,
 				</#if>
 				<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-			  descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
 			  </#if>
 			},
 		</#list>

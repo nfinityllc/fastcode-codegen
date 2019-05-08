@@ -11,7 +11,7 @@
            
         <mat-list-option  *ngFor="let item of items" [value] ="item" > 
                 <mat-icon mat-list-icon>perm_identity</mat-icon>
-                <h4 mat-line>{{item.name}}</h4>
+                <h4 mat-line>{{item[displayField]}}</h4>
                 <mat-divider></mat-divider>
              </mat-list-option>          
      </mat-selection-list>

@@ -65,6 +65,9 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 				[=relationValue.joinColumn]: ['', Validators.required],
 				</#if>
+				<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
+				[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] : [''],
+			  </#if>
 				</#list>
 				</#if>
 		        
@@ -98,8 +101,11 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 					table: '[=relationValue.eName?lower_case]',
 					type: '[=relationValue.relation]',
 					<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-					service: this.[=relationValue.eName?lower_case]Service
+					service: this.[=relationValue.eName?lower_case]Service,
 					</#if>
+					<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
+			  	descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+			  	</#if>
 				},
 			</#list>
 			];

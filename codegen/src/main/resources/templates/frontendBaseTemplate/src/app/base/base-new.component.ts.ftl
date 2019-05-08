@@ -48,62 +48,64 @@ export class BaseNewComponent<E> implements OnInit {
        this.manageScreenResizing();
     }
 
-    manageScreenResizing() {
-        this.global.isMediumDeviceOrLess$.subscribe(value => {
-          this.isMediumDeviceOrLess = value;
-          if (this.dialogRef)
-            this.dialogRef.updateSize(value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
-              value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize);
-        });
-      }
+	manageScreenResizing() {
+		this.global.isMediumDeviceOrLess$.subscribe(value => {
+			this.isMediumDeviceOrLess = value;
+			if (this.dialogRef)
+				this.dialogRef.updateSize(value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
+				value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize);
+		});
+	}
  
-    // convenience getter for easy access to form fields
-    get f() { return this.itemForm.controls; }
+	// convenience getter for easy access to form fields
+	get f() { return this.itemForm.controls; }
  
-    onSubmit() {
-        this.submitted = true;
- 
-        // stop here if form is invalid
-        if (this.itemForm.invalid) {
-            return;
-        }
- 
-        this.loading = true;
-        this.dataService.create(this.itemForm.value)
-            .pipe(first())
-            .subscribe(
-                data => {
-                   // this.alertService.success('Registration successful', true);
-                   // this.router.navigate(['/users']);
-                    this.dialogRef.close(data);
-                },
-                error => {
-                   
-                    this.loading = false;
-                });
-    }
-    onCancel(): void {
-			this.dialogRef.close();
+	onSubmit() {
+		this.submitted = true;
+		// stop here if form is invalid
+		if (this.itemForm.invalid) {
+			return;
 		}
-    
-    selectAssociation(association) {
-    console.log(association);
-    this.pickerDialogRef = this.dialog.open(PickerComponent, {
-        disableClose: true,
-        height: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize,
-        width: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
-        maxWidth: "none",
-        panelClass: 'fc-modal-dialog',
-        data: {
-        DataSource: association.service.getAll(),
-        Title: association.table,
-        IsSingleSelection: true
-        }
-    });
-    this.pickerDialogRef.afterClosed().subscribe(associatedItem => {
-        if (associatedItem) {
-        this.itemForm.get(association.column.key).setValue(associatedItem.id);
-        }
-    });
+		
+		this.loading = true;
+		this.dataService.create(this.itemForm.value)
+		.pipe(first())
+		.subscribe(
+			data => {
+				// this.alertService.success('Registration successful', true);
+				// this.router.navigate(['/users']);
+				this.dialogRef.close(data);
+			},
+			error => {
+				this.loading = false;
+			});
     }
+	onCancel(): void {
+		this.dialogRef.close();
+	}
+    
+	selectAssociation(association) {
+		let parentField:string = association.descriptiveField.replace(association.table,'');
+		parentField = parentField.charAt(0).toLowerCase() + parentField.slice(1);
+
+		this.pickerDialogRef = this.dialog.open(PickerComponent, {
+			disableClose: true,
+			height: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize,
+			width: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
+			maxWidth: "none",
+			panelClass: 'fc-modal-dialog',
+			data: {
+				DataSource: association.service.getAll(),
+				Title: association.table,
+				IsSingleSelection: true,
+				DisplayField: parentField
+			}
+		});
+		this.pickerDialogRef.afterClosed().subscribe(associatedItem => {
+			if (associatedItem) {
+				this.itemForm.get(association.column.key).setValue(associatedItem.id);
+				this.itemForm.get(association.descriptiveField).setValue(associatedItem[parentField]);
+			}
+    });
+	}
 }
