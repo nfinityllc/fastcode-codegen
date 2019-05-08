@@ -20,17 +20,41 @@ import { IAssociationEntry } from '../core/iassociationentry';
 })
 export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> implements OnInit {
 
-	title:string = "[=ClassName]s";
+	title:string = "[=ClassName]";
   
 	columns: IListColumn[] = [
+		{
+			column: 'id',
+			label: 'id',
+			sort: true,
+			filter: false,
+			type: listColumnType.Number
+		},
 	<#list Fields as key,value>
-	<#if value.fieldType?lower_case == "string">
+	<#if value.fieldName?lower_case == "id">  
+	<#elseif value.fieldType?lower_case == "string">
 		{
 			column: '[=value.fieldName]',
 			label: '[=value.fieldName]',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
+		},
+	<#elseif value.fieldType?lower_case == "int" || value.fieldType?lower_case == "long">
+		{
+			column: '[=value.fieldName]',
+			label: '[=value.fieldName]',
+			sort: false,
+			filter: false,
+			type: listColumnType.Number
+		},
+	<#elseif value.fieldType?lower_case == "date">
+		{
+			column: '[=value.fieldName]',
+			label: '[=value.fieldName]',
+			sort: false,
+			filter: false,
+			type: listColumnType.Date
 		},
   </#if> 
   </#list>
@@ -81,6 +105,20 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 					</#if>
 					value: undefined
 				},
+				<#if relationValue.relation == "ManyToMany">
+				<#list RelationInput as relationInput>
+				<#assign parent = relationInput>
+				<#if parent?keep_after("-") == relationValue.eName>
+				isParent: true,
+				<#else>
+				isParent: false,
+				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+				</#if>
+				</#list>
+				<#else>
+				isParent: false,
+				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+				</#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]'
 			},

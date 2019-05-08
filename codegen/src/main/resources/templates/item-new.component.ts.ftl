@@ -52,13 +52,16 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 		  
 			this.itemForm = this.formBuilder.group({
 				<#list Fields as key,value>
-		        <#if value.fieldType == "Date">              
+				<#if value.fieldName?lower_case == "id">
+				<#elseif value.fieldType == "Date">              
 				[=value.fieldName]: ['', Validators.required],
-		        <#elseif value.fieldType == "boolean">              
+				<#elseif value.fieldType == "boolean">              
 				[=value.fieldName]: [false, Validators.required],
-		         <#elseif value.fieldType?lower_case == "string">                
+        <#elseif value.fieldType?lower_case == "string">                
 				[=value.fieldName]: ['', Validators.required],
-		        </#if> 
+				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
+		    [=value.fieldName]: ['', Validators.required],
+        </#if> 
 				</#list>
 				<#if Relationship?has_content>
 				<#list Relationship as relationKey, relationValue>
