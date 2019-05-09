@@ -45,6 +45,7 @@ public class GetEntityDetails {
 							if (s.contains("nullable")) {
 								String[] value = s.split("=");
 								Boolean nullable = Boolean.valueOf(value[1]);
+								if(details.getIsNullable())
 								details.setIsNullable(nullable);
 
 							}
@@ -57,6 +58,7 @@ public class GetEntityDetails {
 					}
 					if (a.annotationType().toString().equals("interface javax.persistence.Id")) {
 						details.setIsPrimaryKey(true);
+						details.setIsNullable(false);
 					}
 					if (a.annotationType().toString().equals("interface javax.persistence.ManyToOne")) {
 						relation.setRelation("ManyToOne");
@@ -84,7 +86,7 @@ public class GetEntityDetails {
 							if (s.contains("columnDefinition")) {
 								String[] value = s.split("=");
 								String columnType = value[1];
-								if (columnType.equals("bigserial") || columnType.equals("int8"))
+								if (columnType.equals("bigserial") || columnType.equals("int8") || columnType.equals("int4"))
 									relation.setJoinColumnType("Long");
 								else
 									relation.setJoinColumnType("String");
@@ -246,7 +248,7 @@ public class GetEntityDetails {
 									if (s.contains("columnDefinition")) {
 										String[] value = s.split("=");
 										String columnType = value[1];
-										if (columnType.equals("bigserial") || columnType.equals("int8"))
+										if (columnType.equals("bigserial") || columnType.equals("int8") || columnType.equals("int4"))
 											relationFields.put("joinColumnType", "Long");
 										else
 											relationFields.put("joinColumnType", "String");
@@ -387,7 +389,7 @@ public class GetEntityDetails {
 											if (s.contains("columnDefinition")) {
 												String[] value = s.split("=");
 												String columnType = value[1];
-												if (columnType.equals("bigserial") || columnType.equals("int8"))
+												if (columnType.equals("bigserial") || columnType.equals("int8") || columnType.equals("int4"))
 													entry.getValue().setJoinColumnType("Long");
 												else
 													entry.getValue().setJoinColumnType("String");
