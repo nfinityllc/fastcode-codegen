@@ -59,7 +59,6 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   ngOnInit() {
     this.manageScreenResizing();
     this.route.queryParams.subscribe(params => {
-      console.log(params);
       this.checkForAssociations(params);
       this.getItems();
     });
@@ -88,7 +87,13 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     this.isLoadingResults = true;
     this.initializePageInfo();
     if (this.selectedAssociation !== undefined) {
-      this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, '', 0, 20).subscribe(
+      this.dataService.getAssociations(
+        this.selectedAssociation.table,
+        this.selectedAssociation.column.value,
+        this.searchValue,
+        this.currentPage * this.pageSize,
+        this.pageSize
+        ).subscribe(
         items => {
           this.isLoadingResults = false;
           this.items = items;
@@ -98,7 +103,11 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       );
     }
     else {
-      this.dataService.getAll(null, 0, 20).subscribe(
+      this.dataService.getAll(
+        this.searchValue,
+        this.currentPage * this.pageSize,
+        this.pageSize
+      ).subscribe(
         items => {
           this.isLoadingResults = false;
           this.items = items;
@@ -119,8 +128,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     });
     this.dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.items = [...this.items, result];
-        this.changeDetectorRefs.detectChanges();
+        this.getItems();
       }
     });
   }
@@ -132,7 +140,8 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     let dialogConfig: IFCDialogConfig = <IFCDialogConfig>{
       DataSource: this.dataService.getAll(),
       Title: this.title,
-      IsSingleSelection: true
+      IsSingleSelection: true,
+      DisplayField: "name"
       //  OnClose:null
     };
 
@@ -155,17 +164,27 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     this.isLoadingResults = true;
     this.initializePageInfo();
     if (this.selectedAssociation !== undefined) {
-      this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, filterCritaria, 0, 20).subscribe(
-        items => {
-          this.isLoadingResults = false;
-          this.items = items;
-          this.updatePageInfo(items);
-        },
-        error => this.errorMessage = <any>error
-      );
+      // this.dataService.getAssociations(
+      //   this.selectedAssociation.table,
+      //   this.selectedAssociation.column.value,
+      //   this.searchValue,
+      //   this.currentPage * this.pageSize,
+      //   this.pageSize
+      //   ).subscribe(
+      //   items => {
+      //     this.isLoadingResults = false;
+      //     this.items = items;
+      //     this.updatePageInfo(items);
+      //   },
+      //   error => this.errorMessage = <any>error
+      // );
     }
     else {
-      this.dataService.getAll(filterCritaria).subscribe(
+      this.dataService.getAll(
+        this.searchValue,
+        this.currentPage * this.pageSize,
+        this.pageSize
+      ).subscribe(
         items => {
           this.isLoadingResults = false;
           this.items = items;
@@ -178,12 +197,15 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   }
 
   checkForAssociations(params) {
+    this.selectedAssociation = undefined;
     this.associations.forEach((association) => {
       const columnValue = params[association.column.key];
       if (columnValue) {
         association.column.value = columnValue;
         this.selectedAssociation = association;
-        console.log(this.selectedAssociation);
+        this.selectedAssociation.service.getById(this.selectedAssociation.column.value).subscribe(parentObj => {
+          this.selectedAssociation.associatedObj = parentObj;
+        })
       }
     })
   }
@@ -212,7 +234,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
 
   initializePageInfo() {
     this.hasMoreRecords = true;
-    this.pageSize = 20;
+    this.pageSize = 10;
     this.lastProcessedOffset = -1;
     this.currentPage = 0;
   }
@@ -231,18 +253,26 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   onTableScroll() {
     if (!this.isLoadingResults && this.hasMoreRecords && this.lastProcessedOffset < this.items.length) {
       this.isLoadingResults = true;
-      this.dataService.getAll(
-        this.searchValue,
-        this.currentPage * this.pageSize,
-        this.pageSize
-      ).subscribe(
-        data => {
-          this.isLoadingResults = false;
-          this.items = this.items.concat(data);
-          this.updatePageInfo(data);
-        },
-        error => this.errorMessage = <any>error
-      );
+      if (this.selectedAssociation !== undefined) {
+        // this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValue, this.currentPage * this.pageSize, this.pageSize).subscribe(
+        //   items => {
+        //     this.isLoadingResults = false;
+        //     this.items = this.items.concat(items);
+        //     this.updatePageInfo(items);
+        //   },
+        //   error => this.errorMessage = <any>error
+        // );
+      }
+      else {
+        this.dataService.getAll(this.searchValue, this.currentPage * this.pageSize, this.pageSize).subscribe(
+          items => {
+            this.isLoadingResults = false;
+            this.items = this.items.concat(items);;
+            this.updatePageInfo(items);
+          },
+          error => this.errorMessage = <any>error
+        );
+      }
     }
   }
 }

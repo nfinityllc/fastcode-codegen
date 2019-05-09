@@ -6,6 +6,6 @@ export interface IAssociationEntry {
   service?: any,
   data?: any,
   type?: string,
-  descriptiveField?: string
-
+  descriptiveField?: string,
+  associatedObj?: any,
 }

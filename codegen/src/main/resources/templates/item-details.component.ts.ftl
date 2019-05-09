@@ -59,7 +59,9 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			[=value.fieldName]: ['', Validators.required],
 	        <#elseif value.fieldType == "boolean">              
 			[=value.fieldName]: [false, Validators.required],
-	         <#elseif value.fieldType?lower_case == "string">                
+	        <#elseif value.fieldType?lower_case == "string">                
+			[=value.fieldName]: ['', Validators.required],
+					<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
 			[=value.fieldName]: ['', Validators.required],
 	        </#if> 
 			</#list>
@@ -128,7 +130,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		this.itemForm.patchValue({
 		 <#list Fields as key,value>
 		 	<#assign fieldType = value.fieldType?lower_case fieldName = value.fieldName?lower_case>
-		    <#if fieldName == "id" || fieldType == "date" || fieldType == "string" || fieldType == "boolean">              
+		    <#if fieldName == "id" || fieldType == "date" || fieldType == "string" || fieldType == "boolean" || fieldType == "int" || fieldType == "long">              
 			[=value.fieldName]:item.[=value.fieldName],
 			</#if>
 		</#list>
