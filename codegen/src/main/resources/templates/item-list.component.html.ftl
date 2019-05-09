@@ -43,7 +43,7 @@
 		<ng-container matColumnDef="actions">
 			<th mat-header-cell *matHeaderCellDef> Actions</th>
 			<td mat-cell *matCellDef="let item"> 
-				<button mat-button color="accent"(click)="delete(item)">{{selectedAssociation?'De-link':'Delete'}}</button>
+				<button mat-button color="accent"(click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany")?'De-link':'Delete'}}</button>
 			</td>
 		</ng-container>
 		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

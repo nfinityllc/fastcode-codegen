@@ -220,7 +220,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
 
   delete(item: E) {
     let currentPerm = item;
-    if (this.selectedAssociation !== undefined) {
+    if (this.selectedAssociation !== undefined && this.selectedAssociation.type == "ManyToMany") {
       this.dataService.deleteAssociation(this.selectedAssociation.table, this.selectedAssociation.column.value, item["id"]).subscribe(result => {
         this.getItems();
       });
