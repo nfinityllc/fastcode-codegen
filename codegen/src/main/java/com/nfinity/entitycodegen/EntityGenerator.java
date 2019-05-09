@@ -132,7 +132,7 @@ public class EntityGenerator {
 			EntityGenerator.generateAuditEntity(destinationPath, packageName);
 		} 
 
-		//deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 		return setDescriptiveField(entityDetailsMap,descriptiveMap,relationInputList);
 	}

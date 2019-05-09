@@ -53,20 +53,40 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			this.itemForm = this.formBuilder.group({
 				<#list Fields as key,value>
 				<#if value.fieldName?lower_case == "id">
-				<#elseif value.fieldType == "Date">              
+				<#elseif value.fieldType == "Date">    
+				<#if value.isNullable == false>          
 				[=value.fieldName]: ['', Validators.required],
-				<#elseif value.fieldType == "boolean">              
+				<#else>
+				[=value.fieldName]: [''],
+				</#if>
+				<#elseif value.fieldType == "boolean">  
+				<#if value.isNullable == false>          
 				[=value.fieldName]: [false, Validators.required],
-        <#elseif value.fieldType?lower_case == "string">                
-				[=value.fieldName]: ['', Validators.required],
+				<#else>
+				[=value.fieldName]: [false],
+				</#if>            
+                <#elseif value.fieldType?lower_case == "string">                
+				<#if value.isNullable == false>          
+				[=value.fieldName]: ['', Validators.required], 
+				<#else>
+				[=value.fieldName]: [''],
+				</#if>
 				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
-		    [=value.fieldName]: ['', Validators.required],
-        </#if> 
+		        <#if value.isNullable == false>   
+		        [=value.fieldName]: ['', Validators.required],       
+				<#else>
+				[=value.fieldName]: [''],
+				</#if>
+                </#if> 
 				</#list>
 				<#if Relationship?has_content>
 				<#list Relationship as relationKey, relationValue>
 				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+				<#if relationValue.isJoinColumnOptional==false>          
 				[=relationValue.joinColumn]: ['', Validators.required],
+				<#else>
+				[=relationValue.joinColumn]: [''],
+				</#if>
 				</#if>
 				<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
 				[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] : [''],

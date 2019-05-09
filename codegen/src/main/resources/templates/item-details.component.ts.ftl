@@ -56,19 +56,39 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 	        <#if value.fieldName?lower_case == "id">              
 			[=value.fieldName]: [],
 	        <#elseif value.fieldType == "Date">              
+			<#if value.isNullable == false>          
 			[=value.fieldName]: ['', Validators.required],
+			<#else>
+			[=value.fieldName]: [''],
+			</#if>
 	        <#elseif value.fieldType == "boolean">              
+			<#if value.isNullable == false>          
 			[=value.fieldName]: [false, Validators.required],
+			<#else>
+			[=value.fieldName]: [false],
+			</#if>  
 	        <#elseif value.fieldType?lower_case == "string">                
+			<#if value.isNullable == false>          
 			[=value.fieldName]: ['', Validators.required],
-					<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
+			<#else>
+			[=value.fieldName]: [''],
+			</#if>
+			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
+			<#if value.isNullable == false>          
 			[=value.fieldName]: ['', Validators.required],
+			<#else>
+			[=value.fieldName]: [''],
+			</#if>
 	        </#if> 
 			</#list>
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+			<#if relationValue.isJoinColumnOptional==false>          
 			[=relationValue.joinColumn]: ['', Validators.required],
+			<#else>
+			[=relationValue.joinColumn]: [''],
+			</#if>
 			</#if>
 			</#list>
 			</#if>
