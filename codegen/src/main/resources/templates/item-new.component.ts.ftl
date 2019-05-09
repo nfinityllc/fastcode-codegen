@@ -12,7 +12,7 @@ import { BaseNewComponent } from '../base/base-new.component';
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service'
+import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
 </#if>
 </#list>
 </#if>

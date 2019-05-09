@@ -3,10 +3,8 @@
 	<span *ngIf="selectedAssociation">
 		<span routerLink="/{{selectedAssociation.table}}/{{selectedAssociation.column.value}}">
 			<i class="material-icons">arrow_back</i>
-			<span *ngFor="let item of items; let i = index">
-				<span *ngIf="i == 0">
-					/{{item[selectedAssociation.descriptiveField]}}
-				</span>
+			<span *ngIf="selectedAssociation.associatedObj">
+				/{{selectedAssociation.associatedObj[selectedAssociation.descriptiveField]}}
 			</span>
 		</span>
 	</span>

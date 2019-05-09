@@ -203,6 +203,9 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       if (columnValue) {
         association.column.value = columnValue;
         this.selectedAssociation = association;
+        this.selectedAssociation.service.getById(this.selectedAssociation.column.value).subscribe(parentObj => {
+          this.selectedAssociation.associatedObj = parentObj;
+        })
       }
     })
   }

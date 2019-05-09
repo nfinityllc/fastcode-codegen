@@ -13,6 +13,21 @@ import { PickerDialogService } from '../common/components/picker/picker-dialog.s
 import { IAssociationEntry } from '../core/iassociationentry';
 </#if>
 
+<#if Relationship?has_content>
+<#list Relationship as relationKey, relationValue>
+<#if relationValue.relation == "ManyToMany">
+<#list RelationInput as relationInput>
+<#assign parent = relationInput>
+<#if parent?keep_before("-") == relationValue.eName>
+import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
+</#if>
+</#list>
+<#elseif relationValue.relation == "ManyToOne">
+import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
+</#if>
+</#list>
+</#if>
+
 @Component({
   selector: 'app-[=ModuleName]-list',
   templateUrl: './[=ModuleName]-list.component.html',
@@ -79,6 +94,20 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
 		public [=InstanceName]Service: [=ClassName]Service,
+		<#if Relationship?has_content>
+		<#list Relationship as relationKey, relationValue>
+		<#if relationValue.relation == "ManyToMany">
+		<#list RelationInput as relationInput>
+		<#assign parent = relationInput>
+		<#if parent?keep_before("-") == relationValue.eName>
+		public this.[=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
+		</#if>
+		</#list>
+		<#elseif relationValue.relation == "ManyToOne">
+		public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
+		</#if>
+		</#list>
+		</#if>
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, [=InstanceName]Service)
   }
@@ -112,12 +141,16 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				isParent: true,
 				<#else>
 				isParent: false,
-				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+				descriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
+				service: this.[=relationValue.eName?lower_case]Service,
+				associatedObj: undefined,
 				</#if>
 				</#list>
 				<#else>
 				isParent: false,
-				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+				descriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
+				service: this.[=relationValue.eName?lower_case]Service,
+				associatedObj: undefined,
 				</#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]'
