@@ -4,7 +4,7 @@ public class FieldDetails {
 
 	String fieldName;
 	String fieldType;
-	boolean isNullable;
+	boolean isNullable=true;
 	boolean isPrimaryKey;
 	int length;
 	

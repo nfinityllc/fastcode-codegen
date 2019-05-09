@@ -2,13 +2,29 @@ export interface [=IEntity] {
 
  <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int"> 
+     <#if value.isNullable == true>
+      [=value.fieldName]?: number;
+     <#else>
       [=value.fieldName]: number;
- <#elseif value.fieldType?lower_case == "boolean">
+      </#if> 
+<#elseif value.fieldType?lower_case == "boolean">
+     <#if value.isNullable == true>
       [=value.fieldName]?: boolean;
+     <#else>
+      [=value.fieldName]: boolean;
+      </#if> 
  <#elseif value.fieldType?lower_case == "date">
+      <#if value.isNullable == true>
       [=value.fieldName]?: string;
+     <#else>
+      [=value.fieldName]: string;
+      </#if> 
 <#elseif value.fieldType?lower_case == "string">
+       <#if value.isNullable == true>
       [=value.fieldName]?: string;
+     <#else>
+      [=value.fieldName]: string;
+      </#if> 
  </#if> 
 </#list>
 <#list Relationship as relationKey,relationValue>
