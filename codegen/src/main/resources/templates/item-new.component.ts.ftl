@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { [=ClassName]Service } from './[=ModuleName].service';
 import { [=IEntity] } from './[=IEntityFile]';
 
@@ -6,7 +6,7 @@ import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { Globals } from '../globals';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BaseNewComponent } from '../base/base-new.component';
 
 <#if Relationship?has_content>
@@ -31,6 +31,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			public route: ActivatedRoute,
 			public dialog: MatDialog,
 			public dialogRef: MatDialogRef<[=ClassName]NewComponent>,
+			@Inject(MAT_DIALOG_DATA) public data: any,
 			public global: Globals,
 			public dataService: [=ClassName]Service,
 			<#if Relationship?has_content>
@@ -41,7 +42,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#list>
 			</#if>
 		) {
-			super(formBuilder, router, route, dialog, dialogRef, global, dataService);
+			super(formBuilder, router, route, dialog, dialogRef, data, global, dataService);
 	  }
  
     ngOnInit() {
@@ -73,8 +74,8 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			  </#if>
 				</#list>
 				</#if>
-		        
-		     });
+				});
+				this.checkPassedData();
     }
  		
 	<#if Relationship?has_content> 

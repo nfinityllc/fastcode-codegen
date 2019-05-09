@@ -4,7 +4,7 @@
 		<span routerLink="/{{selectedAssociation.table}}/{{selectedAssociation.column.value}}">
 			<i class="material-icons">arrow_back</i>
 			<span *ngIf="selectedAssociation.associatedObj">
-				/{{selectedAssociation.associatedObj[selectedAssociation.descriptiveField]}}
+				/{{selectedAssociation.associatedObj[selectedAssociation.referencedDescriptiveField]}}
 			</span>
 		</span>
 	</span>

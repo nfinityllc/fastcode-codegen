@@ -118,13 +118,14 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     }
   }
 
-  openDialog(k) {
+  openDialog(k,data) {
     this.dialogRef = this.dialog.open(k, {
       disableClose: true,
       height: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize,
       width: this.isMediumDeviceOrLess ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
       maxWidth: "none",
-      panelClass: 'fc-modal-dialog'
+      panelClass: 'fc-modal-dialog',
+      data: data
     });
     this.dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -133,8 +134,15 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     });
   }
   addNew(k) {
-    if (!this.selectedAssociation || this.selectedAssociation.type != "ManyToMany") {
-      this.openDialog(k);
+    if (!this.selectedAssociation) {
+      this.openDialog(k,null);
+      return;
+    }
+    else if(this.selectedAssociation.type != "ManyToMany"){
+      let data:any = {}
+      data[this.selectedAssociation.column.key] = this.selectedAssociation.column.value;
+      data[this.selectedAssociation.descriptiveField] = this.selectedAssociation.associatedObj[this.selectedAssociation.referencedDescriptiveField];
+      this.openDialog(k,data);
       return;
     }
     let dialogConfig: IFCDialogConfig = <IFCDialogConfig>{

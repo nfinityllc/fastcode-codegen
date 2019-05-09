@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import {GenericApiService} from '../core/generic-api.service';
 //import { IUser } from './iuser';
@@ -39,14 +39,15 @@ export class BaseNewComponent<E> implements OnInit {
         public router: Router,
         public route: ActivatedRoute,
         public dialog: MatDialog,        
-				public dialogRef: MatDialogRef<any>,
+		public dialogRef: MatDialogRef<any>,
+		@Inject(MAT_DIALOG_DATA) public data: any,
         public global: Globals,
         public dataService: GenericApiService<E>
         ) { }
  
     ngOnInit() {
-       this.manageScreenResizing();
-    }
+		this.manageScreenResizing();
+	}
 
 	manageScreenResizing() {
 		this.global.isMediumDeviceOrLess$.subscribe(value => {
@@ -107,5 +108,11 @@ export class BaseNewComponent<E> implements OnInit {
 				this.itemForm.get(association.descriptiveField).setValue(associatedItem[parentField]);
 			}
     });
+	}
+
+	checkPassedData(){
+		if(this.data){
+			this.itemForm.patchValue(this.data);
+		}
 	}
 }

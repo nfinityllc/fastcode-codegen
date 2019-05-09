@@ -7,5 +7,6 @@ export interface IAssociationEntry {
   data?: any,
   type?: string,
   descriptiveField?: string,
+  referencedDescriptiveField?: string,
   associatedObj?: any,
 }

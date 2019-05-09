@@ -100,7 +100,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		<#list RelationInput as relationInput>
 		<#assign parent = relationInput>
 		<#if parent?keep_before("-") == relationValue.eName>
-		public this.[=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
+		public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
 		</#if>
 		</#list>
 		<#elseif relationValue.relation == "ManyToOne">
@@ -141,14 +141,15 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				isParent: true,
 				<#else>
 				isParent: false,
-				descriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
+				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
 				service: this.[=relationValue.eName?lower_case]Service,
 				associatedObj: undefined,
 				</#if>
 				</#list>
 				<#else>
 				isParent: false,
-				descriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
+				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+				referencedDescriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
 				service: this.[=relationValue.eName?lower_case]Service,
 				associatedObj: undefined,
 				</#if>
