@@ -142,6 +142,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				<#else>
 				isParent: false,
 				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+				referencedDescriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
 				service: this.[=relationValue.eName?lower_case]Service,
 				associatedObj: undefined,
 				</#if>

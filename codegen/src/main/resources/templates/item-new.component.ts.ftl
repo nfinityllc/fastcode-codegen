@@ -66,19 +66,19 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				<#else>
 				[=value.fieldName]: [false],
 				</#if>            
-                <#elseif value.fieldType?lower_case == "string">                
+				<#elseif value.fieldType?lower_case == "string">                
 				<#if value.isNullable == false>          
 				[=value.fieldName]: ['', Validators.required], 
 				<#else>
 				[=value.fieldName]: [''],
 				</#if>
 				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
-		        <#if value.isNullable == false>   
-		        [=value.fieldName]: ['', Validators.required],       
+				<#if value.isNullable == false>   
+				[=value.fieldName]: ['', Validators.required],       
 				<#else>
 				[=value.fieldName]: [''],
 				</#if>
-                </#if> 
+				</#if> 
 				</#list>
 				<#if Relationship?has_content>
 				<#list Relationship as relationKey, relationValue>
@@ -128,7 +128,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 					service: this.[=relationValue.eName?lower_case]Service,
 					</#if>
 					<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-			  	descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+					descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
 			  	</#if>
 				},
 			</#list>
