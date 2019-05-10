@@ -127,16 +127,28 @@ public class [=ClassName]Controller {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
    <#elseif relationValue.relation == "OneToMany">
-   	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
-	public ResponseEntity Get[=relationValue.eName](@PathVariable String [=InstanceName]id) {
-		List<Get[=relationValue.eName]Output> output = _[=ClassName?uncap_first]AppService.Get[=ClassName]List(Long.valueOf([=InstanceName]id));
+
+		@RequestMapping(value = "/{[=relationValue.joinColumn?lower_case]}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
+	public ResponseEntity GetPostdetails(@PathVariable String [=InstanceName]id,@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		
+		if(search.isEmpty()) {
+			search = "[=relationValue.joinColumn];" + [=relationValue.joinColumn?lower_case];
+		}
+		else {
+			search = search + ",[=relationValue.joinColumn];" + [=relationValue.joinColumn?lower_case];
+		}
+   		List<Find[=relationValue.eName]ByIdOutput> output = _[=relationValue.eName?uncap_first]AppService.Find(search,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity(output, HttpStatus.OK);
-	}
-   
+	}   
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>

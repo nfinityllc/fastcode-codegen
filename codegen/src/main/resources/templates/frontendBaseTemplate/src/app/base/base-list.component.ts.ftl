@@ -215,14 +215,14 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     this.initializePageInfo();
     let sortVal = this.getSortValue();
     if (this.selectedAssociation !== undefined) {
-      // this.itemsObservable = this.dataService.getAssociations(
-      //   this.selectedAssociation.table,
-      //   this.selectedAssociation.column.value,
-      //   this.searchValue,
-      //   this.currentPage * this.pageSize,
-      //   this.pageSize,
-      //   sortVal
-      //   )
+      this.itemsObservable = this.dataService.getAssociations(
+        this.selectedAssociation.table,
+        this.selectedAssociation.column.value,
+        this.searchValue,
+        this.currentPage * this.pageSize,
+        this.pageSize,
+        sortVal
+        )
     }
     else {
       this.itemsObservable = this.dataService.getAll(
@@ -231,8 +231,8 @@ export class BaseListComponent<E extends IBase> implements OnInit {
         this.pageSize,
         sortVal
       )
-      this.processListObservable(this.itemsObservable, listProcessingType.Replace)
     }
+    this.processListObservable(this.itemsObservable, listProcessingType.Replace)
 
   }
 
@@ -295,12 +295,12 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       this.isLoadingResults = true;
       let sortVal = this.getSortValue();
       if (this.selectedAssociation !== undefined) {
-        // this.itemsObservable = this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValue, this.currentPage * this.pageSize, this.pageSize, sortVal);
+        this.itemsObservable = this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValue, this.currentPage * this.pageSize, this.pageSize, sortVal);
       }
       else {
         this.itemsObservable = this.dataService.getAll(this.searchValue, this.currentPage * this.pageSize, this.pageSize, sortVal);
-        this.processListObservable(this.itemsObservable, listProcessingType.Append);
       }
+      this.processListObservable(this.itemsObservable, listProcessingType.Append);
     }
   }
 

@@ -263,8 +263,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 						values = s.replace("%20","").trim().split(";");
 						map.put(values[0], values[1]);
 					}
-					List<String> keysList = new ArrayList<String> (map.keySet());
-					checkProperties(keysList);
+					//List<String> keysList = new ArrayList<String> (map.keySet());
+					//checkProperties(keysList);
 					return searchKeyValuePair([=ClassName?uncap_first], map);
 				}
 				else {
@@ -330,7 +330,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			}
       
 		</#list>
-		
+		<#list Relationship as relationKey,relationValue>
+		<#if relationValue.relation == "ManyToOne">
+			if(pair2.getKey().toString().replace("%20","").trim().equals("[=relationValue.joinColumn]")) {
+			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(Long.parseLong(pair2.getValue().toString())));
+			}
+		</#if>
+		</#list>		
 		}
 		return builder;
 	}
