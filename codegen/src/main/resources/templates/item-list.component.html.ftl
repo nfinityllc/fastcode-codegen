@@ -16,10 +16,10 @@
 <div class="container">
 	<app-list-filters [columnsList]="selectedColumns" (onSearch)="applyFilter($event)"></app-list-filters>
 	<div class="table-container" (onScroll)="onTableScroll()" appVirtualScroll>
-		<table mat-table [dataSource]="items" class="mat-elevation-z8">
+		<table mat-table matSort [dataSource]="items" class="mat-elevation-z8">
 		
 		<ng-container matColumnDef="id">
-			<th mat-header-cell *matHeaderCellDef> id</th>
+			<th mat-sort-header mat-header-cell *matHeaderCellDef> id</th>
 			<td mat-cell *matCellDef="let item">
 			<a routerLink="/[=ApiPath]/{{item.id}}">{{ item.id}}</a>
 			</td>
@@ -28,12 +28,12 @@
 		<#if value.fieldName?lower_case == "id">
 		<#elseif value.fieldType == "Date">
 		<ng-container matColumnDef="[=value.fieldName]">
-			<th mat-header-cell *matHeaderCellDef> [=value.fieldName] </th>
+			<th mat-sort-header mat-header-cell *matHeaderCellDef> [=value.fieldName] </th>
 			<td mat-cell *matCellDef="let item"> {{item.[=value.fieldName] | date:'short'}} </td>
 		</ng-container>
 		<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
 		<ng-container matColumnDef="[=value.fieldName]">
-			<th mat-header-cell *matHeaderCellDef> [=value.fieldName]</th>
+			<th mat-sort-header mat-header-cell *matHeaderCellDef> [=value.fieldName]</th>
 			<td mat-cell *matCellDef="let item">
 			{{ item.[=value.fieldName] }}
 			</td>
