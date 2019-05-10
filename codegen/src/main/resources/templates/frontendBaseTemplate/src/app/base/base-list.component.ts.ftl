@@ -149,7 +149,8 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       DataSource: this.dataService.getAll(),
       Title: this.title,
       IsSingleSelection: true,
-      DisplayField: "name"
+      DisplayField: "name",
+      selectedList: this.items.map(item => item.id)
       //  OnClose:null
     };
 

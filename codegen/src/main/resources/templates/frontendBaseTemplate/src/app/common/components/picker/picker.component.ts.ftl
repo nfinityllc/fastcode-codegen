@@ -41,7 +41,7 @@ export class PickerComponent implements OnInit {
       this.title = this.data.Title;
       this.displayField = this.data.DisplayField;
       this.data.DataSource.subscribe(  items => {
-        this.items = items;
+        this.items = items.filter(item => this.data.selectedList.indexOf(item.id) == -1);
        // this.users[0].firstName
       },
       error => this.errorMessage = <any>error);

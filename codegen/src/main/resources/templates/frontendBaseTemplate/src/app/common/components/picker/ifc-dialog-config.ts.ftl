@@ -4,6 +4,7 @@ export interface IFCDialogConfig {
   Title: string;
   IsSingleSelection?:boolean;
   DisplayField: string;
+  selectedList: Array<number>;
   //OnClose: Observable<any>;
  
  }
