@@ -138,25 +138,27 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     this.isLoadingResults = true;
     this.initializePageInfo();
     let sortVal = this.getSortValue();
-    if (this.selectedAssociation !== undefined) {
-      this.itemsObservable = this.dataService.getAssociations(
-        this.selectedAssociation.table,
-        this.selectedAssociation.column.value,
-        this.searchValue,
-        this.currentPage * this.pageSize,
-        this.pageSize,
-        sortVal
-      )
+    if (!(this.selectedAssociation !== undefined && this.selectedAssociation.type == "ManyToMany")) {
+      if (this.selectedAssociation !== undefined) {
+        this.itemsObservable = this.dataService.getAssociations(
+          this.selectedAssociation.table,
+          this.selectedAssociation.column.value,
+          this.searchValue,
+          this.currentPage * this.pageSize,
+          this.pageSize,
+          sortVal
+        )
+      }
+      else {
+        this.itemsObservable = this.dataService.getAll(
+          this.searchValue,
+          this.currentPage * this.pageSize,
+          this.pageSize,
+          sortVal
+        )
+      }
+      this.processListObservable(this.itemsObservable, listProcessingType.Replace);
     }
-    else {
-      this.itemsObservable = this.dataService.getAll(
-        this.searchValue,
-        this.currentPage * this.pageSize,
-        this.pageSize,
-        sortVal
-      )
-    }
-    this.processListObservable(this.itemsObservable, listProcessingType.Replace);
   }
 
   openDialog(k, data) {
@@ -187,7 +189,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       return;
     }
     let dialogConfig: IFCDialogConfig = <IFCDialogConfig>{
-      DataSource: this.dataService.getAll(),
+      DataSource: this.dataService.getAll('',0,10000),
       Title: this.title,
       IsSingleSelection: true,
       DisplayField: "name",
@@ -214,26 +216,27 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     this.isLoadingResults = true;
     this.initializePageInfo();
     let sortVal = this.getSortValue();
-    if (this.selectedAssociation !== undefined) {
-      this.itemsObservable = this.dataService.getAssociations(
-        this.selectedAssociation.table,
-        this.selectedAssociation.column.value,
-        this.searchValue,
-        this.currentPage * this.pageSize,
-        this.pageSize,
-        sortVal
+    if (!(this.selectedAssociation !== undefined && this.selectedAssociation.type == "ManyToMany")) {
+      if (this.selectedAssociation !== undefined) {
+        this.itemsObservable = this.dataService.getAssociations(
+          this.selectedAssociation.table,
+          this.selectedAssociation.column.value,
+          this.searchValue,
+          this.currentPage * this.pageSize,
+          this.pageSize,
+          sortVal
         )
+      }
+      else {
+        this.itemsObservable = this.dataService.getAll(
+          this.searchValue,
+          this.currentPage * this.pageSize,
+          this.pageSize,
+          sortVal
+        )
+      }
+      this.processListObservable(this.itemsObservable, listProcessingType.Replace)
     }
-    else {
-      this.itemsObservable = this.dataService.getAll(
-        this.searchValue,
-        this.currentPage * this.pageSize,
-        this.pageSize,
-        sortVal
-      )
-    }
-    this.processListObservable(this.itemsObservable, listProcessingType.Replace)
-
   }
 
   checkForAssociations(params) {
@@ -294,17 +297,19 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     if (!this.isLoadingResults && this.hasMoreRecords && this.lastProcessedOffset < this.items.length) {
       this.isLoadingResults = true;
       let sortVal = this.getSortValue();
-      if (this.selectedAssociation !== undefined) {
-        this.itemsObservable = this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValue, this.currentPage * this.pageSize, this.pageSize, sortVal);
+      if (!(this.selectedAssociation !== undefined && this.selectedAssociation.type == "ManyToMany")) {
+        if (this.selectedAssociation !== undefined) {
+          this.itemsObservable = this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValue, this.currentPage * this.pageSize, this.pageSize, sortVal);
+        }
+        else {
+          this.itemsObservable = this.dataService.getAll(this.searchValue, this.currentPage * this.pageSize, this.pageSize, sortVal);
+        }
+        this.processListObservable(this.itemsObservable, listProcessingType.Append);
       }
-      else {
-        this.itemsObservable = this.dataService.getAll(this.searchValue, this.currentPage * this.pageSize, this.pageSize, sortVal);
-      }
-      this.processListObservable(this.itemsObservable, listProcessingType.Append);
     }
   }
 
-  getSortValue():string {
+  getSortValue(): string {
     let sortVal = '';
     if (this.sort.active && this.sort.direction) {
       sortVal = this.sort.active + "," + this.sort.direction;
@@ -312,17 +317,17 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     return sortVal;
   }
 
-  processListObservable(listObservable:Observable<E[]>, type:listProcessingType){
+  processListObservable(listObservable: Observable<E[]>, type: listProcessingType) {
     listObservable.subscribe(items => {
-        this.isLoadingResults = false;
-        if(type == listProcessingType.Replace){
-          this.items = items;
-        }
-        else{
-          this.items = this.items.concat(items);
-        }
-        this.updatePageInfo(items);
-      },
+      this.isLoadingResults = false;
+      if (type == listProcessingType.Replace) {
+        this.items = items;
+      }
+      else {
+        this.items = this.items.concat(items);
+      }
+      this.updatePageInfo(items);
+    },
       error => this.errorMessage = <any>error
     )
   }
