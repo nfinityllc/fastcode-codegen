@@ -121,6 +121,9 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       if (value) {
         this.selectedColumns = this.columns;
         this.selectedColumns = this.selectedColumns.slice(0, 3);
+        if (this.columns.length > 3) {
+          this.selectedColumns.push(this.columns[this.columns.length - 1]);
+        }
         this.displayedColumns = this.selectedColumns.map((obj, index) => { return obj.column });
       }
       else {
@@ -189,7 +192,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       return;
     }
     let dialogConfig: IFCDialogConfig = <IFCDialogConfig>{
-      DataSource: this.dataService.getAll('',0,10000),
+      DataSource: this.dataService.getAll('', 0, 10000),
       Title: this.title,
       IsSingleSelection: true,
       DisplayField: "name",
@@ -330,5 +333,9 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     },
       error => this.errorMessage = <any>error
     )
+  }
+
+  getMobileLabelForField(field: string) {
+    return field.replace(/([a-z])([A-Z])/g, '$1 $2');
   }
 }

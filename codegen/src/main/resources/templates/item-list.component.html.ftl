@@ -16,38 +16,45 @@
 <div class="container">
 	<app-list-filters [columnsList]="selectedColumns" (onSearch)="applyFilter($event)"></app-list-filters>
 	<div class="table-container" (onScroll)="onTableScroll()" appVirtualScroll>
-		<table mat-table matSort [dataSource]="items" class="mat-elevation-z8">
+		<mat-table matSort [dataSource]="items" class="mat-elevation-z8">
 		
 		<ng-container matColumnDef="id">
-			<th mat-sort-header mat-header-cell *matHeaderCellDef> id</th>
-			<td mat-cell *matCellDef="let item">
-			<a routerLink="/[=ApiPath]/{{item.id}}">{{ item.id}}</a>
-			</td>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> id</mat-header-cell>
+			<mat-cell *matCellDef="let item">
+			<span class="mobile-label">{{getMobileLabelForField("id")}}:</span>
+			<a routerLink="/[=ApiPath]/{{item.id}}">
+				{{ item.id}}
+			</a>
+			</mat-cell>
 		</ng-container>   
 		<#list Fields as key,value>
 		<#if value.fieldName?lower_case == "id">
 		<#elseif value.fieldType == "Date">
 		<ng-container matColumnDef="[=value.fieldName]">
-			<th mat-sort-header mat-header-cell *matHeaderCellDef> [=value.fieldName] </th>
-			<td mat-cell *matCellDef="let item"> {{item.[=value.fieldName] | date:'short'}} </td>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName] </mat-header-cell>
+			<mat-cell *matCellDef="let item">
+				<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
+				{{item.[=value.fieldName] | date:'short'}}
+			</mat-cell>
 		</ng-container>
 		<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
 		<ng-container matColumnDef="[=value.fieldName]">
-			<th mat-sort-header mat-header-cell *matHeaderCellDef> [=value.fieldName]</th>
-			<td mat-cell *matCellDef="let item">
-			{{ item.[=value.fieldName] }}
-			</td>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName]</mat-header-cell>
+			<mat-cell *matCellDef="let item">
+				<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
+				{{ item.[=value.fieldName] }}
+			</mat-cell>
 		</ng-container>
 		</#if> 
 		</#list>
 		<ng-container matColumnDef="actions">
-			<th mat-header-cell *matHeaderCellDef> Actions</th>
-			<td mat-cell *matCellDef="let item"> 
+			<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+			<mat-cell *matCellDef="let item"> 
 				<button mat-button color="accent"(click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany")?'De-link':'Delete'}}</button>
-			</td>
+			</mat-cell>
 		</ng-container>
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-		<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-		</table>
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+		</mat-table>
 	</div>
 </div>

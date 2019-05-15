@@ -49,9 +49,5 @@
 				</div>
 			</form>
 		</mat-card-content>
-	
-		<mat-card-actions>
-			<button mat-raised-button color="accent" (click)="onDelete()">Delete</button>
-		</mat-card-actions>
 	</mat-card>
 </div>
