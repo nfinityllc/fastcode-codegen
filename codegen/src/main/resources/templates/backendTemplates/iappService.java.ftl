@@ -26,10 +26,7 @@ public interface I[=ClassName]AppService {
 
    <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-    Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
-  <#elseif relationValue.relation == "OneToMany">
-    List<Get[=relationValue.eName]Output> Get[=ClassName]List(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=ClassName?uncap_first]Id);
-	 
+   Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
