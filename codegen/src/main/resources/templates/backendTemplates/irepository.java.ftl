@@ -16,7 +16,8 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 <#assign parent = relationInput>
 <#if parent?keep_after("-") == relationValue.eName>  
 import org.springframework.data.repository.query.Param;
-import com.nfinity.demo.domain.model.[=relationValue.eName]Entity;
+//import com.nfinity.demo.domain.model.[=relationValue.eName]Entity;
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 </#if>
