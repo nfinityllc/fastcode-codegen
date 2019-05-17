@@ -76,6 +76,11 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
     <#if parent?keep_after("-") == relationValue.eName>
     //[=relationValue.eName]
     @Transactional
+	public Page<[=relationValue.eName]Entity> Find[=relationValue.eName](Long [=ClassName?lower_case]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">String [=fValue.fieldName],</#if></#list>Pageable pageable) {
+
+		return _[=ClassName?lower_case]Repository.getData([=ClassName?lower_case]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">[=fValue.fieldName],</#if></#list>pageable);
+	}
+    @Transactional
 	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
 		
 		Set<[=EntityClassName]> entitySet = [=relationValue.eName?lower_case].get[=ClassName]();
@@ -113,12 +118,12 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		return null;
 	}
 
-	@Transactional
-	public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]List([=EntityClassName] [=InstanceName]) {
-		
-		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName].getId().longValue());
-		return foundRecord.get[=relationValue.eName]();
-	}
+//	@Transactional
+//	public Set<[=relationValue.eName]Entity> Get[=relationValue.eName]List([=EntityClassName] [=InstanceName]) {
+//		
+//		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName].getId().longValue());
+//		return foundRecord.get[=relationValue.eName]();
+//	}
 	</#if>
     </#list>
    </#if>

@@ -431,22 +431,22 @@ public class [=ClassName]AppServiceTest {
 		Assertions.assertThat(_appService.Get[=relationValue.eName](ID, ID)).isEqualTo(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first], [=ClassName?uncap_first]));		
 	}
 
-	@Test 
-	public void Get[=relationValue.eName]List_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID)).isEqualTo(null);
-	}
-
-	@Test
-	public void Get[=relationValue.eName]List_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-
-		Set<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = [=ClassName?uncap_first].get[=relationValue.eName]();
-		List<Get[=relationValue.eName]Output> list = new ArrayList<>();
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName]List(any([=ClassName]Entity.class))).thenReturn([=relationValue.eName?uncap_first]List);
-		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID)).isEqualTo(list);
-	}
+//	@Test 
+//	public void Get[=relationValue.eName]List_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
+//		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+//		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID)).isEqualTo(null);
+//	}
+//
+//	@Test
+//	public void Get[=relationValue.eName]List_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() {
+//		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
+//
+//		Set<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = [=ClassName?uncap_first].get[=relationValue.eName]();
+//		List<Get[=relationValue.eName]Output> list = new ArrayList<>();
+//		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
+//		Mockito.when(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName]List(any([=ClassName]Entity.class))).thenReturn([=relationValue.eName?uncap_first]List);
+//		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID)).isEqualTo(list);
+//	}
 	</#if>
    </#list>
    </#if>

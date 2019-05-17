@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -165,8 +166,8 @@ public class GetEntityDetails {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return new EntityDetails(fieldsMap, relationsMap);
+		Map<String, FieldDetails> sortedMap = new TreeMap<>(fieldsMap); 
+		return new EntityDetails(sortedMap, relationsMap);
 	}
 
 	// the logic of finding a description from field can be changed later. we can

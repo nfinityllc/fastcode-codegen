@@ -10,6 +10,15 @@ import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
+<#if relationValue.relation == "ManyToMany">
+<#list RelationInput as relationInput>
+<#assign parent = relationInput>
+<#if parent?keep_after("-") == relationValue.eName>
+import java.util.TreeMap;
+import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
+</#if>
+</#list>
+</#if>
 </#list>
 import [=PackageName].Utils.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
@@ -43,6 +52,15 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     <#elseif relationValue.relation == "OneToMany">
     @Autowired
     private I[=ClassName]Repository  _[=ClassName?uncap_first]Repository;
+    </#if>
+    <#if relationValue.relation == "ManyToMany">
+    <#list RelationInput as relationInput>
+    <#assign parent = relationInput>
+    <#if parent?keep_after("-") == relationValue.eName>
+    @Autowired 
+	private [=relationValue.eName]AppService _[=relationValue.eName?uncap_first]AppService;
+	</#if>
+	</#list>
     </#if>
     </#list>
     
@@ -180,7 +198,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
 
-	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id) {
+	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id,String search,Pageable pageable) throws Exception{
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
@@ -188,19 +206,79 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			return null;
 		}
 
-		Set<[=relationValue.eName]Entity> pe = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]List(found[=ClassName]);
-		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = pe.iterator();
+        Map<String,String> sortedSearchMap= sortMapAndSet[=relationValue.eName]Values(buildSearchMap(search));
+
+		Page<[=relationValue.eName]Entity> found[=relationValue.eName] = _[=ClassName?uncap_first]Manager.Find[=relationValue.eName]([=ClassName?uncap_first]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">sortedSearchMap.get("[=fValue.fieldName]"),</#if></#list>pageable);
+		List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = found[=relationValue.eName].getContent();
+		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]List.iterator();
 		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
 
 		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
 			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next(), found[=ClassName]));
 		}
 		return output;
+
 	}
+	
+	public Map<String,String> sortMapAndSet[=relationValue.eName]Values(Map<String,String> map) throws Exception
+	{
+		List<String> keysList = new ArrayList<String> (map.keySet());
+		_[=relationValue.eName?uncap_first]AppService.checkProperties(keysList);
+		
+		Map<String,String> sortedMap = new TreeMap<>(map); 
+		Map<String,String> fieldsMap=new HashMap<>();
+		<#list relationValue.fDetails as fValue>
+		<#if fValue.fieldType?lower_case == "string">
+		fieldsMap.put("[=fValue.fieldName]", null);
+		</#if>
+		</#list>
+		for (Map.Entry<String,String> sortedEntry : sortedMap.entrySet()) {
+			for (Map.Entry<String,String> fieldEntry : sortedMap.entrySet()) {
+				if(sortedEntry.getKey()==fieldEntry.getKey())
+				{
+					fieldsMap.put(sortedEntry.getKey().toString(),sortedEntry.getValue());
+				}
+			}
+		}
+		return fieldsMap;
+	}
+	
   </#if>
   </#list>
   </#if>
  </#list>
+ <#list Relationship as relationKey,relationValue>
+    <#if relationValue.relation == "ManyToMany">
+    public Map<String,String> buildSearchMap(String search) throws Exception
+	{
+		String[] values = null;
+		String[] words = null;
+		Map<String, String> map = new HashMap<>();
+		if(search != null) {
+			if((search.contains(";"))) {
+				if(search.contains(","))
+				{
+				words = search.split(",");
+				if(words[0].contains(";")) {
+					for (String s: words) {
+						values = s.replace("%20","").trim().split(";");
+						map.put(values[0], values[1]);
+					}
+				}
+				}
+				else
+				{
+					words = search.split(";");
+					map.put(words[0], words[1]);
+				}
+			}
+
+		}
+		return map;
+	}
+	<#break>
+    </#if>
+</#list>
  
 	public List<Find[=ClassName]ByIdOutput> Find(String search, Pageable pageable) throws Exception  {
 
