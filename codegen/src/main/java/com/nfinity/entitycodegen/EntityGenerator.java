@@ -3,6 +3,7 @@ package com.nfinity.entitycodegen;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -20,36 +21,31 @@ public class EntityGenerator {
 		cfg.setTemplateLoader(ctl);
 	}
 
-	public static Map<String,EntityDetails> generateEntities(String connectionString, String schema,List<String> tableList, String packageName, String destination,
-			Boolean audit) {
+	public static Map<String, EntityDetails> generateEntities(String connectionString, String schema,
+			List<String> tableList, String packageName, String destination, Boolean audit) {
 
-		Map<String,String> connectionProps = parseConnectionString(connectionString);
+		Map<String, String> connectionProps = parseConnectionString(connectionString);
 		String entityPackage = packageName + ".domain.model";
-		final String tempPackageName = entityPackage.concat(".Temp"); 
+		final String tempPackageName = entityPackage.concat(".Temp");
 		destination = destination.replace('\\', '/');
-		final String destinationPath = destination.concat("/src/main/java"); 
-		final String targetPath = destination.concat("/target/classes"); 
-		String tables="";
-		if(tableList !=null)
-		{
-			for(int i=0;i<tableList.size();i++)
-			{
-				if(!tableList.get(i).isEmpty())
-				{
-					if(i<tableList.size()-1)
-						tables= tables + schema.concat("." + tableList.get(i) + ",");
+		final String destinationPath = destination.concat("/src/main/java");
+		final String targetPath = destination.concat("/target/classes");
+		String tables = "";
+		if (tableList != null) {
+			for (int i = 0; i < tableList.size(); i++) {
+				if (!tableList.get(i).isEmpty()) {
+					if (i < tableList.size() - 1)
+						tables = tables + schema.concat("." + tableList.get(i) + ",");
 					else
-						tables= tables + schema.concat("." + tableList.get(i) );
+						tables = tables + schema.concat("." + tableList.get(i));
 				}
 			}
 		}
 
-		if(!tables.isEmpty())
-		{
-			ReverseMapping.run(tempPackageName, destinationPath, tables, connectionProps); 
-		}
-		else
-			ReverseMapping.run(tempPackageName, destinationPath, schema, connectionProps); 
+		if (!tables.isEmpty()) {
+			ReverseMapping.run(tempPackageName, destinationPath, tables, connectionProps);
+		} else
+			ReverseMapping.run(tempPackageName, destinationPath, schema, connectionProps);
 		try {
 			Thread.sleep(28000);
 		} catch (InterruptedException e) {
@@ -59,7 +55,7 @@ public class EntityGenerator {
 		try {
 			BaseAppGen.CompileApplication(destination);
 			deleteFile(destinationPath + "/orm.xml");
-			//Utils.runCommand("mvn compile", destination);
+			// Utils.runCommand("mvn compile", destination);
 		} catch (Exception e) {
 			System.out.println("Compilation Error");
 			e.printStackTrace();
@@ -67,56 +63,50 @@ public class EntityGenerator {
 		CGenClassLoader loader = new CGenClassLoader(targetPath);
 
 		ArrayList<Class<?>> entityClasses;
-		Map<String,EntityDetails> entityDetailsMap = new HashMap<>();
-		Map<String,FieldDetails> descriptiveMap = new HashMap<>();
-		List<String> relationInputList=new ArrayList<String>();
+		Map<String, EntityDetails> entityDetailsMap = new HashMap<>();
+		Map<String, FieldDetails> descriptiveMap = new HashMap<>();
+		List<String> relationInputList = new ArrayList<String>();
 		try {
 			entityClasses = loader.findClasses(tempPackageName);
-			ClassDetails classDetails = getClasses(entityClasses);
-			List<Class<?>> classList = classDetails.getClassesList();
-			List<String> relationClassList = classDetails.getRelationClassesList();
-			relationInputList = GetUserInput.getRelationInput(classList, relationClassList, destination,
+			// ClassDetails classDetails = getClasses(entityClasses);
+			List<Class<?>> classList = filterOnlyRelevantEntities(entityClasses);// classDetails.getClassesList();
+			List<String> manyToManyAssociationEntities = findManyToManyAssociationEntities(entityClasses);// classDetails.getRelationClassesList();
+			relationInputList = GetUserInput.getRelationInput(classList, manyToManyAssociationEntities, destination,
 					tempPackageName);
 
-			
 			for (Class<?> currentClass : classList) {
 				String entityName = currentClass.getName();
-				if (!relationClassList.contains(entityName)) {
+				// process for all entities except many to many association entities
+				if (!manyToManyAssociationEntities.contains(entityName)) {
 					EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
 					details.setRelationInput(relationInputList);
-					
-					Map<String,RelationDetails> relationMap =details.getRelationsMap();
-				    relationMap=GetEntityDetails.setJoinColumn(relationMap, classList);
-				    for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-				    	if (entry.getValue().getRelation() == "ManyToOne" || entry.getValue().getRelation() == "ManyToMany") {
-				    		FieldDetails descriptiveField=null;
-				    		if(entry.getValue().getRelation() == "ManyToMany")
-				    		{
-				    			for(String str : relationInputList)
-				    			{
-				    				int indexOfDash = str.indexOf('-');
-				    				String before = str.substring(0, indexOfDash);
-				    				if(before.equals(entry.getValue().geteName()))
-				    				{
-				    					descriptiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
+
+					Map<String, RelationDetails> relationMap = details.getRelationsMap();
+					relationMap = GetEntityDetails.setJoinColumn(relationMap, classList);
+					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+						if (entry.getValue().getRelation() == "ManyToOne" || entry.getValue().getRelation() == "ManyToMany") {
+							FieldDetails descriptiveField = null;
+							if (entry.getValue().getRelation() == "ManyToMany") {
+								for (String str : relationInputList) {
+									int indexOfDash = str.indexOf('-');
+									String before = str.substring(0, indexOfDash);
+									if (before.equals(entry.getValue().geteName())) {
+										descriptiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
 												entry.getValue().getfDetails());
-				    				}
-				    			}
-				    		}
-				    		else
-				    		{
-							 descriptiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
-									entry.getValue().getfDetails());
-				    		}
-				    		if(descriptiveField!=null)
-				    		{
-							entry.getValue().setEntityDescriptionField(descriptiveField);
-							descriptiveMap.put(entry.getKey() ,entry.getValue().getEntityDescriptionField());
-				    		}
+									}
+								}
+							} else {
+								descriptiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
+										entry.getValue().getfDetails());
+							}
+							if (descriptiveField != null) {
+								entry.getValue().setEntityDescriptionField(descriptiveField);
+								descriptiveMap.put(entry.getKey(), entry.getValue().getEntityDescriptionField());
+							}
 						}
-				    }
-				    details.setRelationsMap(relationMap);
-				    entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1),details);
+					}
+					details.setRelationsMap(relationMap);
+					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 
 					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit);
 
@@ -130,58 +120,49 @@ public class EntityGenerator {
 
 		if (audit) {
 			EntityGenerator.generateAuditEntity(destinationPath, packageName);
-		} 
+		}
 
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
-		return setDescriptiveField(entityDetailsMap,descriptiveMap,relationInputList);
+		return setDescriptiveField(entityDetailsMap, descriptiveMap, relationInputList);
 	}
-	
-	public static Map<String,EntityDetails> setDescriptiveField(Map<String,EntityDetails> entityDetailsMap, Map<String,FieldDetails> descriptiveMap,List<String> relationInputList)
-	{
-	    for (Map.Entry<String, EntityDetails> details : entityDetailsMap.entrySet()) {
-	    Map<String,RelationDetails>  relationMap =details.getValue().getRelationsMap();
-		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-			if(entry.getValue().getRelation()=="OneToMany" || entry.getValue().getRelation()=="ManyToMany")
-			{
-				for(Map.Entry<String, FieldDetails> str: descriptiveMap.entrySet())
-				{
-				int indexOfDash = str.getKey().indexOf('-');
-				String before = str.getKey().substring(0, indexOfDash);
-				String after = str.getKey().substring(indexOfDash + 1);
-				if(entry.getValue().getRelation()=="ManyToMany")
-				{
-					for(String input : relationInputList)
-	    			{
-	    				int index = input.indexOf('-');
-	    				String parent = input.substring(0, index);
-	    				if(parent.equals(after))
-	    				{
-	    					if(after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
-	    							&& str.getKey() !=null)
-	    					{
-	    					  entry.getValue().setEntityDescriptionField(str.getValue());
-	    					}
-	    							
-	    				}
-	    			}
+
+	public static Map<String, EntityDetails> setDescriptiveField(Map<String, EntityDetails> entityDetailsMap,
+			Map<String, FieldDetails> descriptiveMap, List<String> relationInputList) {
+		for (Map.Entry<String, EntityDetails> details : entityDetailsMap.entrySet()) {
+			Map<String, RelationDetails> relationMap = details.getValue().getRelationsMap();
+			for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+				if (entry.getValue().getRelation() == "OneToMany" || entry.getValue().getRelation() == "ManyToMany") {
+					for (Map.Entry<String, FieldDetails> str : descriptiveMap.entrySet()) {
+						int indexOfDash = str.getKey().indexOf('-');
+						String before = str.getKey().substring(0, indexOfDash);
+						String after = str.getKey().substring(indexOfDash + 1);
+						if (entry.getValue().getRelation() == "ManyToMany") {
+							for (String input : relationInputList) {
+								int index = input.indexOf('-');
+								String parent = input.substring(0, index);
+								if (parent.equals(after)) {
+									if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
+											&& str.getKey() != null) {
+										entry.getValue().setEntityDescriptionField(str.getValue());
+									}
+
+								}
+							}
+						} else {
+							if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
+									&& str.getKey() != null) {
+								entry.getValue().setEntityDescriptionField(str.getValue());
+							}
+						}
+					}
 				}
-				else
-				{
-				if(after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
-						&& str.getKey() !=null)
-				{
-				  entry.getValue().setEntityDescriptionField(str.getValue());
-				}
-				}
-				}
+
 			}
-			
+			details.getValue().setRelationsMap(relationMap);
 		}
-		details.getValue().setRelationsMap(relationMap);
-	    }
-	    
-	    return entityDetailsMap;
+
+		return entityDetailsMap;
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
@@ -198,7 +179,6 @@ public class EntityGenerator {
 		root.put("RelationInput", entityDetails.getRelationInput());
 		root.put("SchemaName", schemaName);
 		root.put("Audit", audit);
-
 
 		setTemplateLoader();
 
@@ -246,7 +226,7 @@ public class EntityGenerator {
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
 		backEndTemplate.put("audit.java.ftl", "AuditedEntity.java");
-		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/")+ "/Audit";
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/Audit";
 		new File(destinationFolder).mkdirs();
 		generateFiles(backEndTemplate, root, destinationFolder);
 
@@ -273,10 +253,44 @@ public class EntityGenerator {
 		file.delete();
 	}
 
+	public static List<Class<?>> filterOnlyRelevantEntities(ArrayList<Class<?>> entityClasses) {
+		List<Class<?>> otherEntities = entityClasses.stream().filter((e) -> e.getName().endsWith("Id"))
+				.collect(Collectors.toList());
+		List<Class<?>> relevantEntities = entityClasses.stream()
+				.filter((e) -> !(e.getName().endsWith("Id") || e.getName().endsWith("Id$Tokenizer")))
+				.collect(Collectors.toList());
+		for (Class<?> currentClass : otherEntities) {
+			String className = currentClass.getName().substring(0, currentClass.getName().indexOf("Id"));
+			Class<?> entity = relevantEntities.stream().filter((r) -> r.getName().endsWith(className)).findAny().orElse(null);
+			if (entity == null)
+				relevantEntities.add(currentClass);
+
+		}
+		return relevantEntities;
+	}
+
+	public static List<String> findManyToManyAssociationEntities(ArrayList<Class<?>> entityClasses) {
+		List<String> associationEntities = new ArrayList<>();
+		List<Class<?>> otherEntities = entityClasses.stream().filter((e) -> e.getName().endsWith("Id"))
+				.collect(Collectors.toList());
+		List<Class<?>> relevantEntities = entityClasses.stream()
+				.filter((e) -> !(e.getName().endsWith("Id") || e.getName().endsWith("Id$Tokenizer")))
+				.collect(Collectors.toList());
+		for (Class<?> currentClass : otherEntities) {
+			String className = currentClass.getName().substring(0, currentClass.getName().indexOf("Id"));
+			Class<?> entity = relevantEntities.stream().filter((r) -> r.getName().endsWith(className)).findAny().orElse(null);
+			if (entity != null)
+				associationEntities.add(className);
+
+		}
+		return associationEntities;
+	}
+
 	public static ClassDetails getClasses(ArrayList<Class<?>> entityClasses) {
 		List<String> entityClassNames = new ArrayList<>();
 		for (Class<?> currentClass : entityClasses) {
 			String entityName = currentClass.getName();
+
 			entityClassNames.add(entityName);
 		}
 
@@ -301,14 +315,14 @@ public class EntityGenerator {
 		return new ClassDetails(classList, relationClass);
 	}
 
-	public static Map<String,String> parseConnectionString(String connectionString){
-		Map<String,String> connectionStringMap = new HashMap<String,String>();
+	public static Map<String, String> parseConnectionString(String connectionString) {
+		Map<String, String> connectionStringMap = new HashMap<String, String>();
 
 		String[] urlArr = connectionString.split("\\?");
 		connectionStringMap.put("url", urlArr[0]);
 
 		String[] paramsArr = urlArr[1].split("\\;");
-		for(String param:paramsArr) {
+		for (String param : paramsArr) {
 			String[] paramArr = param.split("\\=");
 			connectionStringMap.put(paramArr[0], paramArr[1]);
 		}
