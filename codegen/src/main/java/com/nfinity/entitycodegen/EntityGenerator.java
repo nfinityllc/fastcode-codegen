@@ -78,7 +78,8 @@ public class EntityGenerator {
 				String entityName = currentClass.getName();
 				// process for all entities except many to many association entities
 				if (!manyToManyAssociationEntities.contains(entityName)) {
-					EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
+					EntityDetails details = EntityDetails.getDetails(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
+					// entityName, classList);
 					details.setRelationInput(relationInputList);
 
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();

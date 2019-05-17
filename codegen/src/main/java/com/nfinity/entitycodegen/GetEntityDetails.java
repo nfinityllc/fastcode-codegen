@@ -46,8 +46,8 @@ public class GetEntityDetails {
 							if (s.contains("nullable")) {
 								String[] value = s.split("=");
 								Boolean nullable = Boolean.valueOf(value[1]);
-								if(details.getIsNullable())
-								details.setIsNullable(nullable);
+								if (details.getIsNullable())
+									details.setIsNullable(nullable);
 
 							}
 							if (s.contains("length")) {
@@ -87,7 +87,8 @@ public class GetEntityDetails {
 							if (s.contains("columnDefinition")) {
 								String[] value = s.split("=");
 								String columnType = value[1];
-								if (columnType.equals("bigserial") || columnType.equals("int8") || columnType.equals("int4"))
+								if (columnType.equals("bigserial") || columnType.equals("int8")
+										|| columnType.equals("int4"))
 									relation.setJoinColumnType("Long");
 								else
 									relation.setJoinColumnType("String");
@@ -166,20 +167,8 @@ public class GetEntityDetails {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Map<String, FieldDetails> sortedMap = new TreeMap<>(fieldsMap); 
+		Map<String, FieldDetails> sortedMap = new TreeMap<>(fieldsMap);
 		return new EntityDetails(sortedMap, relationsMap);
-	}
-
-	// the logic of finding a description from field can be changed later. we can
-	// follow other naming conventions for the table fields.
-	private static String findEntityDescriptionField(List<FieldDetails> fields) {
-		List<FieldDetails> stringFields = fields.stream().filter(f -> f.getFieldType() == "String")
-				.collect(Collectors.toList());
-		List<FieldDetails> nameFields = stringFields.stream().filter(
-				f -> f.getFieldName().toLowerCase().contains("name") || f.getFieldName().toLowerCase().contains("desc"))
-				.collect(Collectors.toList());
-		FieldDetails descField = nameFields.size() > 0 ? nameFields.get(0) : stringFields.get(0);
-		return descField != null ? descField.getFieldName() : "";
 	}
 
 	private static Boolean checkJoinTable(String EntityPackage, List<Class<?>> classList) {
@@ -249,7 +238,8 @@ public class GetEntityDetails {
 									if (s.contains("columnDefinition")) {
 										String[] value = s.split("=");
 										String columnType = value[1];
-										if (columnType.equals("bigserial") || columnType.equals("int8") || columnType.equals("int4"))
+										if (columnType.equals("bigserial") || columnType.equals("int8")
+												|| columnType.equals("int4"))
 											relationFields.put("joinColumnType", "Long");
 										else
 											relationFields.put("joinColumnType", "String");
@@ -329,11 +319,9 @@ public class GetEntityDetails {
 						details.setFieldName(field.getName());
 						details.setFieldType(str.substring(index));
 						Annotation[] annotations = field.getAnnotations();
-						for(Annotation a: annotations)
-						{
-						
-							if (a.annotationType().toString().equals("interface javax.persistence.Id"))
-							{
+						for (Annotation a : annotations) {
+
+							if (a.annotationType().toString().equals("interface javax.persistence.Id")) {
 								details.setIsPrimaryKey(true);
 							}
 						}
@@ -390,7 +378,8 @@ public class GetEntityDetails {
 											if (s.contains("columnDefinition")) {
 												String[] value = s.split("=");
 												String columnType = value[1];
-												if (columnType.equals("bigserial") || columnType.equals("int8") || columnType.equals("int4"))
+												if (columnType.equals("bigserial") || columnType.equals("int8")
+														|| columnType.equals("int4"))
 													entry.getValue().setJoinColumnType("Long");
 												else
 													entry.getValue().setJoinColumnType("String");
@@ -416,4 +405,15 @@ public class GetEntityDetails {
 		return relationMap;
 	}
 
+	// the logic of finding a description from field can be changed later. we can
+	// follow other naming conventions for the table fields.
+	private static String findEntityDescriptionField(List<FieldDetails> fields) {
+		List<FieldDetails> stringFields = fields.stream().filter(f -> f.getFieldType() == "String")
+				.collect(Collectors.toList());
+		List<FieldDetails> nameFields = stringFields.stream().filter(
+				f -> f.getFieldName().toLowerCase().contains("name") || f.getFieldName().toLowerCase().contains("desc"))
+				.collect(Collectors.toList());
+		FieldDetails descField = nameFields.size() > 0 ? nameFields.get(0) : stringFields.get(0);
+		return descField != null ? descField.getFieldName() : "";
+	}
 }

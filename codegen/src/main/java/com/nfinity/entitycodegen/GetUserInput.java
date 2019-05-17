@@ -52,16 +52,17 @@ public class GetUserInput {
 
 	public static FieldDetails getEntityDescriptionField(String entityName, List<FieldDetails> fields) {
 		int i = 1;
-		StringBuilder b = new StringBuilder(MessageFormat
-				.format("\nSelect a descriptive field of {0} entity by typing their corresponding number: ", entityName));
-		
-		List<FieldDetails> fieldsList =new ArrayList<>();
+		StringBuilder b = new StringBuilder(MessageFormat.format(
+				"\nSelect a descriptive field of {0} entity by typing their corresponding number: ", entityName));
+
+		List<FieldDetails> fieldsList = new ArrayList<>();
 		for (FieldDetails f : fields) {
-			if(f.fieldType.equalsIgnoreCase("long") || f.fieldType.contains("int") || f.fieldType.equalsIgnoreCase("string") ||
-			f.fieldType.equalsIgnoreCase("boolean") || f.fieldType.equalsIgnoreCase("timestamp") )
+			if (f.fieldType.equalsIgnoreCase("long") || f.fieldType.contains("int")
+					|| f.fieldType.equalsIgnoreCase("string") || f.fieldType.equalsIgnoreCase("boolean")
+					|| f.fieldType.equalsIgnoreCase("timestamp"))
 				fieldsList.add(f);
 		}
-		
+
 		for (FieldDetails f : fieldsList) {
 			b.append(MessageFormat.format("{0}.{1} ", i, f.getFieldName()));
 			i++;
@@ -76,15 +77,13 @@ public class GetUserInput {
 		FieldDetails r = new FieldDetails();
 		FieldDetails selected = fieldsList.get(i - 1);
 		r.setFieldName(selected.getFieldName());
-		if(selected.getFieldType().contains("int"))
-		{
-		r.setFieldType("Long");
-		}
-		else if(selected.getFieldType().contains("timestamp"))
-			r.setFieldType("Date");	
+		if (selected.getFieldType().contains("int")) {
+			r.setFieldType("Long");
+		} else if (selected.getFieldType().contains("timestamp"))
+			r.setFieldType("Date");
 		else
-		r.setFieldType(selected.getFieldType());
-		
+			r.setFieldType(selected.getFieldType());
+
 		r.setIsNullable(selected.getIsNullable());
 		r.setIsPrimaryKey(selected.getIsPrimaryKey());
 		r.setLength(selected.getLength());
@@ -99,7 +98,7 @@ public class GetUserInput {
 			String entityName = currentClass.getName();
 			if (!relationClassList.contains(entityName)) {
 				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-				EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
+				EntityDetails details = EntityDetails.getDetails(currentClass, entityName, classList);
 				Map<String, RelationDetails> relationDetails = details.getRelationsMap();
 
 				for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
@@ -139,7 +138,7 @@ public class GetUserInput {
 			String entityName = currentClass.getName();
 			if (!relationClassList.contains(entityName)) {
 				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-				EntityDetails details = GetEntityDetails.getDetails(currentClass, entityName, classList);
+				EntityDetails details = EntityDetails.getDetails(currentClass, entityName, classList);
 				Map<String, RelationDetails> relationInput = details.getRelationsMap();
 				for (Map.Entry<String, RelationDetails> entry : relationInput.entrySet()) {
 					if (entry.getValue().getRelation().equals("ManyToMany")) {
