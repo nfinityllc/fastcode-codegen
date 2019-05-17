@@ -94,25 +94,7 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
           this.loading = false;
         });
   }
-  onDelete() {
 
-
-    this.loading = true;
-    this.dataService.delete(this.item.id)
-      // .pipe(first())
-      .subscribe(
-        data => {
-          // this.alertService.success('Registration successful', true);
-          this.loading = false;
-          this.router.navigate([this.parentUrl]);
-
-          //  this.dialogRef.close(data);
-        },
-        error => {
-
-          this.loading = false;
-        });
-  }
   onBack(): void {
     this.router.navigate([this.parentUrl]);
   }
