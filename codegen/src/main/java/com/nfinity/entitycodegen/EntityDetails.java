@@ -46,7 +46,8 @@ public class EntityDetails {
 		this.relationInput = relationInput;
 	}
 
-	public static EntityDetails getDetails(Class<?> entityClass, String entityName, List<Class<?>> classList) {
+	public static EntityDetails retreiveEntityFieldsAndRships(Class<?> entityClass, String entityName,
+			List<Class<?>> classList) {
 
 		Map<String, FieldDetails> fieldsMap = new HashMap<>();
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
@@ -366,6 +367,71 @@ public class EntityDetails {
 
 		return fieldsList;
 
+	}
+
+	public static Map<String, RelationDetails> FindOneToManyJoinColFromChildEntity(
+			Map<String, RelationDetails> relationMap, List<Class<?>> classList) {
+		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+			if (entry.getValue().getRelation() == "OneToMany") {
+				for (Class<?> currentClass : classList) {
+					String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1);
+					if (entityName.equals(entry.getValue().geteName())) {
+
+						try {
+							Class<?> myClass = currentClass;
+							Object classObj = (Object) myClass.newInstance();
+							Field[] fields = classObj.getClass().getDeclaredFields();
+							for (Field field : fields) {
+								Annotation[] annotations = field.getAnnotations();
+
+								for (Annotation a : annotations) {
+									if (a.annotationType().toString()
+											.equals("interface javax.persistence.JoinColumn")) {
+										String joinColumn = a.toString();
+										String[] word = joinColumn.split("[\\(,//)]");
+										for (String s : word) {
+											if (s.contains("name")) {
+												String[] value = s.split("=");
+												if (entry.getKey().contains(entry.getValue().getcName()))
+													entry.getValue().setJoinColumn(CaseFormat.LOWER_UNDERSCORE
+															.to(CaseFormat.LOWER_CAMEL, value[1]));
+												break;
+											}
+										}
+										for (String s : word) {
+											if (s.contains("nullable")) {
+												String[] value = s.split("=");
+												Boolean nullable = Boolean.valueOf(value[1]);
+												entry.getValue().setIsJoinColumnOptional(nullable);
+											}
+											if (s.contains("columnDefinition")) {
+												String[] value = s.split("=");
+												String columnType = value[1];
+												if (columnType.equals("bigserial") || columnType.equals("int8")
+														|| columnType.equals("int4"))
+													entry.getValue().setJoinColumnType("Long");
+												else
+													entry.getValue().setJoinColumnType("String");
+											}
+
+										}
+									}
+								}
+							}
+
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						}
+
+					}
+				}
+
+			}
+		}
+
+		return relationMap;
 	}
 
 }

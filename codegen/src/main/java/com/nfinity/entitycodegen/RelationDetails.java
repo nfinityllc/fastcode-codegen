@@ -141,4 +141,27 @@ public class RelationDetails {
 		this.isJoinColumnOptional = isJoinColumnOptional;
 	}
 
+	public FieldDetails FindAndSetDescriptiveField(List<String> manyToManyRshp) {
+		FieldDetails descriptiveField = null;
+		if (this.getRelation() == "ManyToOne" || this.getRelation() == "ManyToMany") {
+
+			if (this.getRelation() == "ManyToMany") {
+				for (String str : manyToManyRshp) {
+					int indexOfDash = str.indexOf('-');
+					String before = str.substring(0, indexOfDash);
+					if (before.equals(this.geteName())) {
+						descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
+					}
+				}
+			} else {
+				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
+			}
+			if (descriptiveField != null) {
+				this.setEntityDescriptionField(descriptiveField);
+				// descriptiveMap.put(entry.getKey(),
+				// entry.getValue().getEntityDescriptionField());
+			}
+		}
+		return descriptiveField;
+	}
 }

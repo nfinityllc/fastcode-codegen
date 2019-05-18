@@ -76,39 +76,42 @@ public class EntityGenerator {
 
 			for (Class<?> currentClass : classList) {
 				String entityName = currentClass.getName();
-				// process for all entities except many to many association entities
+				// process each entities except many to many association entities
 				if (!manyToManyAssociationEntities.contains(entityName)) {
-					EntityDetails details = EntityDetails.getDetails(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
+					EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
 					// entityName, classList);
 					details.setRelationInput(relationInputList);
 
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
-					relationMap = GetEntityDetails.setJoinColumn(relationMap, classList);
+					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
+
+					// Get parent descrptive fields from user
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-						if (entry.getValue().getRelation() == "ManyToOne" || entry.getValue().getRelation() == "ManyToMany") {
-							FieldDetails descriptiveField = null;
-							if (entry.getValue().getRelation() == "ManyToMany") {
-								for (String str : relationInputList) {
-									int indexOfDash = str.indexOf('-');
-									String before = str.substring(0, indexOfDash);
-									if (before.equals(entry.getValue().geteName())) {
-										descriptiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
-												entry.getValue().getfDetails());
-									}
-								}
-							} else {
-								descriptiveField = GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
-										entry.getValue().getfDetails());
-							}
-							if (descriptiveField != null) {
-								entry.getValue().setEntityDescriptionField(descriptiveField);
-								descriptiveMap.put(entry.getKey(), entry.getValue().getEntityDescriptionField());
-							}
+
+						FieldDetails descriptiveField = entry.getValue().FindAndSetDescriptiveField(relationInputList);
+						if (descriptiveField != null) {
+							descriptiveMap.put(entry.getKey(), entry.getValue().getEntityDescriptionField());
 						}
+
+						/*
+						 * if (entry.getValue().getRelation() == "ManyToOne" ||
+						 * entry.getValue().getRelation() == "ManyToMany") { FieldDetails
+						 * descriptiveField = null; if (entry.getValue().getRelation() == "ManyToMany")
+						 * { for (String str : relationInputList) { int indexOfDash = str.indexOf('-');
+						 * String before = str.substring(0, indexOfDash); if
+						 * (before.equals(entry.getValue().geteName())) { descriptiveField =
+						 * GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
+						 * entry.getValue().getfDetails()); } } } else { descriptiveField =
+						 * GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
+						 * entry.getValue().getfDetails()); } if (descriptiveField != null) {
+						 * entry.getValue().setEntityDescriptionField(descriptiveField);
+						 * descriptiveMap.put(entry.getKey(),
+						 * entry.getValue().getEntityDescriptionField()); } }
+						 */
 					}
 					details.setRelationsMap(relationMap);
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
-
+					// Generate Entity based on template
 					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit);
 
 				}
@@ -287,35 +290,25 @@ public class EntityGenerator {
 		return associationEntities;
 	}
 
-	public static ClassDetails getClasses(ArrayList<Class<?>> entityClasses) {
-		List<String> entityClassNames = new ArrayList<>();
-		for (Class<?> currentClass : entityClasses) {
-			String entityName = currentClass.getName();
-
-			entityClassNames.add(entityName);
-		}
-
-		List<String> relationClass = new ArrayList<>();
-		List<Class<?>> classList = new ArrayList<>();
-
-		for (Class<?> currentClass : entityClasses) {
-			String entityName = currentClass.getName();
-			if (entityName.contains("Id")) {
-				if (!entityName.contains("Tokenizer")) {
-					String className = entityName.substring(0, entityName.indexOf("Id"));
-
-					if (!entityClassNames.contains(className))
-						classList.add(currentClass);
-					else
-						relationClass.add(className);
-				}
-			} else {
-				classList.add(currentClass);
-			}
-		}
-		return new ClassDetails(classList, relationClass);
-	}
-
+	/*
+	 * public static ClassDetails getClasses(ArrayList<Class<?>> entityClasses) {
+	 * List<String> entityClassNames = new ArrayList<>(); for (Class<?> currentClass
+	 * : entityClasses) { String entityName = currentClass.getName();
+	 * 
+	 * entityClassNames.add(entityName); }
+	 * 
+	 * List<String> relationClass = new ArrayList<>(); List<Class<?>> classList =
+	 * new ArrayList<>();
+	 * 
+	 * for (Class<?> currentClass : entityClasses) { String entityName =
+	 * currentClass.getName(); if (entityName.contains("Id")) { if
+	 * (!entityName.contains("Tokenizer")) { String className =
+	 * entityName.substring(0, entityName.indexOf("Id"));
+	 * 
+	 * if (!entityClassNames.contains(className)) classList.add(currentClass); else
+	 * relationClass.add(className); } } else { classList.add(currentClass); } }
+	 * return new ClassDetails(classList, relationClass); }
+	 */
 	public static Map<String, String> parseConnectionString(String connectionString) {
 		Map<String, String> connectionStringMap = new HashMap<String, String>();
 

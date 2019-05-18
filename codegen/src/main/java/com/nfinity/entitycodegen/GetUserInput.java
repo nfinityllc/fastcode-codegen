@@ -98,7 +98,8 @@ public class GetUserInput {
 			String entityName = currentClass.getName();
 			if (!relationClassList.contains(entityName)) {
 				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-				EntityDetails details = EntityDetails.getDetails(currentClass, entityName, classList);
+				EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName,
+						classList);
 				Map<String, RelationDetails> relationDetails = details.getRelationsMap();
 
 				for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
@@ -138,7 +139,8 @@ public class GetUserInput {
 			String entityName = currentClass.getName();
 			if (!relationClassList.contains(entityName)) {
 				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-				EntityDetails details = EntityDetails.getDetails(currentClass, entityName, classList);
+				EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName,
+						classList);
 				Map<String, RelationDetails> relationInput = details.getRelationsMap();
 				for (Map.Entry<String, RelationDetails> entry : relationInput.entrySet()) {
 					if (entry.getValue().getRelation().equals("ManyToMany")) {
