@@ -127,6 +127,7 @@ public class CodeGenerator {
 		
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+	    updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
 	    
 	    Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema);
@@ -549,6 +550,57 @@ public class CodeGenerator {
 			}
 			String moduleName=StringUtils.join(splittedNames, "-");
 		builder.append("import { " + str + "ListComponent , " + str + "DetailsComponent, " + str + "NewComponent } from './" + moduleName + "/index';" + "\n");
+		}
+		
+		return builder;
+	}
+	
+	public static void updateTestUtils(String destPath,String appName,List<String> entityName)
+	{
+		StringBuilder sourceBuilder=new StringBuilder();
+		sourceBuilder.setLength(0);
+
+		for(String str: entityName)
+		{
+			sourceBuilder.append("\n    " + str + "NewComponent,");
+		}
+		String data = " ";
+		try {
+			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/testing/utils.ts"),"UTF8");
+
+			StringBuilder builder = addImportForTestUtils(entityName);
+			
+			builder.append(data);
+			int index = builder.lastIndexOf("entryComponents");
+			index = builder.indexOf("[", index);
+			builder.insert(index + 1 , sourceBuilder.toString());
+			
+			index = builder.lastIndexOf("[");
+			builder.insert(index + 1 , sourceBuilder.toString());
+			
+			File fileName = new File(destPath + "/" + appName + "Client/src/testing/utils.ts");
+
+			try (PrintWriter writer = new PrintWriter(fileName)) {
+				writer.println(builder.toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static StringBuilder addImportForTestUtils(List<String> entityName)
+	{
+		StringBuilder builder=new StringBuilder();
+		for(String str: entityName)
+		{
+			String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
+			for (int i = 0; i < splittedNames.length; i++) {
+				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
+			}
+			String moduleName=StringUtils.join(splittedNames, "-");
+		builder.append("import {" + str + "NewComponent } from 'src/app/" + moduleName + "/index';" + "\n");
 		}
 		
 		return builder;

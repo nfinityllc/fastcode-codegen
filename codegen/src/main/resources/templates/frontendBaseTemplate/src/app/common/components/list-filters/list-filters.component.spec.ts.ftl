@@ -3,14 +3,11 @@ import { Component } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { ListFiltersComponent } from './list-filters.component';
 
-import { TestingModule } from '../../testing/utils';
-import { environment } from '../../environments/environment';
-import { PickerComponent } from '../picker/picker.component';
-import { UserNewComponent } from 'src/app/users';
-import { JobNewComponent } from '../jobs/job-new/job-new.component';
+import { TestingModule } from 'src/testing/utils';
+import { environment } from 'src/environments/environment';
+import { PickerComponent } from 'src/app/common/components/picker/picker.component';
 import { AddFilterFieldComponent } from './add-filter-field/add-filter-field.component';
-import { TriggerNewComponent } from '../triggers/trigger-new/trigger-new.component';
-import { IListColumn, listColumnType } from '../common/ilistColumn';
+import { IListColumn, listColumnType } from 'src/app/common/ilistColumn';
 
 describe('ListFiltersComponent', () => {
   @Component({
@@ -46,7 +43,7 @@ describe('ListFiltersComponent', () => {
   
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TestHostComponent, TriggerNewComponent, JobNewComponent, UserNewComponent, ListFiltersComponent, AddFilterFieldComponent, PickerComponent],
+      declarations: [TestHostComponent, ListFiltersComponent, AddFilterFieldComponent, PickerComponent],
       imports: [TestingModule],
       providers: [
         ChangeDetectorRef,
