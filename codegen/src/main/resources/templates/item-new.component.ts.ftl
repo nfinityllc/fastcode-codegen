@@ -90,7 +90,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				</#if>
 				</#if>
 				<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-				[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] : [''],
+				[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] : [{ value: '', disabled: true }],
 			  </#if>
 				</#list>
 				</#if>

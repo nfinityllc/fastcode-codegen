@@ -38,11 +38,9 @@
 			</#if>
 			</#list>
 			
-				<div *ngFor="let association of toOne" class="button-row">
-					<span>{{association.table}} :</span>
-					<a [routerLink]="['/' + association.table + '/' + itemForm.get(association.column.key).value]" *ngIf="itemForm.get(association.column.key).value">{{item[association.descriptiveField]}}</a>
-					<label *ngIf="!itemForm.get(association.column.key).value">No {{association.table}} selected</label>
-				</div>
+				<mat-form-field *ngFor="let association of toOne">
+					<input matInput disabled placeholder="{{association.table}}" value="{{item[association.descriptiveField]}}">
+				</mat-form-field>
 				
 				<div *ngFor="let association of toMany">
 					<a [routerLink]="['/' + association.table]" [queryParams]="getQueryParams(association)" class="btn btn-link">{{association.table}}</a>
