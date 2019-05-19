@@ -10,6 +10,15 @@ import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
+<#if relationValue.relation == "ManyToMany">
+<#list RelationInput as relationInput>
+<#assign parent = relationInput>
+<#if parent?keep_after("-") == relationValue.eName>
+import java.util.TreeMap;
+import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
+</#if>
+</#list>
+</#if>
 </#list>
 import [=PackageName].Utils.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
@@ -43,6 +52,15 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     <#elseif relationValue.relation == "OneToMany">
     @Autowired
     private I[=ClassName]Repository  _[=ClassName?uncap_first]Repository;
+    </#if>
+    <#if relationValue.relation == "ManyToMany">
+    <#list RelationInput as relationInput>
+    <#assign parent = relationInput>
+    <#if parent?keep_after("-") == relationValue.eName>
+    @Autowired 
+	private [=relationValue.eName]AppService _[=relationValue.eName?uncap_first]AppService;
+	</#if>
+	</#list>
     </#if>
     </#list>
     
@@ -124,11 +142,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 
 	}
-	
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne">
-   //[=relationValue.eName]
-
+    //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
 
 	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id) {
@@ -140,39 +156,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=relationValue.eName]Entity re = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id);
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(re, found[=ClassName]);
 	}
-	<#elseif relationValue.relation == "OneToMany">
-	public List<Get[=relationValue.eName]Output> Get[=ClassName]List(Long [=ClassName?uncap_first]Id) {
-	 
-	   List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Entity= _[=ClassName?uncap_first]Repository.findBy[=relationValue.eName]([=ClassName?uncap_first]Id);
-	   
-	   [=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=ClassName?uncap_first]Id);
-			return null;
-		}
-	
-		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]Entity.iterator();
-		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
-
-		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
-			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next(),found[=ClassName]));
-			
-		}
-		return output;
-   }
-	
-  <#elseif relationValue.relation == "ManyToMany">
+    <#elseif relationValue.relation == "ManyToMany">
     //[=relationValue.eName]
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
     <#if parent?keep_after("-") == relationValue.eName>
     public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
-
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
 
 		return _[=ClassName?uncap_first]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
-
 	}
 
 	public void Remove[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
@@ -181,7 +174,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
 
 		_[=ClassName?uncap_first]Manager.Remove[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
-
 	}
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]/3
@@ -192,7 +184,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		if (found[=ClassName] == null) {
 			logHelper.getLogger().error("There does not exist [=ClassName?uncap_first] with a id=%s", [=ClassName?uncap_first]Id);
 			return null;
-
 		}
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
 		if (found[=relationValue.eName] == null) {
@@ -207,7 +198,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
 
-	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id) {
+	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id,String search,Pageable pageable) throws Exception{
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
@@ -215,23 +206,80 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			return null;
 		}
 
-		Set<[=relationValue.eName]Entity> pe = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]List(found[=ClassName]);
-		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = pe.iterator();
+        Map<String,String> sortedSearchMap= sortMapAndSet[=relationValue.eName]Values(buildSearchMap(search));
+
+		Page<[=relationValue.eName]Entity> found[=relationValue.eName] = _[=ClassName?uncap_first]Manager.Find[=relationValue.eName]([=ClassName?uncap_first]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">sortedSearchMap.get("[=fValue.fieldName]"),</#if></#list>pageable);
+		List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = found[=relationValue.eName].getContent();
+		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]List.iterator();
 		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
 
 		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
 			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next(), found[=ClassName]));
 		}
 		return output;
+
 	}
-    
-     </#if>
-  </#list>
-     </#if>
-  
-  </#list>
 	
+	public Map<String,String> sortMapAndSet[=relationValue.eName]Values(Map<String,String> map) throws Exception
+	{
+		List<String> keysList = new ArrayList<String> (map.keySet());
+		_[=relationValue.eName?uncap_first]AppService.checkProperties(keysList);
+		
+		Map<String,String> sortedMap = new TreeMap<>(map); 
+		Map<String,String> fieldsMap=new HashMap<>();
+		<#list relationValue.fDetails as fValue>
+		<#if fValue.fieldType?lower_case == "string">
+		fieldsMap.put("[=fValue.fieldName]", null);
+		</#if>
+		</#list>
+		for (Map.Entry<String,String> sortedEntry : sortedMap.entrySet()) {
+			for (Map.Entry<String,String> fieldEntry : sortedMap.entrySet()) {
+				if(sortedEntry.getKey()==fieldEntry.getKey())
+				{
+					fieldsMap.put(sortedEntry.getKey().toString(),sortedEntry.getValue());
+				}
+			}
+		}
+		return fieldsMap;
+	}
 	
+  </#if>
+  </#list>
+  </#if>
+ </#list>
+ <#list Relationship as relationKey,relationValue>
+    <#if relationValue.relation == "ManyToMany">
+    public Map<String,String> buildSearchMap(String search) throws Exception
+	{
+		String[] values = null;
+		String[] words = null;
+		Map<String, String> map = new HashMap<>();
+		if(search != null) {
+			if((search.contains(";"))) {
+				if(search.contains(","))
+				{
+				words = search.split(",");
+				if(words[0].contains(";")) {
+					for (String s: words) {
+						values = s.replace("%20","").trim().split(";");
+						map.put(values[0], values[1]);
+					}
+				}
+				}
+				else
+				{
+					words = search.split(";");
+					map.put(words[0], words[1]);
+				}
+			}
+
+		}
+		return map;
+	}
+	<#break>
+    </#if>
+</#list>
+ 
 	public List<Find[=ClassName]ByIdOutput> Find(String search, Pageable pageable) throws Exception  {
 
 		Page<[=EntityClassName]> found[=ClassName] = _[=ClassName?uncap_first]Manager.FindAll(Search(search), pageable);
@@ -243,7 +291,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			output.add(mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?uncap_first]Iterator.next()));
 		}
 		return output;
-
 	}
 
 	public BooleanBuilder Search(String search) throws Exception {
@@ -263,8 +310,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 						values = s.replace("%20","").trim().split(";");
 						map.put(values[0], values[1]);
 					}
-					//List<String> keysList = new ArrayList<String> (map.keySet());
-					//checkProperties(keysList);
+					List<String> keysList = new ArrayList<String> (map.keySet());
+					checkProperties(keysList);
 					return searchKeyValuePair([=ClassName?uncap_first], map);
 				}
 				else {
@@ -284,12 +331,18 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		<#list SearchFields as fields>
 		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ search + "%"));
 		</#list>
+	
 		return builder;
 	}
 
 	public void checkProperties(List<String> list) throws Exception  {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
+		<#list Relationship as relationKey,relationValue>
+		<#if relationValue.relation == "ManyToOne">
+		 list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]") ||
+		</#if>
+		</#list>	
 		<#list SearchFields as fields>
 		<#if fields_has_next>
          list.get(i).replace("%20","").trim().equals("[=fields]") ||
@@ -312,8 +365,15 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         if(list.get(i).replace("%20","").trim().equals("[=fields]")) {
 		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ value + "%"));
 		 }
-		 		
+		 
 		</#list>
+		<#list Relationship as relationKey,relationValue>
+		<#if relationValue.relation == "ManyToOne">
+		  if(list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]")) {
+			builder.or([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(Long.parseLong(value.toString())));
+			}
+		</#if>
+		</#list>	
 			
 		}
 		return builder;
@@ -323,9 +383,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		Iterator iterator = map.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Map.Entry pair2 = (Map.Entry) iterator.next();
-			
 		 <#list SearchFields as fields>
-          if(pair2.getKey().toString().replace("%20","").trim().equals("[=fields]")) {
+            if(pair2.getKey().toString().replace("%20","").trim().equals("[=fields]")) {
 			builder.and([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ pair2.getValue() + "%"));
 			}
       

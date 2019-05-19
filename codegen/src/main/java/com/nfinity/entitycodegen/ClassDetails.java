@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassDetails {
-	
+
 	List<Class<?>> classesList = new ArrayList<Class<?>>();
 	List<String> relationClassesList = new ArrayList<String>();
 
@@ -29,5 +29,5 @@ public class ClassDetails {
 	public void setRelationClassesList(List<String> relationClassesList) {
 		this.relationClassesList = relationClassesList;
 	}
-	
+
 }

@@ -128,15 +128,15 @@ public class [=ClassName]Controller {
 	}
    <#elseif relationValue.relation == "OneToMany">
 
-		@RequestMapping(value = "/{[=relationValue.joinColumn?lower_case]}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
-	public ResponseEntity GetPostdetails(@PathVariable String [=InstanceName]id,@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	@RequestMapping(value = "/{[=relationValue.joinColumn?lower_case]}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
+	public ResponseEntity Get[=relationValue.eName](@PathVariable String [=InstanceName]id,@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
-		if(search.isEmpty()) {
+		if(search==null || search.isEmpty()) {
 			search = "[=relationValue.joinColumn];" + [=relationValue.joinColumn?lower_case];
 		}
 		else {
@@ -172,11 +172,10 @@ public class [=ClassName]Controller {
                     String.format("There does not exist a [=relationValue.eName?uncap_first] with a id=%s", [=relationValue.eName?uncap_first]id));
         }
 		Boolean status = _[=ClassName?uncap_first]AppService.Add[=relationValue.eName](Long.valueOf([=InstanceName]id), Long.valueOf([=relationValue.eName?uncap_first]id));
-		if(status == false)
-	       {
+		if(status == false) {
 	    	   logHelper.getLogger().error("The [=ClassName?uncap_first] already has the [=relationValue.eName?uncap_first]");
 	    	   throw new EntityExistsException("The [=ClassName?uncap_first] already has the [=relationValue.eName?uncap_first]");
-	   		 }
+	   	}
 	
 	}
 
@@ -210,16 +209,22 @@ public class [=ClassName]Controller {
 		}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
+    @RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
+	public ResponseEntity Get[=relationValue.eName]List(@PathVariable String [=InstanceName]id,@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception{
+		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
-	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
-	public ResponseEntity Get[=relationValue.eName]List(@PathVariable String [=InstanceName]id) {
-		List<Get[=relationValue.eName]Output> output = _[=ClassName?uncap_first]AppService.Get[=relationValue.eName]List(Long.valueOf([=InstanceName]id));
+		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+
+		List<Get[=relationValue.eName]Output> output = _[=ClassName?uncap_first]AppService.Get[=relationValue.eName]List(Long.valueOf([=InstanceName]id),search,Pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
+
    </#if>
    </#list>
    </#if>

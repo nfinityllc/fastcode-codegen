@@ -26,10 +26,7 @@ public interface I[=ClassName]AppService {
 
    <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-    Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
-  <#elseif relationValue.relation == "OneToMany">
-    List<Get[=relationValue.eName]Output> Get[=ClassName]List(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=ClassName?uncap_first]Id);
-	 
+   Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
@@ -41,7 +38,7 @@ public interface I[=ClassName]AppService {
 
     Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id, @Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]id);
 
-    List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id);
+    List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id,String search,Pageable pageable) throws Exception;
    </#if>
    </#list>
    </#if>
