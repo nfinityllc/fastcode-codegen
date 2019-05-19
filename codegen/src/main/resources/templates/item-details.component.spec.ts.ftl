@@ -2,38 +2,40 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 
 import { TestingModule,EntryComponents } from '../../testing/utils';
-import {[=IEntity],[=ClassName]Service, [=ClassName]DetailComponent} from './index';
+import {[=IEntity],[=ClassName]Service, [=ClassName]DetailsComponent} from './index';
 import { MatDialogRef } from '@angular/material';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../environments/environment';
 import { Validators, FormBuilder } from '@angular/forms';
 
 
-describe('[=ClassName]DetailComponent', () => {
-  let component: [=ClassName]DetailComponent;
-  let fixture: ComponentFixture<[=ClassName]DetailComponent>;
+describe('[=ClassName]DetailsComponent', () => {
+  let component: [=ClassName]DetailsComponent;
+  let fixture: ComponentFixture<[=ClassName]DetailsComponent>;
   let httpTestingController: HttpTestingController;
-  let url:string = environment.apiUrl + "/[=InstanceName]s/";
+  let url:string = environment.apiUrl + "/[=InstanceName]/";
     
   let data:[=IEntity] = {
-      <#assign counter = 1>
-     <#list Fields as key, value>           
-            <#if key == "id">    
-              [=key]:[=counter],
-            <#elseif value.fieldType == "Date">           
-                [=key]: new Date().toLocaleDateString("en-US") ,
-            <#elseif value.fieldType?lower_case == "boolean">              
-                [=key]: true,
-            <#elseif value.fieldType?lower_case == "string">              
-                   [=key]: '[=key][=counter]',
-            </#if> 
-      </#list>    };
+		<#assign counter = 1>
+		<#list Fields as key, value>           
+			<#if value.fieldName == "id">    
+	  [=key]:[=counter],
+			<#elseif value.fieldType == "Date">           
+		[=key]: new Date().toLocaleDateString("en-US") ,
+			<#elseif value.fieldType?lower_case == "boolean">              
+		[=key]: true,
+			<#elseif value.fieldType?lower_case == "string">              
+		[=key]: '[=key][=counter]',
+			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">              
+		[=key]: [=counter],
+			</#if> 
+    </#list>    };
   beforeEach(async(() => {
    
 
     TestBed.configureTestingModule({
       declarations: [
-        [=ClassName]DetailComponent       
+        [=ClassName]DetailsComponent       
       ].concat(EntryComponents),
       imports: [TestingModule],
       providers: [
@@ -46,7 +48,7 @@ describe('[=ClassName]DetailComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent([=ClassName]DetailComponent);
+    fixture = TestBed.createComponent([=ClassName]DetailsComponent);
     httpTestingController = TestBed.get(HttpTestingController);
     component = fixture.componentInstance;
     fixture.detectChanges();

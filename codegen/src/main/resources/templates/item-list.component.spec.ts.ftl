@@ -37,26 +37,28 @@ describe('[=ClassName]ListComponent', () => {
   let component:[=ClassName]ListComponent;
   let httpTestingController: HttpTestingController;
   let [=InstanceName]Service: [=ClassName]Service;
-  let url:string = environment.apiUrl + '/[=InstanceName]s';
+  let url:string = environment.apiUrl + '/[=InstanceName]';
   let mockGlobal = {
     isSmallDevice$: of({value:true})
   }; 
   let data:[=IEntity] [] = [
-      <#list [1,2] as index>     
-      {   
-            <#list Fields as key, value>             
-                    <#if value.fieldType == "id">    
-                      [=value.fieldType]:[=index],
-                    <#elseif value.fieldType == "Date">           
-                        [=key]: new Date().toLocaleDateString("en-US") ,
-                    <#elseif value.fieldType?lower_case == "boolean">              
-                        [=key]: true,
-                    <#elseif value.fieldType?lower_case == "string">              
-                          [=key]: '[=key][=index]',
-                    </#if> 
-              </#list>    
-        },
-       </#list> 
+		<#list [1,2] as index>     
+		{   
+			<#list Fields as key, value>             
+				<#if value.fieldName == "id">    
+			[=key]:[=index],
+				<#elseif value.fieldType == "Date">           
+			[=key]: new Date().toLocaleDateString("en-US") ,
+				<#elseif value.fieldType?lower_case == "boolean">              
+			[=key]: true,
+				<#elseif value.fieldType?lower_case == "string">              
+			[=key]: '[=key][=index]',
+				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">              
+			[=key]: [=index],
+				</#if> 
+			</#list>    
+		},
+		</#list> 
   ]; 
 
   beforeEach(async(() => {
@@ -108,19 +110,14 @@ describe('[=ClassName]ListComponent', () => {
  
     httpTestingController.verify()
   });   
-  it('should run #onAdd()', async () => {
-    // const result = component.onAdd();
-   
-    httpTestingController = TestBed.get(HttpTestingController);
-    fixture.detectChanges();
-   
-    const req = httpTestingController.expectOne(req => req.method === 'GET' && req.url === url ).flush(data);
-   // req.flush(data);
-   fixture.detectChanges();
-    const result = component.onAdd();
-   httpTestingController.verify();
- 
-  });
+	it('should run #addNew()', async () => {   
+		httpTestingController = TestBed.get(HttpTestingController);
+		fixture.detectChanges();
+		const req = httpTestingController.expectOne(req => req.method === 'GET' && req.url === url ).flush(data);
+		fixture.detectChanges();
+		const result = component.addNew();
+		httpTestingController.verify();
+	});
         
   it('should run #delete()', async () => {
     

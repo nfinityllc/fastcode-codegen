@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestingModule,EntryComponents } from '../../testing/utils';
 import {[=IEntity],[=ClassName]Service, [=ClassName]NewComponent} from './index';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../environments/environment';
 import { Validators, FormBuilder } from '@angular/forms';
@@ -13,22 +13,24 @@ describe('[=ClassName]NewComponent', () => {
   let fixture: ComponentFixture<[=ClassName]NewComponent>;
   
   let httpTestingController: HttpTestingController;
-  let url:string = environment.apiUrl + '/[=InstanceName]s';
+  let url:string = environment.apiUrl + '/[=InstanceName]';
   let formBuilder:any = new FormBuilder(); 
     
   let data:[=IEntity] = {
-      <#assign counter = 1>
-     <#list Fields as key, value>           
-            <#if value.fieldType == "id">    
-              [=value.fieldType]:[=counter],
-            <#elseif value.fieldType == "Date">           
-                [=key]: new Date().toLocaleDateString("en-US") ,
-            <#elseif value.fieldType?lower_case == "boolean">              
-                [=key]: true,
-            <#elseif value.fieldType?lower_case == "string">              
-                   [=key]: '[=key][=counter]',
-            </#if> 
-      </#list>    };
+		<#assign counter = 1>
+		<#list Fields as key, value>           
+			<#if value.fieldName == "id">    
+		[=key]:[=counter],
+			<#elseif value.fieldType == "Date">           
+		[=key]: new Date().toLocaleDateString("en-US") ,
+			<#elseif value.fieldType?lower_case == "boolean">
+		[=key]: true,
+			<#elseif value.fieldType?lower_case == "string">              
+		[=key]: '[=key][=counter]',
+			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">              
+		[=key]: [=counter],
+			</#if> 
+		</#list>    };
   beforeEach(async(() => {
   
     TestBed.configureTestingModule({
@@ -37,9 +39,9 @@ describe('[=ClassName]NewComponent', () => {
       ].concat(EntryComponents),
       imports: [TestingModule],
       providers: [
-      [=ClassName]Service,  
-       
-       {provide: MatDialogRef, useValue: {close: (dialogResult: any) => { }} },
+				[=ClassName]Service,
+				{ provide: MAT_DIALOG_DATA, useValue: {} },
+				{provide: MatDialogRef, useValue: {close: (dialogResult: any) => { }} },
       ]      
    
     }).compileComponents();
@@ -49,6 +51,7 @@ describe('[=ClassName]NewComponent', () => {
     fixture = TestBed.createComponent([=ClassName]NewComponent);
     httpTestingController = TestBed.get(HttpTestingController);
     component = fixture.componentInstance;
+    spyOn(component, 'manageScreenResizing').and.returnValue(false);
     fixture.detectChanges();
   });
 

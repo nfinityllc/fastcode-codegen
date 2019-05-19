@@ -18,7 +18,7 @@ import { PickerComponent } from '../common/components/picker/picker.component';
 
 })
 export class BaseNewComponent<E> implements OnInit {
-    protected itemForm: FormGroup;
+    itemForm: FormGroup;
     loading = false;
     submitted = false;
     title:string = "title";

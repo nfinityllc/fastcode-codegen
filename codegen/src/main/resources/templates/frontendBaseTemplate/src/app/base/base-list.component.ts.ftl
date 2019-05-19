@@ -260,12 +260,23 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     let currentPerm = item;
     if (this.selectedAssociation !== undefined && this.selectedAssociation.type == "ManyToMany") {
       this.dataService.deleteAssociation(this.selectedAssociation.table, this.selectedAssociation.column.value, item["id"]).subscribe(result => {
-        this.getItems();
+        const index: number = this.items.findIndex(x => x.id == item.id);
+        if (index !== -1) {
+          this.items.splice(index, 1);
+          this.items = [...this.items];
+          this.changeDetectorRefs.detectChanges();
+        }
       });
     }
     else {
       this.dataService.delete(item.id).subscribe(result => {
-        this.getItems();
+        let r = result;
+        const index: number = this.items.findIndex(x => x.id == item.id);
+        if (index !== -1) {
+          this.items.splice(index, 1);
+          this.items = [...this.items];
+          this.changeDetectorRefs.detectChanges();
+        }
       });
     }
   }
