@@ -74,7 +74,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	public Create[=ClassName]Output Create(Create[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
-		
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne">
 	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
@@ -91,7 +90,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
-
+		
 		</#if>
 		</#list>
 		
@@ -236,7 +235,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			for (Map.Entry<String,String> fieldEntry : sortedMap.entrySet()) {
 				if(sortedEntry.getKey()==fieldEntry.getKey())
 				{
-					fieldsMap.put(sortedEntry.getKey().toString(),sortedEntry.getValue());
+					fieldsMap.put(sortedEntry.getKey().toString(),"%"+ sortedEntry.getValue().toUpperCase() + "%");
 				}
 			}
 		}
