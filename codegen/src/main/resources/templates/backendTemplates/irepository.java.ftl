@@ -44,7 +44,7 @@ public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName
      <#if parent?keep_after("-") == relationValue.eName>
 	  @Query("select c from [=relationValue.eName]Entity c join c.[=ClassName?uncap_first] s where (s.id= :id) "<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">
 	  +"and (UPPER(c.[=fValue.fieldName]) LIKE :[=fValue.fieldName] OR :[=fValue.fieldName] is null)"</#if></#list>)
-      Page<[=relationValue.eName]Entity> getData(@Param("id")Long [=ClassName?uncap_first]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">@Param("[=fValue.fieldName]") String [=fValue.fieldName],</#if></#list>Pageable pageable);
+      Page<[=relationValue.eName]Entity> getAll[=relationValue.eName](@Param("id")Long [=ClassName?uncap_first]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">@Param("[=fValue.fieldName]") String [=fValue.fieldName],</#if></#list>Pageable pageable);
 	 </#if>
 	 </#list>
 	 </#if>
