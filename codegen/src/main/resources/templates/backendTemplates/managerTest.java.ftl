@@ -150,7 +150,7 @@ public class [=ClassName]ManagerTest {
 	}
 
 	@Test
-	public void add[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNullAnd[=relationValue.eName]AlreadyGranted_ReturnFalse() {
+	public void add[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNullAnd[=relationValue.eName]AlreadyAssigned_ReturnFalse() {
 		
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
@@ -181,7 +181,7 @@ public class [=ClassName]ManagerTest {
 	}
 
 	@Test
-	public void Get[=relationValue.eName]_if[=ClassName]IdAnd[=relationValue.eName]IdIsNotNull_Return[=relationValue.eName]() {
+	public void Get[=relationValue.eName]_if[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAndRecordExists_Return[=relationValue.eName]() {
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = new [=relationValue.eName]Entity();
 		[=relationValue.eName?uncap_first].setId(ID);
@@ -195,16 +195,17 @@ public class [=ClassName]ManagerTest {
 		Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](ID,ID)).isEqualTo([=relationValue.eName?uncap_first]);
 
 	}
+	
+    @Test
+	public void Find[=relationValue.eName]_[=ClassName]IdIsNotNull_Return[=relationValue.eName]() {
+	    Page<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first] = mock(Page.class);
+		Pageable pageable = mock(Pageable.class);
+		String value="abc";
 
-//	@Test
-//	public void Get[=relationValue.eName]_[=ClassName]IsNotNull_Return[=relationValue.eName]List() {
-//		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-//		Set<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first] = [=ClassName?uncap_first].get[=relationValue.eName]();
-//		
-//		Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn([=ClassName?uncap_first]);
-//		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn([=relationValue.eName?uncap_first]);
-//		Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName]List([=ClassName?uncap_first])).isEqualTo([=relationValue.eName?uncap_first]);
-//	}
+		Mockito.when(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](anyLong(),<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">anyString(),</#if></#list> any(Pageable.class))).thenReturn([=relationValue.eName?uncap_first]);
+		Assertions.assertThat(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](ID,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">value,</#if></#list> pageable)).isEqualTo([=relationValue.eName?uncap_first]);
+	}
+
     </#if>
     </#list>
    </#if>

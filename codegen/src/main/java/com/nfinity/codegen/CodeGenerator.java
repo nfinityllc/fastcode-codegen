@@ -40,6 +40,7 @@ public class CodeGenerator {
 	static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	static String UTIL_TEMPLATE_FOLDER = "/templates/backendTemplates/util";
 	static String ERROR_TEMPLATE_FOLDER = "/templates/backendTemplates/error";
+	static String SEARCH_TEMPLATE_FOLDER = "/templates/backendTemplates/search";
 	static String CLIENT_ROOT_FOLDER = "/client";
 //	static String clientAppFolder = CLIENT_ROOT_FOLDER + "/src/app";
 //	static String BACKEND_ROOT_FOLDER = "/backend";
@@ -118,8 +119,6 @@ public class CodeGenerator {
 			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit,history, sourcePath, destPath, type,entry.getValue());
 
 		}
-		
-		
 
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
 		if(history)
@@ -197,8 +196,9 @@ public class CodeGenerator {
 		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, DTO_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/Dto");
 		ClassTemplateLoader ctl3 = new ClassTemplateLoader(CodegenApplication.class, UTIL_TEMPLATE_FOLDER + "/");
 		ClassTemplateLoader ctl4 = new ClassTemplateLoader(CodegenApplication.class, ERROR_TEMPLATE_FOLDER + "/");
+		ClassTemplateLoader ctl5 = new ClassTemplateLoader(CodegenApplication.class, SEARCH_TEMPLATE_FOLDER + "/");
 		
-		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2,ctl3,ctl4 });
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2,ctl3,ctl4,ctl5});
 
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
@@ -227,6 +227,7 @@ public class CodeGenerator {
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
 				generateUtilsAndCorsConfig(root, destFolder);
 				generateError(root, destFolder);
+				generateSearch(root, destFolder);
 			} else {
 				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
 				generateFiles(uiTemplate2DestMapping, root, destFolder);
@@ -235,6 +236,7 @@ public class CodeGenerator {
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
 				generateUtilsAndCorsConfig(root, destFolder);
 				generateError(root, destFolder);
+				generateSearch(root, destFolder);
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -391,8 +393,6 @@ public class CodeGenerator {
 		backEndTemplate=new HashMap<>();
 		backEndTemplate.put("corsConfig.java.ftl","CorsConfig.java");
 		generateFiles(backEndTemplate, root, destPath);
-		
-		
 	}
 	
 	private static void generateError(Map<String, Object> root, String destPath)
@@ -407,6 +407,16 @@ public class CodeGenerator {
 		generateFiles(backEndTemplate, root, destFolder);
 	}
 
+	private static void generateSearch(Map<String, Object> root, String destPath)
+	{
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("searchCriteria.java.ftl", "SearchCriteria.java");
+		backEndTemplate.put("searchFields.java.ftl", "SearchFields.java");
+		String destFolder = destPath + "/Search";
+		new File(destFolder).mkdirs();
+		generateFiles(backEndTemplate, root, destFolder);
+	}
+	
 	private static void generateRelationDto(EntityDetails details,Map<String,Object> root, String destPath,String entityName)
 	{
 		
@@ -460,7 +470,6 @@ public class CodeGenerator {
 						}
 					}
 				}
-				
 		    }
 		}
 	}
@@ -609,8 +618,6 @@ public class CodeGenerator {
 	public static void updateEntitiesJsonFile(String path,List<String> entityNames) {
 
 		try {
-
-
             JSONArray entityArray = (JSONArray) readJsonFile(path);
             for(String entityName: entityNames)
     		{

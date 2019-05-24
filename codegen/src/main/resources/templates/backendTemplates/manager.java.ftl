@@ -78,7 +78,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
     @Transactional
 	public Page<[=relationValue.eName]Entity> Find[=relationValue.eName](Long [=ClassName?lower_case]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">String [=fValue.fieldName],</#if></#list>Pageable pageable) {
 
-		return _[=ClassName?lower_case]Repository.getData([=ClassName?lower_case]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">[=fValue.fieldName],</#if></#list>pageable);
+		return _[=ClassName?lower_case]Repository.getAll[=relationValue.eName]([=ClassName?lower_case]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">[=fValue.fieldName],</#if></#list>pageable);
 	}
     @Transactional
 	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
