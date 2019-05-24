@@ -15,6 +15,7 @@ import { PickerDialogService, IFCDialogConfig } from '../common/components/picke
 
 import { merge, of as observableOf, Observable } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { ISearchField, operatorType } from 'src/app/common/components/list-filters/ISearchCriteria';
 @Component({
 
   template: '',
@@ -303,11 +304,11 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   pageSize: number;
   lastProcessedOffset: number;
   hasMoreRecords: boolean;
-  searchValue: any = "";
+  searchValue: ISearchField[] = [];
 
   initializePageInfo() {
     this.hasMoreRecords = true;
-    this.pageSize = 20;
+    this.pageSize = 5;
     this.lastProcessedOffset = -1;
     this.currentPage = 0;
   }
@@ -370,12 +371,12 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   pickerPageSize: number;
   lastProcessedOffsetPicker: number;
   hasMoreRecordsPicker: boolean;
-  searchValuePicker: any = "";
+  searchValuePicker: ISearchField[] = [];
   pickerItemsObservable: Observable<any>;
 
   initializePickerPageInfo() {
     this.hasMoreRecordsPicker = true;
-    this.pickerPageSize = 20;
+    this.pickerPageSize = 5;
     this.lastProcessedOffsetPicker = -1;
     this.currentPickerPage = 0;
   }
@@ -400,17 +401,21 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       else {
         this.pickerItemsObservable = this.dataService.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize);
       }
-      this.processPickerListObservable(this.pickerItemsObservable,listProcessingType.Append);
+      this.processPickerListObservable(this.pickerItemsObservable, listProcessingType.Append);
     }
   }
 
   onPickerSearch(searchValue: string) {
+    this.searchValuePicker = [];
     if (searchValue) {
-      this.searchValuePicker = "name;" + searchValue;
+      let searchField: ISearchField = {
+        fieldName: "name",
+        searchValue: searchValue,
+        operator: operatorType.Contains
+      };
+      this.searchValuePicker.push(searchField);
     }
-    else {
-      this.searchValuePicker = "";
-    }
+
     this.initializePickerPageInfo();
 
     if (!this.isLoadingPickerResults && this.hasMoreRecordsPicker && this.lastProcessedOffsetPicker < this.dialogRef.componentInstance.items.length) {

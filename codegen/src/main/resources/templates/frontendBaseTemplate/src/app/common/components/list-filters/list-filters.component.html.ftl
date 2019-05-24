@@ -5,8 +5,8 @@
       <mat-form-field class="example-chip-list">
         <mat-chip-list #chipList>
           <mat-chip
-            *ngFor="let field of selectedFilterFields"
-            (removed)="remove(field)">
+            *ngFor="let field of selectedDisplayFilterFields; let i = index"
+            (removed)="remove(field,i)">
             {{field}}
             <mat-icon matChipRemove >cancel</mat-icon>
           </mat-chip>

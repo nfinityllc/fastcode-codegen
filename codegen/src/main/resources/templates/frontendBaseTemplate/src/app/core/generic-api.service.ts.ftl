@@ -1,26 +1,27 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { ISearchField, operatorType, ISearchCriteria } from 'src/app/common/components/list-filters/ISearchCriteria';
+
 //import { IUser } from '../users/iuser';
 
 const API_URL = environment.apiUrl;
 
 @Injectable()
 export class GenericApiService<T> {
-    private url = environment.apiUrl;
-    private suffix = '';
-  constructor(  private http: HttpClient, suffix:string  ) {
+  private url = environment.apiUrl;
+  private suffix = '';
+  constructor(private http: HttpClient, suffix: string) {
     this.url = environment.apiUrl + '/' + suffix;
     this.suffix = suffix;
   }
-  public buildQueryData(search?:string, offset?:any, limit?:any,sort?:string):any {
+  public buildQueryData(offset?: any, limit?: any, sort?: string): any {
     let params = {
-      'search': search?search:'',
-      'offset': offset?offset:0,
-      'limit': limit?limit:10,
-      'sort': sort? sort:''
+      'offset': offset ? offset : 0,
+      'limit': limit ? limit : 10,
+      'sort': sort ? sort : ''
     }
     /*
     const params:HttpParams = new HttpParams();
@@ -32,24 +33,33 @@ export class GenericApiService<T> {
     if(sort) params.set('sort', sort);*/
 
     return params;
- }
-
-  public getAll(search?:string, offset?:number, limit?:number, sort?:string): Observable<T[]> {
-   
-    let params = this.buildQueryData(search,offset,limit,sort);
-    
-    return this.http.get<T[]>(this.url,{params}).pipe(map((response:any)=>{
-      return response;
-    }), catchError(this.handleError));
-     
   }
-  getAssociations(parentSuffix: string,parentId:any,search?:string, offset?:number, limit?:number,sort?:string): Observable<T[]> {
-    let url = API_URL + '/' + parentSuffix + '/' + parentId + '/'+ this.suffix;
-    let params = this.buildQueryData(search,offset,limit,sort);
-    return this.http.get<T[]>(url,{params}).pipe(map((response:any)=>{
+
+  public getAll(search?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
+    let searchCriteria: ISearchCriteria = {
+      type: 3,
+      fields: search
+    }
+    console.log(search);
+    let params = this.buildQueryData(offset, limit, sort);
+
+    return this.http.get<T[]>(this.url, { params }).pipe(map((response: any) => {
       return response;
     }), catchError(this.handleError));
+
+  }
+  getAssociations(parentSuffix: string, parentId: any, search?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
+    let searchCriteria: ISearchCriteria = {
+      type: 3,
+      fields: search
     }
+
+    let url = API_URL + '/' + parentSuffix + '/' + parentId + '/' + this.suffix;
+    let params = this.buildQueryData(offset, limit, sort);
+    return this.http.get<T[]>(url, { params }).pipe(map((response: any) => {
+      return response;
+    }), catchError(this.handleError));
+  }
   /*public getChildren(parentUrl: string,search?:string, offset?:number, limit?:number, sort?:string): Observable<T[]> {
    
     let params = this.buildQueryData(search,offset,limit,sort);
@@ -66,35 +76,35 @@ export class GenericApiService<T> {
   public create(item: T): Observable<T> {
     return this.http
       .post<T>(this.url, item).pipe(catchError(this.handleError));
-     
+
   }
-  public update(item: T,id:any): Observable<T> {
+  public update(item: T, id: any): Observable<T> {
     return this.http
-      .put<T>(this.url+ '/' + id, item).pipe(catchError(this.handleError));
+      .put<T>(this.url + '/' + id, item).pipe(catchError(this.handleError));
   }
   public delete(id: any): Observable<null> {
     return this.http
-      .delete(this.url + '/' + id).pipe(map(res=>null),catchError(this.handleError));    
+      .delete(this.url + '/' + id).pipe(map(res => null), catchError(this.handleError));
   }
-  public deleteAssociation(parentSuffix: string,parentId:any,id: any): Observable<null> {
-    let url = API_URL + '/' + parentSuffix + '/' + parentId + '/'+ this.suffix
+  public deleteAssociation(parentSuffix: string, parentId: any, id: any): Observable<null> {
+    let url = API_URL + '/' + parentSuffix + '/' + parentId + '/' + this.suffix
     return this.http
-      .delete(url + '/' + id).pipe(map(res=>null),catchError(this.handleError));    
+      .delete(url + '/' + id).pipe(map(res => null), catchError(this.handleError));
   }
-  public addAssociation(parentSuffix: string,parentId:any,item: any): Observable<null> {
-    let url = API_URL + '/' + parentSuffix + '/' + parentId + '/'+ this.suffix
+  public addAssociation(parentSuffix: string, parentId: any, item: any): Observable<null> {
+    let url = API_URL + '/' + parentSuffix + '/' + parentId + '/' + this.suffix
     return this.http
-      .post(url,item).pipe(map(res=>null),catchError(this.handleError));    
+      .post(url, item).pipe(map(res => null), catchError(this.handleError));
   }
 
   protected handleError(err: HttpErrorResponse) {
-  
+
     let errorMessage = '';
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       errorMessage = 'An error occurred: ' + err.error.message;
     } else {
-      
+
       errorMessage = 'Server returned code: ' + err.status + ', error message is: ' + err.message;
     }
     console.error(errorMessage);

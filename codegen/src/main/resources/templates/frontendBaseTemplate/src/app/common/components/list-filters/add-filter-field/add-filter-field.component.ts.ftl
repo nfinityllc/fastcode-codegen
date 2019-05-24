@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { IListColumn, listColumnType } from '../../../../common/ilistColumn';
 
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ISearchField, operatorType} from '../ISearchCriteria';
 
 @Component({
   selector: 'app-add-filter-field',
@@ -12,6 +13,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 export class AddFilterFieldComponent implements OnInit {
   field: IListColumn;
   filterFieldForm: FormGroup;
+  operators: string[];
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<AddFilterFieldComponent>,
@@ -20,14 +22,24 @@ export class AddFilterFieldComponent implements OnInit {
   
   ngOnInit() {
     this.filterFieldForm = this.formBuilder.group({
-      value: ['']
+      fieldName: [this.data.column],
+      searchValue: [''],
+      startingValue: [''],
+      endingValue: [''],
+      operator: ['', Validators.required ],
     });
     this.field = this.data;
-    console.log(this.field)
+    this.operators = Object.keys(operatorType).map(k => operatorType[k as any]);
+    if(this.field.type == listColumnType.String){
+      this.operators.splice(this.operators.indexOf(operatorType.Range),1);
+    }
+    else{
+      this.operators.splice(this.operators.indexOf(operatorType.Contains),1);
+    }
   }
 
   addField():void{
-    this.dialogRef.close(this.filterFieldForm.value.value)
+    this.dialogRef.close(this.filterFieldForm.value)
   }
 
   cancel(): void{
