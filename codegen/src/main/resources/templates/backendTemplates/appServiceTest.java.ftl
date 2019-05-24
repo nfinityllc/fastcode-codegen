@@ -238,130 +238,129 @@ public class [=ClassName]AppServiceTest {
 		verify(_[=ClassName?uncap_first]Manager).Delete([=ClassName?uncap_first]);
 	}
 	
-	@Test
-	public void Find_ListIsEmpty_ReturnList() throws Exception {
-
-		List<[=EntityClassName]> list = new ArrayList<>();
-		Page<[=EntityClassName]> foundPage = new PageImpl(list);
-		Pageable pageable = mock(Pageable.class);
-		List<Find[=ClassName]ByIdOutput> output = new ArrayList<>();
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
-		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
-	}
-	
-	@Test
-	public void Find_ListIsNotEmpty_ReturnList() throws Exception {
-
-		List<[=EntityClassName]> list = new ArrayList<>();
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		list.add([=ClassName?uncap_first]);
-		Page<[=EntityClassName]> foundPage = new PageImpl(list);
-		Pageable pageable = mock(Pageable.class);
-		List<Find[=ClassName]ByIdOutput> output = new ArrayList<>();
-
-		output.add(_mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?uncap_first]));
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
-		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
-	}
-	
-	@Test
-	public void searchAllProperties_SearchIsNotNull_ReturnBooleanBuilder() {
-
-		String search= "xyz";
-		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
-		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ search + "%"));
-		</#list>
-		Assertions.assertThat(_appService.searchAllProperties([=ClassName?uncap_first], search)).isEqualTo(builder);
-	}
-	
-	@Test
-	public void searchSpecificProperty_PropertyExists_ReturnBooleanBuilder() {
-
-		List<String> list = new ArrayList<>();
-		<#list SearchFields as fields>
-		list.add("[=fields]");
-		</#list>
-		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
-		BooleanBuilder builder = new BooleanBuilder();
-		 <#list SearchFields as fields>
-		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%xyz%"));
-		</#list>
-		
-		Assertions.assertThat(_appService.searchSpecificProperty([=ClassName?uncap_first], list,"xyz")).isEqualTo(builder);
-	}
-	
-	@Test
-	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
-
-		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
-	    Map map = new HashMap();
-	    <#list SearchFields as fields>
-        map.put("[=fields]","xyz");
-        <#break>
-		</#list>
-		
-		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.and([=ClassName?uncap_first].[=fields].likeIgnoreCase("%xyz%"));
-        <#break>
-		</#list>
-		Assertions.assertThat(_appService.searchKeyValuePair([=ClassName?uncap_first], map)).isEqualTo(builder);
-	}
-	
-	@Test (expected = Exception.class)
-	public void checkProperties_PropertyDoesNotExist_ThrowException() throws Exception {
-
-		List<String> list = new ArrayList<>();
-		list.add("xyz");
-		_appService.checkProperties(list);
-	}
-	
-	@Test
-	public void checkProperties_PropertyExists_ReturnNothing() throws Exception {
-
-		List<String> list = new ArrayList<>();
-		<#list SearchFields as fields>
-		list.add("[=fields]");
-		</#list>
-		_appService.checkProperties(list);
-	}
-	
-	@Test
-	public void search_StringIsNotNullAndStringContainsKey_ReturnBooleanBuilder() throws Exception {
-
-		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
-		String search= "xyz";
-		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%" +search + "%"));
-		</#list>
-		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
-	}
-	
-	@Test
-	public void  search_StringIsNotNullAndStringContainsMoreThanOneKey_ReturnBooleanBuilder() throws Exception {
-
-		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
-		String search= "xyz";
-		<#list SearchFields as fields>
-        search.concat(",[=fields]");
-		</#list>
-		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%" +search + "%"));
-		</#list>
-		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
-	}
-	
-	@Test
-	public void  search_StringIsNull_ReturnNull() throws Exception {
-
-		Assertions.assertThat(_appService.Search(null)).isEqualTo(null);
-	}
-	
+//	@Test
+//	public void Find_ListIsEmpty_ReturnList() throws Exception {
+//
+//		List<[=EntityClassName]> list = new ArrayList<>();
+//		Page<[=EntityClassName]> foundPage = new PageImpl(list);
+//		Pageable pageable = mock(Pageable.class);
+//		List<Find[=ClassName]ByIdOutput> output = new ArrayList<>();
+//
+//		Mockito.when(_[=ClassName?uncap_first]Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+//		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
+//	}
+//	
+//	@Test
+//	public void Find_ListIsNotEmpty_ReturnList() throws Exception {
+//
+//		List<[=EntityClassName]> list = new ArrayList<>();
+//		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
+//		list.add([=ClassName?uncap_first]);
+//		Page<[=EntityClassName]> foundPage = new PageImpl(list);
+//		Pageable pageable = mock(Pageable.class);
+//		List<Find[=ClassName]ByIdOutput> output = new ArrayList<>();
+//
+//		output.add(_mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?uncap_first]));
+//		Mockito.when(_[=ClassName?uncap_first]Manager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+//		Assertions.assertThat(_appService.Find("abc", pageable)).isEqualTo(output);
+//	}
+//	
+//	@Test
+//	public void searchAllProperties_SearchIsNotNull_ReturnBooleanBuilder() {
+//
+//		String search= "xyz";
+//		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
+//		BooleanBuilder builder = new BooleanBuilder();
+//		<#list SearchFields as fields>
+//		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ search + "%"));
+//		</#list>
+//		Assertions.assertThat(_appService.searchAllProperties([=ClassName?uncap_first], search)).isEqualTo(builder);
+//	}
+//	
+//	@Test
+//	public void searchSpecificProperty_PropertyExists_ReturnBooleanBuilder() {
+//
+//		List<String> list = new ArrayList<>();
+//		<#list SearchFields as fields>
+//		list.add("[=fields]");
+//		</#list>
+//		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
+//		BooleanBuilder builder = new BooleanBuilder();
+//		 <#list SearchFields as fields>
+//		builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%xyz%"));
+//		</#list>
+//		
+//		Assertions.assertThat(_appService.searchSpecificProperty([=ClassName?uncap_first], list,"xyz")).isEqualTo(builder);
+//	}
+//	
+//	@Test
+//	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
+//
+//		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
+//	    Map map = new HashMap();
+//	    <#list SearchFields as fields>
+//       map.put("[=fields]","xyz");
+//        <#break>
+//		</#list>		
+//		BooleanBuilder builder = new BooleanBuilder();
+//		<#list SearchFields as fields>
+//       builder.and([=ClassName?uncap_first].[=fields].likeIgnoreCase("%xyz%"));
+//        <#break>
+//		</#list>
+//		Assertions.assertThat(_appService.searchKeyValuePair([=ClassName?uncap_first], map)).isEqualTo(builder);
+//	}
+//	
+//	@Test (expected = Exception.class)
+//	public void checkProperties_PropertyDoesNotExist_ThrowException() throws Exception {
+//
+//		List<String> list = new ArrayList<>();
+//		list.add("xyz");
+//		_appService.checkProperties(list);
+//	}
+//	
+//	@Test
+//	public void checkProperties_PropertyExists_ReturnNothing() throws Exception {
+//
+//		List<String> list = new ArrayList<>();
+//		<#list SearchFields as fields>
+//		list.add("[=fields]");
+//		</#list>
+//		_appService.checkProperties(list);
+//	}
+//	
+//	@Test
+//	public void search_StringIsNotNullAndStringContainsKey_ReturnBooleanBuilder() throws Exception {
+//
+//		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
+//		String search= "xyz";
+//		BooleanBuilder builder = new BooleanBuilder();
+//		<#list SearchFields as fields>
+//       builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%" +search + "%"));
+//		</#list>
+//		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
+//	}
+//	
+//	@Test
+//	public void  search_StringIsNotNullAndStringContainsMoreThanOneKey_ReturnBooleanBuilder() throws Exception {
+//
+//		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
+//		String search= "xyz";
+//		<#list SearchFields as fields>
+//       search.concat(",[=fields]");
+//		</#list>
+//		BooleanBuilder builder = new BooleanBuilder();
+//		<#list SearchFields as fields>
+//       builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%" +search + "%"));
+//		</#list>
+//		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
+//	}
+//	
+//	@Test
+//	public void  search_StringIsNull_ReturnNull() throws Exception {
+//
+//		Assertions.assertThat(_appService.Search(null)).isEqualTo(null);
+//	}
+//	
    <#list Relationship as relationKey, relationValue>
    <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
@@ -448,73 +447,73 @@ public class [=ClassName]AppServiceTest {
 		Assertions.assertThat(_appService.Get[=relationValue.eName](ID, ID)).isEqualTo(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first], [=ClassName?uncap_first]));		
 	}
 
-	@Test 
-	public void Get[=relationValue.eName]List_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() throws Exception {
-		String search= "xyz";
-		Pageable pageable = mock(Pageable.class);
-		
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID,search,pageable)).isEqualTo(null);
-	}
-	
-	@Test
-	public void Get[=relationValue.eName]List_If[=ClassName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() throws Exception {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		String search= "<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">[=fValue.fieldName];abc,</#if></#list>";
-		Pageable pageable = mock(Pageable.class);
-		List<[=relationValue.eName]Entity> list = new ArrayList<>();
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-		list.add([=relationValue.eName?uncap_first]);
-		
-		Page<[=relationValue.eName]Entity> foundPage = new PageImpl<>(list);
-		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
-		
-		output.add(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first],[=ClassName?uncap_first]));
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		doNothing().when(_[=relationValue.eName?uncap_first]AppService).checkProperties(any(List.class));
-		Mockito.when(_[=ClassName?uncap_first]Manager.Find[=relationValue.eName](anyLong(),<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">anyString(),</#if></#list>any(Pageable.class))).thenReturn(foundPage);
-		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID,search,pageable)).isEqualTo(output);
-	}
-
-    @Test 
-	public void SortMapAndSet[=relationValue.eName]Value_SearchIsNotNull_ReturnKeyValueMap()throws Exception
-	{
-		Map<String, String> givenMap = new HashMap<>();
-		<#list relationValue.fDetails as fValue>
-		<#if fValue.fieldType?lower_case == "string">
-		givenMap.put("[=fValue.fieldName]", "xyz");
-		</#if>
-		</#list>
-		
-		Map<String, String> finalMap = new HashMap<>();
-		<#list relationValue.fDetails as fValue>
-		<#if fValue.fieldType?lower_case == "string">
-		finalMap.put("[=fValue.fieldName]", "%XYZ%");
-		</#if>
-		</#list>
-		
-		doNothing().when(_[=relationValue.eName?lower_case]AppService).checkProperties(any(List.class));
-		Assertions.assertThat(_appService.sortMapAndSet[=relationValue.eName]Values(givenMap)).isEqualTo(finalMap);
-	}
+//	@Test 
+//	public void Get[=relationValue.eName]List_If[=ClassName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() throws Exception {
+//		String search= "xyz";
+//		Pageable pageable = mock(Pageable.class);
+//		
+//		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+//		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID,search,pageable)).isEqualTo(null);
+//	}
+//	
+//	@Test
+//	public void Get[=relationValue.eName]List_If[=ClassName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() throws Exception {
+//		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
+//		String search= "<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">[=fValue.fieldName];abc,</#if></#list>";
+//		Pageable pageable = mock(Pageable.class);
+//		List<[=relationValue.eName]Entity> list = new ArrayList<>();
+//		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
+//		list.add([=relationValue.eName?uncap_first]);
+//		
+//		Page<[=relationValue.eName]Entity> foundPage = new PageImpl<>(list);
+//		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
+//		
+//		output.add(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first],[=ClassName?uncap_first]));
+//		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
+//		doNothing().when(_[=relationValue.eName?uncap_first]AppService).checkProperties(any(List.class));
+//		Mockito.when(_[=ClassName?uncap_first]Manager.Find[=relationValue.eName](anyLong(),<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">anyString(),</#if></#list>any(Pageable.class))).thenReturn(foundPage);
+//		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID,search,pageable)).isEqualTo(output);
+//	}
+//
+//  @Test 
+//	public void SortMapAndSet[=relationValue.eName]Value_SearchIsNotNull_ReturnKeyValueMap()throws Exception
+//	{
+//		Map<String, String> givenMap = new HashMap<>();
+//		<#list relationValue.fDetails as fValue>
+//		<#if fValue.fieldType?lower_case == "string">
+//		givenMap.put("[=fValue.fieldName]", "xyz");
+//		</#if>
+//		</#list>
+//		
+//		Map<String, String> finalMap = new HashMap<>();
+//		<#list relationValue.fDetails as fValue>
+//		<#if fValue.fieldType?lower_case == "string">
+//		finalMap.put("[=fValue.fieldName]", "%XYZ%");
+//		</#if>
+//		</#list>
+//		
+//		doNothing().when(_[=relationValue.eName?lower_case]AppService).checkProperties(any(List.class));
+//		Assertions.assertThat(_appService.sortMapAndSet[=relationValue.eName]Values(givenMap)).isEqualTo(finalMap);
+//	}
 	
 	</#if>
     </#list>
    </#if>
   </#list>
-  <#list Relationship as relationKey,relationValue>
-    <#if relationValue.relation == "ManyToMany">
-
-	@Test 
-	public void BuildSearchMap_SearchIsNotNull_ReturnKeyValueMap()throws Exception
-	{
-		String search= "name;xyz";
-		Map<String, String> map = new HashMap<>();
-		map.put("name", "xyz");
-		
-		Assertions.assertThat(_appService.buildSearchMap(search)).isEqualTo(map);
-	}
-	<#break>
-    </#if>
-   </#list>
+//  <#list Relationship as relationKey,relationValue>
+//    <#if relationValue.relation == "ManyToMany">
+//
+//	@Test 
+//	public void BuildSearchMap_SearchIsNotNull_ReturnKeyValueMap()throws Exception
+//	{
+//		String search= "name;xyz";
+//		Map<String, String> map = new HashMap<>();
+//		map.put("name", "xyz");
+//		
+//		Assertions.assertThat(_appService.buildSearchMap(search)).isEqualTo(map);
+//	}
+//	<#break>
+//    </#if>
+//   </#list>
 }
 

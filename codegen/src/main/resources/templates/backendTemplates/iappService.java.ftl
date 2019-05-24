@@ -6,7 +6,7 @@ import javax.validation.constraints.Positive;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import [=PackageName].Search.SearchCriteria;
 import [=PackageName].application.[=ClassName].Dto.*;
 
 @Service
@@ -20,7 +20,7 @@ public interface I[=ClassName]AppService {
 
     Find[=ClassName]ByIdOutput FindById(@Positive(message ="Id should be a positive value")Long id);
     
-    List<Find[=ClassName]ByIdOutput> Find(String search, Pageable pageable) throws Exception;
+    List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception;
 	
    <#list Relationship as relationKey, relationValue>
    <#if relationValue.relation == "ManyToOne">

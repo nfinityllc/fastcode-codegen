@@ -59,7 +59,7 @@ public class GetUserInput {
 		for (FieldDetails f : fields) {
 			if (f.fieldType.equalsIgnoreCase("long") || f.fieldType.contains("int")
 					|| f.fieldType.equalsIgnoreCase("string") || f.fieldType.equalsIgnoreCase("boolean")
-					|| f.fieldType.equalsIgnoreCase("timestamp"))
+					|| f.fieldType.equalsIgnoreCase("timestamp") || f.fieldType.equalsIgnoreCase("date"))
 				fieldsList.add(f);
 		}
 
