@@ -454,17 +454,23 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					builder.and([=ClassName?uncap_first].[=value.fieldName].likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
 				else if(details.getValue().getOperator().equals("equals"))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(details.getValue().getSearchValue()));
+				else if(details.getValue().getOperator().equals("notEqual"))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(details.getValue().getSearchValue()));
 			}
 		<#elseif value.fieldType?lower_case == "boolean">
 			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(details.getValue().getOperator().equals("equals") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(Boolean.parseBoolean(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Boolean.parseBoolean(details.getValue().getSearchValue())));
 			}
 		<#elseif value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
         <#if value.fieldName?lower_case !="id">
 			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(details.getValue().getOperator().equals("equals") && StringUtils.isNumeric(details.getValue().getSearchValue()))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(Long.valueOf(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && StringUtils.isNumeric(details.getValue().getSearchValue()))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Long.valueOf(details.getValue().getSearchValue())));
 				else if(details.getValue().getOperator().equals("range") && details.getValue().getStartingValue()!=null)
 				{
                    if(details.getValue().getEndingValue()!=null)
@@ -478,6 +484,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(details.getValue().getOperator().equals("equals") && stringToDate(details.getValue().getSearchValue()) !=null)
 					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(stringToDate(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && stringToDate(details.getValue().getSearchValue()) !=null)
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(stringToDate(details.getValue().getSearchValue())));
 				else if(details.getValue().getOperator().equals("range") && details.getValue().getStartingValue()!=null)
 				{
 				   Date startDate= stringToDate(details.getValue().getStartingValue());
