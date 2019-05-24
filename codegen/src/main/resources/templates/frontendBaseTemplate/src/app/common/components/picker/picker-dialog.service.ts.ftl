@@ -8,9 +8,9 @@ import { IPickerItem } from './ipicker-item';
 import {PickerComponent} from '../picker/picker.component';
 
 export interface IFCDialogConfig {
- DataSource: Observable<any>;
- Title: string;
- //OnClose: Observable<any>;
+  Title: string;
+  IsSingleSelection?:boolean;
+  DisplayField: string;
 
 }
 @Injectable({
@@ -34,14 +34,14 @@ export class PickerDialogService  {
        
       });
   }
-  open(config:IFCDialogConfig):Observable<any> {
+  open(config:IFCDialogConfig):MatDialogRef <any> {
    // let permissionLookUpObs =   this.permissionService.getAll();
     this.dialogRef = this.dialog.open(PickerComponent,{data:config, disableClose: true,
     height: '100%',
      width: this.isSmallDeviceOrLess? this.smallDeviceOrLessDialogSize:this.largerDeviceDialogWidthSize,
      maxWidth:"none",      
    panelClass:'fc-modal-dialog'} ); 
-   return this.dialogRef.afterClosed();
+   return this.dialogRef;
   // config.OnClose = this.dialogRef.afterClosed();
    /*this.dialogRef.afterClosed().subscribe(result => {
      

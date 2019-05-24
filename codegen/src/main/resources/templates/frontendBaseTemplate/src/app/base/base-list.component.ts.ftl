@@ -58,6 +58,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
   mediumDeviceOrLessDialogSize: string = "100%";
   largerDeviceDialogWidthSize: string = "85%";
   largerDeviceDialogHeightSize: string = "85%";
+
   constructor(
     public router: Router,
     public route: ActivatedRoute,
@@ -178,6 +179,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       }
     });
   }
+
   addNew(k) {
     if (!this.selectedAssociation) {
       this.openDialog(k, null);
@@ -190,16 +192,33 @@ export class BaseListComponent<E extends IBase> implements OnInit {
       this.openDialog(k, data);
       return;
     }
+    this.initializePickerPageInfo();
+
     let dialogConfig: IFCDialogConfig = <IFCDialogConfig>{
-      DataSource: this.dataService.getAll('', 0, 10000),
       Title: this.title,
       IsSingleSelection: true,
-      DisplayField: "name",
-      selectedList: this.items.map(item => item.id)
-      //  OnClose:null
+      DisplayField: "name"
     };
 
-    this.pickerDialogService.open(dialogConfig).subscribe(result => {
+    this.dialogRef = this.pickerDialogService.open(dialogConfig);
+
+    this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {
+      this.isLoadingPickerResults = false;
+      this.dialogRef.componentInstance.items = items;
+      this.updatePickerPageInfo(items);
+    },
+      error => this.errorMessage = <any>error
+    );
+
+    this.dialogRef.componentInstance.onScroll.subscribe(data => {
+      this.onPickerScroll();
+    })
+
+    this.dialogRef.componentInstance.onSearch.subscribe(data => {
+      this.onPickerSearch(data);
+    })
+
+    this.dialogRef.afterClosed().subscribe(result => {
 
       if (result) {
         //   results.forEach(result => {
@@ -218,27 +237,25 @@ export class BaseListComponent<E extends IBase> implements OnInit {
     this.isLoadingResults = true;
     this.initializePageInfo();
     let sortVal = this.getSortValue();
-    if (!(this.selectedAssociation !== undefined && this.selectedAssociation.type == "ManyToMany")) {
-      if (this.selectedAssociation !== undefined) {
-        this.itemsObservable = this.dataService.getAssociations(
-          this.selectedAssociation.table,
-          this.selectedAssociation.column.value,
-          this.searchValue,
-          this.currentPage * this.pageSize,
-          this.pageSize,
-          sortVal
-        )
-      }
-      else {
-        this.itemsObservable = this.dataService.getAll(
-          this.searchValue,
-          this.currentPage * this.pageSize,
-          this.pageSize,
-          sortVal
-        )
-      }
-      this.processListObservable(this.itemsObservable, listProcessingType.Replace)
+    if (this.selectedAssociation !== undefined) {
+      this.itemsObservable = this.dataService.getAssociations(
+        this.selectedAssociation.table,
+        this.selectedAssociation.column.value,
+        this.searchValue,
+        this.currentPage * this.pageSize,
+        this.pageSize,
+        sortVal
+      )
     }
+    else {
+      this.itemsObservable = this.dataService.getAll(
+        this.searchValue,
+        this.currentPage * this.pageSize,
+        this.pageSize,
+        sortVal
+      )
+    }
+    this.processListObservable(this.itemsObservable, listProcessingType.Replace)
   }
 
   checkForAssociations(params) {
@@ -290,7 +307,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
 
   initializePageInfo() {
     this.hasMoreRecords = true;
-    this.pageSize = 5;
+    this.pageSize = 20;
     this.lastProcessedOffset = -1;
     this.currentPage = 0;
   }
@@ -345,5 +362,81 @@ export class BaseListComponent<E extends IBase> implements OnInit {
 
   getMobileLabelForField(field: string) {
     return field.replace(/([a-z])([A-Z])/g, '$1 $2');
+  }
+
+  isLoadingPickerResults = true;
+
+  currentPickerPage: number;
+  pickerPageSize: number;
+  lastProcessedOffsetPicker: number;
+  hasMoreRecordsPicker: boolean;
+  searchValuePicker: any = "";
+  pickerItemsObservable: Observable<any>;
+
+  initializePickerPageInfo() {
+    this.hasMoreRecordsPicker = true;
+    this.pickerPageSize = 20;
+    this.lastProcessedOffsetPicker = -1;
+    this.currentPickerPage = 0;
+  }
+
+  //manage pages for virtual scrolling
+  updatePickerPageInfo(data) {
+    if (data.length > 0) {
+      this.currentPickerPage++;
+      this.lastProcessedOffsetPicker += data.length;
+    }
+    else {
+      this.hasMoreRecordsPicker = false;
+    }
+  }
+
+  onPickerScroll() {
+    if (!this.isLoadingPickerResults && this.hasMoreRecordsPicker && this.lastProcessedOffsetPicker < this.dialogRef.componentInstance.items.length) {
+      this.isLoadingPickerResults = true;
+      if (this.selectedAssociation !== undefined) {
+        this.pickerItemsObservable = this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize);
+      }
+      else {
+        this.pickerItemsObservable = this.dataService.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize);
+      }
+      this.processPickerListObservable(this.pickerItemsObservable,listProcessingType.Append);
+    }
+  }
+
+  onPickerSearch(searchValue: string) {
+    if (searchValue) {
+      this.searchValuePicker = "name;" + searchValue;
+    }
+    else {
+      this.searchValuePicker = "";
+    }
+    this.initializePickerPageInfo();
+
+    if (!this.isLoadingPickerResults && this.hasMoreRecordsPicker && this.lastProcessedOffsetPicker < this.dialogRef.componentInstance.items.length) {
+      this.isLoadingPickerResults = true;
+      if (this.selectedAssociation !== undefined) {
+        this.pickerItemsObservable = this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize);
+      }
+      else {
+        this.pickerItemsObservable = this.dataService.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize);
+      }
+      this.processPickerListObservable(this.pickerItemsObservable, listProcessingType.Replace);
+    }
+  }
+
+  processPickerListObservable(pickerListObservable: Observable<any>, type: listProcessingType) {
+    pickerListObservable.subscribe(items => {
+      this.isLoadingPickerResults = false;
+      if (type == listProcessingType.Replace) {
+        this.dialogRef.componentInstance.items = items;
+      }
+      else {
+        this.dialogRef.componentInstance.items = this.dialogRef.componentInstance.items.concat(items);
+      }
+      this.updatePickerPageInfo(items);
+    },
+      error => this.errorMessage = <any>error
+    )
   }
 }

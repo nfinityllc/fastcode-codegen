@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, EventEmitter } from '@angular/core';
 
 import { IPickerItem } from './ipicker-item';
 import { IFCDialogConfig } from './ifc-dialog-config';
@@ -17,6 +17,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 	styleUrls: ['./picker.component.scss']
 })
 export class PickerComponent implements OnInit {
+
+	onScroll = new EventEmitter();
+	onSearch = new EventEmitter();
 
 	loading = false;
 	submitted = false;
@@ -39,14 +42,7 @@ export class PickerComponent implements OnInit {
 			this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
 		this.title = this.data.Title;
 		this.displayField = this.data.DisplayField;
-		this.data.DataSource.subscribe(items => {
-			this.items = items;
-			if (this.data.selectedList) {
-				this.items = items.filter(item => this.data.selectedList.indexOf(item.id) == -1);
-			}
-		},
-		error => this.errorMessage = <any>error);
-  }
+	}
 
 	onOk() {
 		let selectedOptions = this.selectionList.selectedOptions.selected;
@@ -54,10 +50,18 @@ export class PickerComponent implements OnInit {
 			for (let option of selectedOptions) {
 				this.selectedItems.push(option.value);
 			}
-			this.dialogRef.close(this.data.IsSingleSelection ? this.selectedItems[0] :this.selectedItems);
+			this.dialogRef.close(this.data.IsSingleSelection ? this.selectedItems[0] : this.selectedItems);
 		}
 	}
 	onCancel(): void {
 		this.dialogRef.close();
+	}
+
+	onTableScroll() {
+		this.onScroll.emit();
+	}
+
+	onSearchChange(searchValue: string){
+		this.onSearch.emit(searchValue);
 	}
 }

@@ -8,6 +8,7 @@ import { first } from 'rxjs/operators';
 import { Globals } from '../globals';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BaseNewComponent } from '../base/base-new.component';
+import { PickerDialogService, IFCDialogConfig } from '../common/components/picker/picker-dialog.service';
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
@@ -33,6 +34,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			public dialogRef: MatDialogRef<[=ClassName]NewComponent>,
 			@Inject(MAT_DIALOG_DATA) public data: any,
 			public global: Globals,
+			public pickerDialogService: PickerDialogService,
 			public dataService: [=ClassName]Service,
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
@@ -42,7 +44,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#list>
 			</#if>
 		) {
-			super(formBuilder, router, route, dialog, dialogRef, data, global, dataService);
+			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService);
 	  }
  
     ngOnInit() {
