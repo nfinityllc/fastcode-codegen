@@ -53,10 +53,7 @@ export class ListFiltersComponent implements OnInit {
     this.basicFilterForm.addControl("addFilter", new FormControl(''));
 
     this.columnsList.forEach((column) => {
-      if (column.filter && (
-        column.type == listColumnType.String ||
-        column.type == listColumnType.Number)
-      ) {
+      if (column.filter) {
         this.noFilterableFields = false;
         this.filterFields.push(column);
       }
@@ -108,7 +105,7 @@ export class ListFiltersComponent implements OnInit {
   selected(event: MatAutocompleteSelectedEvent): void {
 
     //getting Icolumnfield object for selected field
-    let field = this.filterFields.find(x => x.label == event.option.viewValue);
+    let field:IListColumn = this.filterFields.find(x => x.label == event.option.viewValue);
 
     this.addFieldDialogRef = this.dialog.open(AddFilterFieldComponent, {
       disableClose: true,
@@ -118,25 +115,41 @@ export class ListFiltersComponent implements OnInit {
       if (result != null) {
 
         this.selectedFilterFields.push(result);
+
+        let searchValue = result.searchValue;
+        let startingValue = result.startingValue;
+        let endingValue = result.endingValue;
+        
+        if(field.type == listColumnType.Date){
+          if(searchValue){
+            searchValue = new Date(searchValue.toString()).toLocaleDateString();
+          }
+          if(startingValue){
+            startingValue = new Date(startingValue.toString()).toLocaleDateString();
+          }
+          if(endingValue){
+            endingValue = new Date(endingValue.toString()).toLocaleDateString();
+          }
+        }
         switch(result.operator){
           case operatorType.Contains:
-            this.selectedDisplayFilterFields.push(event.option.viewValue + ": contains \"" + result.searchValue + "\"");
+            this.selectedDisplayFilterFields.push(event.option.viewValue + ": contains \"" + searchValue + "\"");
             break;
           case operatorType.Equals:
-            this.selectedDisplayFilterFields.push(event.option.viewValue + ": is equal to \"" + result.searchValue + "\"");
+            this.selectedDisplayFilterFields.push(event.option.viewValue + ": is equal to \"" + searchValue + "\"");
             break;
           case operatorType.NotEqual:
-            this.selectedDisplayFilterFields.push(event.option.viewValue + ": not equal to \"" + result.searchValue + "\"");
+            this.selectedDisplayFilterFields.push(event.option.viewValue + ": not equal to \"" + searchValue + "\"");
             break;
           case operatorType.Range:
             let displayField = event.option.viewValue + ":";
             
-            if(result.startingValue){
-              displayField = displayField + " from \"" + result.startingValue + "\"";
+            if(startingValue){
+              displayField = displayField + " from \"" + startingValue + "\"";
             }
             
-            if(result.endingValue){
-              displayField = displayField + " to \"" + result.endingValue + "\"";
+            if(endingValue){
+              displayField = displayField + " to \"" + endingValue + "\"";
             }
             this.selectedDisplayFilterFields.push(displayField);
             break;

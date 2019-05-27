@@ -59,16 +59,16 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		{
 			column: '[=value.fieldName]',
 			label: '[=value.fieldName]',
-			sort: false,
-			filter: false,
+			sort: true,
+			filter: true,
 			type: listColumnType.Number
 		},
 	<#elseif value.fieldType?lower_case == "date">
 		{
 			column: '[=value.fieldName]',
 			label: '[=value.fieldName]',
-			sort: false,
-			filter: false,
+			sort: true,
+			filter: true,
 			type: listColumnType.Date
 		},
   </#if> 

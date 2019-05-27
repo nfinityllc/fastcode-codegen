@@ -32,6 +32,26 @@
       </mat-form-field>
     </div>
 
+    <div class="field-div" *ngIf="field.type == 'Date'">
+      <mat-form-field *ngIf="['equals','notEqual'].indexOf(filterFieldForm.get('operator').value) > - 1">
+        <input formControlName="searchValue" matInput [matDatepicker]="datePicker" placeholder="value">
+        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <mat-datepicker #datePicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="filterFieldForm.get('operator').value == 'range'">
+        <input formControlName="startingValue" matInput [matDatepicker]="startDatePicker" placeholder="starting value">
+        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="filterFieldForm.get('operator').value == 'range'">
+        <input formControlName="endingValue" matInput [matDatepicker]="startDatePicker" placeholder="ending value">
+        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
   </form>
 </div>
 

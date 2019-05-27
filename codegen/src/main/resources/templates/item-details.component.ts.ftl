@@ -150,9 +150,11 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		this.itemForm.patchValue({
 		 <#list Fields as key,value>
 		 	<#assign fieldType = value.fieldType?lower_case fieldName = value.fieldName?lower_case>
-		    <#if fieldName == "id" || fieldType == "date" || fieldType == "string" || fieldType == "boolean" || fieldType == "int" || fieldType == "long">              
-			[=value.fieldName]:item.[=value.fieldName],
-			</#if>
+		    <#if fieldName == "id" || fieldType == "string" || fieldType == "boolean" || fieldType == "int" || fieldType == "long">              
+			[=value.fieldName]: item.[=value.fieldName],
+				<#elseif fieldType == "date">
+			[=value.fieldName]: item.[=value.fieldName]? new Date(item.[=value.fieldName]): null,
+				</#if>
 		</#list>
 		<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>

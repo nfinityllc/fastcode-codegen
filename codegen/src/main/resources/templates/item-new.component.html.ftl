@@ -13,7 +13,9 @@
 			<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>            
 		<#elseif value.fieldType == "Date">
 			<mat-form-field>
-				<input formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
+				<input formControlName="[=value.fieldName]" matInput [matDatepicker]="[=value.fieldName]Picker" placeholder="Enter [=value.fieldName]">
+				<mat-datepicker-toggle matSuffix [for]="[=value.fieldName]Picker"></mat-datepicker-toggle>
+				<mat-datepicker #[=value.fieldName]Picker></mat-datepicker>
 				<#if value.isNullable == false>
 				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
 				</#if>

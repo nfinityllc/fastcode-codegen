@@ -34,7 +34,7 @@
 			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName] </mat-header-cell>
 			<mat-cell *matCellDef="let item">
 				<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
-				{{item.[=value.fieldName] | date:'short'}}
+				{{item.[=value.fieldName] | date: defaultDateFormat}}
 			</mat-cell>
 		</ng-container>
 		<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">

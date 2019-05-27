@@ -36,7 +36,7 @@ enum listProcessingType {
 
 export class BaseListComponent<E extends IBase> implements OnInit {
 
-  defaultDateFormat: string = "short";
+  defaultDateFormat: string = "mediumDate";
   associations: IAssociationEntry[];
   selectedAssociation: IAssociationEntry;
 
