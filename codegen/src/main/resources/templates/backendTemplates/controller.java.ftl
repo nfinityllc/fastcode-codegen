@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import [=PackageName].Search.SearchCriteria;
+import [=PackageName].Search.SearchUtils;
 import [=PackageName].Utils.OffsetBasedPageRequest;
 import [=PackageName].application.[=ClassName].[=ClassName]AppService;
 import [=PackageName].application.[=ClassName].[=ClassName]Mapper;
@@ -104,14 +105,15 @@ public class [=ClassName]Controller {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity Find(@RequestBody(required=false) SearchCriteria search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
+	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-
-		return ResponseEntity.ok(_[=ClassName?uncap_first]AppService.Find(search,Pageable));
+		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+		
+		return ResponseEntity.ok(_[=ClassName?uncap_first]AppService.Find(searchCriteria,Pageable));
 	}
 <#list Relationship as relationKey, relationValue>
    <#if relationValue.relation == "ManyToOne">
@@ -128,16 +130,17 @@ public class [=ClassName]Controller {
    <#elseif relationValue.relation == "OneToMany">
 
 	@RequestMapping(value = "/{[=relationValue.joinColumn?lower_case]}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
-	public ResponseEntity Get[=relationValue.eName](@PathVariable String [=InstanceName]id,@RequestBody(required=false) SearchCriteria search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	public ResponseEntity Get[=relationValue.eName](@PathVariable String [=InstanceName]id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
-        search.setJoinColumn("[=relationValue.joinColumn?uncap_first]");
-		search.setJoinColumnValue(Long.valueOf([=InstanceName]id));
-   		List<Find[=relationValue.eName]ByIdOutput> output = _[=relationValue.eName?uncap_first]AppService.Find(search,pageable);
+		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+		searchCriteria.setJoinColumn("[=relationValue.joinColumn?uncap_first]");
+		searchCriteria.setJoinColumnValue(Long.valueOf([=InstanceName]id));
+   	List<Find[=relationValue.eName]ByIdOutput> output = _[=relationValue.eName?uncap_first]AppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

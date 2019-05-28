@@ -412,6 +412,7 @@ public class CodeGenerator {
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("searchCriteria.java.ftl", "SearchCriteria.java");
 		backEndTemplate.put("searchFields.java.ftl", "SearchFields.java");
+		backEndTemplate.put("searchUtils.java.ftl", "SearchUtils.java");
 		String destFolder = destPath + "/Search";
 		new File(destFolder).mkdirs();
 		generateFiles(backEndTemplate, root, destFolder);

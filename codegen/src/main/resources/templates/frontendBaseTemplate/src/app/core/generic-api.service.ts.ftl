@@ -17,45 +17,62 @@ export class GenericApiService<T> {
     this.url = environment.apiUrl + '/' + suffix;
     this.suffix = suffix;
   }
-  public buildQueryData(offset?: any, limit?: any, sort?: string): any {
+  public buildQueryData(searchFields: ISearchField[], offset?: any, limit?: any, sort?: string): any {
     let params = {
+      'search': this.parseSearchFields(searchFields),
       'offset': offset ? offset : 0,
       'limit': limit ? limit : 10,
       'sort': sort ? sort : ''
     }
-    /*
-    const params:HttpParams = new HttpParams();
-    
-    if(search) params.set('search', search);
-    if(offset) params.set('offset', offset); else params.set('offset', '0');
-    
-    if(limit) params.set('limit', limit);
-    if(sort) params.set('sort', sort);*/
 
     return params;
   }
 
-  public getAll(search?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
-    let searchCriteria: ISearchCriteria = {
-      type: 3,
-      fields: search
+  public parseSearchFields(searchFields: ISearchField[]): string {
+    let searchString: string = "";
+    console.log(searchFields);
+    searchFields.forEach(field => {
+      searchString += `${field.fieldName}[${field.operator}]=`;
+
+      let searchValue: string = field.searchValue;
+      let startingValue: string = field.startingValue;
+      let endingValue: string = field.endingValue;
+      
+      if(field.operator === operatorType.Range){
+        if(startingValue !== null){
+          searchString += startingValue;
+        }
+        searchString += ',';
+        if(endingValue !== null){
+          searchString += endingValue;
+        }
+      }
+      else{
+        if(searchValue !== null){
+          searchString += searchValue; 
+        }
+      }
+      searchString += ";";
+    });
+    if(searchString.length > 0){
+      searchString = searchString.slice(0,-1);
     }
-    console.log(search);
-    let params = this.buildQueryData(offset, limit, sort);
+    return searchString;
+  }
+
+  public getAll(searchFields?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
+
+    let params = this.buildQueryData(searchFields, offset, limit, sort);
 
     return this.http.get<T[]>(this.url, { params }).pipe(map((response: any) => {
       return response;
     }), catchError(this.handleError));
 
   }
-  getAssociations(parentSuffix: string, parentId: any, search?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
-    let searchCriteria: ISearchCriteria = {
-      type: 3,
-      fields: search
-    }
+  getAssociations(parentSuffix: string, parentId: any, searchFields?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
 
     let url = API_URL + '/' + parentSuffix + '/' + parentId + '/' + this.suffix;
-    let params = this.buildQueryData(offset, limit, sort);
+    let params = this.buildQueryData(searchFields, offset, limit, sort);
     return this.http.get<T[]>(url, { params }).pipe(map((response: any) => {
       return response;
     }), catchError(this.handleError));

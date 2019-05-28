@@ -19,9 +19,9 @@ export interface ISearchCriteria {
 }
 
 export interface ISearchField {
-    fieldName: String;
-    searchValue?: String;
-    startingValue?: String;
-    endingValue?: String;
+    fieldName: string;
+    searchValue?: string;
+    startingValue?: string;
+    endingValue?: string;
     operator: operatorType;
 }
