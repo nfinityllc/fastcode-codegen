@@ -29,6 +29,15 @@ import [=PackageName].domain.model.[=EntityClassName];
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
+<#if relationValue.relation == "ManyToMany">
+<#list RelationInput as relationInput>
+<#assign parent = relationInput>
+<#if parent?keep_after("-") == relationValue.eName>
+import java.util.List;
+import [=PackageName].Search.SearchFields;
+</#if>
+</#list>
+</#if>    
 </#list>
 import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 import [=PackageName].Utils.LoggingHelper;
@@ -200,10 +209,11 @@ public class [=ClassName]ManagerTest {
 	public void Find[=relationValue.eName]_[=ClassName]IdIsNotNull_Return[=relationValue.eName]() {
 	    Page<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first] = mock(Page.class);
 		Pageable pageable = mock(Pageable.class);
-		String value="abc";
+		List<SearchFields> list = mock(List.class);
+		String value="equals";
 
-		Mockito.when(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](anyLong(),<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">anyString(),</#if></#list> any(Pageable.class))).thenReturn([=relationValue.eName?uncap_first]);
-		Assertions.assertThat(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](ID,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">value,</#if></#list> pageable)).isEqualTo([=relationValue.eName?uncap_first]);
+		Mockito.when(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](anyLong(),any(List.class),anyString(),any(Pageable.class))).thenReturn([=relationValue.eName?uncap_first]);
+		Assertions.assertThat(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](ID,list,value,pageable)).isEqualTo([=relationValue.eName?uncap_first]);
 	}
 
     </#if>

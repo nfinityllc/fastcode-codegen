@@ -37,7 +37,7 @@ public interface I[=ClassName]AppService {
 
     Get[=relationValue.eName]Output Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id, @Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]id);
 
-    List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id,String search,Pageable pageable) throws Exception;
+    List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]id,SearchCriteria search,String operator,Pageable pageable) throws Exception;
    </#if>
    </#list>
    </#if>

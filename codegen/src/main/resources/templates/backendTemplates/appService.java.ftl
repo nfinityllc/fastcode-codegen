@@ -14,14 +14,12 @@ import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manage
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
 <#if parent?keep_after("-") == relationValue.eName>
-import java.util.TreeMap;
 import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
 </#list>
 </#if>
 </#list>
-import [=PackageName].Search.SearchCriteria;
-import [=PackageName].Search.SearchFields;
+import [=PackageName].Search.*;
 import [=PackageName].Utils.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
@@ -202,17 +200,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
 
-	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id,String search,Pageable pageable) throws Exception{
+	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id,SearchCriteria search,String operator,Pageable pageable) throws Exception{
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
 			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=ClassName?uncap_first]Id);
 			return null;
 		}
-
-        Map<String,String> sortedSearchMap= sortMapAndSet[=relationValue.eName]Values(buildSearchMap(search));
-
-		Page<[=relationValue.eName]Entity> found[=relationValue.eName] = _[=ClassName?uncap_first]Manager.Find[=relationValue.eName]([=ClassName?uncap_first]Id,<#list relationValue.fDetails as fValue><#if fValue.fieldType?lower_case == "string">sortedSearchMap.get("[=fValue.fieldName]"),</#if></#list>pageable);
+        check[=relationValue.eName]Properties(search.getFields());
+        
+		Page<[=relationValue.eName]Entity> found[=relationValue.eName] = _[=ClassName?uncap_first]Manager.Find[=relationValue.eName]([=ClassName?uncap_first]Id,search.getFields(),operator,pageable);
 		List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = found[=relationValue.eName].getContent();
 		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]List.iterator();
 		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
@@ -223,66 +220,19 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	
-	public Map<String,String> sortMapAndSet[=relationValue.eName]Values(Map<String,String> map) throws Exception
+	public void check[=relationValue.eName]Properties(List<SearchFields> search) throws Exception
 	{
-		List<String> keysList = new ArrayList<String> (map.keySet());
+		List<String> keysList = new ArrayList<String>();
+		for (SearchFields obj : search) {
+            keysList.add(obj.getFieldName());
+        }
 		_[=relationValue.eName?uncap_first]AppService.checkProperties(keysList);
-		
-		Map<String,String> sortedMap = new TreeMap<>(map); 
-		Map<String,String> fieldsMap=new HashMap<>();
-		<#list relationValue.fDetails as fValue>
-		<#if fValue.fieldType?lower_case == "string">
-		fieldsMap.put("[=fValue.fieldName]", null);
-		</#if>
-		</#list>
-		for (Map.Entry<String,String> sortedEntry : sortedMap.entrySet()) {
-			for (Map.Entry<String,String> fieldEntry : sortedMap.entrySet()) {
-				if(sortedEntry.getKey()==fieldEntry.getKey())
-				{
-					fieldsMap.put(sortedEntry.getKey().toString(),"%"+ sortedEntry.getValue().toUpperCase() + "%");
-				}
-			}
-		}
-		return fieldsMap;
 	}
-	
   </#if>
   </#list>
   </#if>
  </#list>
- <#list Relationship as relationKey,relationValue>
-    <#if relationValue.relation == "ManyToMany">
-    public Map<String,String> buildSearchMap(String search) throws Exception
-	{
-		String[] values = null;
-		String[] words = null;
-		Map<String, String> map = new HashMap<>();
-		if(search != null) {
-			if((search.contains(";"))) {
-				if(search.contains(","))
-				{
-				words = search.split(",");
-				if(words[0].contains(";")) {
-					for (String s: words) {
-						values = s.replace("%20","").trim().split(";");
-						map.put(values[0], values[1]);
-					}
-				}
-				}
-				else
-				{
-					words = search.split(";");
-					map.put(words[0], words[1]);
-				}
-			}
 
-		}
-		return map;
-	}
-	<#break>
-    </#if>
-</#list>
- 
 	public List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<[=EntityClassName]> found[=ClassName] = _[=ClassName?uncap_first]Manager.FindAll(Search(search), pageable);
@@ -361,10 +311,10 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if> 
         </#list>
         	}
-        	else if(stringToDate(value)!=null) {
+        	else if(SearchUtils.stringToDate(value)!=null) {
         <#list Fields as key,value>
         <#if value.fieldType?lower_case == "date">
-	        	builder.or([=ClassName?uncap_first].[=value.fieldName].eq(stringToDate(value)));
+	        	builder.or([=ClassName?uncap_first].[=value.fieldName].eq(SearchUtils.stringToDate(value)));
         </#if> 
         </#list>
 			}
@@ -427,8 +377,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
 		<#elseif value.fieldType?lower_case == "date">
 			if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
-				if(operator.equals("equals") && stringToDate(value)!=null)
-					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(stringToDate(value)));
+				if(operator.equals("equals") && SearchUtils.stringToDate(value)!=null)
+					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(SearchUtils.stringToDate(value)));
 			}
         </#if>
         </#list>
@@ -471,36 +421,35 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(Long.valueOf(details.getValue().getSearchValue())));
 				else if(details.getValue().getOperator().equals("notEqual") && StringUtils.isNumeric(details.getValue().getSearchValue()))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Long.valueOf(details.getValue().getSearchValue())));
-				else if(details.getValue().getOperator().equals("range") && details.getValue().getStartingValue()!=null)
+				else if(details.getValue().getOperator().equals("range"))
 				{
-                   if(details.getValue().getEndingValue()!=null)
+				   if(StringUtils.isNumeric(details.getValue().getStartingValue()) && StringUtils.isNumeric(details.getValue().getEndingValue()))
                 	   builder.and([=ClassName?uncap_first].[=value.fieldName].between(Long.valueOf(details.getValue().getStartingValue()), Long.valueOf(details.getValue().getEndingValue())));
-                   else
+                   else if(StringUtils.isNumeric(details.getValue().getStartingValue()))
                 	   builder.and([=ClassName?uncap_first].[=value.fieldName].goe(Long.valueOf(details.getValue().getStartingValue())));
+                   else if(StringUtils.isNumeric(details.getValue().getEndingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].loe(Long.valueOf(details.getValue().getEndingValue())));
 				}
 			}
 		</#if>
 		<#elseif value.fieldType?lower_case == "date">
 			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
-				if(details.getValue().getOperator().equals("equals") && stringToDate(details.getValue().getSearchValue()) !=null)
-					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(stringToDate(details.getValue().getSearchValue())));
-				else if(details.getValue().getOperator().equals("notEqual") && stringToDate(details.getValue().getSearchValue()) !=null)
-					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(stringToDate(details.getValue().getSearchValue())));
-				else if(details.getValue().getOperator().equals("range") && details.getValue().getStartingValue()!=null)
+				if(details.getValue().getOperator().equals("equals") && SearchUtils.stringToDate(details.getValue().getSearchValue()) !=null)
+					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(SearchUtils.stringToDate(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && SearchUtils.stringToDate(details.getValue().getSearchValue()) !=null)
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(SearchUtils.stringToDate(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("range"))
 				{
-				   Date startDate= stringToDate(details.getValue().getStartingValue());
-                   if(details.getValue().getEndingValue()!=null)
-                   {
-                	   Date endDate= stringToDate(details.getValue().getEndingValue());
-                	   if(startDate!=null && endDate !=null)
-                	   builder.and([=ClassName?uncap_first].[=value.fieldName].between(startDate,endDate));
-                   }
-                   else
-                   {
-                	   if(startDate!=null)
-                		   builder.and([=ClassName?uncap_first].[=value.fieldName].goe(startDate));
-                   }
-				}
+				   Date startDate= SearchUtils.stringToDate(details.getValue().getStartingValue());
+				   Date endDate= SearchUtils.stringToDate(details.getValue().getEndingValue());
+				   if(startDate!=null && endDate!=null)	 
+					   builder.and([=ClassName?uncap_first].[=value.fieldName].between(startDate,endDate));
+				   else if(endDate!=null)
+					   builder.and([=ClassName?uncap_first].[=value.fieldName].loe(endDate));
+                   else if(startDate!=null)
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].goe(startDate));  
+                 }
+                   
 			}
 	    </#if>
 	    </#list>	
@@ -516,18 +465,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return builder;
 	}
 	
-	public Date stringToDate(String str)
-	{
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		Date date;
-		try {
-			date = formatter.parse(str);
-			return date;
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 }
 
 
