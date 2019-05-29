@@ -41,7 +41,7 @@ public class [=ClassName]CustomRepositoryImpl implements [=ClassName]CustomRepos
 				.createQuery([=relationValue.eName]Entity.class);
 
 		Root<[=relationValue.eName]Entity> from[=relationValue.eName] = criteriaQuery.from([=relationValue.eName]Entity.class);
-		Join<[=relationValue.eName]Entity, [=ClassName]Entity> join = from[=relationValue.eName].join("[=relationValue.eName]");
+		Join<[=relationValue.eName]Entity, [=ClassName]Entity> join = from[=relationValue.eName].join("[=ClassName?uncap_first]");
 		List<Predicate> conditions = new ArrayList();
 		if(operator.equalsIgnoreCase("notEqual"))
 		conditions.add(criteriaBuilder.notEqual(join.get("id"), [=ClassName?uncap_first]Id));

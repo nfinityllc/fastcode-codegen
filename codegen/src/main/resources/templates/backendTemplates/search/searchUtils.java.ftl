@@ -14,7 +14,7 @@ public class SearchUtils {
 		List<SearchFields> searchFields = new ArrayList<SearchFields>();
 
 
-		if(searchString.length() > 0) {
+		if(searchString != null && searchString.length() > 0) {
 			String[] fields = searchString.split(";");
 
 			for(String field: fields) {
