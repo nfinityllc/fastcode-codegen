@@ -507,9 +507,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne">
-			if(joinColumn.replace("%20","").trim().equals("[=relationValue.joinColumn]")) {
+		if(joinColumn != null && joinColumn.equals("[=relationValue.joinColumn]")) {
 			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(joinColumnValue));
-		    }
+		}
 		</#if>
 		</#list>
 

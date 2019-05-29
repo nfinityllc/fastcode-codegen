@@ -14,6 +14,7 @@ import { Globals } from '../globals';
 import { IAssociationEntry } from '../core/iassociationentry';
 import { PickerComponent } from '../common/components/picker/picker.component';
 import { PickerDialogService, IFCDialogConfig } from '../common/components/picker/picker-dialog.service';
+import { ISearchField, operatorType } from 'src/app/common/components/list-filters/ISearchCriteria';
 
 @Component({
 
@@ -134,7 +135,8 @@ export class BaseNewComponent<E> implements OnInit {
 	pickerPageSize: number;
 	lastProcessedOffsetPicker: number;
 	hasMoreRecordsPicker: boolean;
-	searchValuePicker: any = "";
+
+	searchValuePicker: ISearchField[] = [];
 	pickerItemsObservable: Observable<any>;
 
 	initializePickerPageInfo() {
@@ -172,13 +174,15 @@ export class BaseNewComponent<E> implements OnInit {
 	}
 
 	onPickerSearch(searchValue: string) {
-		console.log(this.pickerDialogRef.componentInstance);
 		if (searchValue) {
-			this.searchValuePicker = this.pickerDialogRef.componentInstance.displayField + ";" + searchValue;
+			let searchField: ISearchField = {
+				fieldName: this.pickerDialogRef.componentInstance.displayField,
+				operator: operatorType.Contains,
+				searchValue: searchValue
+			}
+			this.searchValuePicker = [searchField];
 		}
-		else {
-			this.searchValuePicker = "";
-		}
+
 		this.initializePickerPageInfo();
 
 		let selectedAssociation: IAssociationEntry = this.toOne.find(association => association.table === this.pickerDialogRef.componentInstance.title);

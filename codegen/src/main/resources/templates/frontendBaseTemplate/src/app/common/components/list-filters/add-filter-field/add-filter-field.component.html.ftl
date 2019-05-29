@@ -18,6 +18,17 @@
       </mat-form-field>
     </div>
 
+    <div class="field-div" *ngIf="field.type == 'Boolean'">
+      <mat-form-field *ngIf="filterFieldForm.get('operator').value">
+        <mat-label>value</mat-label>
+        <mat-select formControlName="searchValue">
+          <mat-option *ngFor="let option of booleanOptions" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
     <div class="field-div" *ngIf="field.type == 'Number'">
       <mat-form-field *ngIf="['equals','notEqual'].indexOf(filterFieldForm.get('operator').value) > - 1">
         <input type="number" formControlName="searchValue" matInput placeholder="value">

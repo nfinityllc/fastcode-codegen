@@ -37,7 +37,7 @@
 				{{item.[=value.fieldName] | date: defaultDateFormat}}
 			</mat-cell>
 		</ng-container>
-		<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
+		<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
 		<ng-container matColumnDef="[=value.fieldName]">
 			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName]</mat-header-cell>
 			<mat-cell *matCellDef="let item">

@@ -14,6 +14,7 @@ export class AddFilterFieldComponent implements OnInit {
   field: IListColumn;
   filterFieldForm: FormGroup;
   operators: string[];
+  booleanOptions: string[] = ['True','False'];
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<AddFilterFieldComponent>,
@@ -31,6 +32,10 @@ export class AddFilterFieldComponent implements OnInit {
     this.field = this.data;
     this.operators = Object.keys(operatorType).map(k => operatorType[k as any]);
     if(this.field.type == listColumnType.String){
+      this.operators.splice(this.operators.indexOf(operatorType.Range),1);
+    }
+    else if(this.field.type == listColumnType.Boolean){
+      this.operators.splice(this.operators.indexOf(operatorType.Contains),1);
       this.operators.splice(this.operators.indexOf(operatorType.Range),1);
     }
     else{

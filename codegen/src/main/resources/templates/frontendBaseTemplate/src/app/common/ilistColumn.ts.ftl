@@ -1,7 +1,8 @@
 export enum listColumnType {
     String = "String",
     Number = "Number",
-    Date = "Date"
+    Date = "Date",
+    Boolean = "Boolean",
 }
 export interface IListColumn {
     column: string,

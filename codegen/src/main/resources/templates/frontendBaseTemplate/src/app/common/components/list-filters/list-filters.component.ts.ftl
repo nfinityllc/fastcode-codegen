@@ -102,36 +102,55 @@ export class ListFiltersComponent implements OnInit {
     }
   }
 
+  // default format: yyyy-MM-dd HH:mm:ss.SSS
+  parseDateToDefaultStringFormat(d: Date): string {
+    var datestring =
+      d.getFullYear() + "-" +
+      ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
+      ("0" + d.getDate()).slice(-2) + " " +
+      ("0" + d.getHours()).slice(-2) + ":" +
+      ("0" + d.getMinutes()).slice(-2) + ":" +
+      ("0" + d.getSeconds()).slice(-2) + "." +
+      ("00" + d.getMilliseconds()).slice(-3)
+      ;
+
+    return datestring;
+  }
+
   selected(event: MatAutocompleteSelectedEvent): void {
 
     //getting Icolumnfield object for selected field
-    let field:IListColumn = this.filterFields.find(x => x.label == event.option.viewValue);
+    let field: IListColumn = this.filterFields.find(x => x.label == event.option.viewValue);
 
     this.addFieldDialogRef = this.dialog.open(AddFilterFieldComponent, {
       disableClose: true,
       data: field
     });
-    this.addFieldDialogRef.afterClosed().subscribe((result:ISearchField) => {
+    this.addFieldDialogRef.afterClosed().subscribe((result: ISearchField) => {
       if (result != null) {
-
-        this.selectedFilterFields.push(result);
 
         let searchValue = result.searchValue;
         let startingValue = result.startingValue;
         let endingValue = result.endingValue;
-        
-        if(field.type == listColumnType.Date){
-          if(searchValue){
+
+        if (field.type == listColumnType.Date) {
+          if (searchValue) {
             searchValue = new Date(searchValue.toString()).toLocaleDateString();
+            result.searchValue = this.parseDateToDefaultStringFormat(new Date(searchValue));
           }
-          if(startingValue){
+          if (startingValue) {
             startingValue = new Date(startingValue.toString()).toLocaleDateString();
+            result.startingValue = this.parseDateToDefaultStringFormat(new Date(startingValue));
           }
-          if(endingValue){
+          if (endingValue) {
             endingValue = new Date(endingValue.toString()).toLocaleDateString();
+            result.endingValue = this.parseDateToDefaultStringFormat(new Date(endingValue));
           }
         }
-        switch(result.operator){
+
+        this.selectedFilterFields.push(result);
+
+        switch (result.operator) {
           case operatorType.Contains:
             this.selectedDisplayFilterFields.push(event.option.viewValue + ": contains \"" + searchValue + "\"");
             break;
@@ -143,12 +162,12 @@ export class ListFiltersComponent implements OnInit {
             break;
           case operatorType.Range:
             let displayField = event.option.viewValue + ":";
-            
-            if(startingValue){
+
+            if (startingValue) {
               displayField = displayField + " from \"" + startingValue + "\"";
             }
-            
-            if(endingValue){
+
+            if (endingValue) {
               displayField = displayField + " to \"" + endingValue + "\"";
             }
             this.selectedDisplayFilterFields.push(displayField);

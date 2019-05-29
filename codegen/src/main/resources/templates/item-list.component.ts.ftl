@@ -71,6 +71,14 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 			filter: true,
 			type: listColumnType.Date
 		},
+	<#elseif value.fieldType?lower_case == "boolean">
+		{
+			column: '[=value.fieldName]',
+			label: '[=value.fieldName]',
+			sort: true,
+			filter: true,
+			type: listColumnType.Boolean
+		},
   </#if> 
   </#list>
   	{
