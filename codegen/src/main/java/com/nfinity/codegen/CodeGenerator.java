@@ -13,6 +13,7 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -225,6 +226,7 @@ public class CodeGenerator {
 				destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
+				generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
 				generateUtilsAndCorsConfig(root, destFolder);
 				generateError(root, destFolder);
 				generateSearch(root, destFolder);
@@ -234,6 +236,7 @@ public class CodeGenerator {
 				destFolder = destPath +"/"+ backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
+				generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
 				generateUtilsAndCorsConfig(root, destFolder);
 				generateError(root, destFolder);
 				generateSearch(root, destFolder);
@@ -342,6 +345,23 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
+	private static Map<String, Object> generateCustomRepositoryTemplates(Map<String,Object> root,String destPath,String className) {
+        List<String> relationInput= (List<String>) root.get("RelationInput");
+        destPath=destPath + "/domain/IRepository";
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		for(String str : relationInput)
+		{
+			if(className.equals(str.substring(0,str.lastIndexOf("-")).toString()))
+			{
+				backEndTemplate.put("icustomRepository.java.ftl", className + "CustomRepository.java");
+				backEndTemplate.put("customRepositoryImpl.java.ftl", className + "CustomRepositoryImpl.java");
+				generateFiles(backEndTemplate, root, destPath);
+			}
+		}
+		
+		return backEndTemplate;
+	}
+	
 	private static Map<String, Object> getRepositoryTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -420,8 +440,6 @@ public class CodeGenerator {
 	
 	private static void generateRelationDto(EntityDetails details,Map<String,Object> root, String destPath,String entityName)
 	{
-		
-
 		String destFolder = destPath + "/application/" + root.get("ClassName").toString() + "/Dto";
 		new File(destFolder).mkdirs();
 
