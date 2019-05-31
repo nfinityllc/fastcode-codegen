@@ -38,11 +38,13 @@ public class CodegenApplication implements ApplicationRunner {
 				root.get("a") == null ? GetUserInput.getInput(scanner, "application name") : root.get("a"));
 		input.setGenerationType(
 				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
-		input.setAudit(
-				root.get("audit") == null ? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false ) : (root.get("audit").toLowerCase().equals("true") ? true : false));
-		input.setHistory(
-				root.get("h") == null ? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false ) : (root.get("h").toLowerCase().equals("true") ? true : false));
-		
+		input.setAudit(root.get("audit") == null
+				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
+				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+		input.setHistory(root.get("h") == null
+				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
+				: (root.get("h").toLowerCase().equals("true") ? true : false));
+
 		return input;
 	}
 
@@ -65,17 +67,23 @@ public class CodegenApplication implements ApplicationRunner {
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa,data-rest",
 				true, "-n=" + artifactId + "  -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
-				input.getSchemaName(), null, groupArtifactId,
-				input.getDestinationPath() + "/" + artifactId, input.getAudit());
+				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
+				input.getAudit());
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
 
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
-		
-		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),input.getHistory(),
+
+		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),
+				input.getHistory(),
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
-				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(), input.getSchemaName());
-
+				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
+				input.getSchemaName());
+		if (configProperties.getUseGit() != null
+				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
+				: false) {
+			GitRepositoryManager.addToGitRepository(input.getDestinationPath());
+		}
 	}
 
 	@Override
@@ -159,6 +167,12 @@ public class CodegenApplication implements ApplicationRunner {
 			return version;
 		}
 
+		@Value("${fastCode.useGit}")
+		private Optional<String> useGit;
+
+		public String getUseGit() {
+			return useGit.isPresent() ? useGit.get() : null;
+		}
 	}
 
 	@Bean
