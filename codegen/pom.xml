@@ -17,6 +17,10 @@
 	<description>Code Gen Project</description>
 
 	<properties>
+		<start-class>com.nfinity.codegen.CodegenApplication</start-class>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<java.version>1.8</java.version>
 	</properties>
 
