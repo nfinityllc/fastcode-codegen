@@ -5,10 +5,8 @@ import { [=IEntity] } from './[=IEntityFile]';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals } from '../globals';
+import { Globals, BaseNewComponent, PickerDialogService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BaseNewComponent } from '../base/base-new.component';
-import { PickerDialogService, IFCDialogConfig } from '../common/components/picker/picker-dialog.service';
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
