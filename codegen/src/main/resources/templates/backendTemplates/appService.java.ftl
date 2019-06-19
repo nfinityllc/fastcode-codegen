@@ -4,34 +4,35 @@ import [=PackageName].application.[=ClassName].Dto.*;
 import [=PackageName].domain.[=ClassName].I[=ClassName]Manager;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
-import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 <#list Relationship as relationKey,relationValue>
-<#if ClassName != relationValue.eName>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
+<#if relationValue.relation == "ManyToMany" || relationValue.relation == "ManyToOne">
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
+</#if>
+<#if relationValue.relation == "ManyToOne">
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+</#if>
+<#if relationValue.relation == "OneToMany">
+import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 </#if>
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
 <#if parent?keep_after("-") == relationValue.eName>
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
 </#list>
 </#if>
 </#list>
-import [=PackageName].Search.*;
-import [=PackageName].Utils.LoggingHelper;
+import [=CommonModulePackage].Search.*;
+import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
-import java.util.Set;
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;

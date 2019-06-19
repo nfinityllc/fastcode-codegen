@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -30,7 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import [=PackageName].domain.[=ClassName].*;
-import [=PackageName].Search.*;
+import [=CommonModulePackage].Search.*;
 import [=PackageName].application.[=ClassName].Dto.*;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
@@ -48,7 +47,7 @@ import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]A
 </#list>
 </#if>
 </#list>
-import [=PackageName].Utils.LoggingHelper;
+import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 

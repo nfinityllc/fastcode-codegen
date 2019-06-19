@@ -14,7 +14,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 <#assign parent = relationInput>
 <#if parent?keep_after("-") == relationValue.eName>
 import java.util.List;
-import [=PackageName].Search.SearchFields;
+import [=CommonModulePackage].Search.SearchFields;
 </#if>
 </#list>
 </#if>

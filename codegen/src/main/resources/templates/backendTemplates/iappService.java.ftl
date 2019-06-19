@@ -6,7 +6,7 @@ import javax.validation.constraints.Positive;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import [=PackageName].Search.SearchCriteria;
+import [=CommonModulePackage].Search.SearchCriteria;
 import [=PackageName].application.[=ClassName].Dto.*;
 
 @Service

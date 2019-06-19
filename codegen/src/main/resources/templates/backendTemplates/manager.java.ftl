@@ -1,7 +1,5 @@
 package [=PackageName].domain.[=ClassName];
 
-import java.util.Iterator;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,15 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 import [=PackageName].domain.model.[=EntityClassName];
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
+</#if>
+<#if relationValue.relation == "ManyToOne">
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 <#if relationValue.relation =="ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
 <#if parent?keep_after("-") == relationValue.eName>
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import java.util.List;
-import [=PackageName].Search.SearchFields;
+import java.util.Iterator;
+import java.util.Set;
+import [=CommonModulePackage].Search.SearchFields;
 </#if>
 </#list>
 </#if>

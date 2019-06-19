@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import [=PackageName].Search.SearchFields;
+import [=CommonModulePackage].Search.SearchFields;
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>

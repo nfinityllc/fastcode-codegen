@@ -19,7 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import [=PackageName].Search.*;
+import [=CommonModulePackage].Search.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToMany">

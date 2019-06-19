@@ -40,6 +40,7 @@ public class ModifyPomFile {
 		Dependency querydslapt= new Dependency("com.querydsl", "querydsl-apt", "4.2.1");
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
+		Dependency common_module = new Dependency("com.nfinity","common-module","1.0");
 
 		dependencies.add(javersSql);
 		dependencies.add(javersCore);
@@ -48,6 +49,7 @@ public class ModifyPomFile {
 		dependencies.add(querydslapt);
 		dependencies.add(apache_commons);
 		dependencies.add(postgres);
+		dependencies.add(common_module);
 
 		ModifyPomFile.addDependenciesAndPluginsToPom(path,dependencies);
 
@@ -98,7 +100,7 @@ public class ModifyPomFile {
 			}
 
 			removeScopeTagFromTestDependency(dependenciesNode);
-			removeSpringBootMavenPlugin(pluginsNode);
+			//removeSpringBootMavenPlugin(pluginsNode);
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();

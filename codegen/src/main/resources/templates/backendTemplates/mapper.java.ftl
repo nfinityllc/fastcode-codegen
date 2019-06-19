@@ -1,11 +1,21 @@
 package [=PackageName].application.[=ClassName];
 
 import org.mapstruct.Mapper;
+<#list Relationship as relationKey, relationValue>
+<#if relationValue.relation == "ManyToOne">
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-<#list Relationship as relationKey, relationValue>
-<#if ClassName != relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
+</#if>
+<#if relationValue.relation =="ManyToMany">
+<#list RelationInput as relationInput>
+<#assign parent = relationInput>
+<#if parent?keep_after("-") == relationValue.eName>
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+</#if>
+</#list>
 </#if>
 </#list>
 import [=PackageName].application.[=ClassName].Dto.*;

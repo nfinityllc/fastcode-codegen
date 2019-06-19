@@ -21,26 +21,29 @@ import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import java.util.Set;
 
 import [=PackageName].domain.model.[=EntityClassName];
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
+</#if>
+<#if relationValue.relation == "ManyToOne">
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
 <#if parent?keep_after("-") == relationValue.eName>
+import java.util.Set;
 import java.util.List;
-import [=PackageName].Search.SearchFields;
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+import [=CommonModulePackage].Search.SearchFields;
 </#if>
 </#list>
 </#if>    
 </#list>
 import [=PackageName].domain.IRepository.I[=ClassName]Repository;
-import [=PackageName].Utils.LoggingHelper;
+import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 
 @RunWith(SpringJUnit4ClassRunner.class)

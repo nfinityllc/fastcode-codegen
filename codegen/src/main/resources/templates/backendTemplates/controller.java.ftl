@@ -1,10 +1,7 @@
 package [=PackageName].RestControllers;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,19 +17,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import [=PackageName].Search.SearchCriteria;
-import [=PackageName].Search.SearchUtils;
-import [=PackageName].Utils.OffsetBasedPageRequest;
+import [=CommonModulePackage].Search.SearchCriteria;
+import [=CommonModulePackage].Search.SearchUtils;
+import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=PackageName].application.[=ClassName].[=ClassName]AppService;
-import [=PackageName].application.[=ClassName].[=ClassName]Mapper;
 import [=PackageName].application.[=ClassName].Dto.*;
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
+<#if relationValue.relation == "OneToMany">
+import java.util.List;
+import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+</#if>
+<#if relationValue.relation =="ManyToMany">
+<#list RelationInput as relationInput>
+<#assign parent = relationInput>
+<#if parent?keep_after("-") == relationValue.eName>
+import java.util.List;
+import javax.persistence.EntityExistsException;
+import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+</#if>
 </#list>
-import [=PackageName].Utils.LoggingHelper;
+</#if>
+</#list>
+import [=CommonModulePackage].logging.LoggingHelper;
 
 @RestController
 @RequestMapping("/[=ApiPath]")
