@@ -1,5 +1,5 @@
-export { ListFiltersComponent } from '../common/components/list-filters/list-filters.component';
-export { AddFilterFieldComponent } from '../common/components/list-filters/add-filter-field/add-filter-field.component';
+export { ListFiltersComponent } from 'fastCodeCore';
+export { AddFilterFieldComponent } from 'fastCodeCore';
 
 export { [=ClassName]ListComponent } from './[=ModuleName]-list.component';
 export { [=ClassName]DetailsComponent } from './[=ModuleName]-details.component';

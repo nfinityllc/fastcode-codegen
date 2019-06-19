@@ -13,9 +13,7 @@ import {Component, Directive, ChangeDetectorRef} from '@angular/core';
 
 import {Router, ActivatedRoute,} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {Globals} from '../app/globals';
-import {PickerDialogService} from '../app/common/components/picker/picker-dialog.service';
-import {PickerComponent} from '../app/common/components/picker/picker.component';
+import { Globals, PickerDialogService, PickerComponent, ListFiltersComponent, AddFilterFieldComponent } from 'fastCodeCore';
 
 import {MatDialog, MatDialogRef,MatButtonModule, MatToolbarModule, MatSidenavModule,
   MatIconModule, MatListModule, MatRadioModule, MatTableModule,
@@ -26,8 +24,7 @@ import {MatDialog, MatDialogRef,MatButtonModule, MatToolbarModule, MatSidenavMod
 } from '@angular/material';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { ListFiltersComponent } from 'src/app/common/components/list-filters/list-filters.component';
-import { AddFilterFieldComponent } from 'src/app/common/components/list-filters/add-filter-field/add-filter-field.component';
+
   @Injectable()
   class MockRouter { navigate = (commands:any)=> {}; }
   @Injectable()

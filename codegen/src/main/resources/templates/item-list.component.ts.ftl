@@ -5,13 +5,8 @@ import { [=IEntity] } from './[=IEntityFile]';
 import { [=ClassName]Service } from './[=ModuleName].service';
 import { Router, ActivatedRoute } from '@angular/router';
 import {[=ClassName]NewComponent} from './[=ModuleName]-new.component';
-import {BaseListComponent} from '../base/base-list.component';
-import { Globals } from '../globals';
-import { IListColumn, listColumnType } from '../common/ilistColumn';
-import { PickerDialogService } from '../common/components/picker/picker-dialog.service';
-<#if Relationship?has_content>
-import { IAssociationEntry } from '../core/iassociationentry';
-</#if>
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService } from 'fastCodeCore';
+
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>

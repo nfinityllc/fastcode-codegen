@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {TranslateService} from '@ngx-translate/core';
-import {Globals} from '../../../globals';
+import { TranslateService } from '@ngx-translate/core';
+import { Globals } from 'fastCodeCore';
 import entities from './entities.json';
 
 @Component({

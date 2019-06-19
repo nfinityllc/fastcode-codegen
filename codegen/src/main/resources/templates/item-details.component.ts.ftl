@@ -15,8 +15,7 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_ca
 </#list>
 </#if>
 
-import {BaseDetailsComponent} from '../base/base-details.component';
-import { Globals } from '../globals';
+import { BaseDetailsComponent, Globals } from 'fastCodeCore';
 
 @Component({
   selector: 'app-[=ModuleName]-details',

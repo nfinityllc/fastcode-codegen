@@ -23,7 +23,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
-import { routingModule } from './app.routing'
+import { routingModule } from './app.routing';
+import { FastCodeCoreModule } from 'fastCodeCore';
 
 /** core components and filters **/
 import { AuthenticationService } from './core/authentication.service';
@@ -34,20 +35,13 @@ import { JwtErrorInterceptor } from './core/jwt-error-interceptor';
 /** end of core components and filters **/
 
 /** common components and filters **/
-import { ListFiltersComponent } from './common/components/list-filters/list-filters.component';
-import { AddFilterFieldComponent } from './common/components/list-filters/add-filter-field/add-filter-field.component';
-
-import { PickerComponent } from './common/components/picker/picker.component';
-import { PickerDialogService } from './common/components/picker/picker-dialog.service';
-
-import { VirtualScrollDirective } from './common/directives/virtualScroll/virtual-scroll.directive';
-import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 
 import { MainNavComponent } from './common/components/main-nav/main-nav.component';
-import { Globals } from './globals';
 import { BottomTabNavComponent } from './common/components/bottom-tab-nav/bottom-tab-nav.component';
 
 /** end of common components and filters **/
+
+import { environment } from '../environments/environment';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -58,14 +52,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AppComponent,
     MainNavComponent,
     BottomTabNavComponent,
-
-    ConfirmDialogComponent,
-    PickerComponent,
-    ListFiltersComponent,
-    AddFilterFieldComponent,
-    VirtualScrollDirective,
-
-
   ],
   imports: [
     BrowserModule,
@@ -99,6 +85,9 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatSnackBarModule,
     MatChipsModule,
     NgxMaterialTimepickerModule.forRoot(),
+    FastCodeCoreModule.forRoot({
+    	apiUrl: environment.apiUrl
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -112,13 +101,10 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 		AuthenticationService,
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtErrorInterceptor, multi: true },
-		Globals,
 		AuthGuard,
-		PickerDialogService
 	],
   bootstrap: [AppComponent],
   entryComponents: [
-    PickerComponent
   ]
 })
 export class AppModule { }
