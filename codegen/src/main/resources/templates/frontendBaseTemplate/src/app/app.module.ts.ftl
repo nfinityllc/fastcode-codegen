@@ -42,6 +42,7 @@ import { BottomTabNavComponent } from './common/components/bottom-tab-nav/bottom
 /** end of common components and filters **/
 
 import { environment } from '../environments/environment';
+import { Globals } from './globals';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -102,6 +103,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtErrorInterceptor, multi: true },
 		AuthGuard,
+		Globals
 	],
   bootstrap: [AppComponent],
   entryComponents: [
