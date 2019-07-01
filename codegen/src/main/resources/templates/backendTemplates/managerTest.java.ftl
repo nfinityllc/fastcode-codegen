@@ -33,11 +33,13 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
 import java.util.Set;
 import java.util.List;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=CommonModulePackage].Search.SearchFields;
+</#if>
 </#if>
 </#list>
 </#if>    
@@ -148,6 +150,7 @@ public class [=ClassName]ManagerTest {
   <#elseif relationValue.relation == "ManyToMany">
    <#list RelationInput as relationInput>
     <#assign parent = relationInput>
+    <#if relationKey == parent>
     <#if parent?keep_after("-") == relationValue.eName>
     //[=relationValue.eName]
     @Test
@@ -220,6 +223,7 @@ public class [=ClassName]ManagerTest {
 	}
 
     </#if>
+</#if>
     </#list>
    </#if>
   </#list>

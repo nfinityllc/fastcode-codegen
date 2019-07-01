@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
 
 public class ModifyPomFile {
 
-	public static void update(String path) {
+	public static void update(String path,String authenticationType) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
 		Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
@@ -41,7 +41,14 @@ public class ModifyPomFile {
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
 		Dependency common_module = new Dependency("com.nfinity","common-module","1.0");
-
+		
+		if(authenticationType !="none")
+		{
+		Dependency ldap_security = new Dependency("org.springframework.security","spring-security-ldap","5.1.1.RELEASE");
+		Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
+		dependencies.add(ldap_security);
+		dependencies.add(json_web_token);
+		}
 		dependencies.add(javersSql);
 		dependencies.add(javersCore);
 		dependencies.add(mapstruct);

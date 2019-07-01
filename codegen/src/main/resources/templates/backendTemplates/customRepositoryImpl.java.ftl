@@ -25,6 +25,7 @@ import [=PackageName].domain.model.[=ClassName]Entity;
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 
@@ -123,6 +124,7 @@ public class [=ClassName]CustomRepositoryImpl implements [=ClassName]CustomRepos
 	
 
 }
+</#if>
 </#if>
 </#list>
 </#if>

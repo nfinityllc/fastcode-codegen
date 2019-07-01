@@ -29,7 +29,7 @@ public class CGenClassLoader extends ClassLoader {
 					qalifiedName = qalifiedName.replace(".class","").replace("/",".");     
 					classFiles.put(qalifiedName,filePath);
 				}
-				System.out.println("Processing file:" + file);
+			//	System.out.println("Processing file:" + file);
 				return FileVisitResult.CONTINUE;
 			}
 

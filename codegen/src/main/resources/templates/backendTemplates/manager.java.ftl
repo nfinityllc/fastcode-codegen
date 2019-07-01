@@ -16,12 +16,14 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 <#if relationValue.relation =="ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
 import [=CommonModulePackage].Search.SearchFields;
+</#if>
 </#if>
 </#list>
 </#if>
@@ -82,9 +84,11 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		[=EntityClassName] entity = _[=InstanceName]Repository.findById([=InstanceName]Id.longValue());
 		return entity.get[=relationValue.eName]();
 	}
-  <#elseif relationValue.relation == "ManyToMany">
-   <#list RelationInput as relationInput>
+	 <#elseif relationValue.relation == "ManyToMany">
+    //[=relationValue.eName]
+    <#list RelationInput as relationInput>
     <#assign parent = relationInput>
+    <#if relationKey == parent>
     <#if parent?keep_after("-") == relationValue.eName>
     //[=relationValue.eName]
     @Transactional
@@ -131,6 +135,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	}
 
 	</#if>
+    </#if>
     </#list>
    </#if>
   </#list>

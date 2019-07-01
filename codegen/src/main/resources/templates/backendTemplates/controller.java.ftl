@@ -30,13 +30,15 @@ import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]A
 import java.util.List;
 import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
-<#if relationValue.relation =="ManyToMany">
+<#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
 import java.util.List;
 import javax.persistence.EntityExistsException;
 import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+</#if>
 </#if>
 </#list>
 </#if>
@@ -159,6 +161,7 @@ public class [=ClassName]Controller {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
+  <#if relationKey == parent>
   <#if parent?keep_after("-") == relationValue.eName>
     // [=relationValue.eName] related methods
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -234,6 +237,7 @@ public class [=ClassName]Controller {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
+   </#if>
    </#if>
    </#list>
    </#if>

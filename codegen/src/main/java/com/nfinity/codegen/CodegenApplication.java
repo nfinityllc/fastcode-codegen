@@ -44,6 +44,30 @@ public class CodegenApplication implements ApplicationRunner {
 		input.setHistory(root.get("h") == null
 				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
 				: (root.get("h").toLowerCase().equals("true") ? true : false));
+		
+		System.out.print("\nSelect Authentication and Authorization method :");
+		System.out.print("\n1. none");
+		System.out.print("\n2. database");
+		System.out.print("\n3. ldap");
+		System.out.print("\nEnter 1,2,or 3 : ");
+		int value = scanner.nextInt();
+		while (value < 1 || value > 3) {
+			System.out.println("\nInvalid Input \nEnter again :");
+			value = scanner.nextInt();
+		}
+		if (value == 1) {
+			input.setAuthenticationType("none");
+		} else if (value == 2) {
+			input.setAuthenticationType("database");
+		}
+		else if (value == 3) {
+			input.setAuthenticationType("ldap");
+		}
+		
+		
+//		input.setDatabaseAuthentication(root.get("db-autentication") == null
+//				? (GetUserInput.getInput(scanner, "database authentication").toLowerCase().equals("true") ? true : false)
+//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 
 		return input;
 	}
@@ -63,8 +87,15 @@ public class CodegenApplication implements ApplicationRunner {
 
 		// c=jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// String connectionString = root.get("c");
-
-		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, "web,data-jpa,data-rest",
+		System.out.println("auth type " + input.getAuthenticationType());
+		String dependencies ="web,data-jpa,data-rest";
+		if(input.getAuthenticationType()=="database")
+		{
+			System.out.println("\nDependencies\n");
+			dependencies = dependencies.concat(",security");
+		}
+		
+		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
@@ -72,13 +103,19 @@ public class CodegenApplication implements ApplicationRunner {
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
 
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
-
+		
+		if(!input.getAuthenticationType().equals("none"))
+		{
+        AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAudit(),
+				input.getHistory(),input.getAuthenticationType(),input.getSchemaName());
+		}
+		
 		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),
 				input.getHistory(),
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
 				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
-				input.getSchemaName());
+				input.getSchemaName(),input.getAuthenticationType());
 		if (configProperties.getUseGit() != null
 				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
 				: false) {

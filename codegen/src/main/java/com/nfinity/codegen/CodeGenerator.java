@@ -38,11 +38,8 @@ public class CodeGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static String TEMPLATE_FOLDER = "/templates";
 	static String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
-	static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
+    static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	static String CLIENT_ROOT_FOLDER = "/client";
-//	static String clientAppFolder = CLIENT_ROOT_FOLDER + "/src/app";
-//	static String BACKEND_ROOT_FOLDER = "/backend";
-//	static String backendAppFolder = BACKEND_ROOT_FOLDER + "/src/main/java";
 
 	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit,Boolean history, String sourcePath,
 			String type, String modName,EntityDetails details) {
@@ -93,7 +90,7 @@ public class CodeGenerator {
 
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,
-			String sourcePackageName,Boolean audit,Boolean history, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString, String schema) {
+			String sourcePackageName,Boolean audit,Boolean history, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString, String schema,String authenticationType) {
 
 		//backendAppFolder = backEndRootFolder + "/src/main/java";
 		//clientAppFolder = clientRootFolder + "/src/app";
@@ -119,9 +116,9 @@ public class CodeGenerator {
 
 		}
 
-		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml");
+		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType);
 		if(history)
-		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath);
+		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
 		
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
@@ -143,7 +140,7 @@ public class CodeGenerator {
 		return propertyInfo;
 	}
 	
-	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath){
+	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType){
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
@@ -165,13 +162,7 @@ public class CodeGenerator {
 		Map<String, Object> root = new HashMap<>();
 		root.put("entitiesMap", entitiesMap);
 		root.put("PackageName", packageName);
-		
-		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
-		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 });
-		
-		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
-		cfg.setDefaultEncoding("UTF-8");
-		cfg.setTemplateLoader(mtl);
+		root.put("AuthenticationType", authenticationType);
 		
 		Map<String, Object> template = new HashMap<>();
 		template.put("AuditController.java.ftl", "AuditController.java");
@@ -193,10 +184,9 @@ public class CodeGenerator {
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/"); // "/templates/");
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
 		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, DTO_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/Dto");
-
+		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl,ctl1,ctl2 };
 		
-		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl, ctl1, ctl2});
-
+		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setTemplateLoader(mtl);
@@ -414,7 +404,6 @@ public class CodeGenerator {
 					template.process(root, writer);
 					writer.flush();
 					writer.close();
-
 				}
 				catch ( Exception  e1) {
 					e1.printStackTrace();
@@ -608,7 +597,6 @@ public class CodeGenerator {
             e.printStackTrace();
         }
 
-        
 	}
 	
 	public static Object readJsonFile(String path) throws IOException, ParseException {

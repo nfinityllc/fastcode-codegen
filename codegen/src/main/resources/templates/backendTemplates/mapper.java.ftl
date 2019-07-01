@@ -2,20 +2,22 @@ package [=PackageName].application.[=ClassName];
 
 import org.mapstruct.Mapper;
 <#list Relationship as relationKey, relationValue>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation =="ManyToMany">
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+<#if relationValue.relation == "ManyToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 <#if relationValue.relation =="ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
+</#if>
 </#list>
+</#if>
 </#if>
 </#list>
 import [=PackageName].application.[=ClassName].Dto.*;
@@ -143,6 +145,7 @@ public interface [=ClassName]Mapper {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
+  <#if relationKey == parent>
   <#if parent?keep_after("-") == relationValue.eName>
     @Mappings({
   <#list relationValue.fDetails as fValue>
@@ -159,6 +162,7 @@ public interface [=ClassName]Mapper {
     })
     Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case],[=EntityClassName] [=InstanceName]);
     </#if>
+</#if>
     </#list>
    </#if>
   </#list>

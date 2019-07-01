@@ -84,10 +84,10 @@ public class EntityGenerator {
 
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
 					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
-
+					
 					// Get parent descrptive fields from user
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-
+						
 						FieldDetails descriptiveField = entry.getValue().FindAndSetDescriptiveField(relationInputList);
 						if (descriptiveField != null) {
 							descriptiveMap.put(entry.getKey(), entry.getValue().getEntityDescriptionField());
@@ -110,6 +110,7 @@ public class EntityGenerator {
 						 */
 					}
 					details.setRelationsMap(relationMap);
+					
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 					// Generate Entity based on template
 					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit);
@@ -128,6 +129,7 @@ public class EntityGenerator {
 
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
+		
 		return setDescriptiveField(entityDetailsMap, descriptiveMap, relationInputList);
 	}
 
@@ -192,6 +194,7 @@ public class EntityGenerator {
 		root.put("Relationship", relationMap);
 
 		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
+
 		generateEntity(root, destinationFolder);
 
 	}

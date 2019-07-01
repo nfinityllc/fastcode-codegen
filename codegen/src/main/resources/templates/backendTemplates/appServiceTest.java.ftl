@@ -41,8 +41,10 @@ import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manage
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
 import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
+</#if>
 </#if>
 </#list>
 </#if>
@@ -69,10 +71,11 @@ public class [=ClassName]AppServiceTest {
 	<#if relationValue.relation == "ManyToMany">
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
+    <#if relationKey == parent>
     <#if parent?keep_after("-") == relationValue.eName>
     @Mock
 	private [=relationValue.eName]AppService  _[=relationValue.eName?uncap_first]AppService;
-	
+	</#if>
 	</#if>
 	</#list>
     </#if>
@@ -429,6 +432,7 @@ public class [=ClassName]AppServiceTest {
   <#elseif relationValue.relation == "ManyToMany">
   <#list RelationInput as relationInput>
   <#assign parent = relationInput>
+  <#if relationKey == parent>
   <#if parent?keep_after("-") == relationValue.eName>
     // Operations With [=relationValue.eName]
     
@@ -533,7 +537,7 @@ public class [=ClassName]AppServiceTest {
 		</#list>
 		_[=relationValue.eName?lower_case]AppService.checkProperties(list);
 	}
-	
+	</#if>
 	</#if>
     </#list>
    </#if>

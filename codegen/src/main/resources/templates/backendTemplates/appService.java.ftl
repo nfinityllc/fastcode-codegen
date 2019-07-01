@@ -17,9 +17,11 @@ import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
+</#if>
 </#if>
 </#list>
 </#if>
@@ -66,11 +68,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     <#if relationValue.relation == "ManyToMany">
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
+    <#if relationKey == parent>
     <#if parent?keep_after("-") == relationValue.eName>
     @Autowired 
 	private [=relationValue.eName]AppService _[=relationValue.eName?uncap_first]AppService;
 	
 	</#if>
+    </#if>
 	</#list>
     </#if>
     </#list>
@@ -164,6 +168,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     //[=relationValue.eName]
     <#list RelationInput as relationInput>
     <#assign parent = relationInput>
+    <#if relationKey == parent>
     <#if parent?keep_after("-") == relationValue.eName>
     public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -229,6 +234,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         }
 		_[=relationValue.eName?uncap_first]AppService.checkProperties(keysList);
 	}
+  </#if>
   </#if>
   </#list>
   </#if>

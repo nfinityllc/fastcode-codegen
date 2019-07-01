@@ -115,10 +115,15 @@ public class EntityDetails {
 							}
 							if (s.contains("columnDefinition")) {
 								String[] value = s.split("=");
+								if(value.length>1)
+								{
 								String columnType = value[1];
 								if (columnType.equals("bigserial") || columnType.equals("int8")
 										|| columnType.equals("int4"))
 									relation.setJoinColumnType("Long");
+								else
+									relation.setJoinColumnType("String");
+								}
 								else
 									relation.setJoinColumnType("String");
 							}
@@ -266,16 +271,19 @@ public class EntityDetails {
 									}
 									if (s.contains("columnDefinition")) {
 										String[] value = s.split("=");
+										if(value.length>1)
+										{	
 										String columnType = value[1];
 										if (columnType.equals("bigserial") || columnType.equals("int8")
 												|| columnType.equals("int4"))
 											relationFields.put("joinColumnType", "Long");
 										else
 											relationFields.put("joinColumnType", "String");
+										}
+										else
+											relationFields.put("joinColumnType", "String");
 									}
-
 								}
-
 							}
 						}
 
@@ -406,10 +414,15 @@ public class EntityDetails {
 											}
 											if (s.contains("columnDefinition")) {
 												String[] value = s.split("=");
+												if(value.length>1)
+												{
 												String columnType = value[1];
 												if (columnType.equals("bigserial") || columnType.equals("int8")
 														|| columnType.equals("int4"))
 													entry.getValue().setJoinColumnType("Long");
+												else
+													entry.getValue().setJoinColumnType("String");
+												}
 												else
 													entry.getValue().setJoinColumnType("String");
 											}

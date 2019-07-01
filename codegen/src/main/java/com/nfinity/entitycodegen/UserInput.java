@@ -12,6 +12,7 @@ public class UserInput {
 	List<String> tablesList;
 	Boolean audit;
 	Boolean history;
+	String authenticationType;
 	
 	
 	public String getGroupArtifactId() {
@@ -68,6 +69,12 @@ public class UserInput {
 	}
 	public void setHistory(Boolean history) {
 		this.history = history;
+	}
+	public String getAuthenticationType() {
+		return authenticationType;
+	}
+	public void setAuthenticationType(String authenticationType) {
+		this.authenticationType = authenticationType;
 	}	
 	
 }

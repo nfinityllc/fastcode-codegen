@@ -15,40 +15,41 @@ public class GetUserInput {
 		return value;
 	}
 
-	public static UserInput getInput(Scanner inputReader) {
-		UserInput input = new UserInput();
-		System.out.print("\nFor which schema do you want to generate entities ? "); // sample
-		input.setSchemaName(inputReader.nextLine());
-
-		System.out.print("\nFor which tables do you want to generate entities ? "); // sample
-		List<String> tableList = new ArrayList<>();
-		String tables = inputReader.nextLine();
-		String[] words = tables.split(",");
-		for (String str : words) {
-			tableList.add(str);
-			System.out.println(" TABLES " + str);
-		}
-		input.setTablesList(tableList);
-
-		System.out.print("\nWhat is the package name for entities ? "); // com.nfinity.microsoft.model
-		// Getting input in String format
-		input.setPackageName(inputReader.nextLine());
-
-		System.out.print("\nWhat is the destination path for entities? "); // root path of the backend
-		String destination = inputReader.nextLine();
-		destination = destination.replace('\\', '/');
-		input.setDestinationPath(destination);
-
-		System.out.print("\nDo you want to generate Audit Entity (yes/no)? ");// no
-		String value = inputReader.nextLine();
-
-		if (value.equals("yes") || value.equals("Y") || value.equals("y"))
-			input.setAudit(true);
-		else
-			input.setAudit(false);
-
-		return input;
-	}
+//	public static UserInput getInput(Scanner inputReader) {
+//		UserInput input = new UserInput();
+//		System.out.print("\nFor which schema do you want to generate entities ? "); // sample
+//		input.setSchemaName(inputReader.nextLine());
+//
+//		System.out.print("\nFor which tables do you want to generate entities ? "); // sample
+//		List<String> tableList = new ArrayList<>();
+//		String tables = inputReader.nextLine();
+//		String[] words = tables.split(",");
+//		for (String str : words) {
+//			tableList.add(str);
+//			System.out.println(" TABLES " + str);
+//		}
+//		input.setTablesList(tableList);
+//
+//		System.out.print("\nWhat is the package name for entities ? "); // com.nfinity.microsoft.model
+//		// Getting input in String format
+//		input.setPackageName(inputReader.nextLine());
+//
+//		System.out.print("\nWhat is the destination path for entities? "); // root path of the backend
+//		String destination = inputReader.nextLine();
+//		destination = destination.replace('\\', '/');
+//		input.setDestinationPath(destination);
+//
+//		System.out.print("\nDo you want to generate Audit Entity (yes/no)? ");// no
+//		String value = inputReader.nextLine();
+//
+//		if (value.equals("yes") || value.equals("Y") || value.equals("y"))
+//			input.setAudit(true);
+//		else
+//			input.setAudit(false);
+//		
+//
+//		return input;
+//	}
 
 	public static FieldDetails getEntityDescriptionField(String entityName, List<FieldDetails> fields) {
 		int i = 1;
