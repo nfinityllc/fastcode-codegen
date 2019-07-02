@@ -41,13 +41,17 @@ public class ModifyPomFile {
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
 		Dependency common_module = new Dependency("com.nfinity","common-module","1.0");
-		
+
 		if(authenticationType !="none")
 		{
-		Dependency ldap_security = new Dependency("org.springframework.security","spring-security-ldap","5.1.1.RELEASE");
-		Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
-		dependencies.add(ldap_security);
-		dependencies.add(json_web_token);
+			Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
+
+			dependencies.add(json_web_token);
+		}
+		if(authenticationType =="ldap")
+		{
+			Dependency ldap_security = new Dependency("org.springframework.security","spring-security-ldap","5.1.1.RELEASE");
+			dependencies.add(ldap_security);
 		}
 		dependencies.add(javersSql);
 		dependencies.add(javersCore);
