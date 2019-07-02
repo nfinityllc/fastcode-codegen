@@ -62,7 +62,7 @@ public class [=ClassName]CustomRepositoryImpl implements [=ClassName]CustomRepos
 					conditions.add(criteriaBuilder.notEqual(criteriaBuilder.upper(from[=relationValue.eName].get("[=fValue.fieldName]")),s.getSearchValue().toUpperCase()));
 			}
 		<#elseif fValue.fieldType?lower_case == "long" || fValue.fieldType?lower_case == "int">
-		<#if fValue.fieldName?lower_case !="id">
+		<#if fValue.isPrimaryKey==false>
 			if(s.getFieldName().equals("[=fValue.fieldName]")) {
 				if(s.getOperator().equals("equals") && StringUtils.isNumeric(s.getSearchValue()))
 					conditions.add(criteriaBuilder.equal(from[=relationValue.eName].get("[=fValue.fieldName]"),Long.valueOf(s.getSearchValue())));

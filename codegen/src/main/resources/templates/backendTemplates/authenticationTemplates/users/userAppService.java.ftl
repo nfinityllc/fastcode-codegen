@@ -161,7 +161,7 @@ static final int case1=1;
         
 		Page<PermissionsEntity> foundPermissions = userManager.FindPermissions(usersId,search.getFields(),operator,pageable);
 		List<PermissionsEntity> permissionsList = foundPermissions.getContent();
-		Iterator<PermissionsEntity> permissionsIteFrator = permissionsList.iterator();
+		Iterator<PermissionsEntity> permissionsIterator = permissionsList.iterator();
 		List<GetPermissionOutput> output = new ArrayList<>();
 
 		while (permissionsIterator.hasNext()) {

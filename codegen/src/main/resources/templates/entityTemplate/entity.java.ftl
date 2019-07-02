@@ -32,7 +32,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
 
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
-  <#if value.fieldName?lower_case == "id"> 
+  <#if value.isPrimaryKey!false>
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   <#else>
@@ -70,8 +70,11 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   this.[=value.fieldName] = [=value.fieldName];
   }
  <#elseif value.fieldType?lower_case == "string">
-  
+  <#if value.isPrimaryKey!false> 
+  @Id
+  <#else>
   @Basic
+  </#if>
   @Column(name = "[=value.fieldName]", nullable = [=value.isNullable?string('true','false')], length =<#if value.length !=0>[=value.length]<#else>255</#if>)
   public String get[=value.fieldName?cap_first]() {
   return [=value.fieldName];
@@ -143,13 +146,13 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   </#list>
  </#if> 
 </#list>
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-      if (!(o instanceof [=ClassName]Entity)) return false;
-        [=ClassName]Entity [=ClassName?lower_case] = ([=ClassName]Entity) o;
-        return id != null && id.equals([=ClassName?lower_case].id);
-  }
+//  @Override
+//  public boolean equals(Object o) {
+//    if (this == o) return true;
+//      if (!(o instanceof [=ClassName]Entity)) return false;
+//        [=ClassName]Entity [=ClassName?lower_case] = ([=ClassName]Entity) o;
+//        return id != null && id.equals([=ClassName?lower_case].id);
+//  }
 }
 
   

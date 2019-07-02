@@ -127,7 +127,7 @@ public class EntityGenerator {
 			EntityGenerator.generateAuditEntity(destinationPath, packageName);
 		}
 
-		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+	//	deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 		
 		return setDescriptiveField(entityDetailsMap, descriptiveMap, relationInputList);
@@ -176,7 +176,6 @@ public class EntityGenerator {
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
-
 		Map<String, Object> root = new HashMap<>();
 
 		root.put("EntityClassName", entityClassName);

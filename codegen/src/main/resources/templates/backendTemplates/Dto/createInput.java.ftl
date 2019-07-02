@@ -4,7 +4,7 @@ import java.util.Date;
 public class Create[=ClassName]Input {
 
 <#list Fields as key,value>
-<#if value.fieldName?lower_case != "id">
+<#if value.isPrimaryKey==false>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int" >
   private Long [=value.fieldName];
  <#elseif value.fieldType?lower_case == "boolean">
@@ -37,7 +37,7 @@ public class Create[=ClassName]Input {
 </#if>
 </#list>
 <#list Fields as key,value>
- <#if value.fieldName?lower_case != "id">
+ <#if value.isPrimaryKey==false>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
   public Long get[=value.fieldName?cap_first]() {
   return [=value.fieldName];

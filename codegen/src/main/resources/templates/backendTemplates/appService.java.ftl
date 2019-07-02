@@ -312,7 +312,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			else if(StringUtils.isNumeric(value)){
 		<#list Fields as key,value>
         <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
-        <#if value.fieldName?lower_case !="id">
+        <#if value.isPrimaryKey==false>
 				builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Long.valueOf(value)));
 	    </#if>
 		</#if> 
@@ -339,7 +339,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
 		</#list>
 		<#list Fields as key,value>
-        <#if value.fieldName?lower_case !="id" && value.fieldType?lower_case !="string">
+        <#if value.isPrimaryKey==false && value.fieldType?lower_case !="string">
 		 list.get(i).replace("%20","").trim().equals("[=value.fieldName]") ||
 		</#if> 
         </#list>
@@ -376,7 +376,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Boolean.parseBoolean(value)));
 			}
 		<#elseif value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
-        <#if value.fieldName?lower_case !="id">
+        <#if value.isPrimaryKey==false>
 			if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(operator.equals("equals") && StringUtils.isNumeric(value))
 					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Long.valueOf(value)));
@@ -422,7 +422,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Boolean.parseBoolean(details.getValue().getSearchValue())));
 			}
 		<#elseif value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
-        <#if value.fieldName?lower_case !="id">
+        <#if value.isPrimaryKey==false>
 			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(details.getValue().getOperator().equals("equals") && StringUtils.isNumeric(details.getValue().getSearchValue()))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(Long.valueOf(details.getValue().getSearchValue())));

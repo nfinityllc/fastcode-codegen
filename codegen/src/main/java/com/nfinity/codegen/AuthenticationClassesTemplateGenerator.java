@@ -113,7 +113,6 @@ public class AuthenticationClassesTemplateGenerator {
 				Template template = cfg.getTemplate(entry.getKey());
 				File fileName = new File(destPath + "/" + entry.getValue().toString());
 				PrintWriter writer = new PrintWriter(fileName);
-				System.out.println("\nRoot  " + root.toString());
 				template.process(root, writer);
 				writer.flush();
 				writer.close();

@@ -3,7 +3,7 @@ package [=PackageName];
 import [=PackageName].application.Authorization.Users.IUserAppService;
 import [=PackageName].domain.model.PermissionsEntity;
 import [=PackageName].domain.model.UsersEntity;
-import com.testing.demo.domain.IRepository.IUsersRepository;
+import [=PackageName].domain.IRepository.IUsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

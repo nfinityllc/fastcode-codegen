@@ -16,7 +16,7 @@ public class Get[=RelationEntityName]Output {
 </#list>
 <#list Relationship as relationKey,relationValue>
  <#if relationValue.relation == "ManyToMany"   && relationValue.entityDescriptionField?? >
-  <#if relationValue.entityDescriptionField.fieldName != "id">
+  <#if relationValue.entityDescriptionField.isPrimaryKey ==false>
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   private Long [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
@@ -76,7 +76,7 @@ public class Get[=RelationEntityName]Output {
 </#list>
 <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToMany"   && relationValue.entityDescriptionField?? >
-  <#if relationValue.entityDescriptionField.fieldName != "id">
+  <#if relationValue.entityDescriptionField.isPrimaryKey == false>
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   public Long get[=relationValue.cName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
    return [=relationValue.cName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];

@@ -25,7 +25,7 @@ public class Create[=ClassName]Output {
   private [=relationValue.joinColumnType] [=relationValue.joinColumn];       
   </#if>
   <#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField??>
-  <#if relationValue.entityDescriptionField.fieldName != "id">
+  <#if relationValue.entityDescriptionField.isPrimaryKey == false>
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   private Long [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
@@ -52,7 +52,7 @@ public class Create[=ClassName]Output {
   </#if> 
   </#if>
   <#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-  <#if relationValue.entityDescriptionField.fieldName != "id">
+  <#if relationValue.entityDescriptionField.isPrimaryKey == false>
   <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
   public Long get[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
    return [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];

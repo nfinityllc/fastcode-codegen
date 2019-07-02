@@ -116,8 +116,8 @@ public class CodeGenerator {
 
 		}
 
-
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType);
+		modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
 		if(history) {
 			generateEntityHistoryComponent(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
 			addhistoryComponentsToAppModule(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
@@ -134,6 +134,8 @@ public class CodeGenerator {
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 
 	}
+	
+	
 
 	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema){
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
@@ -513,7 +515,6 @@ public class CodeGenerator {
 					Template template = cfg.getTemplate("getOutput.java.ftl");
 					File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
 					PrintWriter writer = new PrintWriter(fileName);
-					System.out.println("\nRoot  " + root.toString() );
 					template.process(root, writer);
 					writer.flush();
 					writer.close();
@@ -638,6 +639,44 @@ public class CodeGenerator {
 
 		return builder;
 	}
+	
+	public static void modifyMainClass(String destPath,String appName)
+	{
+		StringBuilder sourceBuilder=new StringBuilder();
+		sourceBuilder.setLength(0);
+		sourceBuilder.append("import org.springframework.boot.autoconfigure.domain.EntityScan;\n");
+		sourceBuilder.append("import org.springframework.context.annotation.ComponentScan;\n");
+		sourceBuilder.append("import org.springframework.data.jpa.repository.config.EnableJpaRepositories;\n\n");
+		sourceBuilder.append("@ComponentScan(basePackages = {\"com.nfinity.fastcode.*\"})\n");
+		sourceBuilder.append("@EnableJpaRepositories(basePackages = {\"com.nfinity.fastcode.*\"})\n");
+		sourceBuilder.append("@EntityScan(basePackages = {\"com.nfinity.fastcode.*\"})\n");
+		
+		String packageName = appName.replace(".", "/");
+		String className = appName.substring(appName.lastIndexOf(".") + 1);
+		className = className.substring(0, 1).toUpperCase() + className.substring(1) + "Application.java";
+		String data = " ";
+		try {
+			data = FileUtils.readFileToString(new File(destPath + "/" + packageName + "/" + className),"UTF8");
+
+			StringBuilder builder=new StringBuilder();
+
+			builder.append(data);
+			int index = builder.lastIndexOf("@");
+			builder.insert(index - 1 , sourceBuilder.toString());
+
+
+			File fileName = new File(destPath + "/" + packageName + "/" + className);
+
+			try (PrintWriter writer = new PrintWriter(fileName)) {
+				writer.println(builder.toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void updateTestUtils(String destPath,String appName,List<String> entityName)
 	{
@@ -674,6 +713,7 @@ public class CodeGenerator {
 			e.printStackTrace();
 		}
 	}
+	
 	public static StringBuilder addImportForTestUtils(List<String> entityName)
 	{
 		StringBuilder builder=new StringBuilder();
@@ -689,6 +729,7 @@ public class CodeGenerator {
 
 		return builder;
 	}
+	
 
 	public static void updateEntitiesJsonFile(String path,List<String> entityNames) {
 

@@ -29,8 +29,7 @@ public class CreateUserOutput {
     private java.util.Date creationTime;
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
-</#if>
-    private Long roleId;       
+</#if>     
     private Long roleId;       
     private String roleName;
     
