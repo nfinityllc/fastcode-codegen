@@ -2,8 +2,10 @@ package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Permissions.PermissionAppService;
 import [=PackageName].application.Authorization.Permissions.Dto.FindPermissionByIdOutput;
+<#if AuthenticationType == "database">
 import [=PackageName].application.Authorization.Users.Dto.FindUserByIdOutput;
 import [=PackageName].application.Authorization.Users.UserAppService;
+</#if>
 import [=PackageName].application.Authorization.Roles.RoleAppService;
 import [=PackageName].application.Authorization.Roles.Dto.*;
 import [=CommonModulePackage].Search.SearchCriteria;
@@ -30,9 +32,10 @@ public class RoleController {
     @Autowired
     private RoleAppService roleAppService;
     
+    <#if AuthenticationType == "database">
     @Autowired
 	private UserAppService  userAppService;
-	
+	</#if>
 	@Autowired
 	private PermissionAppService  permissionAppService;
 
@@ -107,7 +110,7 @@ public class RoleController {
 		
         return ResponseEntity.ok(roleAppService.Find(searchCriteria, offsetPageable));
     }
-    
+    <#if AuthenticationType == "database">
   @RequestMapping(value = "/{roleid}/users", method = RequestMethod.GET)
 	public ResponseEntity GetUsers(@PathVariable String rolesid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -126,6 +129,7 @@ public class RoleController {
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}  
+	</#if>
 	
 	
     // Permissions related methods

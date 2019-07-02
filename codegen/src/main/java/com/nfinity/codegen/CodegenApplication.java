@@ -78,20 +78,15 @@ public class CodegenApplication implements ApplicationRunner {
 
 		UserInput input = composeInput(configProperties);
 
-		// String sourcePackageName = root.get("p");
-		// sourcePackageName = (sourcePackageName == null) ? root.get("e") :
-		// sourcePackageName;
 		String groupArtifactId = input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));
 
 		// c=jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// String connectionString = root.get("c");
-		System.out.println("auth type " + input.getAuthenticationType());
 		String dependencies ="web,data-jpa,data-rest";
-		if(input.getAuthenticationType()=="database")
+		if(input.getAuthenticationType()!="none")
 		{
-			System.out.println("\nDependencies\n");
 			dependencies = dependencies.concat(",security");
 		}
 		

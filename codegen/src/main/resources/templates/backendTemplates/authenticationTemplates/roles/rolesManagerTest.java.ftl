@@ -30,7 +30,6 @@ import [=PackageName].domain.model.PermissionsEntity;
 import [=PackageName].domain.model.RolesEntity;
 import [=PackageName].domain.IRepository.IPermissionsRepository;
 import [=PackageName].domain.IRepository.IRolesRepository;
-import [=PackageName].domain.IRepository.IUsersRepository;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 
@@ -42,9 +41,6 @@ public class RoleManagerTest {
 	
 	@Mock
 	IRolesRepository _rolesRepository;
-
-    @Mock
-	IUsersRepository  _usersRepository;
 	
 	@Mock
 	IPermissionsRepository _permissionsRepository;

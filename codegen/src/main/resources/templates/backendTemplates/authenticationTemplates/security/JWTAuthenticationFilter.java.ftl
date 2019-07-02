@@ -1,8 +1,8 @@
 package [=PackageName].security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+<#if AuthenticationType == "database">
 import [=PackageName].application.Authorization.Users.Dto.LoginUserInput;
-
+</#if>
 import [=PackageName].domain.model.PermissionsEntity;
 import [=PackageName].domain.Authorization.Roles.IRolesManager;
 import [=PackageName].domain.model.RolesEntity;
@@ -11,9 +11,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
+<#if AuthenticationType == "database">
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+</#if>
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -42,7 +45,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
-
+ <#if AuthenticationType == "database">
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
@@ -61,7 +64,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new RuntimeException(e);
         }
     }
-
+ </#if>
     @Override
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
@@ -81,15 +84,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         //claims.put("scopes", (auth.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList())));
 
         if (auth != null) {
+        <#if AuthenticationType == "database">
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
                 claims.setSubject(((User) auth.getPrincipal()).getUsername());
-            } else if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
+            }
+       </#if>
+       <#if AuthenticationType == "ldap">
+       if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
                 claims.setSubject(((LdapUserDetailsImpl) auth.getPrincipal()).getUsername());
             }
-
-            else {
-                throw new IllegalStateException("Unkown type of UserDetailsObject");
-            }
+       </#if>
+           
         }
 
         claims.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME));

@@ -89,7 +89,7 @@ public class RoleAppServiceTest {
 	}
 
 	@Test
-	public void findRoleById_IdIsNotNullAndUserExists_ReturnAUser() {
+	public void findRoleById_IdIsNotNullAndRoleExists_ReturnARole() {
 
 		RolesEntity role = mock(RolesEntity.class);
 
@@ -199,7 +199,7 @@ public class RoleAppServiceTest {
 	}
 
 	@Test
-	public void AddPermission_IfRoleIdAndPermissionIdIsNotNullAndUserExists_PermissionGranted() {
+	public void AddPermission_IfRoleIdAndPermissionIdIsNotNullAndRoleExists_PermissionGranted() {
 		RolesEntity role = mock(RolesEntity.class);
 		PermissionsEntity permission = mock(PermissionsEntity.class);
 

@@ -4,7 +4,6 @@ import [=PackageName].domain.model.PermissionsEntity;
 import [=PackageName].domain.model.RolesEntity;
 import [=PackageName].domain.IRepository.IPermissionsRepository;
 import [=PackageName].domain.IRepository.IRolesRepository;
-import [=PackageName].domain.IRepository.IUsersRepository;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,9 +25,6 @@ public class RolesManager implements IRolesManager {
 
 	@Autowired
 	private IRolesRepository _rolesRepository;
-	
-	@Autowired
-	IUsersRepository  _usersRepository;
 
 	// CRUD Operations
 	@Transactional

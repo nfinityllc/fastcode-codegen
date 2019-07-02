@@ -227,6 +227,8 @@ public class FronendBaseTemplateGenerator {
 
 			JSONObject jsonObject = readJsonFile(path);
 			
+			
+			
             JSONObject projects = (JSONObject) jsonObject.get("projects");
             JSONObject project = (JSONObject) projects.get(clientSubfolder);
             JSONObject architect = (JSONObject) project.get("architect");
@@ -241,6 +243,8 @@ public class FronendBaseTemplateGenerator {
             styles.add(input);
             styles.add("src/styles/styles.scss");
             
+            projects.put("fastCodeCore",getFastCodeCoreProjectNode());
+            
             String prettyJsonString = beautifyJson(jsonObject); 
             writeJsonToFile(path,prettyJsonString);         
 
@@ -254,6 +258,51 @@ public class FronendBaseTemplateGenerator {
 
     }
 	
+	public static JSONObject getFastCodeCoreProjectNode() throws ParseException {
+		JSONParser parser = new JSONParser();
+		JSONObject fccore = (JSONObject) parser.parse("{\r\n" + 
+				"      \"root\": \"projects/fast-code-core\",\r\n" + 
+				"      \"sourceRoot\": \"projects/fast-code-core/src\",\r\n" + 
+				"      \"projectType\": \"library\",\r\n" + 
+				"      \"prefix\": \"lib\",\r\n" + 
+				"      \"architect\": {\r\n" + 
+				"        \"build\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-ng-packagr:build\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": \"projects/fast-code-core/tsconfig.lib.json\",\r\n" + 
+				"            \"project\": \"projects/fast-code-core/ng-package.json\"\r\n" + 
+				"          },\r\n" + 
+				"          \"configurations\": {\r\n" + 
+				"            \"production\": {\r\n" + 
+				"              \"project\": \"projects/fast-code-core/ng-package.prod.json\"\r\n" + 
+				"            }\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"test\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:karma\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"main\": \"projects/fast-code-core/src/test.ts\",\r\n" + 
+				"            \"tsConfig\": \"projects/fast-code-core/tsconfig.spec.json\",\r\n" + 
+				"            \"karmaConfig\": \"projects/fast-code-core/karma.conf.js\"\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"lint\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:tslint\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": [\r\n" + 
+				"              \"projects/fast-code-core/tsconfig.lib.json\",\r\n" + 
+				"              \"projects/fast-code-core/tsconfig.spec.json\"\r\n" + 
+				"            ],\r\n" + 
+				"            \"exclude\": [\r\n" + 
+				"              \"**/node_modules/**\"\r\n" + 
+				"            ]\r\n" + 
+				"          }\r\n" + 
+				"        }\r\n" + 
+				"      }\r\n" + 
+				"    }");
+		return fccore;
+	}
+	
 	public static void editTsConfigJsonFile(String path) {
 
 		try {
@@ -261,6 +310,17 @@ public class FronendBaseTemplateGenerator {
 
             JSONObject jsonObject = readJsonFile(path);
             JSONObject compilerOptions = (JSONObject) jsonObject.get("compilerOptions");
+            
+            JSONArray fccore = new JSONArray();
+            fccore.add("dist/fast-code-core");
+            JSONArray fccore1 = new JSONArray();
+            fccore1.add("dist/fast-code-core/*");
+            
+            JSONObject paths = new JSONObject();
+            paths.put("fastCodeCore",fccore);
+            paths.put("fastCodeCore/*",fccore1);
+                        
+            compilerOptions.put("paths",paths);
             compilerOptions.put("resolveJsonModule",true);
             compilerOptions.put("esModuleInterop",true);
             compilerOptions.put("allowSyntheticDefaultImports",true);

@@ -127,7 +127,7 @@ public class RoleAppService implements IRoleAppService{
 		return _roleManager.AddPermission(foundRole, foundPermission);
 	}
 
-	// ReST API Call => DELETE /users/1/permissions/3
+	// ReST API Call => DELETE /roles/1/permissions/3
 
 	public void RemovePermission(Long rid, Long pid) {
 

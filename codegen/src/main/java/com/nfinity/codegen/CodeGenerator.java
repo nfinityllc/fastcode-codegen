@@ -80,11 +80,11 @@ public class CodeGenerator {
 				searchFields.add(entry.getValue().getFieldName());
 
 		}
-		
+
 		root.put("Fields", actualFieldNames);
 		root.put("SearchFields", searchFields);
 		root.put("Relationship", relationMap);
-		
+
 		return root;
 	}
 
@@ -116,77 +116,191 @@ public class CodeGenerator {
 
 		}
 
+
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType);
-		if(history)
-		generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
-		
+		if(history) {
+			generateEntityHistoryComponent(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
+			addhistoryComponentsToAppModule(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
+			addhistoryComponentsToAppRoutingModule(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
+			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
+		}
+
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
-	    updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
-	    updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
-	    updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
-	    
-	    Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema);
+		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
+
+		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema);
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 
 	}
-	
+
 	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema){
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
-		
+
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
 		propertyInfo.put("appName", appName);
 		propertyInfo.put("schema", schema);
-		
+
 		return propertyInfo;
 	}
+
 	
 	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType){
+
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
-			
+
 			Map<String, String> entityMap = new HashMap<String,String>();
 			String key = entry.getKey();
 			String name = key.substring(key.lastIndexOf(".") + 1);
-			
+
 			entityMap.put("entity" , name + "Entity");
 			entityMap.put("importPkg" , appName + ".domain.model." + name + "Entity");
 			entityMap.put("requestMapping" , "/" + name.toLowerCase());
 			entityMap.put("method" , "get" + name + "Changes");
-			
+
 			entitiesMap.put(name, entityMap);
-			
+
 		}
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/"); 
+        MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
+ 
+        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 
+        cfg.setDefaultEncoding("UTF-8"); 
+        cfg.setTemplateLoader(mtl); 
 		
 		Map<String, Object> root = new HashMap<>();
 		root.put("entitiesMap", entitiesMap);
 		root.put("PackageName", packageName);
 		root.put("AuthenticationType", authenticationType);
-		
 		Map<String, Object> template = new HashMap<>();
 		template.put("AuditController.java.ftl", "AuditController.java");
-		
+
 		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/") + "/RestControllers";
 		new File(destFolder).mkdirs();
 		generateFiles(template, root, destFolder);
+
+	}
+
+	private static void generateEntityHistoryComponent(String destFolder){
+
+
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/");
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 });
+
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setTemplateLoader(mtl);
+
+		Map<String, Object> template = new HashMap<>();
+		template.put("entityHistory/entity-history/entity-history.component.html.ftl", "entity-history.component.html");
+		template.put("entityHistory/entity-history/entity-history.component.scss.ftl", "entity-history.component.scss");
+		template.put("entityHistory/entity-history/entity-history.component.spec.ts.ftl", "entity-history.component.spec.ts");
+		template.put("entityHistory/entity-history/entity-history.component.ts.ftl", "entity-history.component.ts");
+		template.put("entityHistory/entity-history/entity-history.service.ts.ftl", "entity-history.service.ts");
+		template.put("entityHistory/entity-history/entityHistory.ts.ftl", "entityHistory.ts");
+		template.put("entityHistory/entity-history/filter-item.directive.ts.ftl", "filter-item.directive.ts");
+
+		new File(destFolder + "/entity-history").mkdirs();
+		generateFiles(template, null, destFolder + "/entity-history");
+
+		template = new HashMap<>();
+		template.put("entityHistory/manage-entity-history/manage-entity-history.component.html.ftl", "manage-entity-history.component.html");
+		template.put("entityHistory/manage-entity-history/manage-entity-history.component.scss.ftl", "manage-entity-history.component.scss");
+		template.put("entityHistory/manage-entity-history/manage-entity-history.component.spec.ts.ftl", "manage-entity-history.component.spec.ts");
+		template.put("entityHistory/manage-entity-history/manage-entity-history.component.ts.ftl", "manage-entity-history.component.ts");
+
+		new File(destFolder + "/manage-entity-history").mkdirs();
+		generateFiles(template, null, destFolder + "/manage-entity-history");
+
+	}
+
+	public static void addhistoryComponentsToAppModule(String destPath)
+	{
+		StringBuilder sourceBuilder=new StringBuilder();
+		sourceBuilder.setLength(0);
+
+
+		sourceBuilder.append("\n    " + "EntityHistoryComponent," );
+		sourceBuilder.append("\n    " + "ManageEntityHistoryComponent,");
+
+		String data = " ";
+		try {
+			data = FileUtils.readFileToString(new File(destPath + "/app.module.ts"),"UTF8");
+
+			StringBuilder builder = new StringBuilder();
+
+			builder.append("import { EntityHistoryComponent } from './entity-history/entity-history.component';" + "\n");
+			builder.append("import { ManageEntityHistoryComponent } from './manage-entity-history/manage-entity-history.component';" + "\n");
+
+			builder.append(data);
+			int index = builder.lastIndexOf("declarations");
+			index = builder.indexOf("[", index);
+			builder.insert(index + 1 , sourceBuilder.toString());
+			File fileName = new File(destPath + "/app.module.ts");
+
+			try (PrintWriter writer = new PrintWriter(fileName)) {
+				writer.println(builder.toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addhistoryComponentsToAppRoutingModule(String destPath)
+	{
+		StringBuilder sourceBuilder=new StringBuilder();
+		sourceBuilder.setLength(0);
 		
+		sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+		sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+
+		String data = " ";
+		try {
+			data = FileUtils.readFileToString(new File(destPath + "/app.routing.ts"),"UTF8");
+
+			StringBuilder builder = new StringBuilder();
+			
+			builder.append("import { EntityHistoryComponent } from './entity-history/entity-history.component';" + "\n");
+			builder.append("import { ManageEntityHistoryComponent } from './manage-entity-history/manage-entity-history.component';" + "\n");
+			builder.append(data);
+
+			int index = builder.lastIndexOf("{");
+			builder.insert(index - 1, sourceBuilder.toString());
+			File fileName = new File(destPath + "/app.routing.ts");
+
+			try (PrintWriter writer = new PrintWriter(fileName)) {
+				writer.println(builder.toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit,Boolean history, String sourcePath, String destPath, String type,EntityDetails details) {
-	
+
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		String clientAppFolder = clientRootFolder + "/src/app";
 		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details);
-		
+
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/"); // "/templates/");
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/");
 		ClassTemplateLoader ctl2 = new ClassTemplateLoader(CodegenApplication.class, DTO_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/Dto");
+
 		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl,ctl1,ctl2 };
-		
 		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
+
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setTemplateLoader(mtl);
@@ -256,7 +370,6 @@ public class CodeGenerator {
 				Template template = cfg.getTemplate(entry.getKey());
 				File fileName = new File(destPath + "/" + entry.getValue().toString());
 				PrintWriter writer = new PrintWriter(fileName);
-				System.out.println("\nRoot  " + root.toString());
 				template.process(root, writer);
 				writer.flush();
 				writer.close();
@@ -326,8 +439,8 @@ public class CodeGenerator {
 	}
 
 	private static Map<String, Object> generateCustomRepositoryTemplates(Map<String,Object> root,String destPath,String className) {
-        List<String> relationInput= (List<String>) root.get("RelationInput");
-        destPath=destPath + "/domain/IRepository";
+		List<String> relationInput= (List<String>) root.get("RelationInput");
+		destPath=destPath + "/domain/IRepository";
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		for(String str : relationInput)
 		{
@@ -338,10 +451,10 @@ public class CodeGenerator {
 				generateFiles(backEndTemplate, root, destPath);
 			}
 		}
-		
+
 		return backEndTemplate;
 	}
-	
+
 	private static Map<String, Object> getRepositoryTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -366,7 +479,7 @@ public class CodeGenerator {
 		backEndTemplate.put("manager.java.ftl", className + "Manager.java");
 		backEndTemplate.put("imanager.java.ftl", "I" + className + "Manager.java");
 		backEndTemplate.put("managerTest.java.ftl", className + "ManagerTest.java");
-	
+
 		return backEndTemplate;
 	}
 
@@ -381,7 +494,7 @@ public class CodeGenerator {
 		backEndTemplate.put("findByIdOutput.java.ftl", "Find" + className + "ByIdOutput.java");
 		return backEndTemplate;
 	}
-	
+
 	private static void generateRelationDto(EntityDetails details,Map<String,Object> root, String destPath,String entityName)
 	{
 		String destFolder = destPath + "/application/" + root.get("ClassName").toString() + "/Dto";
@@ -394,7 +507,7 @@ public class CodeGenerator {
 			if(entry.getValue().getRelation().equals("ManyToOne"))
 			{
 				List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
-		     	root.put("RelationEntityFields",relationEntityFields);
+				root.put("RelationEntityFields",relationEntityFields);
 				root.put("RelationEntityName", entry.getValue().geteName());
 				try {
 					Template template = cfg.getTemplate("getOutput.java.ftl");
@@ -416,7 +529,7 @@ public class CodeGenerator {
 					if(entityName.equals(str.substring(0,str.lastIndexOf("-")).toString()))
 					{
 						List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
-				     	root.put("RelationEntityFields",relationEntityFields);
+						root.put("RelationEntityFields",relationEntityFields);
 						root.put("RelationEntityName", entry.getValue().geteName());
 						try {
 							Template template = cfg.getTemplate("getOutput.java.ftl");
@@ -432,10 +545,10 @@ public class CodeGenerator {
 						}
 					}
 				}
-		    }
+			}
 		}
 	}
-	
+
 	private static void generateApplicationProperties(Map<String, Object> root, String destPath)
 	{
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -443,7 +556,7 @@ public class CodeGenerator {
 		new File(destPath).mkdirs();
 		generateFiles(backEndTemplate, root, destPath);
 	}
-	
+
 	public static void updateAppModule(String destPath,String appName,List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
@@ -451,16 +564,16 @@ public class CodeGenerator {
 
 		for(String str: entityName)
 		{
-		sourceBuilder.append("\n    " + str + "ListComponent," );
-		sourceBuilder.append("\n    " + str + "DetailsComponent,");
-		sourceBuilder.append("\n    " + str + "NewComponent,");
+			sourceBuilder.append("\n    " + str + "ListComponent," );
+			sourceBuilder.append("\n    " + str + "DetailsComponent,");
+			sourceBuilder.append("\n    " + str + "NewComponent,");
 		}
 		String data = " ";
 		try {
 			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/app/app.module.ts"),"UTF8");
 
 			StringBuilder builder = addImports(entityName);
-			
+
 			builder.append(data);
 			int index = builder.lastIndexOf("declarations");
 			index = builder.indexOf("[", index);
@@ -477,23 +590,23 @@ public class CodeGenerator {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void updateAppRouting(String destPath,String appName, List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 
 		for(String str: entityName)
 		{
-		sourceBuilder.append("\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canActivate: [ AuthGuard ]  },");
-		sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n");
-		sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ]  }," );
+			sourceBuilder.append("\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canActivate: [ AuthGuard ]  },");
+			sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n");
+			sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ]  }," );
 		}
 		String data = " ";
 		try {
 			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/app/app.routing.ts"),"UTF8");
 
 			StringBuilder builder = addImports(entityName);
-			
+
 			builder.append(data);
 			int index = builder.lastIndexOf("{");
 			builder.insert(index - 1, sourceBuilder.toString());
@@ -509,7 +622,7 @@ public class CodeGenerator {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static StringBuilder addImports(List<String> entityName)
 	{
 		StringBuilder builder=new StringBuilder();
@@ -520,12 +633,12 @@ public class CodeGenerator {
 				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
 			}
 			String moduleName=StringUtils.join(splittedNames, "-");
-		builder.append("import { " + str + "ListComponent , " + str + "DetailsComponent, " + str + "NewComponent } from './" + moduleName + "/index';" + "\n");
+			builder.append("import { " + str + "ListComponent , " + str + "DetailsComponent, " + str + "NewComponent } from './" + moduleName + "/index';" + "\n");
 		}
-		
+
 		return builder;
 	}
-	
+
 	public static void updateTestUtils(String destPath,String appName,List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
@@ -540,15 +653,15 @@ public class CodeGenerator {
 			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/testing/utils.ts"),"UTF8");
 
 			StringBuilder builder = addImportForTestUtils(entityName);
-			
+
 			builder.append(data);
 			int index = builder.lastIndexOf("entryComponents");
 			index = builder.indexOf("[", index);
 			builder.insert(index + 1 , sourceBuilder.toString());
-			
+
 			index = builder.lastIndexOf("[");
 			builder.insert(index + 1 , sourceBuilder.toString());
-			
+
 			File fileName = new File(destPath + "/" + appName + "Client/src/testing/utils.ts");
 
 			try (PrintWriter writer = new PrintWriter(fileName)) {
@@ -571,61 +684,62 @@ public class CodeGenerator {
 				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
 			}
 			String moduleName=StringUtils.join(splittedNames, "-");
-		builder.append("import {" + str + "NewComponent } from 'src/app/" + moduleName + "/index';" + "\n");
+			builder.append("import {" + str + "NewComponent } from 'src/app/" + moduleName + "/index';" + "\n");
 		}
-		
+
 		return builder;
 	}
-	
+
 	public static void updateEntitiesJsonFile(String path,List<String> entityNames) {
 
 		try {
-            JSONArray entityArray = (JSONArray) readJsonFile(path);
-            for(String entityName: entityNames)
-    		{
-            	entityArray.add(entityName.toLowerCase());
-    		}
-            
-            String prettyJsonString = beautifyJson(entityArray, "Array"); 
-            writeJsonToFile(path,prettyJsonString);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+			JSONArray entityArray = (JSONArray) readJsonFile(path);
+			for(String entityName: entityNames)
+			{
+				entityArray.add(entityName.toLowerCase());
+			}
+
+			String prettyJsonString = beautifyJson(entityArray, "Array"); 
+			writeJsonToFile(path,prettyJsonString);
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
 	}
-	
+
 	public static Object readJsonFile(String path) throws IOException, ParseException {
 
 		JSONParser parser = new JSONParser();
 		FileReader fr = new FileReader(path);
-        Object obj = parser.parse(fr);
-        fr.close();
-        return obj;
+		Object obj = parser.parse(fr);
+		fr.close();
+		return obj;
 	}
 
 	// type: "Object" , "Array"
 	public static String beautifyJson(Object jsonObject, String type)  {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonParser jp = new JsonParser();
-        JsonElement je;
-        if(type == "Array") {
-        	je = jp.parse(((JSONArray)jsonObject).toJSONString());
-        }
-        else {
-        	je = jp.parse(((JSONObject)jsonObject).toJSONString());
-        }
-        return gson.toJson(je);
+		JsonParser jp = new JsonParser();
+		JsonElement je;
+		if(type == "Array") {
+			je = jp.parse(((JSONArray)jsonObject).toJSONString());
+		}
+		else {
+			je = jp.parse(((JSONObject)jsonObject).toJSONString());
+		}
+		return gson.toJson(je);
 	}
-	
+
 	public static void writeJsonToFile(String path, String jsonString) throws IOException {
 		FileWriter file = new FileWriter(path);
 		file.write(jsonString);
-        file.close();
+		file.close();
 	}
 
 }
