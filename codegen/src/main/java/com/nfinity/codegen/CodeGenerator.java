@@ -644,12 +644,13 @@ public class CodeGenerator {
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
+		
 		sourceBuilder.append("import org.springframework.boot.autoconfigure.domain.EntityScan;\n");
 		sourceBuilder.append("import org.springframework.context.annotation.ComponentScan;\n");
 		sourceBuilder.append("import org.springframework.data.jpa.repository.config.EnableJpaRepositories;\n\n");
-		sourceBuilder.append("@ComponentScan(basePackages = {\"com.nfinity.fastcode.*\"})\n");
-		sourceBuilder.append("@EnableJpaRepositories(basePackages = {\"com.nfinity.fastcode.*\"})\n");
-		sourceBuilder.append("@EntityScan(basePackages = {\"com.nfinity.fastcode.*\"})\n");
+		sourceBuilder.append("@ComponentScan(basePackages = {\"com.nfinity.*\", " + "\" "+ appName.substring(0,appName.lastIndexOf("."))+".*\"})\n");
+		sourceBuilder.append("@EnableJpaRepositories(basePackages = {\"com.nfinity.*\", " + "\" "+ appName.substring(0,appName.lastIndexOf("."))+ ".*\"})\n");
+		sourceBuilder.append("@EntityScan(basePackages = {\"com.nfinity.*\", " + "\" "+ appName.substring(0,appName.lastIndexOf("."))+".*\"})\n");
 		
 		String packageName = appName.replace(".", "/");
 		String className = appName.substring(appName.lastIndexOf(".") + 1);
