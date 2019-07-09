@@ -1,0 +1,39 @@
+<div class="container">
+	<mat-toolbar class="action-tool-bar" color="primary">
+		<button mat-flat-button (click)="onCancel()">Cancel</button>
+			<span class="middle">{{title}}</span>
+			<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading">Save</button>
+	</mat-toolbar>
+	<mat-card>
+		<h2>{{title}}</h2>
+		<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">
+
+			<mat-form-field>
+				<input formControlName="emailAddress" matInput placeholder="Enter emailAddress">
+				<mat-error *ngIf="!itemForm.get('emailAddress').valid && itemForm.get('emailAddress').touched">emailAddress is required</mat-error>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input formControlName="firstName" matInput placeholder="Enter firstName">
+				<mat-error *ngIf="!itemForm.get('firstName').valid && itemForm.get('firstName').touched">firstName is required</mat-error>
+			</mat-form-field>
+
+			<mat-checkbox formControlName="isActive">isActive</mat-checkbox>
+
+			<mat-form-field>
+				<input formControlName="lastName" matInput placeholder="Enter lastName">
+				<mat-error *ngIf="!itemForm.get('lastName').valid && itemForm.get('lastName').touched">lastName is required</mat-error>
+			</mat-form-field>
+			 
+			<mat-form-field>
+				<input formControlName="userName" matInput placeholder="Enter userName">
+				<mat-error *ngIf="!itemForm.get('userName').valid && itemForm.get('userName').touched">userName is required</mat-error>
+			</mat-form-field>
+			
+			<mat-form-field *ngFor="let association of toOne">
+				<input formControlName="{{association.descriptiveField}}" matInput placeholder="{{association.table}}">
+				<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
+			</mat-form-field>       
+		</form>
+	</mat-card>
+</div>

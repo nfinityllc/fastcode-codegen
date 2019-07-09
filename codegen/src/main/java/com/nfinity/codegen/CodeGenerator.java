@@ -118,12 +118,17 @@ public class CodeGenerator {
 
 		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType);
 		modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
+		
 		if(history) {
-			generateEntityHistoryComponent(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
-			addhistoryComponentsToAppModule(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
-			addhistoryComponentsToAppRoutingModule(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/");
+			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
+			generateEntityHistoryComponent(appFolderPath);
+			addhistoryComponentsToAppModule(appFolderPath);
+			addhistoryComponentsToAppRoutingModule(appFolderPath);
 			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
+			
 		}
+		
+		generateFrontendAuthorization(destPath, appName, authenticationType);
 
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
@@ -147,6 +152,55 @@ public class CodeGenerator {
 		return propertyInfo;
 	}
 
+	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType ) {
+		
+		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
+		List<String> authorizationEntities = new ArrayList<String>();
+		String authorizationPath = TEMPLATE_FOLDER + "/frontendAuthorization/";
+		authorizationEntities.add("roles");
+		authorizationEntities.add("permissions");
+		
+		List<String> entityList = new ArrayList<String>();
+		entityList.add("Roles");
+		entityList.add("Permissions");
+		
+		if(authenticationType == "database") {
+			authorizationEntities.add("users");
+			entityList.add("Users");
+		}
+		
+		updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
+		updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
+		for(String entity: authorizationEntities) {
+			generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType);
+		}
+		
+	}
+	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType) {
+		List<String> fl = FronendBaseTemplateGenerator.getFilesFromFolder(templatePath);
+		Map<String, Object> templates = new HashMap<>();
+
+		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, templatePath + "/");
+		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
+		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+		cfg.setTemplateLoader(mtl);
+
+
+
+		for (String filePath : fl) {
+			String p = filePath.replace("BOOT-INF/classes" + templatePath,"");
+			p = p.replace("\\", "/");
+			p = p.replace(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources" + templatePath,"");
+			templates.put(p, p.substring(0, p.lastIndexOf('.')));
+		}
+		
+		Map<String, Object> root = new HashMap<>();
+		root.put("authenticationType", authenticationType);
+
+		generateFiles(templates, root, destination);
+	}
 	
 	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType){
 
@@ -370,7 +424,20 @@ public class CodeGenerator {
 		for (Map.Entry<String, Object> entry : templateFiles.entrySet()) {
 			try {
 				Template template = cfg.getTemplate(entry.getKey());
+				
+				String entryPath = entry.getValue().toString();
 				File fileName = new File(destPath + "/" + entry.getValue().toString());
+				
+				String dirPath = destPath;
+				if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
+					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
+				}
+				System.out.println(dirPath);
+				File dir = new File(dirPath);
+				if(!dir.exists()) {
+					dir.mkdirs();
+				};
+				
 				PrintWriter writer = new PrintWriter(fileName);
 				template.process(root, writer);
 				writer.flush();
@@ -552,6 +619,13 @@ public class CodeGenerator {
 
 	private static void generateApplicationProperties(Map<String, Object> root, String destPath)
 	{
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class,  BACKEND_TEMPLATE_FOLDER );
+        MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
+ 
+        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 
+        cfg.setDefaultEncoding("UTF-8"); 
+        cfg.setTemplateLoader(mtl);
+        
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("application.properties.ftl", "application.properties");
 		new File(destPath).mkdirs();
@@ -645,12 +719,8 @@ public class CodeGenerator {
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
 		
-		sourceBuilder.append("import org.springframework.boot.autoconfigure.domain.EntityScan;\n");
 		sourceBuilder.append("import org.springframework.context.annotation.ComponentScan;\n");
-		sourceBuilder.append("import org.springframework.data.jpa.repository.config.EnableJpaRepositories;\n\n");
-		sourceBuilder.append("@ComponentScan(basePackages = {\"com.nfinity.*\", " + "\" "+ appName.substring(0,appName.lastIndexOf("."))+".*\"})\n");
-		sourceBuilder.append("@EnableJpaRepositories(basePackages = {\"com.nfinity.*\", " + "\" "+ appName.substring(0,appName.lastIndexOf("."))+ ".*\"})\n");
-		sourceBuilder.append("@EntityScan(basePackages = {\"com.nfinity.*\", " + "\" "+ appName.substring(0,appName.lastIndexOf("."))+".*\"})\n");
+		sourceBuilder.append("@ComponentScan(basePackages = {\"com.nfinity.*\", " + "\""+ appName.substring(0,appName.lastIndexOf("."))+".*\"})\n");
 		
 		String packageName = appName.replace(".", "/");
 		String className = appName.substring(appName.lastIndexOf(".") + 1);

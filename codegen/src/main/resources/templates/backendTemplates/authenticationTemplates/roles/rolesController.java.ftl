@@ -111,7 +111,7 @@ public class RoleController {
         return ResponseEntity.ok(roleAppService.Find(searchCriteria, offsetPageable));
     }
     <#if AuthenticationType == "database">
-  @RequestMapping(value = "/{roleid}/users", method = RequestMethod.GET)
+  @RequestMapping(value = "/{rolesid}/users", method = RequestMethod.GET)
 	public ResponseEntity GetUsers(@PathVariable String rolesid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
