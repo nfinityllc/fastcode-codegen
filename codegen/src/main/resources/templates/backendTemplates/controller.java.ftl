@@ -140,7 +140,7 @@ public class [=ClassName]Controller {
 	}
    <#elseif relationValue.relation == "OneToMany">
 
-	@RequestMapping(value = "/{[=relationValue.joinColumn?lower_case]}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
+	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity Get[=relationValue.eName](@PathVariable String [=InstanceName]id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }

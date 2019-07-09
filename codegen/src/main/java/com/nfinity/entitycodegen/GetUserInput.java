@@ -105,7 +105,7 @@ public class GetUserInput {
 
 				for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
 					for (RelationDetails e : relationList) {
-						if (e.geteName().equals(className) && e.getRelation().equals(entry.getValue().getRelation())) {
+						if (e.geteName().equals(className) && e.getcName().equals(entry.getValue().geteName())&& e.getRelation().equals(entry.getValue().getRelation())) {
 							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
 									+ " having " + entry.getValue().getRelation()
 									+ " relationship , which one is the parent entity ? Enter 1 (" + className
