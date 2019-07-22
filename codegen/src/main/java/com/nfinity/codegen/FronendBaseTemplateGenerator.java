@@ -9,28 +9,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,13 +37,13 @@ public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
-	public static void generate(String destination, String clientSubfolder) {
+	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler) {
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
 		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json");
 		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder);
 
-		List<String> fl = getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
+		List<String> fl = GetFilesFromFolder.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FRONTEND_BASE_TEMPLATE_FOLDER + "/");
@@ -63,6 +53,9 @@ public class FronendBaseTemplateGenerator {
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setTemplateLoader(mtl);
 
+		Map<String, Object> root = new HashMap<>();
+		root.put("EmailModule", email);
+		root.put("SchedulerModule", scheduler);
 
 
 		for (String filePath : fl) {
@@ -72,9 +65,7 @@ public class FronendBaseTemplateGenerator {
 			templates.put(p, p.substring(0, p.lastIndexOf('.')));
 		}
 
-
-		generateFiles(templates, null, destination + "/"+ clientSubfolder);
-
+		generateFiles(templates,root, destination + "/"+ clientSubfolder);
 	}
 
 	private static void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
@@ -133,61 +124,7 @@ public class FronendBaseTemplateGenerator {
 		}
 	}
 
-	public static List<String> getFilesFromFolder(String folderPath) {
-
-		try {
-			Path myPath;
-			URI uri = FronendBaseTemplateGenerator.class.getResource(folderPath).toURI();
-			List<String> list = new ArrayList<String>();
-			if (uri.getScheme().equals("jar")) {
-				list = getFilesFromJar(folderPath);
-			} else {
-				Collection<File> files = getFilesFromFileSystem(new File(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/"+ folderPath));
-				for(File file:files) {
-					if(file.isFile())
-						list.add(file.getAbsolutePath());
-				}
-			}
-			return list;
-
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private static Collection<File> getFilesFromFileSystem(File path){
-		Collection<File> files = org.apache.commons.io.FileUtils.listFilesAndDirs(
-				path,
-				new RegexFileFilter("^(.*?)"), 
-				DirectoryFileFilter.DIRECTORY
-				);
-		return files;
-	}
-
-	private static List<String> getFilesFromJar(String path) throws IOException{
-		CodeSource src = FronendBaseTemplateGenerator.class.getProtectionDomain().getCodeSource();
-		List<String> list = new ArrayList<String>();
-		if( src != null ) {
-			java.net.URL jar = src.getLocation();
-			ZipInputStream zip = new ZipInputStream( jar.openStream());
-			ZipEntry ze = null;
-
-			while( ( ze = zip.getNextEntry() ) != null ) {
-				String entryName = ze.getName();
-				if( entryName.startsWith("BOOT-INF/classes" + path) && entryName.endsWith(".ftl") ) {
-					list.add( entryName );
-				}
-			}
-		}
-		return list;
-	}
+	
 
 	public static File[] getNestedFolders(String folderPath) {
 		File dir = new File(folderPath);

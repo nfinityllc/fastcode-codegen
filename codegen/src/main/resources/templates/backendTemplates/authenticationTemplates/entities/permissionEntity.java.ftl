@@ -46,28 +46,6 @@ public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#
         this.displayName = displayName;
     }
 
-
-    public void addRole(RolesEntity role) {
-        roles.add(role);
-        role.getPermissions().add(this);
-    }
-
-    public void removeRole(RolesEntity role) {
-        roles.remove(role);
-        role.getPermissions().remove(this);
-    }
-<#if AuthenticationType == "database">
-    public void addUser(UsersEntity user) {
-        users.add(user);
-        user.getPermissions().add(this);
-    }
-
-    public void removeUser(UsersEntity user) {
-        users.remove(user);
-        user.getPermissions().remove(this);
-    }
-</#if>
-
     @Basic
     @Column(name = "Name", nullable = false, length = 128)
     public String getName() {
@@ -91,27 +69,4 @@ public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#
         return 31;
     }
 
-    @ManyToMany(mappedBy = "permissions")
-    public Set<RolesEntity> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<RolesEntity> roles) {
-        this.roles = roles;
-    }
-
-    private Set<RolesEntity> roles = new HashSet<>();
-
-<#if AuthenticationType == "database">
-    @ManyToMany(mappedBy = "permissions")
-    public Set<UsersEntity> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<UsersEntity> users) {
-        this.users = users;
-    }
-
-    private Set<UsersEntity> users = new HashSet<>();
-</#if>
 }

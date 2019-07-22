@@ -440,7 +440,6 @@ public class [=ClassName]AppServiceTest {
 	public void Add[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]AlreadyHas[=relationValue.eName]_ReturnFalse() {
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-		[=relationValue.eName?uncap_first].add[=ClassName]([=ClassName?uncap_first]);
 
 		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
 		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?uncap_first]);

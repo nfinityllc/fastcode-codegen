@@ -2,7 +2,6 @@ package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Permissions.PermissionAppService;
 import [=PackageName].application.Authorization.Permissions.Dto.FindPermissionByIdOutput;
-import [=PackageName].application.Authorization.Roles.RoleAppService;
 import [=PackageName].application.Authorization.Roles.Dto.FindRoleByIdOutput;
 import [=PackageName].application.Authorization.Users.UserAppService;
 import [=PackageName].application.Authorization.Users.Dto.*;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class UserController {
     private PermissionAppService permissionAppService;
 	
 	@Autowired
-	private RoleAppService roleAppService;
+    private PasswordEncoder pEncoder;
 
 	@Autowired
 	private LoggingHelper logHelper;
@@ -58,6 +58,8 @@ public class UserController {
 	            throw new EntityExistsException(
 	                    String.format("There already exists a user with email address=%s", user.getUserName()));
 	        }
+	        
+	    user.setPassword(pEncoder.encode(user.getPassword()));
 	    CreateUserOutput output= userAppService.Create(user);
 		if(output==null)
 		{

@@ -118,28 +118,28 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   private Set<[=relationValue.eName]Entity> [=relationValue.fName] = new HashSet<>();
   </#if>
   </#if>
+  <#if parent?keep_before("-") == relationValue.eName> 
  
-  <#if parent?keep_before("-") == relationValue.eName>
-  public void add[=relationValue.eName]([=relationValue.eName]Entity input) {
-    [=relationValue.fName].add(input);
-    input.get[=ClassName]().add(this);
-  }
-
-  public void remove[=relationValue.eName]([=relationValue.eName]Entity input) {
-    [=relationValue.fName].remove(input);
-    input.get[=ClassName]().remove(this);
-  }
-    
-  @ManyToMany(mappedBy = "[=ClassName?lower_case]")
-  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]() {
-    return [=relationValue.fName];
-  }
-  public void set[=relationValue.eName](Set<[=relationValue.eName]Entity> [=relationValue.fName]) {
-    this.[=relationValue.fName] = [=relationValue.fName];
-  }
-
-  private Set<[=relationValue.eName]Entity> [=relationValue.fName] = new HashSet<>();
-  </#if>
+//  public void add[=relationValue.eName]([=relationValue.eName]Entity input) { 
+//    [=relationValue.fName].add(input); 
+//    input.get[=ClassName]().add(this); 
+//  } 
+ 
+//  public void remove[=relationValue.eName]([=relationValue.eName]Entity input) { 
+//    [=relationValue.fName].remove(input); 
+//    input.get[=ClassName]().remove(this); 
+//  } 
+     
+  @ManyToMany(mappedBy = "[=ClassName?lower_case]") 
+  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]() { 
+    return [=relationValue.fName]; 
+  } 
+  public void set[=relationValue.eName](Set<[=relationValue.eName]Entity> [=relationValue.fName]) { 
+    this.[=relationValue.fName] = [=relationValue.fName]; 
+  } 
+ 
+  private Set<[=relationValue.eName]Entity> [=relationValue.fName] = new HashSet<>(); 
+  </#if> 
   </#list>
   </#if>
   </#if>

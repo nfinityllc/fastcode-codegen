@@ -108,27 +108,30 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 						key: '[=relationValue.joinColumn]',
 						value: undefined
 					},
-					<#if relationValue.relation == "ManyToMany">
-					<#list RelationInput as relationInput>
+				<#if relationValue.relation == "ManyToMany">
+				<#list RelationInput as relationInput>
 	  			<#assign parent = relationInput>
-	  			<#if parent?keep_after("-") == relationValue.eName>
-					isParent: true,
-					<#else>
-					isParent: false,
-					</#if>
-					</#list>
-					<#elseif relationValue.relation == "OneToMany">
-					isParent: true,
-					<#else>
-					isParent: false,
-					</#if>
-					table: '[=relationValue.eName?lower_case]',
-					type: '[=relationValue.relation]',
+	  			<#if relationKey == parent>
+  				<#if parent?keep_after("-") == relationValue.eName>
+						isParent: true,
+				</#if>
+          		</#if>
+			<#if parent?keep_before("-") == relationValue.eName>
+						isParent: false,
+				</#if>
+				</#list>
+				<#elseif relationValue.relation == "OneToMany">
+						isParent: true,
+				<#elseif relationValue.relation == "ManyToOne">
+						isParent: false,
+				</#if>
+						table: '[=relationValue.eName?lower_case]',
+						type: '[=relationValue.relation]',
 					<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-					service: this.[=relationValue.eName?lower_case]Service,
+						service: this.[=relationValue.eName?lower_case]Service,
 					</#if>
 					<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-					descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
+						descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
 			  	</#if>
 				},
 			</#list>

@@ -110,17 +110,20 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 					value: undefined
 				},
 				<#if relationValue.relation == "ManyToMany">
-				<#list RelationInput as relationInput>
+			<#list RelationInput as relationInput>
   			<#assign parent = relationInput>
+  			<#if relationKey == parent>
   			<#if parent?keep_after("-") == relationValue.eName>
 				isParent: true,
-				<#else>
+			</#if>
+            </#if>
+			<#if parent?keep_before("-") == relationValue.eName>
 				isParent: false,
 				</#if>
 				</#list>
 				<#elseif relationValue.relation == "OneToMany">
 				isParent: true,
-				<#else>
+				<#elseif relationValue.relation == "ManyToOne">
 				isParent: false,
 				</#if>
 				table: '[=relationValue.eName?lower_case]',

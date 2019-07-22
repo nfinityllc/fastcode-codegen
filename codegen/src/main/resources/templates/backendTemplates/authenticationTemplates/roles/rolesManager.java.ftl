@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import [=CommonModulePackage].Search.SearchFields;
 
 import java.util.Iterator;
@@ -27,68 +26,64 @@ public class RolesManager implements IRolesManager {
 	private IRolesRepository _rolesRepository;
 
 	// CRUD Operations
-	@Transactional
 	public RolesEntity Create(RolesEntity role) {
 		return _rolesRepository.save(role);
 	}
 
-	@Transactional
 	public void Delete(RolesEntity role) {
 		_rolesRepository.delete(role);
 	}
 
-	@Transactional
 	public RolesEntity Update(RolesEntity role) {
 		return _rolesRepository.save(role);
 	}
 
-	@Transactional
 	public RolesEntity FindById(Long roleId) {
 		return _rolesRepository.findById(roleId.longValue());
 	}
 
-	@Transactional
 	public Page<RolesEntity> FindAll(Predicate predicate, Pageable pageable) {
 		return _rolesRepository.findAll(predicate, pageable);
 	}
 
 	// Internal Operations
-
-	@Transactional
 	public RolesEntity FindByRoleName(String roleName) {
 
 		return _rolesRepository.findByRoleName(roleName);
 	}
 
     //Permissions
-    @Transactional
 	public Page<PermissionsEntity> FindPermissions(Long rolesId,List<SearchFields> search,String operator,Pageable pageable) {
 
 		return _rolesRepository.getAllPermissions(rolesId,search,operator,pageable);
 	}
-    @Transactional
+   
 	public Boolean AddPermission(RolesEntity roles, PermissionsEntity permissions) {
 		
-		Set<RolesEntity> entitySet = permissions.getRoles();
+		Set<PermissionsEntity> sp = roles.getPermissions();
 
-		if (!entitySet.contains(roles)) {
-			permissions.addRole(roles);
+		if (!sp.contains(permissions)) {
+		    sp.add(permissions);
+			roles.setPermissions(sp);
 		} else {
 			return false;
-		//	throw new EntityExistsException("The roles already has the permissions");
+			//throw new EntityExistsException("The role already has the permission either individually or a part of the role");
 		}
-		_permissionsRepository.save(permissions);
+		_rolesRepository.save(roles);
 		return true;
 	}
 
-	@Transactional
 	public void RemovePermission(RolesEntity roles, PermissionsEntity permissions) {
+	
+		Set<PermissionsEntity> sp = roles.getPermissions();
 
-		permissions.removeRole(roles);
-		_permissionsRepository.save(permissions);
+        if (sp.contains(permissions)) {
+            sp.remove(permissions);
+            roles.setPermissions(sp);
+        }
+        _rolesRepository.save(roles);
 	}
 
-	@Transactional
 	public PermissionsEntity GetPermissions(Long rolesId, Long permissionsId) {
 
 		RolesEntity foundRecord = _rolesRepository.findById(rolesId.longValue());

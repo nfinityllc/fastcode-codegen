@@ -9,6 +9,12 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+<#if EmailModule!false>
+import { IpEmailBuilderModule } from 'ip-email-builder';
+</#if>
+<#if SchedulerModule!false>
+import { SchedulerModule } from 'scheduler';
+</#if>
 
 import {
   MatButtonModule, MatToolbarModule, MatSidenavModule,
@@ -86,6 +92,17 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatSnackBarModule,
     MatChipsModule,
     NgxMaterialTimepickerModule.forRoot(),
+    <#if EmailModule!false>
+    IpEmailBuilderModule.forRoot({
+      xApiKey: 't7HdQfZjGp6R96fOV4P8v18ggf6LLTQZ1puUI2tz',
+      apiPath:environment.apiUrl
+    }),
+    </#if>
+    <#if SchedulerModule!false>
+    SchedulerModule.forRoot({
+      apiPath: environment.apiUrl
+    }),
+    </#if>
     FastCodeCoreModule.forRoot({
     	apiUrl: environment.apiUrl
     }),

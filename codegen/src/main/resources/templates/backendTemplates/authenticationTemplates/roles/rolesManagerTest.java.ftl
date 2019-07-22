@@ -135,8 +135,8 @@ public class RoleManagerTest {
 		RolesEntity roles = mock(RolesEntity.class);
 		PermissionsEntity permissions = mock(PermissionsEntity.class);
 		
-		Set<RolesEntity> su = permissions.getRoles();
-		Mockito.when(permissions.getRoles()).thenReturn(su);
+		Set<PermissionsEntity> sp = roles.getPermissions();
+		Mockito.when(roles.getPermissions()).thenReturn(sp);
         Assertions.assertThat(roleManager.AddPermission(roles, permissions)).isEqualTo(true);
 
 	}
@@ -146,11 +146,11 @@ public class RoleManagerTest {
 		
 		RolesEntity roles = mock(RolesEntity.class);
 		PermissionsEntity permissions = mock(PermissionsEntity.class);
-		Set<RolesEntity> su = permissions.getRoles();
-		su.add(roles);
+		Set<PermissionsEntity> sp = roles.getPermissions();
+		sp.add(permissions);
 		
-		 Mockito.when(permissions.getRoles()).thenReturn(su);
-		 Assertions.assertThat(roleManager.AddPermission(roles, permissions)).isEqualTo(false);
+		Mockito.when(roles.getPermissions()).thenReturn(sp);
+		Assertions.assertThat(roleManager.AddPermission(roles, permissions)).isEqualTo(false);
 
 	}
 
@@ -160,7 +160,7 @@ public class RoleManagerTest {
 		PermissionsEntity permissions = mock(PermissionsEntity.class);
 
 		roleManager.RemovePermission(roles, permissions);
-		verify(_permissionsRepository).save(permissions);
+		verify(_rolesRepository).save(roles);
 	}
 
 

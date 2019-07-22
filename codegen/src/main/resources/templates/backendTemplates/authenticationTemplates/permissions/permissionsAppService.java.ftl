@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -31,6 +33,7 @@ public class PermissionAppService implements IPermissionAppService {
 
 	// CRUD Operations
 	// ReST API Call => POST /permissions
+	@Transactional(propagation = Propagation.REQUIRED)
 	public CreatePermissionOutput Create(CreatePermissionInput permission) {
 
 		PermissionsEntity re = permissionMapper.CreatePermissionInputToPermissionsEntity(permission);
@@ -39,6 +42,7 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 
 	// ReST API Call => DELETE /permissions/1
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void Delete(Long pid) {
 
 		PermissionsEntity existing = _permissionsManager.FindById(pid);
@@ -47,6 +51,7 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 
 	// ReST API Call => PUT /permissions/1
+	@Transactional(propagation = Propagation.REQUIRED)
 	public UpdatePermissionOutput Update(Long pid, UpdatePermissionInput permission) {
 
 		PermissionsEntity re = permissionMapper.UpdatePermissionInputToPermissionsEntity(permission);
@@ -55,7 +60,7 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 
 	// ReST API Call => GET /permissions/1
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public FindPermissionByIdOutput FindById(Long pid) {
 
 		PermissionsEntity foundPermission = _permissionsManager.FindById(pid);
@@ -66,6 +71,7 @@ public class PermissionAppService implements IPermissionAppService {
 		return permissionMapper.PermissionsEntityToFindPermissionByIdOutput(foundPermission);
 	}
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public FindPermissionByNameOutput FindByPermissionName(String permissionName) {
 
 		PermissionsEntity foundPermission = _permissionsManager.FindByPermissionName(permissionName);
@@ -77,7 +83,7 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 
 	// ReST API Call => GET /permissions/?offset=2&limit=20&sort=id,asc
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<FindPermissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception{
 
 		Page<PermissionsEntity> foundPermissions = _permissionsManager.FindAll(Search(search), pageable);
@@ -93,7 +99,7 @@ public class PermissionAppService implements IPermissionAppService {
 		return output;
 	}
 
-	public BooleanBuilder Search(SearchCriteria search) throws Exception {
+	BooleanBuilder Search(SearchCriteria search) throws Exception {
 
 		QPermissionsEntity permission=QPermissionsEntity.permissionsEntity;
 		if(search != null) {
@@ -127,7 +133,7 @@ public class PermissionAppService implements IPermissionAppService {
 		return null;
 	}
 	
-	public BooleanBuilder searchAllProperties(QPermissionsEntity permission,String value,String operator) {
+	BooleanBuilder searchAllProperties(QPermissionsEntity permission,String value,String operator) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
@@ -156,7 +162,8 @@ public class PermissionAppService implements IPermissionAppService {
 		}
 
 	}
-	public BooleanBuilder searchSpecificProperty(QPermissionsEntity permission,List<String> list,String value,String operator)  {
+	
+	BooleanBuilder searchSpecificProperty(QPermissionsEntity permission,List<String> list,String value,String operator)  {
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -177,7 +184,7 @@ public class PermissionAppService implements IPermissionAppService {
 		return builder;
 	}
 	
-	public BooleanBuilder searchKeyValuePair(QPermissionsEntity permission, Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
+	BooleanBuilder searchKeyValuePair(QPermissionsEntity permission, Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {

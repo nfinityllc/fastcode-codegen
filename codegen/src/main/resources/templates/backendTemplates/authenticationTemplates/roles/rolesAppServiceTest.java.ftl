@@ -190,7 +190,7 @@ public class RoleAppServiceTest {
 	public void AddPermission_IfRoleIdAndPermissionIdIsNotNullAndRoleAlreadyHasPermission_ReturnFalse() {
 		RolesEntity role = mock(RolesEntity.class);
 		PermissionsEntity permission = mock(PermissionsEntity.class);
-		permission.addRole(role);
+//		permission.addRole(role);
 
 		Mockito.when(roleManager.FindById(anyLong())).thenReturn(role);
 		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permission);

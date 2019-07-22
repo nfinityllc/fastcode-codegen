@@ -1,16 +1,10 @@
 package com.nfinity.codegen;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,7 +24,7 @@ import org.xml.sax.SAXException;
 
 public class ModifyPomFile {
 
-	public static void update(String path,String authenticationType) {
+	public static void update(String path,String authenticationType,Boolean scheduler) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
 		Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
@@ -41,6 +35,12 @@ public class ModifyPomFile {
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
 		Dependency common_module = new Dependency("com.nfinity","common-module","1.0");
+		
+		if(scheduler)
+		{
+			Dependency quartz_scheduler = new Dependency("org.quartz-scheduler","quartz","2.3.0");
+			dependencies.add(quartz_scheduler);
+		}
 
 		if(authenticationType !="none")
 		{
@@ -252,27 +252,27 @@ public class ModifyPomFile {
 		}
 	}
 
-	private static void removeSpringBootMavenPlugin(Node pluginsNode)
-	{
-		NodeList plugins = pluginsNode.getChildNodes();
-		for (int i = 0; i < plugins.getLength(); i++) {
-
-			Node plugin = plugins.item(i);
-			NodeList pluginChilds = plugin.getChildNodes();
-
-			Map<String,Object> pluginMap = new HashMap<String,Object>();
-			for (int j = 0; j < pluginChilds.getLength(); j++) {
-				Node dependencyChild = pluginChilds.item(j);
-				Map<Integer,String> nm = new HashMap<Integer,String>();
-				nm.put(j,dependencyChild.getTextContent());
-				pluginMap.put(dependencyChild.getNodeName(), nm);
-			}
-			if(pluginMap.containsKey("artifactId")) {
-				Map<Integer,String> nm = (Map<Integer, String>) pluginMap.get("artifactId");
-				if(nm.containsValue("spring-boot-maven-plugin")) {
-					pluginsNode.removeChild(plugins.item(i));
-				}
-			}
-		}
-	}
+//	private static void removeSpringBootMavenPlugin(Node pluginsNode)
+//	{
+//		NodeList plugins = pluginsNode.getChildNodes();
+//		for (int i = 0; i < plugins.getLength(); i++) {
+//
+//			Node plugin = plugins.item(i);
+//			NodeList pluginChilds = plugin.getChildNodes();
+//
+//			Map<String,Object> pluginMap = new HashMap<String,Object>();
+//			for (int j = 0; j < pluginChilds.getLength(); j++) {
+//				Node dependencyChild = pluginChilds.item(j);
+//				Map<Integer,String> nm = new HashMap<Integer,String>();
+//				nm.put(j,dependencyChild.getTextContent());
+//				pluginMap.put(dependencyChild.getNodeName(), nm);
+//			}
+//			if(pluginMap.containsKey("artifactId")) {
+//				Map<Integer,String> nm = (Map<Integer, String>) pluginMap.get("artifactId");
+//				if(nm.containsValue("spring-boot-maven-plugin")) {
+//					pluginsNode.removeChild(plugins.item(i));
+//				}
+//			}
+//		}
+//	}
 }

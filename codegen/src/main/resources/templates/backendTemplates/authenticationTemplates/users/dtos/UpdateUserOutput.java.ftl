@@ -33,7 +33,7 @@ public class UpdateUserOutput {
     private java.util.Date lastModificationTime;
 </#if>
 	private Long roleId;       
-    private String roleName;
+    private String rolesName;
     
     public Long getRoleId() {
    		return roleId;
@@ -42,12 +42,12 @@ public class UpdateUserOutput {
   	public void setRoleId(Long roleId){
   		 this.roleId = roleId;
     }
-    public String getRoleName() {
-    	return roleName;
+    public String getRolesName() {
+    	return rolesName;
     }
 
-  	public void setRoleName(String roleName){
-   		this.roleName = roleName;
+  	public void setRolesName(String rolesName){
+   		this.rolesName = rolesName;
   	}
     public Long getId() {
         return id;

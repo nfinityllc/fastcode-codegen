@@ -11,6 +11,8 @@ public class UserInput {
 	String connectionStr;
 	List<String> tablesList;
 	Boolean audit;
+	Boolean email;
+	Boolean scheduler;
 	Boolean history;
 	String authenticationType;
 	
@@ -69,6 +71,18 @@ public class UserInput {
 	}
 	public void setHistory(Boolean history) {
 		this.history = history;
+	}
+	public Boolean getEmail() {
+		return email;
+	}
+	public void setEmail(Boolean email) {
+		this.email = email;
+	}
+	public Boolean getScheduler() {
+		return scheduler;
+	}
+	public void setScheduler(Boolean scheduler) {
+		this.scheduler = scheduler;
 	}
 	public String getAuthenticationType() {
 		return authenticationType;

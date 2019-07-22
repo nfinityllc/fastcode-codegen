@@ -305,7 +305,7 @@ public class UserAppServiceTest {
 	public void AddPermissions_IfUsersIdAndPermissionsIdIsNotNullAndUsersAlreadyHasPermissions_ReturnFalse() {
 		UsersEntity users = mock(UsersEntity.class);
 		PermissionsEntity permissions = mock(PermissionsEntity.class);
-		permissions.addUser(users);
+//		permissions.addUser(users);
 
 		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
 		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permissions);

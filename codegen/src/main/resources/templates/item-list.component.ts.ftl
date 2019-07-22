@@ -13,8 +13,10 @@ import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogSe
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
+<#if relationKey == parent>
 <#if parent?keep_before("-") == relationValue.eName>
 import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
+</#if>
 </#if>
 </#list>
 <#elseif relationValue.relation == "ManyToOne">
@@ -102,9 +104,11 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		<#if relationValue.relation == "ManyToMany">
 		<#list RelationInput as relationInput>
 		<#assign parent = relationInput>
+		<#if relationKey == parent>
 		<#if parent?keep_before("-") == relationValue.eName>
 		public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
 		</#if>
+        </#if>
 		</#list>
 		<#elseif relationValue.relation == "ManyToOne">
 		public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
@@ -140,9 +144,12 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				<#if relationValue.relation == "ManyToMany">
 				<#list RelationInput as relationInput>
 				<#assign parent = relationInput>
-				<#if parent?keep_after("-") == relationValue.eName>
+				<#if relationKey == parent>
+  				<#if parent?keep_after("-") == relationValue.eName>
 				isParent: true,
-				<#else>
+				</#if>
+            	</#if>
+				<#if parent?keep_before("-") == relationValue.eName>
 				isParent: false,
 				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
 				referencedDescriptiveField: '[=relationValue.entityDescriptionField.fieldName]',

@@ -158,8 +158,8 @@ public class [=ClassName]ManagerTest {
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
 		
-		Set<[=EntityClassName]> su = [=relationValue.eName?uncap_first].get[=ClassName]();
-		Mockito.when([=relationValue.eName?uncap_first].get[=ClassName]()).thenReturn(su);
+		Set<[=relationValue.eName]Entity> su = [=ClassName?uncap_first].get[=relationValue.eName]();
+		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn(su);
         Assertions.assertThat(_[=ClassName?uncap_first]Manager.Add[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first])).isEqualTo(true);
 
 	}
@@ -169,11 +169,11 @@ public class [=ClassName]ManagerTest {
 		
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-		Set<[=EntityClassName]> su = [=relationValue.eName?uncap_first].get[=ClassName]();
-		su.add([=ClassName?uncap_first]);
+        Set<[=relationValue.eName]Entity> su = [=ClassName?uncap_first].get[=relationValue.eName]();
+		su.add([=relationValue.eName?uncap_first]);
 		
-		 Mockito.when([=relationValue.eName?uncap_first].get[=ClassName]()).thenReturn(su);
-		 Assertions.assertThat(_[=ClassName?uncap_first]Manager.Add[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first])).isEqualTo(false);
+		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn(su);
+        Assertions.assertThat(_[=ClassName?uncap_first]Manager.Add[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first])).isEqualTo(false);
 
 	}
 
@@ -183,7 +183,7 @@ public class [=ClassName]ManagerTest {
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
 
 		_[=ClassName?uncap_first]Manager.Remove[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first]);
-		verify(_[=relationValue.eName?uncap_first]Repository).save([=relationValue.eName?uncap_first]);
+		verify(_[=ClassName?uncap_first]Repository).save([=ClassName?uncap_first]);
 	}
 
 

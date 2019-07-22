@@ -28,9 +28,14 @@ public class CreateUserInput {
     @NotNull(message = "IsActive Should not be null")
     private Boolean isActive;
     
+    @NotNull(message = "Password Should not be null")
+    private String password;
+    
     private Long roleId;
 
-
+    public CreateUserInput() {
+    }
+    
     public Long getRoleId() {
    	 return roleId;
     }
@@ -39,7 +44,12 @@ public class CreateUserInput {
   		this.roleId = roleId;
   	}
 
-    public CreateUserInput() {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
     }
 
     public String getEmailAddress() {

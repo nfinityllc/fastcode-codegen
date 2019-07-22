@@ -43,6 +43,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page; 
 import org.springframework.data.domain.Pageable; 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Validated
@@ -84,6 +86,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	@Autowired
 	private [=ClassName]Mapper mapper;
 
+    @Transactional(propagation = Propagation.REQUIRED)
 	public Create[=ClassName]Output Create(Create[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
@@ -109,6 +112,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Update[=ClassName]Output Update(Long id , Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
@@ -134,12 +139,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToUpdate[=ClassName]Output(updated[=ClassName]);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void Delete(Long id) {
 
 		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById(id) ; 
 
 		_[=ClassName?uncap_first]Manager.Delete(existing);
 	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public Find[=ClassName]ByIdOutput FindById(Long id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById(id);
@@ -154,7 +163,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	<#if relationValue.relation == "ManyToOne">
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id) {
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
@@ -170,13 +179,15 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     <#assign parent = relationInput>
     <#if relationKey == parent>
     <#if parent?keep_after("-") == relationValue.eName>
+    @Transactional(propagation = Propagation.REQUIRED)
     public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
 
 		return _[=ClassName?uncap_first]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
 	}
-
+	
+    @Transactional(propagation = Propagation.REQUIRED)
 	public void Remove[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -186,7 +197,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]/3
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -205,7 +216,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id,SearchCriteria search,String operator,Pageable pageable) throws Exception{
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -253,7 +264,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	
-	public BooleanBuilder Search(SearchCriteria search) throws Exception {
+	BooleanBuilder Search(SearchCriteria search) throws Exception {
 
 		Q[=EntityClassName] [=ClassName?uncap_first]= Q[=EntityClassName].[=EntityClassName?uncap_first];
 		if(search != null) {
@@ -287,7 +298,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return null;
 	}
 	
-	public BooleanBuilder searchAllProperties(Q[=EntityClassName] [=ClassName?uncap_first],String value,String operator) {
+	BooleanBuilder searchAllProperties(Q[=EntityClassName] [=ClassName?uncap_first],String value,String operator) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
@@ -357,7 +368,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 	}
 	
-	public BooleanBuilder searchSpecificProperty(Q[=EntityClassName] [=ClassName?uncap_first],List<String> list,String value,String operator)  {
+	BooleanBuilder searchSpecificProperty(Q[=EntityClassName] [=ClassName?uncap_first],List<String> list,String value,String operator)  {
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -400,7 +411,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return builder;
 	}
 	
-	public BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
+	BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {

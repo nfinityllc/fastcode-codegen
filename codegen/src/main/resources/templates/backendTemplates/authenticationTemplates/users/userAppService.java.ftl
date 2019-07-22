@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -48,6 +50,7 @@ static final int case1=1;
 	@Autowired
 	private UserMapper userMapper;
 
+    @Transactional(propagation = Propagation.REQUIRED)
 	public CreateUserOutput Create(CreateUserInput input) {
 
 		UsersEntity users = userMapper.CreateUserInputToUsersEntity(input);
@@ -61,6 +64,8 @@ static final int case1=1;
 		UsersEntity createdUsers = userManager.Create(users);
 		return userMapper.UsersEntityToCreateUserOutput(createdUsers);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public UpdateUserOutput Update(Long id , UpdateUserInput input) {
 
 		UsersEntity users = userMapper.UpdateUserInputToUsersEntity(input);
@@ -74,12 +79,16 @@ static final int case1=1;
 		UsersEntity updatedUsers = userManager.Update(users);
 		return userMapper.UsersEntityToUpdateUserOutput(updatedUsers);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void Delete(Long id) {
 
 		UsersEntity existing = userManager.FindById(id) ; 
 
 		userManager.Delete(existing);
 	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public FindUserByIdOutput FindById(Long id) {
 
 		UsersEntity foundUsers = userManager.FindById(id);
@@ -91,6 +100,7 @@ static final int case1=1;
 		return output;
 	}
 	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public FindUserByNameOutput FindByUserName(String userName) {
 
 		UsersEntity foundUser = userManager.FindByUserName(userName);
@@ -103,7 +113,7 @@ static final int case1=1;
 
 	 //Roles
 	// ReST API Call - GET /users/1/roles
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public GetRoleOutput GetRoles(Long usersId) {
 		UsersEntity foundUsers = userManager.FindById(usersId);
 		if (foundUsers == null) {
@@ -113,7 +123,9 @@ static final int case1=1;
 		RolesEntity re = userManager.GetRoles(usersId);
 		return userMapper.RolesEntityToGetRoleOutput(re, foundUsers);
 	}
+	
     //Permissions
+    @Transactional(propagation = Propagation.REQUIRED)
     public Boolean AddPermissions(Long usersId, Long permissionsId) {
 		UsersEntity foundUsers = userManager.FindById(usersId);
 		PermissionsEntity foundPermissions = permissionManager.FindById(permissionsId);
@@ -121,6 +133,7 @@ static final int case1=1;
 		return userManager.AddPermissions(foundUsers, foundPermissions);
 	}
 
+    @Transactional(propagation = Propagation.REQUIRED)
 	public void RemovePermissions(Long usersId, Long permissionsId) {
 
 		UsersEntity foundUsers = userManager.FindById(usersId);
@@ -130,7 +143,7 @@ static final int case1=1;
 	}
 
 	// ReST API Call => GET /users/1/permissions/3
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public GetPermissionOutput GetPermissions(Long usersId, Long permissionsId) {
 
 		UsersEntity foundUsers = userManager.FindById(usersId);
@@ -149,7 +162,7 @@ static final int case1=1;
 	}
 
 	// ReST API Call => GET /users/1/permissions
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<GetPermissionOutput> GetPermissionsList(Long usersId,SearchCriteria search,String operator,Pageable pageable) throws Exception{
 
 		UsersEntity foundUsers = userManager.FindById(usersId);
@@ -179,6 +192,7 @@ static final int case1=1;
 		permissionsAppService.checkProperties(keysList);
 	}
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<FindUserByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<UsersEntity> foundUsers = userManager.FindAll(Search(search), pageable);
@@ -192,7 +206,7 @@ static final int case1=1;
 		return output;
 	}
 	
-	public BooleanBuilder Search(SearchCriteria search) throws Exception {
+	BooleanBuilder Search(SearchCriteria search) throws Exception {
 
 		QUsersEntity users=QUsersEntity.usersEntity;
 		if(search != null) {
@@ -226,7 +240,7 @@ static final int case1=1;
 		return null;
 	}
 	
-	public BooleanBuilder searchAllProperties(QUsersEntity users,String value,String operator) {
+	BooleanBuilder searchAllProperties(QUsersEntity users,String value,String operator) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
@@ -265,7 +279,8 @@ static final int case1=1;
 			}
 		}
 	}
-	public BooleanBuilder searchSpecificProperty(QUsersEntity users,List<String> list,String value,String operator)  {
+	
+	BooleanBuilder searchSpecificProperty(QUsersEntity users,List<String> list,String value,String operator)  {
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -313,7 +328,7 @@ static final int case1=1;
 		return builder;
 	}
 	
-	public BooleanBuilder searchKeyValuePair(QUsersEntity users, Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
+	BooleanBuilder searchKeyValuePair(QUsersEntity users, Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {

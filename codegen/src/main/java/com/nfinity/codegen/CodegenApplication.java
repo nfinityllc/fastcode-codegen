@@ -41,6 +41,12 @@ public class CodegenApplication implements ApplicationRunner {
 		input.setAudit(root.get("audit") == null
 				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
 				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+		input.setEmail(root.get("email") == null
+				? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
+				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+		input.setScheduler(root.get("scheduler") == null
+				? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false)
+				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 		input.setHistory(root.get("h") == null
 				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
 				: (root.get("h").toLowerCase().equals("true") ? true : false));
@@ -96,8 +102,16 @@ public class CodegenApplication implements ApplicationRunner {
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
 				input.getAudit());
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
-
-		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client");
+        if(input.getEmail())
+        {
+        	EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
+        }
+        if(input.getScheduler())
+        {
+        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
+        }
+		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler() );
+		
 		
 		if(!input.getAuthenticationType().equals("none"))
 		{
@@ -110,7 +124,7 @@ public class CodegenApplication implements ApplicationRunner {
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
 				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
-				input.getSchemaName(),input.getAuthenticationType());
+				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler());
 		if (configProperties.getUseGit() != null
 				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
 				: false) {

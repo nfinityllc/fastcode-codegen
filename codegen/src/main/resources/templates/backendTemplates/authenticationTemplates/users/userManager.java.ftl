@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import [=CommonModulePackage].Search.SearchFields;
 
 import java.util.Iterator;
@@ -35,72 +34,73 @@ public class UserManager implements IUserManager {
 
 
 	// CRUD Operations
-	@Transactional
 	public UsersEntity Create(UsersEntity user) {
 		return _usersRepository.save(user);
 	}
 
-	@Transactional
 	public void Delete(UsersEntity user) {
 		_usersRepository.delete(user);
 	}
 
-	@Transactional
 	public UsersEntity Update(UsersEntity user) {
 		return _usersRepository.save(user);
 	}
 
-	@Transactional
 	public UsersEntity FindById(Long userId) {
 		return  _usersRepository.findById(userId.longValue());
 	}
 
-	@Transactional
 	public Page<UsersEntity> FindAll(Predicate predicate, Pageable pageable) {
 		return _usersRepository.findAll(predicate, pageable);
 	}
 
-	@Transactional
 	public UsersEntity FindByUserName(String userName) {
 		return  _usersRepository.findByUserName(userName);
 	}
 
  //Roles
-	@Transactional
 	public RolesEntity GetRoles(Long usersId) {
 		
 		UsersEntity entity = _usersRepository.findById(usersId.longValue());
 		return entity.getRole();
 	}
+	
     //Permissions
-    @Transactional
 	public Page<PermissionsEntity> FindPermissions(Long usersId,List<SearchFields> search,String operator,Pageable pageable) {
 
 		return _usersRepository.getAllPermissions(usersId,search,operator,pageable);
 	}
-    @Transactional
-	public Boolean AddPermissions(UsersEntity users, PermissionsEntity permissions) {
-		
-		Set<UsersEntity> entitySet = permissions.getUsers();
 
-		if (!entitySet.contains(users)) {
-			permissions.addUser(users);
+	public Boolean AddPermissions(UsersEntity users, PermissionsEntity permissions) {
+	// We should not grant the permission if the user is in a role that already has the permission or if the permission is already directly assigned to the user.
+
+		Set<PermissionsEntity> sp = users.getRole().getPermissions();
+		Set<PermissionsEntity> up = users.getPermissions();
+
+		if (!sp.contains(permissions)) {
+			if(!up.contains(permissions)) {
+				up.add(permissions);
+				users.setPermissions(up);
+			}
 		} else {
 			return false;
-		//	throw new EntityExistsException("The users already has the permissions");
 		}
-		_permissionsRepository.save(permissions);
+		_usersRepository.save(users);
 		return true;
 	}
 
-	@Transactional
 	public void RemovePermissions(UsersEntity users, PermissionsEntity permissions) {
+		// We should remove the permission if it exists individually (not a part of the role permission set).
 
-		permissions.removeUser(users);
-		_permissionsRepository.save(permissions);
+		Set<PermissionsEntity> up = users.getPermissions();
+
+		if (up.contains(permissions)) {
+			up.remove(permissions);
+			users.setPermissions(up);
+		}
+		_usersRepository.save(users);
 	}
 
-	@Transactional
 	public PermissionsEntity GetPermissions(Long usersId, Long permissionsId) {
 
 		UsersEntity foundRecord = _usersRepository.findById(usersId.longValue());
