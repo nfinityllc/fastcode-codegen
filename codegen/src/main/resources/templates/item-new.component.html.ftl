@@ -1,8 +1,8 @@
 <div class="container">
 	<mat-toolbar class="action-tool-bar" color="primary">
-		<button mat-flat-button (click)="onCancel()">Cancel</button>
+		<button mat-flat-button (click)="onCancel()">{{'GENERAL.ACTIONS.CANCEL' | translate}}</button>
 			<span class="middle">{{title}}</span>
-			<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading">Save</button>
+			<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading">{{'GENERAL.ACTIONS.SAVE' | translate}}</button>
 	</mat-toolbar>
 	<mat-card>
 		<h2>{{title}}</h2>
@@ -17,21 +17,21 @@
 				<mat-datepicker-toggle matSuffix [for]="[=value.fieldName]Picker"></mat-datepicker-toggle>
 				<mat-datepicker #[=value.fieldName]Picker></mat-datepicker>
 				<#if value.isNullable == false>
-				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
+				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">{{'GENERAL.ERRORS.REQUIRED' | translate}}</mat-error>
 				</#if>
 			</mat-form-field>
 		<#elseif value.fieldType?lower_case == "string">
 			<mat-form-field>
 				<input formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
 				<#if value.isNullable == false>
-				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
+				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">{{'GENERAL.ERRORS.REQUIRED' | translate}}</mat-error>
 				</#if>
 			</mat-form-field>
 		<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
 			<mat-form-field>
 				<input type="number" formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
 				<#if value.isNullable == false>
-			    <mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
+			    <mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">{{'GENERAL.ERRORS.REQUIRED' | translate}}</mat-error>
 				</#if>
 			</mat-form-field>
 		</#if>

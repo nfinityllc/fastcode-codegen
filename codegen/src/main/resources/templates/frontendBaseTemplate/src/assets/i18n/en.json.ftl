@@ -1,4 +1,25 @@
 {
+  "GENERAL": {
+        "ACTIONS": {
+            "SAVE": "Save",
+            "CANCEL": "Cancel",
+            "OK": "OK",
+            "DELETE": "Delete",
+            "CONFIRM": "Confirm",
+            "SELECT": "Select",
+            "PAUSE": "Pause",
+            "BACK": "Back",
+            "ACTIONS": "Actions",
+			      "DE-LINK": "De-link"
+        },
+        "ERRORS": {
+            "REQUIRED": "Field is required.",
+            "LENGTH-EXCEEDING": "Length cannot be greater than {{length}}.",
+            "LENGTH-SHORT": "Length cannot be less than {{length}}.",
+            "INVALID-FORMAT": "Invalid format.",
+
+        }
+    },
   "en": "English",
   "fr": "French",
   "MainNav": {

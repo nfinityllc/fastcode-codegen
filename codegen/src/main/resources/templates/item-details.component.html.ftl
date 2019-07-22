@@ -1,11 +1,11 @@
 <div *ngIf="item">
 	<mat-toolbar class="action-tool-bar" color="primary">
 		<button mat-flat-button (click)="onBack()">
-	    Cancel </button>
+	    {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>
 		<span class="middle">{{title}}</span>
 	
 		<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()">
-	    Save </button>
+	    {{'GENERAL.ACTIONS.SAVE' | translate}} </button>
 	</mat-toolbar>
 	<mat-card>
 		<mat-card-content>
@@ -46,6 +46,7 @@
 				
 				<div *ngFor="let association of toMany">
 					<a [routerLink]="['/' + association.table]" [queryParams]="getQueryParams(association)" class="btn btn-link">{{association.table}}</a>
+					<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
 				</div>
 			</form>
 		</mat-card-content>
