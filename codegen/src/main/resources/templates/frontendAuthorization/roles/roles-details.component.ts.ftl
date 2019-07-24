@@ -9,6 +9,7 @@ import { IRoles } from './iroles';
 
 
 import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PickerDialogService } from 'fastCodeCore';
 
 @Component({
   selector: 'app-roles-details',
@@ -25,9 +26,10 @@ export class RolesDetailsComponent extends BaseDetailsComponent<IRoles> implemen
 		public route: ActivatedRoute,
 		public dialog: MatDialog,
 		public global: Globals,
+		public pickerDialogService: PickerDialogService,
 		public dataService: RolesService,
 	) {
-		super(formBuilder, router, route, dialog, global, dataService);
+		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService);
   }
 
 	ngOnInit() {

@@ -10,6 +10,7 @@ import { IUsers } from './iusers';
 import { RolesService } from '../roles/roles.service'
 
 import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PickerDialogService } from 'fastCodeCore';
 
 @Component({
   selector: 'app-users-details',
@@ -27,9 +28,10 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 		public dialog: MatDialog,
 		public global: Globals,
 		public dataService: UsersService,
+		public pickerDialogService: PickerDialogService,
 		public rolesService: RolesService
 	) {
-		super(formBuilder, router, route, dialog, global, dataService);
+		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService);
   }
 
 	ngOnInit() {
@@ -37,27 +39,13 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 		super.ngOnInit();
 	  
 		this.itemForm = this.formBuilder.group({
-			accessFailedCount: [''],
-			authenticationSource: [''],
-			emailAddress: ['', Validators.required],
-			emailConfirmationCode: [''],
 			firstName: ['', Validators.required],
+			lastName: ['', Validators.required],
+			emailAddress: ['', Validators.required],
+			userName: ['', Validators.required],
 			id: [],
 			isActive: [false],
-			isEmailConfirmed: [false],
-			isLockoutEnabled: [false],
-			isPhoneNumberConfirmed: [''],
-			lastLoginTime: [''],
-			lastName: ['', Validators.required],
-			lockoutEndDateUtc: [''],
-			password: [''],
-			passwordResetCode: [''],
-			phoneNumber: [''],
-			profilePictureId: [''],
-			twoFactorEnabled: [false],
-			userName: ['', Validators.required],
 			roleId: [''],
-	        
 	     });
 	    if (this.idParam) {
 	      const id = +this.idParam;
@@ -101,24 +89,12 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 	onItemFetched(item:IUsers) {
 		this.item = item;
 		this.itemForm.patchValue({
-			accessFailedCount: item.accessFailedCount,
-			authenticationSource: item.authenticationSource,
 			emailAddress: item.emailAddress,
-			emailConfirmationCode: item.emailConfirmationCode,
 			firstName: item.firstName,
 			id: item.id,
 			isActive: item.isActive,
-			isEmailConfirmed: item.isEmailConfirmed,
-			isLockoutEnabled: item.isLockoutEnabled,
-			isPhoneNumberConfirmed: item.isPhoneNumberConfirmed,
-			lastLoginTime: item.lastLoginTime? new Date(item.lastLoginTime): null,
 			lastName: item.lastName,
-			lockoutEndDateUtc: item.lockoutEndDateUtc? new Date(item.lockoutEndDateUtc): null,
 			password: item.password,
-			passwordResetCode: item.passwordResetCode,
-			phoneNumber: item.phoneNumber,
-			profilePictureId: item.profilePictureId,
-			twoFactorEnabled: item.twoFactorEnabled,
 			userName: item.userName,
 			roleId: item.roleId,
 		});
