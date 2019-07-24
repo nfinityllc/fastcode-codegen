@@ -125,7 +125,7 @@ public class FronendBaseTemplateGenerator {
 		}
 	}
 
-	
+
 
 	public static File[] getNestedFolders(String folderPath) {
 		File dir = new File(folderPath);
@@ -160,7 +160,7 @@ public class FronendBaseTemplateGenerator {
 	}
 
 	public static void editAngularJsonFile(String path, String clientSubfolder,Boolean flowable) {
-		
+
 		try {
 
 			JSONObject jsonObject = readJsonFile(path);
@@ -181,54 +181,29 @@ public class FronendBaseTemplateGenerator {
 			styles.add(input);
 			styles.add("src/styles/styles.scss");
 
-            String prettyJsonString = beautifyJson(jsonObject); 
+
+
+
+			if(flowable)
+			{
+				projects.put("task-app",getFlowableTaskProjectNode());
+			}
+			projects.put("fastCodeCore",getFastCodeCoreProjectNode());
+			String prettyJsonString = beautifyJson(jsonObject); 
 			writeJsonToFile(path,prettyJsonString);
-               
-			
-			 if(flowable)
-	         {
-	            	addProjectNodeToAngularJsonFile(path,clientSubfolder,"task-app",getFlowableTaskProjectNode());
-	           // projects.put("task-app",getFlowableTaskProjectNode());
-	         }
-			//projects.put("fastCodeCore",getFastCodeCoreProjectNode());
-			addProjectNodeToAngularJsonFile(path,clientSubfolder,"fastCodeCore",getFastCodeCoreProjectNode());
 
-           
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-    }
-	
-    public static void addProjectNodeToAngularJsonFile(String path, String clientSubfolder,String key, JSONObject value)
-    {
-		try {
-			JSONObject jsonObject = readJsonFile(path);
-			
-			JSONObject projects = (JSONObject) jsonObject.get("projects");
-		    
-			projects.put(key,value);
-	    	String prettyJsonString = beautifyJson(jsonObject); 
-			writeJsonToFile(path,prettyJsonString);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
 
 
-		
-    }
-	
-	
 	public static JSONObject getFastCodeCoreProjectNode() throws ParseException {
 		JSONParser parser = new JSONParser();
 		JSONObject fccore = (JSONObject) parser.parse("{\r\n" + 
@@ -273,7 +248,7 @@ public class FronendBaseTemplateGenerator {
 				"    }");
 		return fccore;
 	}
-	
+
 	public static JSONObject getFlowableTaskProjectNode() throws ParseException {
 		JSONParser parser = new JSONParser();
 		JSONObject fccore = (JSONObject) parser.parse("{\r\n" + 
@@ -318,74 +293,75 @@ public class FronendBaseTemplateGenerator {
 				"    }");
 		return fccore;
 	}
-	
+
 	public static void editTsConfigJsonFile(String path,Boolean flowable) {
 
 		try {
 
 
-            JSONObject jsonObject = readJsonFile(path);
-            JSONObject compilerOptions = (JSONObject) jsonObject.get("compilerOptions");
-            
-            JSONArray fccore = new JSONArray();
-            fccore.add("dist/fast-code-core");
-            JSONArray fccore1 = new JSONArray();
-            fccore1.add("dist/fast-code-core/*");
-            
-            
-            JSONObject paths = new JSONObject();
-            paths.put("fastCodeCore",fccore);
-            paths.put("fastCodeCore/*",fccore1);
-            
-            if(flowable)
-            {
-            JSONArray flowable_task = new JSONArray();
-            fccore.add("dist/task-app");
-            JSONArray flowable_task1 = new JSONArray();
-            fccore1.add("dist/task-app/*");
-            paths.put("fastCodeCore/*",flowable_task);
-            paths.put("fastCodeCore/*",flowable_task1);
-            }
-            
-            compilerOptions.put("paths",paths);
-            compilerOptions.put("resolveJsonModule",true);
-            compilerOptions.put("esModuleInterop",true);
-            compilerOptions.put("allowSyntheticDefaultImports",true);
-            
-            
-            String prettyJsonString = beautifyJson(jsonObject); 
-            writeJsonToFile(path,prettyJsonString);
+			JSONObject jsonObject = readJsonFile(path);
+			JSONObject compilerOptions = (JSONObject) jsonObject.get("compilerOptions");
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+			JSONArray fccore = new JSONArray();
+			fccore.add("dist/fast-code-core");
+			JSONArray fccore1 = new JSONArray();
+			fccore1.add("dist/fast-code-core/*");
 
-    }
-	
+
+			JSONObject paths = new JSONObject();
+			paths.put("fastCodeCore",fccore);
+			paths.put("fastCodeCore/*",fccore1);
+
+			if(flowable)
+			{
+				JSONArray flowable_task = new JSONArray();
+				flowable_task.add("dist/task-app");
+				JSONArray flowable_task1 = new JSONArray();
+				flowable_task1.add("dist/task-app/*");
+
+				paths.put("task-app/*",flowable_task);
+				paths.put("task-app/*",flowable_task1);
+			}
+
+			compilerOptions.put("paths",paths);
+			compilerOptions.put("resolveJsonModule",true);
+			compilerOptions.put("esModuleInterop",true);
+			compilerOptions.put("allowSyntheticDefaultImports",true);
+
+
+			String prettyJsonString = beautifyJson(jsonObject); 
+			writeJsonToFile(path,prettyJsonString);
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public static JSONObject readJsonFile(String path) throws IOException, ParseException {
 
 		JSONParser parser = new JSONParser();
 		FileReader fr = new FileReader(path);
-        Object obj = parser.parse(fr);
-        fr.close();
-        return (JSONObject) obj;
+		Object obj = parser.parse(fr);
+		fr.close();
+		return (JSONObject) obj;
 	}
 
 	public static String beautifyJson(JSONObject jsonObject)  {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(jsonObject.toJSONString());
-        return gson.toJson(je);
+		JsonParser jp = new JsonParser();
+		JsonElement je = jp.parse(jsonObject.toJSONString());
+		return gson.toJson(je);
 	}
-	
+
 	public static void writeJsonToFile(String path, String jsonString) throws IOException {
 		FileWriter file = new FileWriter(path);
 		file.write(jsonString);
-        file.close();
+		file.close();
 	}
 }
 

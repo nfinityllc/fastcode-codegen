@@ -38,7 +38,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-		public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service
+		public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
 		</#if>
 		</#list>
 		</#if>

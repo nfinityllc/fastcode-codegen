@@ -46,7 +46,7 @@ public class FlowableFrontendCodeGenerator {
 			templates.put(p, p.substring(0, p.lastIndexOf('.')));
 		}
 
-		generateFiles(templates,null, destination + "/"+ clientSubfolder);
+		generateFiles(templates,null, destination + "/"+ clientSubfolder + "/projects");
 	}
 
     public static void copyDirectoryUsingApache(File from, File to) throws IOException{
