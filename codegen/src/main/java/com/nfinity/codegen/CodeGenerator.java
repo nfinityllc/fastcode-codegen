@@ -178,7 +178,7 @@ public class CodeGenerator {
 		
 	}
 	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType) {
-		List<String> fl = GetFilesFromFolder.getFilesFromFolder(templatePath);
+		List<String> fl = ReadFiles.getFilesFromFolder(templatePath);
 		Map<String, Object> templates = new HashMap<>();
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, templatePath + "/");
