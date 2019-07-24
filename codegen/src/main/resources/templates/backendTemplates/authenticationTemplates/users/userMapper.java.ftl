@@ -25,7 +25,7 @@ public interface UserMapper {
     UsersEntity CreateUserInputToUsersEntity(CreateUserInput userDto);
     
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "rolesName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     CreateUserOutput UsersEntityToCreateUserOutput(UsersEntity entity);
@@ -33,19 +33,19 @@ public interface UserMapper {
     UsersEntity UpdateUserInputToUsersEntity(UpdateUserInput userDto);
 
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "rolesName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     UpdateUserOutput UsersEntityToUpdateUserOutput(UsersEntity entity);
 
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "rolesName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     FindUserByIdOutput UsersEntityToFindUserByIdOutput(UsersEntity entity);
     
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "rolesName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     FindUserByNameOutput UsersEntityToFindUserByNameOutput(UsersEntity entity);
