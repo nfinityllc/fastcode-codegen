@@ -9,6 +9,7 @@ import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ISearchField, operatorType } from './ISearchCriteria';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-list-filters',
@@ -45,7 +46,8 @@ export class ListFiltersComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -158,23 +160,23 @@ export class ListFiltersComponent implements OnInit {
 
         switch (result.operator) {
           case operatorType.Contains:
-            this.selectedDisplayFilterFields.push(event.option.viewValue + ": contains \"" + searchValue + "\"");
+            this.selectedDisplayFilterFields.push(event.option.viewValue + ": " + this.translate.instant('LIST-FILTERS.FIELD-CRITERIA-DISPLAY.CONTAINS') + " \"" + searchValue + "\"");
             break;
           case operatorType.Equals:
-            this.selectedDisplayFilterFields.push(event.option.viewValue + ": is equal to \"" + searchValue + "\"");
+            this.selectedDisplayFilterFields.push(event.option.viewValue + ": " + this.translate.instant('LIST-FILTERS.FIELD-CRITERIA-DISPLAY.EQUALS') + " \"" + searchValue + "\"");
             break;
           case operatorType.NotEqual:
-            this.selectedDisplayFilterFields.push(event.option.viewValue + ": not equal to \"" + searchValue + "\"");
+            this.selectedDisplayFilterFields.push(event.option.viewValue + ": " + this.translate.instant('LIST-FILTERS.FIELD-CRITERIA-DISPLAY.NOT-EQUAL') + " \"" + searchValue + "\"");
             break;
           case operatorType.Range:
             let displayField = event.option.viewValue + ":";
 
             if (startingValue) {
-              displayField = displayField + " from \"" + startingValue + "\"";
+              displayField = displayField + " " + this.translate.instant('LIST-FILTERS.FIELD-CRITERIA-DISPLAY.FROM') +" \"" + startingValue + "\"";
             }
 
             if (endingValue) {
-              displayField = displayField + " to \"" + endingValue + "\"";
+              displayField = displayField + " " + this.translate.instant('LIST-FILTERS.FIELD-CRITERIA-DISPLAY.TO') +" \"" + endingValue + "\"";
             }
             this.selectedDisplayFilterFields.push(displayField);
             break;

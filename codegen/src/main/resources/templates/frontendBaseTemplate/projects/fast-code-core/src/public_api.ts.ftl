@@ -22,3 +22,4 @@ export * from './lib/globals';
 export * from './lib/common/core/generic-api.service'
 export * from './lib/common/core/iassociation'
 export * from './lib/common/core/iassociationentry'
+export * from './lib/fast-code-core-translate-ui.service'

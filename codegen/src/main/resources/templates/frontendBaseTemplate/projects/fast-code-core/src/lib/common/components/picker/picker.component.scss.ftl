@@ -1,4 +1,4 @@
-@import "src/styles/base.scss";
+@import "../../../../styles/base.scss";
 
 .container {
     height: '400px';

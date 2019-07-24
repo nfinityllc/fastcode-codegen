@@ -1,9 +1,9 @@
 <div class="container">
 	<mat-toolbar class="action-tool-bar" color="primary">
-		<button mat-button class="left" (click)="onCancel()">Cancel </button>
-		<span class="middle">Select a {{title}}</span>
+		<button mat-button class="left" (click)="onCancel()">{{'FASTCODE-CORE-GENERAL.ACTIONS.CANCEL' | translate}} </button>
+		<span class="middle">{{'PICKER.TITLE' | translate:{ 'title': title } }}</span>
 
-		<button mat-button class="right" (click)="onOk()">Ok</button>
+		<button mat-button class="right" (click)="onOk()">{{'FASTCODE-CORE-GENERAL.ACTIONS.OK' | translate}}</button>
 	</mat-toolbar>
 	
 	<form class="search-form">
