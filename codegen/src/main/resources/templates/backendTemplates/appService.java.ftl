@@ -62,7 +62,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     @Autowired
 	private [=relationValue.eName]Manager  _[=relationValue.eName?uncap_first]Manager;
 	
-    <#elseif relationValue.relation == "OneToMany">
+    <#elseif ClassName != relationValue.eName && relationValue.relation == "OneToMany">
     @Autowired
     private I[=ClassName]Repository  _[=ClassName?uncap_first]Repository;
     
@@ -349,18 +349,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		 list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]") ||
 		</#if>
 		</#list>
-		<#list Fields as key,value>
-        <#if value.isPrimaryKey==false && value.fieldType?lower_case !="string">
-		 list.get(i).replace("%20","").trim().equals("[=value.fieldName]") ||
-		</#if> 
-        </#list>
-		<#list SearchFields as fields>
-		<#if fields_has_next>
-         list.get(i).replace("%20","").trim().equals("[=fields]") ||
+		
+        <#list Fields?keys as key>
+        <#if Fields[key].isPrimaryKey==false>
+        <#if key_has_next>
+		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]") ||
 		<#else>
-		 list.get(i).replace("%20","").trim().equals("[=fields]")
+		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]")
 		</#if>
-		</#list>
+        </#if> 
+        </#list>
 		)) 
 		{
 		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
