@@ -433,7 +433,6 @@ public class CodeGenerator {
 				if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
 					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
 				}
-				System.out.println(dirPath);
 				File dir = new File(dirPath);
 				if(!dir.exists()) {
 					dir.mkdirs();
@@ -604,7 +603,6 @@ public class CodeGenerator {
 							Template template = cfg.getTemplate("getOutput.java.ftl");
 							File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
 							PrintWriter writer = new PrintWriter(fileName);
-							System.out.println("\nRoot  " + root.toString() );
 							template.process(root, writer);
 							writer.flush();
 							writer.close();
