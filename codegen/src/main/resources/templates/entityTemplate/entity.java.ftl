@@ -75,7 +75,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#else>
   @Basic
   </#if>
-  @Column(name = "[=value.fieldName]", nullable = [=value.isNullable?string('true','false')], length =<#if value.length !=0>[=value.length]<#else>255</#if>)
+  @Column(name = "[=value.fieldName]", nullable = [=value.isNullable?string('true','false')], length =<#if value.length !=0>[=value.length?c]<#else>255</#if>)
   public String get[=value.fieldName?cap_first]() {
   return [=value.fieldName];
   }

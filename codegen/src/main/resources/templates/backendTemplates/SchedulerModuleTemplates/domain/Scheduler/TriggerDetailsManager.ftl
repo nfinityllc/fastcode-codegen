@@ -1,6 +1,6 @@
-package com.nfinity.fastcode.domain.Scheduler;
+package [=PackageName].domain.Scheduler;
 
-import com.nfinity.fastcode.domain.IRepository.ITriggerDetailsRepository;
+import [=PackageName].domain.IRepository.ITriggerDetailsRepository;
 import com.querydsl.core.types.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;

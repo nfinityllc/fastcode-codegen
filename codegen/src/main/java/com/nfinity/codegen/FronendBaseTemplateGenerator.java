@@ -37,11 +37,11 @@ public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
-	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler) {
+	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable) {
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
-		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json");
-		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder);
+		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json",flowable);
+		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder,flowable);
 
 		List<String> fl = GetFilesFromFolder.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
@@ -56,6 +56,7 @@ public class FronendBaseTemplateGenerator {
 		Map<String, Object> root = new HashMap<>();
 		root.put("EmailModule", email);
 		root.put("SchedulerModule", scheduler);
+		root.put("FlowableModule", flowable);
 
 
 		for (String filePath : fl) {
@@ -158,32 +159,41 @@ public class FronendBaseTemplateGenerator {
 		}
 	}
 
-	public static void editAngularJsonFile(String path, String clientSubfolder) {
+	public static void editAngularJsonFile(String path, String clientSubfolder,Boolean flowable) {
 		
 		try {
 
 			JSONObject jsonObject = readJsonFile(path);
-			
-			
-			
-            JSONObject projects = (JSONObject) jsonObject.get("projects");
-            JSONObject project = (JSONObject) projects.get(clientSubfolder);
-            JSONObject architect = (JSONObject) project.get("architect");
-            JSONObject build = (JSONObject) architect.get("build");
-            JSONObject options = (JSONObject) build.get("options");
-            JSONArray styles = (JSONArray) options.get("styles");
-            styles.clear();
-            
-            JSONObject input = new JSONObject();
-            input.put("input", "src/styles/lightgreen-amber.scss");
-            
-            styles.add(input);
-            styles.add("src/styles/styles.scss");
-            
-            projects.put("fastCodeCore",getFastCodeCoreProjectNode());
-            
+
+
+
+			JSONObject projects = (JSONObject) jsonObject.get("projects");
+			JSONObject project = (JSONObject) projects.get(clientSubfolder);
+			JSONObject architect = (JSONObject) project.get("architect");
+			JSONObject build = (JSONObject) architect.get("build");
+			JSONObject options = (JSONObject) build.get("options");
+			JSONArray styles = (JSONArray) options.get("styles");
+			styles.clear();
+
+			JSONObject input = new JSONObject();
+			input.put("input", "src/styles/lightgreen-amber.scss");
+
+			styles.add(input);
+			styles.add("src/styles/styles.scss");
+
             String prettyJsonString = beautifyJson(jsonObject); 
-            writeJsonToFile(path,prettyJsonString);         
+			writeJsonToFile(path,prettyJsonString);
+               
+			
+			 if(flowable)
+	         {
+	            	addProjectNodeToAngularJsonFile(path,clientSubfolder,"task-app",getFlowableTaskProjectNode());
+	           // projects.put("task-app",getFlowableTaskProjectNode());
+	         }
+			//projects.put("fastCodeCore",getFastCodeCoreProjectNode());
+			addProjectNodeToAngularJsonFile(path,clientSubfolder,"fastCodeCore",getFastCodeCoreProjectNode());
+
+           
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -194,6 +204,30 @@ public class FronendBaseTemplateGenerator {
         }
 
     }
+	
+    public static void addProjectNodeToAngularJsonFile(String path, String clientSubfolder,String key, JSONObject value)
+    {
+		try {
+			JSONObject jsonObject = readJsonFile(path);
+			
+			JSONObject projects = (JSONObject) jsonObject.get("projects");
+		    
+			projects.put(key,value);
+	    	String prettyJsonString = beautifyJson(jsonObject); 
+			writeJsonToFile(path,prettyJsonString);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
+		
+    }
+	
 	
 	public static JSONObject getFastCodeCoreProjectNode() throws ParseException {
 		JSONParser parser = new JSONParser();
@@ -240,7 +274,52 @@ public class FronendBaseTemplateGenerator {
 		return fccore;
 	}
 	
-	public static void editTsConfigJsonFile(String path) {
+	public static JSONObject getFlowableTaskProjectNode() throws ParseException {
+		JSONParser parser = new JSONParser();
+		JSONObject fccore = (JSONObject) parser.parse("{\r\n" + 
+				"      \"root\": \"projects/task-app\",\r\n" + 
+				"      \"sourceRoot\": \"projects/task-app/src\",\r\n" + 
+				"      \"projectType\": \"library\",\r\n" + 
+				"      \"prefix\": \"lib\",\r\n" + 
+				"      \"architect\": {\r\n" + 
+				"        \"build\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-ng-packagr:build\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": \"projects/task-app/tsconfig.lib.json\",\r\n" + 
+				"            \"project\": \"projects/task-app/ng-package.json\"\r\n" + 
+				"          },\r\n" + 
+				"          \"configurations\": {\r\n" + 
+				"            \"production\": {\r\n" + 
+				"              \"project\": \"projects/task-app/ng-package.prod.json\"\r\n" + 
+				"            }\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"test\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:karma\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"main\": \"projects/task-app/src/test.ts\",\r\n" + 
+				"            \"tsConfig\": \"projects/task-app/tsconfig.spec.json\",\r\n" + 
+				"            \"karmaConfig\": \"projects/task-app/karma.conf.js\"\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"lint\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:tslint\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": [\r\n" + 
+				"              \"projects/task-app/tsconfig.lib.json\",\r\n" + 
+				"              \"projects/task-app/tsconfig.spec.json\"\r\n" + 
+				"            ],\r\n" + 
+				"            \"exclude\": [\r\n" + 
+				"              \"**/node_modules/**\"\r\n" + 
+				"            ]\r\n" + 
+				"          }\r\n" + 
+				"        }\r\n" + 
+				"      }\r\n" + 
+				"    }");
+		return fccore;
+	}
+	
+	public static void editTsConfigJsonFile(String path,Boolean flowable) {
 
 		try {
 
@@ -253,14 +332,26 @@ public class FronendBaseTemplateGenerator {
             JSONArray fccore1 = new JSONArray();
             fccore1.add("dist/fast-code-core/*");
             
+            
             JSONObject paths = new JSONObject();
             paths.put("fastCodeCore",fccore);
             paths.put("fastCodeCore/*",fccore1);
-                        
+            
+            if(flowable)
+            {
+            JSONArray flowable_task = new JSONArray();
+            fccore.add("dist/task-app");
+            JSONArray flowable_task1 = new JSONArray();
+            fccore1.add("dist/task-app/*");
+            paths.put("fastCodeCore/*",flowable_task);
+            paths.put("fastCodeCore/*",flowable_task1);
+            }
+            
             compilerOptions.put("paths",paths);
             compilerOptions.put("resolveJsonModule",true);
             compilerOptions.put("esModuleInterop",true);
             compilerOptions.put("allowSyntheticDefaultImports",true);
+            
             
             String prettyJsonString = beautifyJson(jsonObject); 
             writeJsonToFile(path,prettyJsonString);
@@ -297,3 +388,5 @@ public class FronendBaseTemplateGenerator {
         file.close();
 	}
 }
+
+

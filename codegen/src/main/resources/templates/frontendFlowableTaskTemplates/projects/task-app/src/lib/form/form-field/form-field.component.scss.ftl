@@ -1,0 +1,14 @@
+@import "../../../styles/base.scss";
+
+.mat-form-field {
+    width: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.button-row {
+    margin-top: $fc-margin;
+    margin-bottom: $fc-margin;
+}

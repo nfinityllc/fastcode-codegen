@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.error;
+package [=PackageName].error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.internal.engine.path.PathImpl;

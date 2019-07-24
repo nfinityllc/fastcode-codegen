@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.Constants;
+package [=PackageName].Constants;
 
 public class QuartzConstants {
 

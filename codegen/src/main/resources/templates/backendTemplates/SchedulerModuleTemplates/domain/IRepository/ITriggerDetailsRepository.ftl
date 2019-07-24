@@ -1,7 +1,7 @@
-package com.nfinity.fastcode.domain.IRepository;
+package [=PackageName].domain.IRepository;
 
-import com.nfinity.fastcode.domain.Scheduler.JobDetailsEntity;
-import com.nfinity.fastcode.domain.Scheduler.TriggerDetailsEntity;
+import [=PackageName].domain.Scheduler.JobDetailsEntity;
+import [=PackageName].domain.Scheduler.TriggerDetailsEntity;
 import com.querydsl.core.types.Predicate;
 
 import org.springframework.data.domain.Page;

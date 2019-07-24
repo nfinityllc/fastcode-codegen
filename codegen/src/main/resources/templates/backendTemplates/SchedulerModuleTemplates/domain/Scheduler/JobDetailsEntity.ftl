@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.domain.Scheduler;
+package [=PackageName].domain.Scheduler;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

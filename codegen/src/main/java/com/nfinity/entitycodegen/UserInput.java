@@ -14,6 +14,7 @@ public class UserInput {
 	Boolean email;
 	Boolean scheduler;
 	Boolean history;
+	Boolean flowable;
 	String authenticationType;
 	
 	
@@ -77,6 +78,13 @@ public class UserInput {
 	}
 	public void setEmail(Boolean email) {
 		this.email = email;
+	}
+	
+	public Boolean getFlowable() {
+		return flowable;
+	}
+	public void setFlowable(Boolean flowable) {
+		this.flowable = flowable;
 	}
 	public Boolean getScheduler() {
 		return scheduler;

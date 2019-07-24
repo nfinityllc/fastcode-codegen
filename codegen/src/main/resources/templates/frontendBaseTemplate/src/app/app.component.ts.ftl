@@ -7,6 +7,10 @@ import { SchedulerTranslateUiService } from 'scheduler';
 <#if EmailModule!false>
 import { EmailBuilderTranslateUiService } from 'ip-email-builder';
 </#if>
+<#if FlowableModule!false>
+import { UpgradeModule } from "@angular/upgrade/static";
+import { TaskAppTranslateUiService } from 'task-app';
+</#if>
 
 @Component({
   selector: 'app-root',
@@ -16,7 +20,7 @@ import { EmailBuilderTranslateUiService } from 'ip-email-builder';
 export class AppComponent {
   title = 'fcclient';
 
-  constructor(
+  constructor(<#if FlowableModule!false>private upgrade: UpgradeModule,private taskAppTranslateUiService: TaskAppTranslateUiService,</#if>
     private translate: TranslateService,
     private fastCodeCoreTranslateUiService: FastCodeCoreTranslateUiService,
     <#if SchedulerModule!false>
@@ -36,4 +40,11 @@ export class AppComponent {
       this.emailBuilderTranslateUiService.init(browserLang);</#if>
     });
   }
+  
+  <#if FlowableModule!false>
+  ngOnInit()
+  {
+  this.upgrade.bootstrap(document.body, ['flowableAdminApp']);
+  }
+  </#if>
 }

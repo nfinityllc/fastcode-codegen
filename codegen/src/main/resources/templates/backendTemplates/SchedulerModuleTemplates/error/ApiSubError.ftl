@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.error;
+package [=PackageName].error;
 
 public abstract class ApiSubError {
 }

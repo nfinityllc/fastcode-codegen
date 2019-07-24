@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.jobs;
+package [=PackageName].jobs;
 
 import org.quartz.*;
 

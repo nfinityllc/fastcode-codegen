@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.application.Scheduler.Dto;
+package [=PackageName].application.Scheduler.Dto;
 
 import java.util.Date;
 

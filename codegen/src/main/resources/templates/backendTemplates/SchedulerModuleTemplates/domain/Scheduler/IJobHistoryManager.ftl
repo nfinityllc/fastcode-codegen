@@ -1,4 +1,4 @@
-package com.nfinity.fastcode.domain.Scheduler;
+package [=PackageName].domain.Scheduler;
 
 import java.util.Date;
 import java.util.List;

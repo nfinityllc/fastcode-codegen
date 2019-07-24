@@ -1,6 +1,6 @@
-package com.nfinity.fastcode.domain.Scheduler;
+package [=PackageName].domain.Scheduler;
 
-import com.nfinity.fastcode.domain.IRepository.IJobDetailsRepository;
+import [=PackageName].domain.IRepository.IJobDetailsRepository;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

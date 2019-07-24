@@ -1,6 +1,6 @@
-package com.nfinity.fastcode.domain.Scheduler;
+package [=PackageName].domain.Scheduler;
 
-import com.nfinity.fastcode.domain.BaseClasses.AuditedEntity;
+import [=PackageName].domain.BaseClasses.AuditedEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;

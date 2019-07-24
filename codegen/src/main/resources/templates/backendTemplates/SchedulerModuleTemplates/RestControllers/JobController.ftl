@@ -1,13 +1,13 @@
-package com.nfinity.fastcode.RestControllers;
+package [=PackageName].RestControllers;
 
-import com.nfinity.fastcode.SchedulerService.SchedulerService;
-import com.nfinity.fastcode.Search.SearchCriteria;
-import com.nfinity.fastcode.Search.SearchUtils;
-import com.nfinity.fastcode.application.OffsetBasedPageRequest;
-import com.nfinity.fastcode.application.Scheduler.Dto.GetJobOutput;
-import com.nfinity.fastcode.application.Scheduler.Dto.JobDetails;
-import com.nfinity.fastcode.application.Scheduler.Dto.JobListOutput;
-import com.nfinity.fastcode.application.Scheduler.Dto.TriggerDetails;
+import [=PackageName].SchedulerService.SchedulerService;
+import [=CommonModulePackage].Search.SearchCriteria;
+import [=CommonModulePackage].Search.SearchUtils;
+import [=CommonModulePackage].application.OffsetBasedPageRequest;
+import [=PackageName].application.Scheduler.Dto.GetJobOutput;
+import [=PackageName].application.Scheduler.Dto.JobDetails;
+import [=PackageName].application.Scheduler.Dto.JobListOutput;
+import [=PackageName].application.Scheduler.Dto.TriggerDetails;
 
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;

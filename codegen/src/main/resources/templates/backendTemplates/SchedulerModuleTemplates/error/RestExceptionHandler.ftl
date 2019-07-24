@@ -1,6 +1,6 @@
-package com.nfinity.fastcode.error;
+package [=PackageName].error;
 
-import com.nfinity.fastcode.logging.LoggingHelper;
+import [=CommonModulePackage].logging.LoggingHelper;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

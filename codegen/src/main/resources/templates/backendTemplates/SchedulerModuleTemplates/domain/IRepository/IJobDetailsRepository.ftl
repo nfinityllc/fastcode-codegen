@@ -1,10 +1,10 @@
-package com.nfinity.fastcode.domain.IRepository;
+package [=PackageName].domain.IRepository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import com.nfinity.fastcode.domain.Scheduler.JobDetailsEntity;
+import [=PackageName].domain.Scheduler.JobDetailsEntity;
 
 
 @RepositoryRestResource(collectionResourceRel = "qrtz_job_details", path = "qrtz_job_details")

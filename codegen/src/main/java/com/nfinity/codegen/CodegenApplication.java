@@ -43,10 +43,13 @@ public class CodegenApplication implements ApplicationRunner {
 				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 		input.setEmail(root.get("email") == null
 				? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
-				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+				: (root.get("email").toLowerCase().equals("true") ? true : false));
 		input.setScheduler(root.get("scheduler") == null
 				? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false)
-				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+				: (root.get("scheduler").toLowerCase().equals("true") ? true : false));
+		input.setFlowable(root.get("flowable") == null
+				? (GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false)
+				: (root.get("flowable").toLowerCase().equals("true") ? true : false));
 		input.setHistory(root.get("h") == null
 				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
 				: (root.get("h").toLowerCase().equals("true") ? true : false));
@@ -102,15 +105,8 @@ public class CodegenApplication implements ApplicationRunner {
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
 				input.getAudit());
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
-        if(input.getEmail())
-        {
-        	EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
-        }
-        if(input.getScheduler())
-        {
-        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
-        }
-		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler() );
+        
+		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable() );
 		
 		
 		if(!input.getAuthenticationType().equals("none"))
@@ -125,6 +121,20 @@ public class CodegenApplication implements ApplicationRunner {
 						+ (groupArtifactId + ".model").replace(".", "/"),
 				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
 				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler());
+		if(input.getEmail())
+        {
+        	EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
+        }
+        if(input.getScheduler())
+        {
+        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
+        }
+        if(input.getFlowable())
+        {
+        	FlowableFrontendCodeGenerator.generate(input.getDestinationPath(), artifactId + "Client");
+        }
+        
+		
 		if (configProperties.getUseGit() != null
 				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
 				: false) {

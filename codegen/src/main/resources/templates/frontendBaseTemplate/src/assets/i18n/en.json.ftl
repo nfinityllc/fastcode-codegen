@@ -16,7 +16,7 @@
             "REQUIRED": "Field is required.",
             "LENGTH-EXCEEDING": "Length cannot be greater than {{length}}.",
             "LENGTH-SHORT": "Length cannot be less than {{length}}.",
-            "INVALID-FORMAT": "Invalid format.",
+            "INVALID-FORMAT": "Invalid format."
 
         }
     },
@@ -46,6 +46,28 @@
     },
     "Language": "Language",   
     "Monitoring": "Monitoring",
-    "Message" : "Welcome to fast code"
+    "Message" : "Welcome to fast code",
+    <#if FlowableModule!false>
+    "ProcessAdmin": {
+      "Title": "Process Admin",
+      "ProcessEngine": "Process Engine",
+      "CmmnEngine": "CMMN Engine",
+      "AppEngine": "App Engine",
+      "FormEngine": "Form Engine",
+      "ContentEngine": "Content Engine",
+      "DmnEngine": "DMN Engine",
+      "Deployments": "Deployments",
+      "Definitions": "Definitions",
+      "Instances": "Instances",
+      "Tasks": "Tasks",
+      "Jobs": "Jobs",
+      "EventSubscriptions": "Event subscriptions",
+      "Configuration": "Configuration",
+      "ConfigurationEngine": "Engine",
+      "DecisionTables": "Decision tables",
+      "DecisionTableExecutions": "Executions",
+      "ContentItems": "Content items"
+    }
+    </#if>
   }
 }

@@ -15,6 +15,11 @@ import { IpEmailBuilderModule } from 'ip-email-builder';
 <#if SchedulerModule!false>
 import { SchedulerModule } from 'scheduler';
 </#if>
+<#if FlowableModule!false>
+import { UpgradeModule } from "@angular/upgrade/static"; 
+import { UrlHandlingStrategy } from '@angular/router';
+import { TaskAppModule } from 'task-app';
+</#if>
 
 import {
   MatButtonModule, MatToolbarModule, MatSidenavModule,
@@ -53,7 +58,25 @@ import { Globals } from './globals';
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
 }
+<#if FlowableModule!false>
+export class CustomHandlingStrategy implements UrlHandlingStrategy { 
 
+shouldProcessUrl(url) { 
+
+       console.log(url.toString()); 
+
+       let urlStr = url.toString().split('/'); 
+
+       return url.toString() == "/" || (urlStr.length > 1 && urlStr[1] == "app") 
+
+   } 
+
+   extract(url) { return url; } 
+
+   merge(url, whole) { return url; } 
+
+} 
+</#if>
 @NgModule({
   declarations: [
     AppComponent,
@@ -103,6 +126,14 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
       apiPath: environment.apiUrl
     }),
     </#if>
+    <#if FlowableModule!false>
+    UpgradeModule,  
+    TaskAppModule.forRoot({ 
+
+	apiPath: "http://localhost:8080/flowable-task" // url where task backend app is running 
+
+	}),
+    </#if>
     FastCodeCoreModule.forRoot({
     	apiUrl: environment.apiUrl
     }),
@@ -117,6 +148,9 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
   ],
   providers: [
 		AuthenticationService,
+		<#if FlowableModule!false>
+		{ provide: UrlHandlingStrategy, useClass: CustomHandlingStrategy },
+		</#if>
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtErrorInterceptor, multi: true },
 		AuthGuard,
