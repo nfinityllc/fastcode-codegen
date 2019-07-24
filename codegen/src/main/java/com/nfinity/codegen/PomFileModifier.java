@@ -22,7 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class ModifyPomFile {
+public class PomFileModifier {
 
 	public static void update(String path,String authenticationType,Boolean scheduler) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -62,7 +62,7 @@ public class ModifyPomFile {
 		dependencies.add(postgres);
 		dependencies.add(common_module);
 
-		ModifyPomFile.addDependenciesAndPluginsToPom(path,dependencies);
+		PomFileModifier.addDependenciesAndPluginsToPom(path,dependencies);
 
 	}
 	public static void addDependenciesAndPluginsToPom(String path, List<Dependency> dependencies) {

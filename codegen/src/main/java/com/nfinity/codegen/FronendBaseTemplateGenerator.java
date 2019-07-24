@@ -43,7 +43,7 @@ public class FronendBaseTemplateGenerator {
 		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json",flowable);
 		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder,flowable);
 
-		List<String> fl = ReadFiles.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
+		List<String> fl = FolderContentReader.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FRONTEND_BASE_TEMPLATE_FOLDER + "/");
