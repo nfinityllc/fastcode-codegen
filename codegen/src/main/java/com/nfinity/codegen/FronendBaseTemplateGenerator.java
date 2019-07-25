@@ -43,7 +43,7 @@ public class FronendBaseTemplateGenerator {
 		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json",flowable);
 		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder,flowable);
 
-		List<String> fl = ReadFiles.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
+		List<String> fl = FolderContentReader.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FRONTEND_BASE_TEMPLATE_FOLDER + "/");
@@ -293,7 +293,97 @@ public class FronendBaseTemplateGenerator {
 				"    }");
 		return fccore;
 	}
-
+	
+	public static JSONObject getSchedulerProjectNode() throws ParseException {
+		JSONParser parser = new JSONParser();
+		JSONObject scheduler = (JSONObject) parser.parse("{\r\n" + 
+				"      \"root\": \"projects/scheduler\",\r\n" + 
+				"      \"sourceRoot\": \"projects/scheduler/src\",\r\n" + 
+				"      \"projectType\": \"library\",\r\n" + 
+				"      \"prefix\": \"lib\",\r\n" + 
+				"      \"architect\": {\r\n" + 
+				"        \"build\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-ng-packagr:build\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": \"projects/scheduler/tsconfig.lib.json\",\r\n" + 
+				"            \"project\": \"projects/scheduler/ng-package.json\"\r\n" + 
+				"          },\r\n" + 
+				"          \"configurations\": {\r\n" + 
+				"            \"production\": {\r\n" + 
+				"              \"project\": \"projects/scheduler/ng-package.prod.json\"\r\n" + 
+				"            }\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"test\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:karma\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"main\": \"projects/scheduler/src/test.ts\",\r\n" + 
+				"            \"tsConfig\": \"projects/scheduler/tsconfig.spec.json\",\r\n" + 
+				"            \"karmaConfig\": \"projects/scheduler/karma.conf.js\"\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"lint\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:tslint\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": [\r\n" + 
+				"              \"projects/scheduler/tsconfig.lib.json\",\r\n" + 
+				"              \"projects/scheduler/tsconfig.spec.json\"\r\n" + 
+				"            ],\r\n" + 
+				"            \"exclude\": [\r\n" + 
+				"              \"**/node_modules/**\"\r\n" + 
+				"            ]\r\n" + 
+				"          }\r\n" + 
+				"        }\r\n" + 
+				"      }\r\n" + 
+				"    }");
+		return scheduler;
+	}
+	
+	public static JSONObject getEmailBuilderProjectNode() throws ParseException {
+		JSONParser parser = new JSONParser();
+		JSONObject scheduler = (JSONObject) parser.parse("{\r\n" + 
+				"      \"root\": \"projects/ip-email-builder\",\r\n" + 
+				"      \"sourceRoot\": \"projects/ip-email-builder/src\",\r\n" + 
+				"      \"projectType\": \"library\",\r\n" + 
+				"      \"prefix\": \"lib\",\r\n" + 
+				"      \"architect\": {\r\n" + 
+				"        \"build\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-ng-packagr:build\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": \"projects/ip-email-builder/tsconfig.lib.json\",\r\n" + 
+				"            \"project\": \"projects/ip-email-builder/ng-package.json\"\r\n" + 
+				"          },\r\n" + 
+				"          \"configurations\": {\r\n" + 
+				"            \"production\": {\r\n" + 
+				"              \"project\": \"projects/ip-email-builder/ng-package.prod.json\"\r\n" + 
+				"            }\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"test\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:karma\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"main\": \"projects/ip-email-builder/src/test.ts\",\r\n" + 
+				"            \"tsConfig\": \"projects/ip-email-builder/tsconfig.spec.json\",\r\n" + 
+				"            \"karmaConfig\": \"projects/ip-email-builder/karma.conf.js\"\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"        \"lint\": {\r\n" + 
+				"          \"builder\": \"@angular-devkit/build-angular:tslint\",\r\n" + 
+				"          \"options\": {\r\n" + 
+				"            \"tsConfig\": [\r\n" + 
+				"              \"projects/ip-email-builder/tsconfig.lib.json\",\r\n" + 
+				"              \"projects/ip-email-builder/tsconfig.spec.json\"\r\n" + 
+				"            ],\r\n" + 
+				"            \"exclude\": [\r\n" + 
+				"              \"**/node_modules/**\"\r\n" + 
+				"            ]\r\n" + 
+				"          }\r\n" + 
+				"        }\r\n" + 
+				"      }\r\n" + 
+				"    }");
+		return scheduler;
+	}
+	
 	public static void editTsConfigJsonFile(String path,Boolean flowable) {
 
 		try {
@@ -319,7 +409,7 @@ public class FronendBaseTemplateGenerator {
 				JSONArray flowable_task1 = new JSONArray();
 				flowable_task1.add("dist/task-app/*");
 
-				paths.put("task-app/*",flowable_task);
+				paths.put("task-app/",flowable_task);
 				paths.put("task-app/*",flowable_task1);
 			}
 

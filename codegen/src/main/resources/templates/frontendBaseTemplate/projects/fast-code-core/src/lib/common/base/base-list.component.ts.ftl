@@ -17,7 +17,7 @@ import { merge, of as observableOf, Observable } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { ISearchField, operatorType } from '../../common/components/list-filters/ISearchCriteria';
 
-enum listProcessingType {
+export enum listProcessingType {
   Replace = "Replace",
   Append = "Append"
 }
@@ -196,7 +196,8 @@ export class BaseListComponent<E extends IBase> implements OnInit {
 
     this.dialogRef = this.pickerDialogService.open(dialogConfig);
 
-    this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {
+    // this.dataService.getAssociations(this.selectedAssociation.table, this.selectedAssociation.column.value, this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {
+    this.dataService.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {  
       this.isLoadingPickerResults = false;
       this.dialogRef.componentInstance.items = items;
       this.updatePickerPageInfo(items);
@@ -301,7 +302,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
 
   initializePageInfo() {
     this.hasMoreRecords = true;
-    this.pageSize = 5;
+    this.pageSize = 20;
     this.lastProcessedOffset = -1;
     this.currentPage = 0;
   }
@@ -369,7 +370,7 @@ export class BaseListComponent<E extends IBase> implements OnInit {
 
   initializePickerPageInfo() {
     this.hasMoreRecordsPicker = true;
-    this.pickerPageSize = 5;
+    this.pickerPageSize = 20;
     this.lastProcessedOffsetPicker = -1;
     this.currentPickerPage = 0;
   }

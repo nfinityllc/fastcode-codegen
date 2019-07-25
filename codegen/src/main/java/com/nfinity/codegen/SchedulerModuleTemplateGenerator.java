@@ -38,7 +38,7 @@ public class SchedulerModuleTemplateGenerator {
 		root.put("CommonModulePackage" , "com.nfinity.fastcode");
 		root.put("Schema",schemaName);
 		
-		List<String> filesList = ReadFiles.getFilesFromFolder(FRONTEND_SCHEDULER_TEMPLATE_FOLDER);
+		List<String> filesList = FolderContentReader.getFilesFromFolder(FRONTEND_SCHEDULER_TEMPLATE_FOLDER);
 		Map<String, Object> frontendTemplates = new HashMap<>();
 		
 		for (String filePath : filesList) {

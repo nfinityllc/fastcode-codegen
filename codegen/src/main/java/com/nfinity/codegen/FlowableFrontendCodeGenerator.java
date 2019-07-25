@@ -29,7 +29,7 @@ public class FlowableFrontendCodeGenerator {
 			e.printStackTrace();
 		}
 
-		List<String> fl = ReadFiles.getFilesFromFolder(FRONTEND_FLOWABLETASK_TEMPLATE_FOLDER);
+		List<String> fl = FolderContentReader.getFilesFromFolder(FRONTEND_FLOWABLETASK_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FRONTEND_FLOWABLETASK_TEMPLATE_FOLDER + "/");

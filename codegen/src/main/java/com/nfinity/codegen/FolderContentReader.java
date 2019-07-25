@@ -14,7 +14,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
-public class ReadFiles {
+public class FolderContentReader {
 	
 	public static List<String> getFilesFromFolder(String folderPath) {
 

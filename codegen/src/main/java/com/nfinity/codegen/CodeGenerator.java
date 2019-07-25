@@ -119,7 +119,7 @@ public class CodeGenerator {
 
 		}
 
-		ModifyPomFile.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
+		PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
 		modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
 		
 		if(history) {
@@ -178,7 +178,7 @@ public class CodeGenerator {
 		
 	}
 	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType) {
-		List<String> fl = ReadFiles.getFilesFromFolder(templatePath);
+		List<String> fl = FolderContentReader.getFilesFromFolder(templatePath);
 		Map<String, Object> templates = new HashMap<>();
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, templatePath + "/");
@@ -603,7 +603,6 @@ public class CodeGenerator {
 							Template template = cfg.getTemplate("getOutput.java.ftl");
 							File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
 							PrintWriter writer = new PrintWriter(fileName);
-							
 							template.process(root, writer);
 							writer.flush();
 							writer.close();

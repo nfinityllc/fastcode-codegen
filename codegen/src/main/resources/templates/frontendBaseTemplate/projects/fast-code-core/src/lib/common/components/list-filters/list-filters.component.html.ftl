@@ -11,7 +11,7 @@
             <mat-icon matChipRemove >cancel</mat-icon>
           </mat-chip>
           <input
-            placeholder="Add filter"
+            placeholder="{{'LIST-FILTERS.ADD-FILTER-PLACEHOLDER' | translate}}"
             #filterInput
             [formControl]="filterCtrl"
             [matAutocomplete]="auto"
@@ -30,6 +30,6 @@
   </form>
 
   <button mat-flat-button (click)="search()">
-    Search
+    {{'LIST-FILTERS.SEARCH-BUTTON-TEXT' | translate}}
   </button>
 </mat-card>

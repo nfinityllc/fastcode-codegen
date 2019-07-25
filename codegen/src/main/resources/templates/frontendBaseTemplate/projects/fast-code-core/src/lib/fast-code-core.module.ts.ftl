@@ -35,6 +35,14 @@ import { IP_CONFIG } from './tokens';
 import { IForRootConf } from './IForRootConf';
 import { Globals } from './globals';
 
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(httpClient: HttpClient) {
+  return new TranslateHttpLoader(httpClient);
+}
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -66,6 +74,13 @@ import { Globals } from './globals';
     MatSnackBarModule,
     MatChipsModule,
     NgxMaterialTimepickerModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   declarations: [
     FastCodeCoreComponent,
@@ -91,7 +106,8 @@ import { Globals } from './globals';
   ],
   entryComponents: [
     AddFilterFieldComponent,
-    PickerComponent
+    PickerComponent,
+    ConfirmDialogComponent
   ]
 })
 export class FastCodeCoreModule1 { }

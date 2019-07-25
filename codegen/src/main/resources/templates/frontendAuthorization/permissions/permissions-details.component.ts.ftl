@@ -9,6 +9,7 @@ import { IPermissions } from './ipermissions';
 
 
 import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PickerDialogService } from 'fastCodeCore';
 
 @Component({
   selector: 'app-permissions-details',
@@ -25,9 +26,10 @@ export class PermissionsDetailsComponent extends BaseDetailsComponent<IPermissio
 		public route: ActivatedRoute,
 		public dialog: MatDialog,
 		public global: Globals,
+		public pickerDialogService: PickerDialogService,
 		public dataService: PermissionsService,
 	) {
-		super(formBuilder, router, route, dialog, global, dataService);
+		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService);
   }
 
 	ngOnInit() {

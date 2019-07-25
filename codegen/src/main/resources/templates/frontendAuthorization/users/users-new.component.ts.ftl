@@ -43,6 +43,8 @@ export class UsersNewComponent extends BaseNewComponent<IUsers> implements OnIni
 			isActive: [false],
 			lastName: ['', Validators.required],
 			userName: ['', Validators.required],
+			password: ['', Validators.required],
+			confirmPassword: ['', Validators.required],
 			roleId: [''],
 			rolesName: [{ value: '', disabled: true }],
 		});

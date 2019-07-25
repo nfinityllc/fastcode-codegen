@@ -46,9 +46,9 @@
     },
     "Language": "Language",   
     "Monitoring": "Monitoring",
-    "Message" : "Welcome to fast code",
+    "Message" : "Welcome to fast code"
     <#if FlowableModule!false>
-    "ProcessAdmin": {
+    ,"ProcessAdmin": {
       "Title": "Process Admin",
       "ProcessEngine": "Process Engine",
       "CmmnEngine": "CMMN Engine",
