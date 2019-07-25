@@ -28,14 +28,14 @@ export class RolesListComponent extends BaseListComponent<IRoles> implements OnI
 		},
 		{
 			column: 'displayName',
-			label: 'displayName',
+			label: 'Display Name',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'name',
-			label: 'name',
+			label: 'Name',
 			sort: true,
 			filter: true,
 			type: listColumnType.String

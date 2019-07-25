@@ -30,35 +30,35 @@ export class UsersListComponent extends BaseListComponent<IUsers> implements OnI
 		},
 		{
 			column: 'emailAddress',
-			label: 'emailAddress',
+			label: 'Email Address',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'firstName',
-			label: 'firstName',
+			label: 'First Name',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'isActive',
-			label: 'isActive',
+			label: 'Active',
 			sort: true,
 			filter: true,
 			type: listColumnType.Boolean
 		},
 		{
 			column: 'lastName',
-			label: 'lastName',
+			label: 'Last Name',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'userName',
-			label: 'userName',
+			label: 'Username',
 			sort: true,
 			filter: true,
 			type: listColumnType.String

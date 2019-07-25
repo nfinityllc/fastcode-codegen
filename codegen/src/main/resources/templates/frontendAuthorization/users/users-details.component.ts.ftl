@@ -46,6 +46,7 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 			id: [],
 			isActive: [false],
 			roleId: [''],
+			rolesName: [''],
 	     });
 	    if (this.idParam) {
 	      const id = +this.idParam;
@@ -97,6 +98,7 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 			password: item.password,
 			userName: item.userName,
 			roleId: item.roleId,
+			rolesName: item.rolesName,
 		});
 	}
   
