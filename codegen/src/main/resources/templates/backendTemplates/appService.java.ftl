@@ -11,9 +11,7 @@ import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manage
 <#if relationValue.relation == "ManyToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
-<#if relationValue.relation == "OneToMany">
-import [=PackageName].domain.IRepository.I[=ClassName]Repository;
-</#if>
+
 <#if relationValue.relation == "ManyToMany">
 <#list RelationInput as relationInput>
 <#assign parent = relationInput>
@@ -61,10 +59,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     <#if ClassName != relationValue.eName && relationValue.relation !="OneToMany">
     @Autowired
 	private [=relationValue.eName]Manager  _[=relationValue.eName?uncap_first]Manager;
-	
-    <#elseif ClassName != relationValue.eName && relationValue.relation == "OneToMany">
-    @Autowired
-    private I[=ClassName]Repository  _[=ClassName?uncap_first]Repository;
     
     </#if>
     <#if relationValue.relation == "ManyToMany">

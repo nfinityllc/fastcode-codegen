@@ -63,7 +63,6 @@ public class FlowableFrontendCodeGenerator {
 				if(destPath.split("/").length > 1) {
 					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
 				}
-				System.out.println(dirPath);
 				File dir = new File(dirPath);
 				if(!dir.exists()) {
 					dir.mkdirs();

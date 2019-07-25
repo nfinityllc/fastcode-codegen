@@ -32,7 +32,6 @@ public class SchedulerModuleTemplateGenerator {
 		String backendAppFolder = destination + "/src/main/java/" + packageName.replace(".", "/");
 		
 		Map<String, Object> root = new HashMap<>();
-		System.out.println("PASSS "+ packageName);
 		root.put("PackageName", packageName);
 		root.put("Audit", audit);
 		root.put("History", history);
@@ -113,7 +112,7 @@ public class SchedulerModuleTemplateGenerator {
 				if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
 					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
 				}
-				System.out.println(dirPath);
+			
 				File dir = new File(dirPath);
 				if(!dir.exists()) {
 					dir.mkdirs();

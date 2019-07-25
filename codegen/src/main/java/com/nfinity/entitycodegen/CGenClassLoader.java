@@ -29,7 +29,7 @@ public class CGenClassLoader extends ClassLoader {
 					qalifiedName = qalifiedName.replace(".class","").replace("/",".");     
 					classFiles.put(qalifiedName,filePath);
 				}
-			//	System.out.println("Processing file:" + file);
+			
 				return FileVisitResult.CONTINUE;
 			}
 
@@ -49,7 +49,7 @@ public class CGenClassLoader extends ClassLoader {
 	String packageName="";
 	public CGenClassLoader(String path) {
 		this.path = path;
-		System.out.println(" path " + path);
+		
 		try {
 			classLoader = new URLClassLoader(new URL[]{new File(this.path).toURI().toURL()},Thread.currentThread().getContextClassLoader());
 		} catch (MalformedURLException e) {
@@ -101,7 +101,7 @@ public class CGenClassLoader extends ClassLoader {
 			while (e.hasMoreElements()) {
 				JarEntry je = (JarEntry) e.nextElement(); 
 				String filePath = je.getName();
-				System.out.println( "filepath:" + filePath);
+				
 				if(je.isDirectory() || (!packagePath.isEmpty() && !filePath.contains(packagePath))  || !filePath.endsWith(".class")){
 					continue;
 				}
@@ -109,7 +109,7 @@ public class CGenClassLoader extends ClassLoader {
 				qalifiedName = qalifiedName.replace(".class","").replace("/",".");             
 				qalifiedName = qalifiedName.replace(".class","").replace("/",".");     
 				classFiles.put(qalifiedName,filePath);
-				System.out.println(qalifiedName + ":" + filePath);
+				
 
 			}
 			jarFile.close();
