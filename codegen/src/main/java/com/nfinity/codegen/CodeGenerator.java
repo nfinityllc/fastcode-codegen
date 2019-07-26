@@ -46,7 +46,6 @@ public class CodeGenerator {
 		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
-		//String packageName = className.concat("s");
 		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(className);
 		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
 		String instanceName = StringUtils.join(splittedNames);
@@ -61,6 +60,7 @@ public class CodeGenerator {
 		root.put("PackageName", packageName);
 		root.put("InstanceName", instanceName);
 		root.put("RelationInput",details.getRelationInput());
+		root.put("DescriptiveField",details.getEntitiesDescriptiveFieldMap());
 		root.put("Audit", audit);
 		root.put("History", history);
 		root.put("IEntity", "I" + className);
@@ -94,20 +94,6 @@ public class CodeGenerator {
 			Boolean history, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString,
 			String schema,String authenticationType,Boolean scheduler) {
 
-		//backendAppFolder = backEndRootFolder + "/src/main/java";
-		//clientAppFolder = clientRootFolder + "/src/app";
-		//CGenClassLoader loader = new CGenClassLoader(sourcePath);
-		// String packageName = "com.ninfinity.entitycodegen.model"; // you can also
-		// pass other package names or root package
-		// name like com.ninfinity.entitycodegen
-
-		// generate base angular app
-		/*File directory = new File(destPath + "/"+ clientRootFolder);
-		if (!directory.exists()) {
-			directory.mkdir();
-		}*/
-		//FronendBaseTemplateGenerator.generate(destPath, CLIENT_ROOT_FOLDER);
-
 		// generate all modules for each entity
 		List<String> entityNames=new ArrayList<String>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
@@ -131,8 +117,10 @@ public class CodeGenerator {
 			
 		}
 		
-		generateFrontendAuthorization(destPath, appName, authenticationType);
-
+		if(authenticationType != "none") {
+			generateFrontendAuthorization(destPath, appName, authenticationType);
+		}
+		
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);

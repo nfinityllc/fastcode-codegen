@@ -102,7 +102,7 @@ public class UserController {
 
 	// ------------ Retrieve a user ------------
 
-	@PreAuthorize("hasAuthority('ADMINS')")
+//	@PreAuthorize("hasAuthority('ADMINS')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindUserByIdOutput> FindById(@PathVariable @Valid String id) {
 		FindUserByIdOutput uo = userAppService.FindById(Long.valueOf(id));

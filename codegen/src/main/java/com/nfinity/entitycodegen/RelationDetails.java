@@ -2,6 +2,7 @@ package com.nfinity.entitycodegen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RelationDetails {
 
@@ -19,15 +20,15 @@ public class RelationDetails {
 	String fName;
 	Boolean isParent;
 	List<FieldDetails> fDetails = new ArrayList<>();
-	FieldDetails entityDescriptionField;
+//	FieldDetails entityDescriptionField;
 
-	public FieldDetails getEntityDescriptionField() {
-		return entityDescriptionField;
-	}
-
-	public void setEntityDescriptionField(FieldDetails descFieldName) {
-		this.entityDescriptionField = descFieldName;
-	}
+//	public FieldDetails getEntityDescriptionField() {
+//		return entityDescriptionField;
+//	}
+//
+//	public void setEntityDescriptionField(FieldDetails descFieldName) {
+//		this.entityDescriptionField = descFieldName;
+//	}
 
 	public String getRelation() {
 		return relation;
@@ -141,27 +142,36 @@ public class RelationDetails {
 		this.isJoinColumnOptional = isJoinColumnOptional;
 	}
 
-	public FieldDetails FindAndSetDescriptiveField(List<String> manyToManyRshp) {
+	public Map<String,FieldDetails> FindAndSetDescriptiveField(List<String> manyToManyRshp,Map<String,FieldDetails> descriptiveFieldEntities) {
 		FieldDetails descriptiveField = null;
+		
 		if (this.getRelation() == "ManyToOne" || this.getRelation() == "ManyToMany") {
 
 			if (this.getRelation() == "ManyToMany") {
 				for (String str : manyToManyRshp) {
 					int indexOfDash = str.indexOf('-');
 					String before = str.substring(0, indexOfDash);
+					String after = str.substring(indexOfDash+1);
 					if (before.equals(this.geteName())) {
 						descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
+						descriptiveFieldEntities.put(this.geteName(),descriptiveField);
+					}
+					if(after.equals(this.getcName()))
+					{
+						descriptiveField = GetUserInput.getEntityDescriptionField(this.getcName(), this.getfDetails());
+						descriptiveFieldEntities.put(this.getcName(),descriptiveField);
 					}
 				}
 			} else {
 				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
+				descriptiveFieldEntities.put(this.geteName(),descriptiveField);
 			}
-			if (descriptiveField != null) {
-				this.setEntityDescriptionField(descriptiveField);
-				// descriptiveMap.put(entry.getKey(),
-				// entry.getValue().getEntityDescriptionField());
-			}
+//			if (descriptiveField != null) {
+//				this.setEntityDescriptionField(descriptiveField);
+//				// descriptiveMap.put(entry.getKey(),
+//				// entry.getValue().getEntityDescriptionField());
+//			}
 		}
-		return descriptiveField;
+		return descriptiveFieldEntities;
 	}
 }

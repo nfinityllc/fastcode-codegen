@@ -69,4 +69,16 @@ public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#
         return 31;
     }
 
+    @ManyToMany(mappedBy = "permissions")
+    public Set<RolesEntity> getRoles() { return roles; }
+    public void setRoles(Set<RolesEntity> roles) { this.roles = roles; }
+    private Set<RolesEntity> roles = new HashSet<>();
+
+   
+    <#if AuthenticationType == "database">
+    @ManyToMany(mappedBy = "permissions")
+    public Set<UsersEntity> getUsers() { return users; }
+    public void setUsers(Set<UsersEntity> users) { this.users = users; }
+    private Set<UsersEntity> users = new HashSet<>();
+    </#if>
 }

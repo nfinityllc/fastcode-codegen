@@ -147,16 +147,25 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
             	</#if>
 				<#if parent?keep_before("-") == relationValue.eName>
 				isParent: false,
-				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
-				referencedDescriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
+				<#list DescriptiveField as dEntityName, dField>
+				<#if dEntityName == relationValue.eName>
+				descriptiveField: '[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]',
+				referencedDescriptiveField: '[=dField.fieldName]',
+				</#if>
+                </#list>
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
 				</#if>
 				</#list>
 				<#else>
 				isParent: false,
-				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
-				referencedDescriptiveField: '[=relationValue.entityDescriptionField.fieldName]',
+				<#list DescriptiveField as dEntityName, dField>
+				<#if dEntityName == relationValue.eName>
+				descriptiveField: '[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]',
+				referencedDescriptiveField: '[=dField.fieldName]',
+				</#if>
+                </#list>
+				
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
 				</#if>

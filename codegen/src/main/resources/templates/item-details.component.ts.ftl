@@ -133,9 +133,13 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 				service: this.[=relationValue.eName?lower_case]Service,
 				</#if>
-				<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
-			  </#if>
+				<#if relationValue.relation == "ManyToOne">
+				<#list DescriptiveField as dEntityName, dField>
+				<#if dEntityName == relationValue.eName>
+				descriptiveField: '[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]',
+				</#if>
+                </#list>
+			    </#if>
 			},
 		</#list>
 		];
