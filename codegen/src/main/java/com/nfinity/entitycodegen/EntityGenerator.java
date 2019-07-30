@@ -145,10 +145,10 @@ public class EntityGenerator {
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
-
-		if (audit) {
-			EntityGenerator.generateAuditEntity(destinationPath, packageName);
-		}
+//
+//		if (audit) {
+//			EntityGenerator.generateAuditEntity(destinationPath, packageName);
+//		}
         
 		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");

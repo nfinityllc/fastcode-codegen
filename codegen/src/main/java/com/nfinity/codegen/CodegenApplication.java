@@ -98,6 +98,11 @@ public class CodegenApplication implements ApplicationRunner {
 		{
 			dependencies = dependencies.concat(",security");
 		}
+		if(input.getEmail() || input.getScheduler())
+		{
+			dependencies = dependencies.concat(",mail");
+		}
+		
 		
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");
@@ -107,12 +112,12 @@ public class CodegenApplication implements ApplicationRunner {
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
         
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable() );
-		
+		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
 		
 		if(!input.getAuthenticationType().equals("none"))
 		{
         AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAudit(),
-				input.getHistory(),input.getAuthenticationType(),input.getSchemaName());
+				input.getHistory(),input.getFlowable(),input.getAuthenticationType(),input.getSchemaName());
 		}
 		
 		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),
@@ -120,14 +125,14 @@ public class CodegenApplication implements ApplicationRunner {
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
 				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
-				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler());
+				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail());
 		if(input.getEmail())
         {
-        	EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
+        	EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
         }
         if(input.getScheduler())
         {
-        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId, artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
+        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
         }
         if(input.getFlowable())
         {

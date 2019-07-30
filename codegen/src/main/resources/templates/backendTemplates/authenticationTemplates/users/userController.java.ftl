@@ -9,6 +9,7 @@ import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=CommonModulePackage].logging.LoggingHelper;
+import [=CommonModulePackage].domain.EmptyJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Pageable;

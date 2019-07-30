@@ -15,10 +15,10 @@ import freemarker.template.Template;
 public class SchedulerModuleTemplateGenerator {
 	
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/SchedulerModuleTemplates";
+	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/SchedulerModuleTemplates/Scheduler";
 	static final String FRONTEND_SCHEDULER_TEMPLATE_FOLDER = "/templates/frontendSchedulerTemplates";
 	
-	public static void generateSchedulerModuleClasses(String destination,String clientSubfolder, String packageName,Boolean audit,Boolean history
+	public static void generateSchedulerModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,Boolean audit,Boolean history
 			,String schemaName) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");
@@ -30,12 +30,12 @@ public class SchedulerModuleTemplateGenerator {
 		cfg.setTemplateLoader(mtl);
 		
 		String backendAppFolder = destination + "/src/main/java/" + packageName.replace(".", "/");
-		
 		Map<String, Object> root = new HashMap<>();
-		root.put("PackageName", packageName);
+		root.put("AuditPackage", packageName);
+		root.put("PackageName", packageName.concat(".Scheduler"));
 		root.put("Audit", audit);
 		root.put("History", history);
-		root.put("CommonModulePackage" , "com.nfinity.fastcode");
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("Schema",schemaName);
 		
 		List<String> filesList = FolderContentReader.getFilesFromFolder(FRONTEND_SCHEDULER_TEMPLATE_FOLDER);
@@ -48,19 +48,19 @@ public class SchedulerModuleTemplateGenerator {
 			frontendTemplates.put(p, p.substring(0, p.lastIndexOf('.')));
 		}
 
-		generateFiles(frontendTemplates,root, destination + "/"+ clientSubfolder);
+		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects");
 		generateBackendFiles(root, backendAppFolder);
 
 	}
 	private static void generateBackendFiles(Map<String, Object> root, String destPath) {
        
         String destFolderBackend;
-     
+        destPath=destPath.concat("/Scheduler");
         destFolderBackend = destPath ;
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getSchedulerConfigurationTemplates(), root, destFolderBackend);
         
-		destFolderBackend = destPath + "/application/Scheduler/Dto";
+		destFolderBackend = destPath + "/application/Dto";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getSchedulerDtoTemplates(), root, destFolderBackend);
 		
@@ -80,7 +80,7 @@ public class SchedulerModuleTemplateGenerator {
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getSchedulerErrorTemplates(), root, destFolderBackend);
 		
-		destFolderBackend = destPath + "/domain/Scheduler" ;
+		destFolderBackend = destPath + "/domain" ;
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getSchedulerManagerTemplates(), root, destFolderBackend);
 		
@@ -148,10 +148,10 @@ public class SchedulerModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("domain/Scheduler/IJobHistoryManager.ftl", "IJobHistoryManager.java");
-		backEndTemplate.put("domain/Scheduler/JobHistoryManager.ftl", "JobHistoryManager.java");
-		backEndTemplate.put("domain/Scheduler/JobDetailsManager.ftl", "JobDetailsManager.java");
-		backEndTemplate.put("domain/Scheduler/TriggerDetailsManager.ftl", "TriggerDetailsManager.java");
+		backEndTemplate.put("domain/IJobHistoryManager.ftl", "IJobHistoryManager.java");
+		backEndTemplate.put("domain/JobHistoryManager.ftl", "JobHistoryManager.java");
+		backEndTemplate.put("domain/JobDetailsManager.ftl", "JobDetailsManager.java");
+		backEndTemplate.put("domain/TriggerDetailsManager.ftl", "TriggerDetailsManager.java");
 
 		return backEndTemplate;
 	}
@@ -160,9 +160,10 @@ public class SchedulerModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("error/ApiError.ftl", "ApiError.java");
-		backEndTemplate.put("error/ApiSubError.ftl", "ApiSubError.java");
-		backEndTemplate.put("error/RestExceptionHandler.ftl", "RestExceptionHandler.java");
+//		backEndTemplate.put("error/ApiError.ftl", "ApiError.java");
+//		backEndTemplate.put("error/ApiSubError.ftl", "ApiSubError.java");
+//		backEndTemplate.put("error/ApiValidationError.ftl", "ApiValidationError.java");
+		backEndTemplate.put("error/SchedulerRestExceptionHandler.ftl", "SchedulerRestExceptionHandler.java");
 	
 		return backEndTemplate;
 	}
@@ -200,13 +201,13 @@ public class SchedulerModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("application/Scheduler/Dto/FindByJobInput.ftl", "FindByJobInput.java");
-		backEndTemplate.put("application/Scheduler/Dto/GetJobOutput.ftl", "GetJobOutput.java");
-		backEndTemplate.put("application/Scheduler/Dto/GetTriggerOutput.ftl", "GetTriggerOutput.java");
-		backEndTemplate.put("application/Scheduler/Dto/JobDetails.ftl", "JobDetails.java");
-		backEndTemplate.put("application/Scheduler/Dto/JobListOutput.ftl", "JobListOutput.java");
-		backEndTemplate.put("application/Scheduler/Dto/TriggerCreationDetails.ftl", "TriggerCreationDetails.java");
-		backEndTemplate.put("application/Scheduler/Dto/TriggerDetails.ftl", "TriggerDetails.java");
+		backEndTemplate.put("application/Dto/FindByJobInput.ftl", "FindByJobInput.java");
+		backEndTemplate.put("application/Dto/GetJobOutput.ftl", "GetJobOutput.java");
+		backEndTemplate.put("application/Dto/GetTriggerOutput.ftl", "GetTriggerOutput.java");
+		backEndTemplate.put("application/Dto/JobDetails.ftl", "JobDetails.java");
+		backEndTemplate.put("application/Dto/JobListOutput.ftl", "JobListOutput.java");
+		backEndTemplate.put("application/Dto/TriggerCreationDetails.ftl", "TriggerCreationDetails.java");
+		backEndTemplate.put("application/Dto/TriggerDetails.ftl", "TriggerDetails.java");
 		
 		return backEndTemplate;
 	}
@@ -236,9 +237,9 @@ public class SchedulerModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		
-		backEndTemplate.put("domain/Scheduler/JobDetailsEntity.ftl", "JobDetailsEntity.java");
-		backEndTemplate.put("domain/Scheduler/JobHistoryEntity.ftl", "JobHistoryEntity.java");
-		backEndTemplate.put("domain/Scheduler/TriggerDetailsEntity.ftl", "TriggerDetailsEntity.java");
+		backEndTemplate.put("domain/model/JobDetailsEntity.ftl", "JobDetailsEntity.java");
+		backEndTemplate.put("domain/model/JobHistoryEntity.ftl", "JobHistoryEntity.java");
+		backEndTemplate.put("domain/model/TriggerDetailsEntity.ftl", "TriggerDetailsEntity.java");
 		
 		return backEndTemplate;
 	}

@@ -42,7 +42,7 @@ public class CodeGenerator {
 	static String CLIENT_ROOT_FOLDER = "/client";
 
 	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit,Boolean history, String sourcePath,
-			String type, String modName,EntityDetails details,String authenticationType) {
+			String type, String modName,EntityDetails details,String authenticationType,Boolean email) {
 		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -65,8 +65,9 @@ public class CodeGenerator {
 		root.put("History", history);
 		root.put("IEntity", "I" + className);
 		root.put("IEntityFile", "i" + moduleName);
-		root.put("CommonModulePackage" , "com.nfinity.fastcode");
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("AuthenticationType", authenticationType);
+		root.put("EmailModule", email);
 		root.put("ApiPath", className.substring(0, 1).toLowerCase() + className.substring(1));
 
 
@@ -92,7 +93,7 @@ public class CodeGenerator {
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,String sourcePackageName,Boolean audit,
 			Boolean history, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString,
-			String schema,String authenticationType,Boolean scheduler) {
+			String schema,String authenticationType,Boolean scheduler, Boolean email) {
 
 		// generate all modules for each entity
 		List<String> entityNames=new ArrayList<String>();
@@ -101,7 +102,7 @@ public class CodeGenerator {
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			entityNames.add(className);
 			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit,history, sourcePath, 
-					destPath, type,entry.getValue(),authenticationType,scheduler);
+					destPath, type,entry.getValue(),authenticationType,scheduler,email);
 
 		}
 
@@ -332,11 +333,11 @@ public class CodeGenerator {
 	}
 
 	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit,
-		Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler) {
+		Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email) {
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		String clientAppFolder = clientRootFolder + "/src/app";
-		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details,authenticationType);
+		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details,authenticationType,email);
 
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 
@@ -524,7 +525,7 @@ public class CodeGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("controller.java.ftl", className + "Controller.java");
-		backEndTemplate.put("emptyJsonResponse.java.ftl","EmptyJsonResponse.java");
+//		backEndTemplate.put("emptyJsonResponse.java.ftl","EmptyJsonResponse.java");
 
 		return backEndTemplate;
 	}

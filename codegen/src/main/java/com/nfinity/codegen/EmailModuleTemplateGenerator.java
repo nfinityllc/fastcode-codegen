@@ -15,11 +15,11 @@ import freemarker.template.Template;
 public class EmailModuleTemplateGenerator {
 	
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
+	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/emailTemplates/EmailBuilder";
 	static final String FRONTEND_EMAIL_TEMPLATE_FOLDER = "/templates/frontendEmailTemplate";
 	
-	public static void generateEmailModuleClasses(String destination,String clientSubfolder, String packageName,Boolean audit,Boolean history
-			,String schemaName) {
+	public static void generateEmailModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,Boolean audit,Boolean history,
+			String authenticationType,String schemaName) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, FRONTEND_EMAIL_TEMPLATE_FOLDER + "/");
@@ -32,11 +32,12 @@ public class EmailModuleTemplateGenerator {
 		String backendAppFolder = destination + "/src/main/java/" + packageName.replace(".", "/");
 		
 		Map<String, Object> root = new HashMap<>();
-		System.out.println("PASSS "+ packageName);
-		root.put("PackageName", packageName);
+
+		root.put("PackageName", packageName.concat(".EmailBuilder"));
+		root.put("AuthenticationType", authenticationType);
 		root.put("Audit", audit);
 		root.put("History", history);
-		root.put("CommonModulePackage" , "com.nfinity.fastcode");
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("Schema",schemaName);
 		
 		List<String> filesList = FolderContentReader.getFilesFromFolder(FRONTEND_EMAIL_TEMPLATE_FOLDER);
@@ -49,23 +50,23 @@ public class EmailModuleTemplateGenerator {
 			frontendTemplates.put(p, p.substring(0, p.lastIndexOf('.')));
 		}
 
-		generateFiles(frontendTemplates,root, destination + "/"+ clientSubfolder);
+		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects");
 		generateBackendFiles(root, backendAppFolder);
 
 	}
 	private static void generateBackendFiles(Map<String, Object> root, String destPath) {
        
         String destFolderBackend;
-     
-		destFolderBackend = destPath + "/application/Email";
+        destPath=destPath.concat("/EmailBuilder");
+		destFolderBackend = destPath + "/application/EmailTemplate";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getEmailTemplateApplicationLayerTemplates(), root, destFolderBackend);
 		
-		destFolderBackend = destPath + "/application/Email/Dto" ;
+		destFolderBackend = destPath + "/application/EmailTemplate/Dto" ;
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getEmailTemplateDtoTemplates(), root, destFolderBackend);
 		
-		destFolderBackend = destPath + "/domain/Email" ;
+		destFolderBackend = destPath + "/domain/EmailTemplate" ;
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getEmailTemplateManagerLayerTemplates(), root, destFolderBackend);
 		
@@ -81,7 +82,7 @@ public class EmailModuleTemplateGenerator {
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getEmailVariableManagerLayerTemplates(), root, destFolderBackend);
 		
-		destFolderBackend = destPath + "/mail" ;
+		destFolderBackend = destPath + "/application/mail" ;
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getMailTemplates(), root, destFolderBackend);
 		
@@ -134,10 +135,10 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailTemplates/IEmailAppService.ftl", "IEmailAppService.java");
-		backEndTemplate.put("emailTemplates/EmailAppService.ftl", "EmailAppService.java");
-		backEndTemplate.put("emailTemplates/EmailMapper.ftl", "EmailMapper.java");
-		backEndTemplate.put("emailTemplates/EmailAppServiceTest.ftl", "EmailAppServiceTest.java");
+		backEndTemplate.put("application/EmailTemplate/IEmailTemplateAppService.ftl", "IEmailTemplateAppService.java");
+		backEndTemplate.put("application/EmailTemplate/EmailTemplateAppService.ftl", "EmailTemplateAppService.java");
+		backEndTemplate.put("application/EmailTemplate/EmailTemplateMapper.ftl", "EmailTemplateMapper.java");
+		backEndTemplate.put("application/EmailTemplate/EmailTemplateAppServiceTest.ftl", "EmailTemplateAppServiceTest.java");
 
 		return backEndTemplate;
 	}
@@ -146,9 +147,9 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailTemplates/IEmailManager.ftl", "IEmailManager.java");
-		backEndTemplate.put("emailTemplates/EmailManager.ftl", "EmailManager.java");
-		backEndTemplate.put("emailTemplates/EmailManagerTest.ftl", "EmailManagerTest.java");
+		backEndTemplate.put("domain/EmailTemplate/IEmailTemplateManager.ftl", "IEmailTemplateManager.java");
+		backEndTemplate.put("domain/EmailTemplate/EmailTemplateManager.ftl", "EmailTemplateManager.java");
+		backEndTemplate.put("domain/EmailTemplate/EmailTemplateManagerTest.ftl", "EmailTemplateManagerTest.java");
 
 		return backEndTemplate;
 	}
@@ -157,10 +158,10 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailVariableTemplates/IEmailVariableAppService.ftl", "IEmailVariableAppService.java");
-		backEndTemplate.put("emailVariableTemplates/EmailVariableAppService.ftl", "EmailVariableAppService.java");
-		backEndTemplate.put("emailVariableTemplates/EmailVariableMapper.ftl", "EmailVariableMapper.java");
-		backEndTemplate.put("emailVariableTemplates/EmailVariableAppServiceTest.ftl", "EmailVariableAppServiceTest.java");
+		backEndTemplate.put("application/EmailVariable/IEmailVariableAppService.ftl", "IEmailVariableAppService.java");
+		backEndTemplate.put("application/EmailVariable/EmailVariableAppService.ftl", "EmailVariableAppService.java");
+		backEndTemplate.put("application/EmailVariable/EmailVariableMapper.ftl", "EmailVariableMapper.java");
+		backEndTemplate.put("application/EmailVariable/EmailVariableAppServiceTest.ftl", "EmailVariableAppServiceTest.java");
 
 		return backEndTemplate;
 	}
@@ -169,9 +170,9 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailVariableTemplates/IEmailVariableManager.ftl", "IEmailVariableManager.java");
-		backEndTemplate.put("emailVariableTemplates/EmailVariableManager.ftl", "EmailVariableManager.java");
-		backEndTemplate.put("emailVariableTemplates/EmailVariableManagerTest.ftl", "EmailVariableManagerTest.java");
+		backEndTemplate.put("domain/EmailVariable/IEmailVariableManager.ftl", "IEmailVariableManager.java");
+		backEndTemplate.put("domain/EmailVariable/EmailVariableManager.ftl", "EmailVariableManager.java");
+		backEndTemplate.put("domain/EmailVariable/EmailVariableManagerTest.ftl", "EmailVariableManagerTest.java");
 
 		return backEndTemplate;
 	}
@@ -180,8 +181,8 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailTemplates/IEmailService.ftl", "IEmailService.java");
-		backEndTemplate.put("emailTemplates/EmailService.ftl", "EmailService.java");
+		backEndTemplate.put("application/Mail/IEmailService.ftl", "IEmailService.java");
+		backEndTemplate.put("application/Mail/EmailService.ftl", "EmailService.java");
 		
 		return backEndTemplate;
 	}
@@ -190,12 +191,12 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailTemplates/Dto/CreateEmailInput.ftl", "CreateEmailInput.java");
-		backEndTemplate.put("emailTemplates/Dto/CreateEmailOutput.ftl", "CreateEmailOutput.java");
-		backEndTemplate.put("emailTemplates/Dto/UpdateEmailInput.ftl", "UpdateEmailInput.java");
-		backEndTemplate.put("emailTemplates/Dto/UpdateEmailOutput.ftl", "UpdateEmailOutput.java");
-		backEndTemplate.put("emailTemplates/Dto/FindEmailByIdOutput.ftl", "FindEmailByIdOutput.java");
-		backEndTemplate.put("emailTemplates/Dto/FindEmailByNameOutput.ftl", "FindEmailByNameOutput.java");
+		backEndTemplate.put("application/EmailTemplate/Dto/CreateEmailTemplateInput.ftl", "CreateEmailTemplateInput.java");
+		backEndTemplate.put("application/EmailTemplate/Dto/CreateEmailTemplateOutput.ftl", "CreateEmailTemplateOutput.java");
+		backEndTemplate.put("application/EmailTemplate/Dto/UpdateEmailTemplateInput.ftl", "UpdateEmailTemplateInput.java");
+		backEndTemplate.put("application/EmailTemplate/Dto/UpdateEmailTemplateOutput.ftl", "UpdateEmailTemplateOutput.java");
+		backEndTemplate.put("application/EmailTemplate/Dto/FindEmailTemplateByIdOutput.ftl", "FindEmailTemplateByIdOutput.java");
+		backEndTemplate.put("application/EmailTemplate/Dto/FindEmailTemplateByNameOutput.ftl", "FindEmailTemplateByNameOutput.java");
 		
 		return backEndTemplate;
 	}
@@ -204,12 +205,12 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailVariableTemplates/Dto/CreateEmailVariableInput.ftl", "CreateEmailVariableInput.java");
-		backEndTemplate.put("emailVariableTemplates/Dto/CreateEmailVariableOutput.ftl", "CreateEmailVariableOutput.java");
-		backEndTemplate.put("emailVariableTemplates/Dto/UpdateEmailVariableInput.ftl", "UpdateEmailVariableInput.java");
-		backEndTemplate.put("emailVariableTemplates/Dto/UpdateEmailVariableOutput.ftl", "UpdateEmailVariableOutput.java");
-		backEndTemplate.put("emailVariableTemplates/Dto/FindEmailVariableByIdOutput.ftl", "FindEmailVariableByIdOutput.java");
-		backEndTemplate.put("emailVariableTemplates/Dto/FindEmailVariableByNameOutput.ftl", "FindEmailVariableByNameOutput.java");
+		backEndTemplate.put("application/EmailVariable/Dto/CreateEmailVariableInput.ftl", "CreateEmailVariableInput.java");
+		backEndTemplate.put("application/EmailVariable/Dto/CreateEmailVariableOutput.ftl", "CreateEmailVariableOutput.java");
+		backEndTemplate.put("application/EmailVariable/Dto/UpdateEmailVariableInput.ftl", "UpdateEmailVariableInput.java");
+		backEndTemplate.put("application/EmailVariable/Dto/UpdateEmailVariableOutput.ftl", "UpdateEmailVariableOutput.java");
+		backEndTemplate.put("application/EmailVariable/Dto/FindEmailVariableByIdOutput.ftl", "FindEmailVariableByIdOutput.java");
+		backEndTemplate.put("application/EmailVariable/Dto/FindEmailVariableByNameOutput.ftl", "FindEmailVariableByNameOutput.java");
 		
 		return backEndTemplate;
 	}
@@ -218,11 +219,11 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		
-		backEndTemplate.put("emailTemplates/EmailController.ftl", "EmailController.java");
-		backEndTemplate.put("emailTemplates/HtmlEmailController.ftl", "HtmlEmailController.java");
-		backEndTemplate.put("emailTemplates/MailController.ftl", "MailController.java");
-		backEndTemplate.put("emailVariableTemplates/EmailVariableController.ftl", "EmailVariableController.java");
-
+		backEndTemplate.put("RestControllers/EmailTemplateController.ftl", "EmailTemplateController.java");
+		backEndTemplate.put("RestControllers/HtmlEmailController.ftl", "HtmlEmailController.java");
+		backEndTemplate.put("RestControllers/MailController.ftl", "MailController.java");
+		backEndTemplate.put("RestControllers/EmailVariableController.ftl", "EmailVariableController.java");
+		
 		return backEndTemplate;
 	}
 	
@@ -230,8 +231,8 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		backEndTemplate.put("emailTemplates/IEmailRepository.ftl", "IEmailRepository.java");
-		backEndTemplate.put("emailVariableTemplates/IEmailVariableRepository.ftl", "IEmailVariableRepository.java");
+		backEndTemplate.put("domain/IRepository/IEmailTemplateRepository.ftl", "IEmailTemplateRepository.java");
+		backEndTemplate.put("domain/IRepository/IEmailVariableRepository.ftl", "IEmailVariableRepository.java");
 	
 		return backEndTemplate;
 	}
@@ -240,8 +241,8 @@ public class EmailModuleTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		
-		backEndTemplate.put("emailTemplates/EmailEntity.ftl", "EmailEntity.java");
-		backEndTemplate.put("emailVariableTemplates/EmailVariableEntity.ftl", "EmailVariableEntity.java");
+		backEndTemplate.put("domain/model/EmailTemplateEntity.ftl", "EmailTemplateEntity.java");
+		backEndTemplate.put("domain/model/EmailVariableEntity.ftl", "EmailVariableEntity.java");
 
 		return backEndTemplate;
 	}

@@ -15,7 +15,7 @@ public class AuthenticationClassesTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String SECURITY_CLASSES_TEMPLATE_FOLDER = "/templates/backendTemplates/authenticationTemplates";
 	
-	public static void generateAutheticationClasses(String destination, String packageName,Boolean audit,Boolean history,String authenticationType
+	public static void generateAutheticationClasses(String destination, String packageName,Boolean audit,Boolean history,Boolean flowable,String authenticationType
 			,String schemaName) {
 	//	Map<String, Object> templates = new HashMap<>();
 
@@ -33,7 +33,8 @@ public class AuthenticationClassesTemplateGenerator {
 		root.put("PackageName", packageName);
 		root.put("Audit", audit);
 		root.put("History", history);
-		root.put("CommonModulePackage" , "com.nfinity.fastcode");
+		root.put("Flowable", flowable);
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("AuthenticationType",authenticationType);
 		root.put("Schema",schemaName);
 		

@@ -38,6 +38,8 @@ public class PomFileModifier {
 		
 		if(scheduler)
 		{
+			Dependency apache_directory_server = new Dependency("org.apache.directory.server","apacheds-server-jndi","1.5.5");
+			dependencies.add(apache_directory_server);
 			Dependency quartz_scheduler = new Dependency("org.quartz-scheduler","quartz","2.3.0");
 			dependencies.add(quartz_scheduler);
 		}

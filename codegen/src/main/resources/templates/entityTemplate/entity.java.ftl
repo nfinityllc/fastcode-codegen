@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.Date;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=PackageName].Audit.AuditedEntity;
+import [=CommonModulePackage].domain.BaseClasses.AuditedEntity;
 </#if>
 
 @Entity

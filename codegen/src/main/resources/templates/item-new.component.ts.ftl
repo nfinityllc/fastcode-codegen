@@ -89,7 +89,6 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				[=relationValue.joinColumn]: [''],
 				</#if>
 				</#if>
-
 				<#if relationValue.relation == "ManyToOne">
 				<#list DescriptiveField as dEntityName, dField>
 				<#if dEntityName == relationValue.eName>
