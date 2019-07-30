@@ -147,25 +147,21 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
             	</#if>
 				<#if parent?keep_before("-") == relationValue.eName>
 				isParent: false,
-				<#list DescriptiveField as dEntityName, dField>
-				<#if dEntityName == relationValue.eName>
-				descriptiveField: '[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]',
-				referencedDescriptiveField: '[=dField.fieldName]',
+				<#if DescriptiveField[relationValue.eName]??>
+				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
+				childDescriptiveField : '[=DescriptiveField[relationValue.cName].fieldName]',
 				</#if>
-                </#list>
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
 				</#if>
 				</#list>
 				<#else>
 				isParent: false,
-				<#list DescriptiveField as dEntityName, dField>
-				<#if dEntityName == relationValue.eName>
-				descriptiveField: '[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]',
-				referencedDescriptiveField: '[=dField.fieldName]',
+				<#if DescriptiveField[relationValue.eName]??>
+				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
 				</#if>
-                </#list>
-				
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
 				</#if>

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.nfinity.entitycodegen.EntityGenerator;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -18,8 +20,8 @@ public class SchedulerModuleTemplateGenerator {
 	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/SchedulerModuleTemplates/Scheduler";
 	static final String FRONTEND_SCHEDULER_TEMPLATE_FOLDER = "/templates/frontendSchedulerTemplates";
 	
-	public static void generateSchedulerModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,Boolean audit,Boolean history
-			,String schemaName) {
+	public static void generateSchedulerModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,Boolean audit,
+			Boolean history,String schemaName,String connectionString) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, FRONTEND_SCHEDULER_TEMPLATE_FOLDER + "/");
@@ -50,6 +52,9 @@ public class SchedulerModuleTemplateGenerator {
 
 		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects");
 		generateBackendFiles(root, backendAppFolder);
+		
+		Map<String,Object> propertyInfo = getInfoForQuartzPropertiesFile(connectionString);
+		generateQuartzProperties(propertyInfo, destination + "/src/main/resources");
 
 	}
 	private static void generateBackendFiles(Map<String, Object> root, String destPath) {
@@ -97,6 +102,30 @@ public class SchedulerModuleTemplateGenerator {
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getSchedulerControllerTemplates(), root, destFolderBackend);
 		
+	}
+	
+	private static Map<String,Object> getInfoForQuartzPropertiesFile(String connectionString){
+		Map<String,Object> propertyInfo = new HashMap<String,Object>();
+
+		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
+
+		return propertyInfo;
+	}
+
+	
+	private static void generateQuartzProperties(Map<String, Object> root, String destPath)
+	{
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class,  BACKEND_TEMPLATE_FOLDER );
+        MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
+ 
+        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 
+        cfg.setDefaultEncoding("UTF-8"); 
+        cfg.setTemplateLoader(mtl);
+        
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("quartz.properties.ftl", "quartz.properties");
+		new File(destPath).mkdirs();
+		generateFiles(backEndTemplate, root, destPath);
 	}
 
 	private static void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
@@ -189,6 +218,7 @@ public class SchedulerModuleTemplateGenerator {
 	private static Map<String, Object> getSchedulerConfigurationTemplates() {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
+		
 
 		backEndTemplate.put("AutowiringSpringBeanJobFactory.ftl", "AutowiringSpringBeanJobFactory.java");
 		backEndTemplate.put("BeanUtil.ftl", "BeanUtil.java");

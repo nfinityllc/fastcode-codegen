@@ -27,6 +27,7 @@ import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]A
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
+import org.springframework.cache.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -108,6 +109,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="[=ClassName]", key = "#id")
 	public Update[=ClassName]Output Update(Long id , Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
@@ -135,6 +137,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="[=ClassName]", key = "#id")
 	public void Delete(Long id) {
 
 		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById(id) ; 
@@ -143,6 +146,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "[=ClassName]", key = "#id")
 	public Find[=ClassName]ByIdOutput FindById(Long id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById(id);
@@ -158,6 +162,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
 	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id) {
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
@@ -174,6 +179,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     <#if relationKey == parent>
     <#if parent?keep_after("-") == relationValue.eName>
     @Transactional(propagation = Propagation.REQUIRED)
+    @CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
     public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
@@ -182,6 +188,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
     @Transactional(propagation = Propagation.REQUIRED)
+    @CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
 	public void Remove[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -192,6 +199,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]/3
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @CacheEvict(value="[=ClassName]", key = "#[=relationValue.eName?uncap_first]Id")
 	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -245,6 +253,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
   </#if>
  </#list>
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "[=ClassName]")
 	public List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<[=EntityClassName]> found[=ClassName] = _[=ClassName?uncap_first]Manager.FindAll(Search(search), pageable);

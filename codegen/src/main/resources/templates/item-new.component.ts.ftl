@@ -135,11 +135,11 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 						service: this.[=relationValue.eName?lower_case]Service,
 					</#if>
                 <#if relationValue.relation == "ManyToOne">
-				<#list DescriptiveField as dEntityName, dField>
-				<#if dEntityName == relationValue.eName>
-				descriptiveField: '[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]',
+				
+				<#if DescriptiveField[relationValue.eName]??>
+				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
 				</#if>
-                </#list>
+                
 			    </#if>
 				},
 			</#list>

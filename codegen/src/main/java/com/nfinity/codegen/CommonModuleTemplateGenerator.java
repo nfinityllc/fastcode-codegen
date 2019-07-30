@@ -33,8 +33,6 @@ public class CommonModuleTemplateGenerator {
 		packageName = packageName.concat(".CommonModule");
 		root.put("PackageName", packageName);
 		root.put("Audit", audit);
-		//root.put("CommonModulePackage" , "com.nfinity.fastcode.CommonModule");
-		
 		
 		generateBackendFiles(root, backendAppFolder);
 
@@ -91,7 +89,7 @@ public class CommonModuleTemplateGenerator {
 				if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
 					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
 				}
-				System.out.println(dirPath);
+				
 				File dir = new File(dirPath);
 				if(!dir.exists()) {
 					dir.mkdirs();

@@ -58,6 +58,10 @@ public class EmailModuleTemplateGenerator {
        
         String destFolderBackend;
         destPath=destPath.concat("/EmailBuilder");
+       
+        new File(destPath).mkdirs();
+		generateFiles(getEmailConfigurationTemplate(), root, destPath);
+		
 		destFolderBackend = destPath + "/application/EmailTemplate";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getEmailTemplateApplicationLayerTemplates(), root, destFolderBackend);
@@ -96,7 +100,7 @@ public class EmailModuleTemplateGenerator {
 		
 		destFolderBackend = destPath + "/RestControllers" ;
 		new File(destFolderBackend).mkdirs();
-		generateFiles(getEmailControllerTemplates(), root, destFolderBackend);
+		generateFiles(getEmailControllerTemplates(Boolean.parseBoolean(root.get("History").toString())), root, destFolderBackend);
 		
 	}
 
@@ -113,7 +117,7 @@ public class EmailModuleTemplateGenerator {
 				if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
 					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
 				}
-				System.out.println(dirPath);
+			
 				File dir = new File(dirPath);
 				if(!dir.exists()) {
 					dir.mkdirs();
@@ -131,6 +135,13 @@ public class EmailModuleTemplateGenerator {
 		}
 	}
 	
+	private static Map<String, Object> getEmailConfigurationTemplate() {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		backEndTemplate.put("MailConfiguration.ftl", "MailConfiguration.java");
+		return backEndTemplate;
+	}
 	private static Map<String, Object> getEmailTemplateApplicationLayerTemplates() {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -215,10 +226,12 @@ public class EmailModuleTemplateGenerator {
 		return backEndTemplate;
 	}
 	
-	private static Map<String, Object> getEmailControllerTemplates() {
+	private static Map<String, Object> getEmailControllerTemplates(Boolean history) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
-		
+		if(history) {
+		backEndTemplate.put("RestControllers/EmailAuditController.ftl", "EmailAuditController.java");
+		}
 		backEndTemplate.put("RestControllers/EmailTemplateController.ftl", "EmailTemplateController.java");
 		backEndTemplate.put("RestControllers/HtmlEmailController.ftl", "HtmlEmailController.java");
 		backEndTemplate.put("RestControllers/MailController.ftl", "MailController.java");

@@ -206,6 +206,7 @@ public class EntityGenerator {
 		root.put("EntityClassName", entityClassName);
 		root.put("ClassName", className);
 		root.put("PackageName", packageName);
+		root.put("CommonModulePackage", packageName.concat(".CommonModule"));
 		root.put("RelationInput", entityDetails.getRelationInput());
 		root.put("SchemaName", schemaName);
 		root.put("Audit", audit);

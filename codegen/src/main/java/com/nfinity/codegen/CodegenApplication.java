@@ -109,10 +109,12 @@ public class CodegenApplication implements ApplicationRunner {
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
 				input.getAudit());
-		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
-        
-		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable() );
+		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
+		
+		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
+		
+		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable() );
 		
 		if(!input.getAuthenticationType().equals("none"))
 		{
@@ -126,13 +128,15 @@ public class CodegenApplication implements ApplicationRunner {
 						+ (groupArtifactId + ".model").replace(".", "/"),
 				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
 				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail());
+		
 		if(input.getEmail())
         {
         	EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
         }
         if(input.getScheduler())
         {
-        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName());
+        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName(),
+        			input.getConnectionStr());
         }
         if(input.getFlowable())
         {
@@ -145,6 +149,9 @@ public class CodegenApplication implements ApplicationRunner {
 				: false) {
 			GitRepositoryManager.addToGitRepository(input.getDestinationPath());
 		}
+		
+		
+        
 	}
 
 	@Override

@@ -34,10 +34,11 @@ public class PomFileModifier {
 		Dependency querydslapt= new Dependency("com.querydsl", "querydsl-apt", "4.2.1");
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
-		Dependency common_module = new Dependency("com.nfinity","common-module","1.0");
 		
 		if(scheduler)
 		{
+			Dependency hibernate_cp = new Dependency("org.hibernate","hibernate-c3p0","4.3.6.Final");
+			dependencies.add(hibernate_cp);
 			Dependency apache_directory_server = new Dependency("org.apache.directory.server","apacheds-server-jndi","1.5.5");
 			dependencies.add(apache_directory_server);
 			Dependency quartz_scheduler = new Dependency("org.quartz-scheduler","quartz","2.3.0");
@@ -62,7 +63,7 @@ public class PomFileModifier {
 		dependencies.add(querydslapt);
 		dependencies.add(apache_commons);
 		dependencies.add(postgres);
-		dependencies.add(common_module);
+		
 
 		PomFileModifier.addDependenciesAndPluginsToPom(path,dependencies);
 

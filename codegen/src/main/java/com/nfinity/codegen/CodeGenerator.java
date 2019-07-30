@@ -106,8 +106,8 @@ public class CodeGenerator {
 
 		}
 
-		PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
-		modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
+	//	PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
+	//	modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
 		
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
@@ -127,17 +127,18 @@ public class CodeGenerator {
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
 
-		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema);
+		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema,email);
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 
 	}
 
-	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema){
+	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema,Boolean email){
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
 		propertyInfo.put("appName", appName);
 		propertyInfo.put("schema", schema);
+		propertyInfo.put("EmailModule",email);
 
 		return propertyInfo;
 	}
