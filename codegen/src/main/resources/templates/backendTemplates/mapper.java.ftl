@@ -14,6 +14,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 <#if relationKey == parent>
 <#if parent?keep_after("-") == relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
+import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#if>
 </#list>
@@ -161,6 +162,7 @@ public interface [=ClassName]Mapper {
     @Mapping(source = "[=InstanceName].[=relationValue.referenceColumn]", target = "[=InstanceName][=relationValue.referenceColumn?cap_first]")
     })
     Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case],[=EntityClassName] [=InstanceName]);
+    Find[=relationValue.eName]ByIdOutput [=relationValue.eName]EntityToGetAvailable[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case]);
     </#if>
 </#if>
     </#list>

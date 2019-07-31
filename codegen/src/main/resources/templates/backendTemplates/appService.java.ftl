@@ -19,6 +19,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 <#if parent?keep_after("-") == relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
+import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#if>
 </#list>
@@ -227,6 +228,27 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
 			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next(), found[=ClassName]));
+		}
+		return output;
+	}
+	
+	// ReST API Call => GET /[=ClassName?uncap_first]/1/available[=relationValue.eName]
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	public List<Find[=relationValue.eName]ByIdOutput> GetAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable) throws Exception{
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=relationValue.joinColumn]);
+		if (found[=ClassName] == null) {
+			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=relationValue.joinColumn]);
+			return null;
+		}
+        
+		Page<[=relationValue.eName]Entity> found[=relationValue.eName] = _[=ClassName?uncap_first]Manager.GetAvailable[=relationValue.eName]List([=relationValue.joinColumn],search,pageable);
+		List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = found[=relationValue.eName].getContent();
+		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]List.iterator();
+		List<Find[=relationValue.eName]ByIdOutput> output = new ArrayList<>();
+
+		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
+			output.add(mapper.[=relationValue.eName]EntityToGetAvailable[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next()));
 		}
 		return output;
 	}

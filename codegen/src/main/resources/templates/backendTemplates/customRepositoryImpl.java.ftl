@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -121,6 +122,23 @@ public class [=ClassName]CustomRepositoryImpl implements [=ClassName]CustomRepos
 		Page<[=relationValue.eName]Entity> result = new PageImpl<[=relationValue.eName]Entity>(typedQuery.getResultList(), pageable, totalRows);
 		return result;
 	}
+	
+	@Override
+	public Page<[=relationValue.eName]Entity> getAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable) {
+		String qlString = "SELECT * FROM [=Schema].[=relationValue.eName?uncap_first] e WHERE e.id not in (SELECT [=(relationValue.inverseJoinColumn?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] FROM [=Schema].[=(relationValue.joinTable?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] WHERE [=(relationValue.joinColumn?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] = :[=relationValue.joinColumn]) AND (:search is null OR e.name ilike :search)";
+		Query query = entityManager.createNativeQuery(qlString,[=relationValue.eName]Entity.class)
+				.setParameter("[=relationValue.joinColumn]",[=relationValue.joinColumn])
+				.setParameter("search","%" + search + "%")
+				.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+				.setMaxResults(pageable.getPageSize());
+		List results = query.getResultList();
+		int totalRows = results.size();
+
+		Page<[=relationValue.eName]Entity> result = new PageImpl<[=relationValue.eName]Entity>(results, pageable, totalRows);
+		
+		return result;
+	}
+	
 	
 
 }

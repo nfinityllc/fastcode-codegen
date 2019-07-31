@@ -52,6 +52,9 @@ public interface I[=ClassName]Manager {
     public [=relationValue.eName]Entity Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]Id,@Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]Id);
 
     public Page<[=relationValue.eName]Entity> Find[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]Id,List<SearchFields> fields,String operator,Pageable pageable);
+    
+    public Page<[=relationValue.eName]Entity> GetAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable);
+    
     </#if>
     </#if>
     </#list>

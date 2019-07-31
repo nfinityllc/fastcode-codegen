@@ -88,6 +88,11 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 
 		return _[=ClassName?lower_case]Repository.getAll[=relationValue.eName]([=ClassName?lower_case]Id,search,operator,pageable);
 	}
+	
+	public Page<[=relationValue.eName]Entity> GetAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable) {
+
+		return _[=ClassName?lower_case]Repository.getAvailable[=relationValue.eName]List([=relationValue.joinColumn], search, pageable);
+	}
 
 	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
 		
