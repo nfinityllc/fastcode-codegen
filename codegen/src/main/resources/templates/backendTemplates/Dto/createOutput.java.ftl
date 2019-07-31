@@ -74,7 +74,7 @@ public class Create[=ClassName]Output {
    return [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   }
 
-  public void setget[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first](Date [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
+  public void set[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first](Date [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
    this.[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
   }
   <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">

@@ -11,6 +11,7 @@ import [=PackageName].application.Authorization.Roles.Dto.*;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
+import [=CommonModulePackage].domain.EmptyJsonResponse;
 import [=CommonModulePackage].logging.LoggingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

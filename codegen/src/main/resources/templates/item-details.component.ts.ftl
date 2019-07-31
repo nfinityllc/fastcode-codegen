@@ -112,14 +112,14 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 					value: undefined
 				},
 				<#if relationValue.relation == "ManyToMany">
-			<#list RelationInput as relationInput>
-  			<#assign parent = relationInput>
-  			<#if relationKey == parent>
-  			<#if parent?keep_after("-") == relationValue.eName>
+			    <#list RelationInput as relationInput>
+  			    <#assign parent = relationInput>
+  			    <#if relationKey == parent>
+  			    <#if parent?keep_after("-") == relationValue.eName>
 				isParent: true,
-			</#if>
-            </#if>
-			<#if parent?keep_before("-") == relationValue.eName>
+			    </#if>
+                </#if>
+			    <#if parent?keep_before("-") == relationValue.eName>
 				isParent: false,
 				</#if>
 				</#list>
@@ -133,9 +133,11 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 				service: this.[=relationValue.eName?lower_case]Service,
 				</#if>
-				<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-				descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
-			  </#if>
+				<#if relationValue.relation == "ManyToOne">
+				<#if DescriptiveField[relationValue.eName]??>
+				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+			    </#if>
+                </#if>
 			},
 		</#list>
 		];

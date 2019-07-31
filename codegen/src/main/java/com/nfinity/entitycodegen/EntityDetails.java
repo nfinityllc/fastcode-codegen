@@ -15,6 +15,16 @@ public class EntityDetails {
 	Map<String, FieldDetails> fieldsMap = new HashMap<>();
 	Map<String, RelationDetails> relationsMap = new HashMap<>();
 	List<String> relationInput = new ArrayList<>();
+	Map<String, FieldDetails> entitiesDescriptiveFieldMap = new HashMap<>();
+
+	
+	public Map<String, FieldDetails> getEntitiesDescriptiveFieldMap() {
+		return entitiesDescriptiveFieldMap;
+	}
+
+	public void setEntitiesDescriptiveFieldMap(Map<String, FieldDetails> entitiesDescriptiveFieldMap) {
+		this.entitiesDescriptiveFieldMap = entitiesDescriptiveFieldMap;
+	}
 
 	public EntityDetails(Map<String, FieldDetails> fieldsMap, Map<String, RelationDetails> relationsMap) {
 		super();
@@ -189,6 +199,7 @@ public class EntityDetails {
 
 				if (relation.geteName() != null) {
 					relation.setfDetails(getFields(relation.geteName(), classList));
+				//	System.out.println("class name "  +  className + "   relation name "+ relation.geteName());
 					relationsMap.put(className + "-" + relation.geteName(), relation);
 				}
 

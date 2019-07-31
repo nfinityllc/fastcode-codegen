@@ -9,6 +9,7 @@ import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=CommonModulePackage].logging.LoggingHelper;
+import [=CommonModulePackage].domain.EmptyJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Pageable;
@@ -102,7 +103,7 @@ public class UserController {
 
 	// ------------ Retrieve a user ------------
 
-	@PreAuthorize("hasAuthority('ADMINS')")
+//	@PreAuthorize("hasAuthority('ADMINS')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindUserByIdOutput> FindById(@PathVariable @Valid String id) {
 		FindUserByIdOutput uo = userAppService.FindById(Long.valueOf(id));

@@ -89,9 +89,13 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				[=relationValue.joinColumn]: [''],
 				</#if>
 				</#if>
-				<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-				[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] : [{ value: '', disabled: true }],
-			  </#if>
+				<#if relationValue.relation == "ManyToOne">
+				<#list DescriptiveField as dEntityName, dField>
+				<#if dEntityName == relationValue.eName>
+				[=relationValue.eName?uncap_first][=dField.fieldName?cap_first] : [{ value: '', disabled: true }],
+				</#if>
+                </#list>
+			    </#if>
 				</#list>
 				</#if>
 				});
@@ -116,7 +120,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 						isParent: true,
 				</#if>
           		</#if>
-			<#if parent?keep_before("-") == relationValue.eName>
+			    <#if parent?keep_before("-") == relationValue.eName>
 						isParent: false,
 				</#if>
 				</#list>
@@ -130,9 +134,13 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 					<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 						service: this.[=relationValue.eName?lower_case]Service,
 					</#if>
-					<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-						descriptiveField: '[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]',
-			  	</#if>
+                <#if relationValue.relation == "ManyToOne">
+				
+				<#if DescriptiveField[relationValue.eName]??>
+				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				</#if>
+                
+			    </#if>
 				},
 			</#list>
 			];

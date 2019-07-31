@@ -41,12 +41,12 @@ public class CodeGenerator {
     static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	static String CLIENT_ROOT_FOLDER = "/client";
 
-	private static Map<String, Object> buildEntityInfo(String entityName, String packageName, Boolean audit, Boolean history, String sourcePath,
-			String type, String modName, EntityDetails details, String authenticationType, String schema) {
+
+	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit,Boolean history, String sourcePath,
+			String type, String modName,EntityDetails details,String authenticationType,Boolean email, String schema) {
 		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
-		//String packageName = className.concat("s");
 		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(className);
 		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
 		String instanceName = StringUtils.join(splittedNames);
@@ -62,12 +62,14 @@ public class CodeGenerator {
 		root.put("PackageName", packageName);
 		root.put("InstanceName", instanceName);
 		root.put("RelationInput",details.getRelationInput());
+		root.put("DescriptiveField",details.getEntitiesDescriptiveFieldMap());
 		root.put("Audit", audit);
 		root.put("History", history);
 		root.put("IEntity", "I" + className);
 		root.put("IEntityFile", "i" + moduleName);
-		root.put("CommonModulePackage" , "com.nfinity.fastcode");
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("AuthenticationType", authenticationType);
+		root.put("EmailModule", email);
 		root.put("ApiPath", className.substring(0, 1).toLowerCase() + className.substring(1));
 
 
@@ -93,21 +95,7 @@ public class CodeGenerator {
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,String sourcePackageName,Boolean audit,
 			Boolean history, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString,
-			String schema,String authenticationType,Boolean scheduler) {
-
-		//backendAppFolder = backEndRootFolder + "/src/main/java";
-		//clientAppFolder = clientRootFolder + "/src/app";
-		//CGenClassLoader loader = new CGenClassLoader(sourcePath);
-		// String packageName = "com.ninfinity.entitycodegen.model"; // you can also
-		// pass other package names or root package
-		// name like com.ninfinity.entitycodegen
-
-		// generate base angular app
-		/*File directory = new File(destPath + "/"+ clientRootFolder);
-		if (!directory.exists()) {
-			directory.mkdir();
-		}*/
-		//FronendBaseTemplateGenerator.generate(destPath, CLIENT_ROOT_FOLDER);
+			String schema,String authenticationType,Boolean scheduler, Boolean email) {
 
 		// generate all modules for each entity
 		List<String> entityNames=new ArrayList<String>();
@@ -116,12 +104,12 @@ public class CodeGenerator {
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			entityNames.add(className);
 			Generate(entry.getKey(), appName, backEndRootFolder, clientRootFolder, sourcePackageName, audit, history, sourcePath, 
-					destPath, type, entry.getValue(), authenticationType, scheduler, schema);
+					destPath, type, entry.getValue(), authenticationType, scheduler, email, schema);
 
 		}
 
-		PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
-		modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
+	//	PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
+	//	modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
 		
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
@@ -132,24 +120,27 @@ public class CodeGenerator {
 			
 		}
 		
-		generateFrontendAuthorization(destPath, appName, authenticationType);
-
+		if(authenticationType != "none") {
+			generateFrontendAuthorization(destPath, appName, authenticationType);
+		}
+		
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
 
-		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema);
+		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema,email);
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 
 	}
 
-	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema){
+	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema,Boolean email){
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
 		propertyInfo.put("appName", appName);
 		propertyInfo.put("schema", schema);
+		propertyInfo.put("EmailModule",email);
 
 		return propertyInfo;
 	}
@@ -345,11 +336,13 @@ public class CodeGenerator {
 	}
 
 	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit,
-		Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, String schema) {
+
+		Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email, String schema) {
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		String clientAppFolder = clientRootFolder + "/src/app";
-		Map<String, Object> root = buildEntityInfo(entityName, packageName, audit, history, sourcePath, type, "", details, authenticationType, schema);
+		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details,authenticationType,email,schema);
+
 
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 
@@ -537,7 +530,7 @@ public class CodeGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("controller.java.ftl", className + "Controller.java");
-		backEndTemplate.put("emptyJsonResponse.java.ftl","EmptyJsonResponse.java");
+//		backEndTemplate.put("emptyJsonResponse.java.ftl","EmptyJsonResponse.java");
 
 		return backEndTemplate;
 	}

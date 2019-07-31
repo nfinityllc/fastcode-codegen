@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,7 @@ public class PermissionAppService implements IPermissionAppService {
 
 	// ReST API Call => DELETE /permissions/1
 	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="Permission", key = "#pid")
 	public void Delete(Long pid) {
 
 		PermissionsEntity existing = _permissionsManager.FindById(pid);
@@ -52,6 +55,7 @@ public class PermissionAppService implements IPermissionAppService {
 
 	// ReST API Call => PUT /permissions/1
 	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="Permission", key = "#pid")
 	public UpdatePermissionOutput Update(Long pid, UpdatePermissionInput permission) {
 
 		PermissionsEntity re = permissionMapper.UpdatePermissionInputToPermissionsEntity(permission);
@@ -61,6 +65,7 @@ public class PermissionAppService implements IPermissionAppService {
 
 	// ReST API Call => GET /permissions/1
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Cacheable(value = "Permission", key = "#pid")
 	public FindPermissionByIdOutput FindById(Long pid) {
 
 		PermissionsEntity foundPermission = _permissionsManager.FindById(pid);
@@ -72,6 +77,7 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Cacheable(value = "Permission", key = "#permissionName")
 	public FindPermissionByNameOutput FindByPermissionName(String permissionName) {
 
 		PermissionsEntity foundPermission = _permissionsManager.FindByPermissionName(permissionName);
