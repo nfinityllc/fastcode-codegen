@@ -21,6 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+<#if Flowable!false>
+import com.nfinity.fastcode.domain.Flowable.Users.ActIdUserEntity;
+import com.nfinity.fastcode.application.Flowable.ActIdUserMapper;
+import com.nfinity.fastcode.application.Flowable.FlowableIdentityService;
+</#if>
 
 import java.util.*;
 
@@ -49,6 +54,14 @@ static final int case1=1;
 
 	@Autowired
 	private UserMapper userMapper;
+	
+	<#if Flowable!false>
+	@Autowired
+	private ActIdUserMapper actIdUserMapper;
+	
+    @Autowired
+	private FlowableIdentityService idmIdentityService;
+    </#if>
 
     @Transactional(propagation = Propagation.REQUIRED)
 	public CreateUserOutput Create(CreateUserInput input) {
@@ -62,6 +75,12 @@ static final int case1=1;
 		}
 		
 		UsersEntity createdUsers = userManager.Create(users);
+		
+		<#if Flowable!false>
+		//Map and create flowable user
+		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(createdUser);
+		idmIdentityService.createUser(createdUser, actIdUser);
+		</#if>
 		return userMapper.UsersEntityToCreateUserOutput(createdUsers);
 	}
 	
@@ -84,8 +103,10 @@ static final int case1=1;
 	public void Delete(Long id) {
 
 		UsersEntity existing = userManager.FindById(id) ; 
-
 		userManager.Delete(existing);
+		<#if Flowable!false>
+		idmIdentityService.deleteUser(existing.getUserName());
+		</#if>
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)

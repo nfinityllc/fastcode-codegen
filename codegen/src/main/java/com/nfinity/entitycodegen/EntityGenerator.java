@@ -85,36 +85,32 @@ public class EntityGenerator {
 
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
 					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
-					
+
+
+
 					// Get parent descrptive fields from user
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-						
-						if(!(descriptiveFieldEntities.containsKey(entry.getValue().getcName()) || descriptiveFieldEntities.containsKey(entry.getValue().geteName())))
+
+						if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().geteName())))
 						{
-							
 							descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(relationInputList,descriptiveFieldEntities);
-						//	descriptiveFieldEntities.put(entry.getValue().geteName(),entry.getValue().getEntityDescriptionField());
-						//	FieldDetails descriptiveField = entry.getValue().FindAndSetDescriptiveField(relationInputList,descriptiveFieldEntities);
-						//	if (descriptiveField != null) {
-						//	descriptiveMap.put(entry.getKey(), entry.getValue().getEntityDescriptionField());
-						 //   }
 						}
-//						else
-//						{
-//							for (Map.Entry<String, FieldDetails> entry1 : descriptiveFieldEntities.entrySet() ) {
-//								int indexOfDash = entry.getKey().indexOf('-');
-//								String before = entry.getKey().substring(indexOfDash+1);
-//								
-//								System.out.println("\n else part "  + entry1.getKey() + "  relation key " + entry.getKey()+
-//										" -- \n key " + entry1.getKey());
-//								if(entry1.getKey().equals(before))
-//								{
-//									System.out.println("here");
-//									descriptiveMap.put(entry.getKey(), entry1.getValue());
-//								}
-//							}
-//						}
-						
+						//						else
+						//						{
+						//							for (Map.Entry<String, FieldDetails> entry1 : descriptiveFieldEntities.entrySet() ) {
+						//								int indexOfDash = entry.getKey().indexOf('-');
+						//								String before = entry.getKey().substring(indexOfDash+1);
+						//								
+						//								System.out.println("\n else part "  + entry1.getKey() + "  relation key " + entry.getKey()+
+						//										" -- \n key " + entry1.getKey());
+						//								if(entry1.getKey().equals(before))
+						//								{
+						//									System.out.println("here");
+						//									descriptiveMap.put(entry.getKey(), entry1.getValue());
+						//								}
+						//							}
+						//						}
+
 
 						/*
 						 * if (entry.getValue().getRelation() == "ManyToOne" ||
@@ -132,7 +128,7 @@ public class EntityGenerator {
 						 * entry.getValue().getEntityDescriptionField()); } }
 						 */
 					}
-				
+
 					details.setRelationsMap(relationMap);
 					details.setEntitiesDescriptiveFieldMap(descriptiveFieldEntities);
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
@@ -145,56 +141,56 @@ public class EntityGenerator {
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
-//
-//		if (audit) {
-//			EntityGenerator.generateAuditEntity(destinationPath, packageName);
-//		}
-        
-		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		//
+		//		if (audit) {
+		//			EntityGenerator.generateAuditEntity(destinationPath, packageName);
+		//		}
+
+		//		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
-		
-		
-	//	return setDescriptiveField(entityDetailsMap, descriptiveMap, relationInputList);
+
+
+		//	return setDescriptiveField(entityDetailsMap, descriptiveMap, relationInputList);
 		return entityDetailsMap;
 	}
 
-//	public static Map<String, EntityDetails> setDescriptiveField(Map<String, EntityDetails> entityDetailsMap,
-//			Map<String, FieldDetails> descriptiveMap, List<String> relationInputList) {
-//		for (Map.Entry<String, EntityDetails> details : entityDetailsMap.entrySet()) {
-//			Map<String, RelationDetails> relationMap = details.getValue().getRelationsMap();
-//			for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-//				if (entry.getValue().getRelation() == "OneToMany" || entry.getValue().getRelation() == "ManyToMany") {
-//					for (Map.Entry<String, FieldDetails> str : descriptiveMap.entrySet()) {
-//						int indexOfDash = str.getKey().indexOf('-');
-//						String before = str.getKey().substring(0, indexOfDash);
-//						String after = str.getKey().substring(indexOfDash + 1);
-//						if (entry.getValue().getRelation() == "ManyToMany") {
-//							for (String input : relationInputList) {
-//								int index = input.indexOf('-');
-//								String parent = input.substring(0, index);
-//								if (parent.equals(after)) {
-//									if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
-//											&& str.getKey() != null) {
-//										entry.getValue().setEntityDescriptionField(str.getValue());
-//									}
-//
-//								}
-//							}
-//						} else {
-//							if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
-//									&& str.getKey() != null) {
-//								entry.getValue().setEntityDescriptionField(str.getValue());
-//							}
-//						}
-//					}
-//				}
-//
-//			}
-//			details.getValue().setRelationsMap(relationMap);
-//		}
-//
-//		return entityDetailsMap;
-//	}
+	//	public static Map<String, EntityDetails> setDescriptiveField(Map<String, EntityDetails> entityDetailsMap,
+	//			Map<String, FieldDetails> descriptiveMap, List<String> relationInputList) {
+	//		for (Map.Entry<String, EntityDetails> details : entityDetailsMap.entrySet()) {
+	//			Map<String, RelationDetails> relationMap = details.getValue().getRelationsMap();
+	//			for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+	//				if (entry.getValue().getRelation() == "OneToMany" || entry.getValue().getRelation() == "ManyToMany") {
+	//					for (Map.Entry<String, FieldDetails> str : descriptiveMap.entrySet()) {
+	//						int indexOfDash = str.getKey().indexOf('-');
+	//						String before = str.getKey().substring(0, indexOfDash);
+	//						String after = str.getKey().substring(indexOfDash + 1);
+	//						if (entry.getValue().getRelation() == "ManyToMany") {
+	//							for (String input : relationInputList) {
+	//								int index = input.indexOf('-');
+	//								String parent = input.substring(0, index);
+	//								if (parent.equals(after)) {
+	//									if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
+	//											&& str.getKey() != null) {
+	//										entry.getValue().setEntityDescriptionField(str.getValue());
+	//									}
+	//
+	//								}
+	//							}
+	//						} else {
+	//							if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
+	//									&& str.getKey() != null) {
+	//								entry.getValue().setEntityDescriptionField(str.getValue());
+	//							}
+	//						}
+	//					}
+	//				}
+	//
+	//			}
+	//			details.getValue().setRelationsMap(relationMap);
+	//		}
+	//
+	//		return entityDetailsMap;
+	//	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
 			String destPath, Boolean audit) {

@@ -150,7 +150,9 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
+				<#if DescriptiveField[relationValue.cName]??>
 				childDescriptiveField : '[=DescriptiveField[relationValue.cName].fieldName]',
+				</#if>
 				</#if>
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
