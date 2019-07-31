@@ -273,6 +273,25 @@ public class [=ClassName]Controller {
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
+	
+	<#if AuthenticationType != "none">
+//	@PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
+	</#if>
+        @RequestMapping(value = "/{[=relationValue.joinColumn]}/available[=relationValue.eName]", method = RequestMethod.GET)
+	public ResponseEntity GetAvailable[=relationValue.eName]List(@PathVariable String [=relationValue.joinColumn],@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception{
+		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+
+		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+
+		List<Find[=relationValue.eName]ByIdOutput> output = _[=ClassName?uncap_first]AppService.GetAvailable[=relationValue.eName]List(Long.valueOf([=relationValue.joinColumn]),search,Pageable);
+		if (output == null) {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity(output, HttpStatus.OK);
+	}
 
    </#if>
    </#if>

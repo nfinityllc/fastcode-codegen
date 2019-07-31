@@ -19,32 +19,32 @@
 		<mat-table matSort [dataSource]="items" class="mat-elevation-z8">
 		
 		<ng-container matColumnDef="id">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> id</mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> Id</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-			<span class="mobile-label">{{getMobileLabelForField("id")}}:</span>
+			<span class="mobile-label">Id:</span>
 			<a routerLink="/roles/{{item.id}}">
 				{{ item.id}}
 			</a>
 			</mat-cell>
 		</ng-container>   
 		<ng-container matColumnDef="displayName">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> displayName</mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> Display Name</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-				<span class="mobile-label">{{getMobileLabelForField("DisplayName")}}:</span>
+				<span class="mobile-label">Display Name:</span>
 				{{ item.displayName }}
 			</mat-cell>
 		</ng-container>
 		<ng-container matColumnDef="name">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> name</mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> Name</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-				<span class="mobile-label">{{getMobileLabelForField("Name")}}:</span>
+				<span class="mobile-label">Name:</span>
 				{{ item.name }}
 			</mat-cell>
 		</ng-container>
 		<ng-container matColumnDef="actions">
 			<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 			<mat-cell *matCellDef="let item"> 
-				<button mat-button color="accent"(click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany")?'De-link':'Delete'}}</button>
+				<button mat-button color="accent"(click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany")? ('GENERAL.ACTIONS.DE-LINK' | translate) : ('GENERAL.ACTIONS.DELETE' | translate) }}</button>
 			</mat-cell>
 		</ng-container>
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

@@ -41,8 +41,9 @@ public class CodeGenerator {
     static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	static String CLIENT_ROOT_FOLDER = "/client";
 
+
 	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit,Boolean history, String sourcePath,
-			String type, String modName,EntityDetails details,String authenticationType,Boolean email) {
+			String type, String modName,EntityDetails details,String authenticationType,Boolean email, String schema) {
 		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -54,6 +55,7 @@ public class CodeGenerator {
 		}
 		String moduleName = StringUtils.isNotEmpty(modName) ? modName : StringUtils.join(splittedNames, "-");
 
+		root.put("Schema", schema);
 		root.put("ModuleName", moduleName);
 		root.put("EntityClassName", entityClassName);
 		root.put("ClassName", className);
@@ -101,8 +103,8 @@ public class CodeGenerator {
 		{
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			entityNames.add(className);
-			Generate(entry.getKey(), appName,backEndRootFolder,clientRootFolder, sourcePackageName,audit,history, sourcePath, 
-					destPath, type,entry.getValue(),authenticationType,scheduler,email);
+			Generate(entry.getKey(), appName, backEndRootFolder, clientRootFolder, sourcePackageName, audit, history, sourcePath, 
+					destPath, type, entry.getValue(), authenticationType, scheduler, email, schema);
 
 		}
 
@@ -334,11 +336,13 @@ public class CodeGenerator {
 	}
 
 	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit,
-		Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email) {
+
+		Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email, String schema) {
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		String clientAppFolder = clientRootFolder + "/src/app";
-		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details,authenticationType,email);
+		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details,authenticationType,email,schema);
+
 
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 

@@ -17,6 +17,8 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 public interface [=ClassName]CustomRepository {
 
  Page<[=relationValue.eName]Entity> getAll[=relationValue.eName](Long [=ClassName?uncap_first]Id,List<SearchFields> search,String operator,Pageable pageable);
+ 
+ Page<[=relationValue.eName]Entity> getAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable);
 </#if>
 </#if>
 </#list>
