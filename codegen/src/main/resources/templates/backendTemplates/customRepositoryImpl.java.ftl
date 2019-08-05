@@ -125,7 +125,7 @@ public class [=ClassName]CustomRepositoryImpl implements [=ClassName]CustomRepos
 	
 	@Override
 	public Page<[=relationValue.eName]Entity> getAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable) {
-		String qlString = "SELECT * FROM [=Schema].[=relationValue.eName?uncap_first] e WHERE e.id not in (SELECT [=(relationValue.inverseJoinColumn?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] FROM [=Schema].[=(relationValue.joinTable?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] WHERE [=(relationValue.joinColumn?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] = :[=relationValue.joinColumn]) AND (:search is null OR e.name ilike :search)";
+		String qlString = "SELECT * FROM [=Schema].[=relationValue.eName?uncap_first] e WHERE e.id not in (SELECT [=(relationValue.inverseJoinColumn?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] FROM [=Schema].[=(relationValue.joinTable?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] WHERE [=(relationValue.joinColumn?uncap_first)?replace("[A-Z]", "_$0", 'r')?lower_case] = :[=relationValue.joinColumn]) AND (:search is null OR e.[=DescriptiveField[relationValue.eName]] ilike :search)";
 		Query query = entityManager.createNativeQuery(qlString,[=relationValue.eName]Entity.class)
 				.setParameter("[=relationValue.joinColumn]",[=relationValue.joinColumn])
 				.setParameter("search","%" + search + "%")

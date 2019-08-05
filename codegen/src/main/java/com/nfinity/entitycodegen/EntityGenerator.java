@@ -339,10 +339,12 @@ public class EntityGenerator {
 		String[] urlArr = connectionString.split("\\?");
 		connectionStringMap.put("url", urlArr[0]);
 
-		String[] paramsArr = urlArr[1].split("\\;");
-		for (String param : paramsArr) {
-			String[] paramArr = param.split("\\=");
-			connectionStringMap.put(paramArr[0], paramArr[1]);
+		if(!urlArr[1].isEmpty()) {
+			String[] paramsArr = urlArr[1].split("\\;");
+			for (String param : paramsArr) {
+				String[] paramArr = param.split("\\=");
+				connectionStringMap.put(paramArr[0], paramArr[1]);
+			}
 		}
 
 		return connectionStringMap;
