@@ -37,11 +37,11 @@ public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
-	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable) {
+	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler, Boolean flowable, String authenticationType) {
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
-		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json",flowable);
-		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder,flowable);
+		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json", flowable, scheduler);
+		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder, flowable, scheduler);
 
 		List<String> fl = FolderContentReader.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
@@ -57,6 +57,7 @@ public class FronendBaseTemplateGenerator {
 		root.put("EmailModule", email);
 		root.put("SchedulerModule", scheduler);
 		root.put("FlowableModule", flowable);
+		root.put("AuthenticationType", authenticationType);
 
 
 		for (String filePath : fl) {
@@ -159,7 +160,7 @@ public class FronendBaseTemplateGenerator {
 		}
 	}
 
-	public static void editAngularJsonFile(String path, String clientSubfolder,Boolean flowable) {
+	public static void editAngularJsonFile(String path, String clientSubfolder, Boolean flowable, Boolean scheduler) {
 
 		try {
 
@@ -187,6 +188,11 @@ public class FronendBaseTemplateGenerator {
 			if(flowable)
 			{
 				projects.put("task-app",getFlowableTaskProjectNode());
+			}
+			
+			if(scheduler)
+			{
+				projects.put("scheduler",getSchedulerProjectNode());
 			}
 			projects.put("fastCodeCore",getFastCodeCoreProjectNode());
 			String prettyJsonString = beautifyJson(jsonObject); 
@@ -384,7 +390,7 @@ public class FronendBaseTemplateGenerator {
 		return scheduler;
 	}
 	
-	public static void editTsConfigJsonFile(String path,Boolean flowable) {
+	public static void editTsConfigJsonFile(String path, Boolean flowable, Boolean scheduler) {
 
 		try {
 
@@ -409,8 +415,19 @@ public class FronendBaseTemplateGenerator {
 				JSONArray flowable_task1 = new JSONArray();
 				flowable_task1.add("dist/task-app/*");
 
-				paths.put("task-app/",flowable_task);
+				paths.put("task-app",flowable_task);
 				paths.put("task-app/*",flowable_task1);
+			}
+			
+			if(scheduler)
+			{
+				JSONArray schedulerNode = new JSONArray();
+				schedulerNode.add("dist/scheduler");
+				JSONArray schedulerNode1 = new JSONArray();
+				schedulerNode1.add("dist/scheduler/*");
+
+				paths.put("scheduler",schedulerNode);
+				paths.put("scheduler/*",schedulerNode1);
 			}
 
 			compilerOptions.put("paths",paths);

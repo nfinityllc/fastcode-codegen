@@ -18,22 +18,48 @@
 
         </mat-nav-list>
       </mat-expansion-panel>
-
-      <!-- <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
-
+      
+      <#if AuthenticationType == "database" || AuthenticationType == "ldap">
       <mat-expansion-panel class="expansion-panel">
         <mat-expansion-panel-header class="subnav-header">
           {{'MainNav.AccessMgmt' | translate }}
         </mat-expansion-panel-header>
 
         <mat-nav-list class="subnav">
-
+          <#if AuthenticationType == "database">
           <a mat-list-item class="mat-sub-list-item" routerLink="users">{{'MainNav.Users' | translate }} </a>
+          </#if>
           <a mat-list-item class="mat-sub-list-item" routerLink="roles">Roles</a>
           <a mat-list-item class="mat-sub-list-item" routerLink="permissions">Permissions</a>
 
         </mat-nav-list>
       </mat-expansion-panel>
+      </#if>
+      
+      <#if SchedulerModule!false>
+      <mat-expansion-panel class="expansion-panel">
+        <mat-expansion-panel-header class="subnav-header">
+          {{'MainNav.JobScheduling.Title' | translate }}
+        </mat-expansion-panel-header>
+
+        <mat-nav-list class="subnav">
+
+          <a mat-list-item class="mat-sub-list-item" routerLink="scheduler/jobs">{{'MainNav.JobScheduling.Jobs' | translate }}
+          </a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="scheduler/executingJobs">{{'MainNav.JobScheduling.ExecutingJobs'
+            | translate }} </a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="scheduler/triggers">{{'MainNav.JobScheduling.Triggers' |
+            translate }} </a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="scheduler/executionHistory">{{'MainNav.JobScheduling.ExecutionHistory'
+            | translate }} </a>
+
+        </mat-nav-list>
+      </mat-expansion-panel>
+      </#if>
+      
+
+      <!-- <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
+
 
       <a mat-list-item class="sidenav-list-item" routerLink="entityHistory">{{'MainNav.EntityHistory' | translate }}
       </a>
@@ -53,24 +79,7 @@
         </mat-nav-list>
       </mat-expansion-panel>
 
-      <mat-expansion-panel class="expansion-panel">
-        <mat-expansion-panel-header class="subnav-header">
-          {{'MainNav.JobScheduling.Title' | translate }}
-        </mat-expansion-panel-header>
-
-        <mat-nav-list class="subnav">
-
-          <a mat-list-item class="mat-sub-list-item" routerLink="jobs">{{'MainNav.JobScheduling.Jobs' | translate }}
-          </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="executingJobs">{{'MainNav.JobScheduling.ExecutingJobs'
-            | translate }} </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="triggers">{{'MainNav.JobScheduling.Triggers' |
-            translate }} </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="executionHistory">{{'MainNav.JobScheduling.ExecutionHistory'
-            | translate }} </a>
-
-        </mat-nav-list>
-      </mat-expansion-panel> -->
+      -->
 
       <mat-expansion-panel class="expansion-panel">
         <mat-expansion-panel-header class="subnav-header">

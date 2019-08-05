@@ -40,6 +40,18 @@ public class SchedulerModuleTemplateGenerator {
 		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("Schema",schemaName);
 		
+		
+		Map<String, Object> frontendTemplates = getFrontendTempaltes();
+
+		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects/scheduler");
+		generateBackendFiles(root, backendAppFolder);
+		
+		Map<String,Object> propertyInfo = getInfoForQuartzPropertiesFile(connectionString);
+		generateQuartzProperties(propertyInfo, destination + "/src/main/resources");
+
+	}
+	
+	private static Map<String, Object> getFrontendTempaltes() {
 		List<String> filesList = FolderContentReader.getFilesFromFolder(FRONTEND_SCHEDULER_TEMPLATE_FOLDER);
 		Map<String, Object> frontendTemplates = new HashMap<>();
 		
@@ -49,14 +61,10 @@ public class SchedulerModuleTemplateGenerator {
 			p = p.replace(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources" + FRONTEND_SCHEDULER_TEMPLATE_FOLDER,"");
 			frontendTemplates.put(p, p.substring(0, p.lastIndexOf('.')));
 		}
-
-		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects");
-		generateBackendFiles(root, backendAppFolder);
 		
-		Map<String,Object> propertyInfo = getInfoForQuartzPropertiesFile(connectionString);
-		generateQuartzProperties(propertyInfo, destination + "/src/main/resources");
-
+		return frontendTemplates;
 	}
+	
 	private static void generateBackendFiles(Map<String, Object> root, String destPath) {
        
         String destFolderBackend;
