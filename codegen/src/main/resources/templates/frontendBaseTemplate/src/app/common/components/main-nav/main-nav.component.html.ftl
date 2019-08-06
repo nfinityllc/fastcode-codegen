@@ -57,13 +57,7 @@
       </mat-expansion-panel>
       </#if>
       
-
-      <!-- <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
-
-
-      <a mat-list-item class="sidenav-list-item" routerLink="entityHistory">{{'MainNav.EntityHistory' | translate }}
-      </a>
-
+      <#if EmailModule!false>
       <mat-expansion-panel class="expansion-panel">
         <mat-expansion-panel-header class="subnav-header">
           {{'MainNav.Email.Title' | translate }}
@@ -71,13 +65,21 @@
 
         <mat-nav-list class="subnav">
 
-          <a mat-list-item class="mat-sub-list-item" routerLink="email">{{'MainNav.Email.EmailTemplate' | translate }}
+          <a mat-list-item class="mat-sub-list-item" routerLink="email/emailtemplates">{{'MainNav.Email.EmailTemplate' | translate }}
           </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="emailvariables">{{'MainNav.Email.EmailVariables' |
-            translate }} </a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="email/emailvariables">{{'MainNav.Email.EmailVariables' | translate }} </a>
 
         </mat-nav-list>
       </mat-expansion-panel>
+      </#if>
+
+      <!-- <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
+
+
+      <a mat-list-item class="sidenav-list-item" routerLink="entityHistory">{{'MainNav.EntityHistory' | translate }}
+      </a>
+
+      
 
       -->
 

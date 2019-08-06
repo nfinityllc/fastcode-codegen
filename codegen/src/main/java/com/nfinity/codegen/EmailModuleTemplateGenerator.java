@@ -50,7 +50,7 @@ public class EmailModuleTemplateGenerator {
 			frontendTemplates.put(p, p.substring(0, p.lastIndexOf('.')));
 		}
 
-		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects");
+		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects/ip-email-builder");
 		generateBackendFiles(root, backendAppFolder);
 
 	}

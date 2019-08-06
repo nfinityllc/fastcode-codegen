@@ -8,6 +8,9 @@ import { TaskRoutes } from ‘task’';
 <#if SchedulerModule!false>
 import { SchedulerRoutes } from 'scheduler';
 </#if>
+<#if EmailModule!false>
+import { EmailRoutes } from 'ip-email-builder';
+</#if>
 
 const routes: Routes = [
 
@@ -16,6 +19,9 @@ const routes: Routes = [
     </#if>
     <#if SchedulerModule!false>
     {path: 'scheduler', children: SchedulerRoutes},
+    </#if>
+    <#if EmailModule!false>
+    {path: 'email', children: EmailRoutes,canActivate: [ AuthGuard ]  },
     </#if>
 	{ path: '', redirectTo: '/', pathMatch: 'full' }, 
 ];

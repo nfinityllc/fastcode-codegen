@@ -40,8 +40,8 @@ public class FronendBaseTemplateGenerator {
 	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler, Boolean flowable, String authenticationType) {
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
-		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json", flowable, scheduler);
-		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder, flowable, scheduler);
+		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json", flowable, scheduler, email);
+		editAngularJsonFile(destination + "/" + clientSubfolder + "/angular.json", clientSubfolder, flowable, scheduler, email);
 
 		List<String> fl = FolderContentReader.getFilesFromFolder(FRONTEND_BASE_TEMPLATE_FOLDER);
 		Map<String, Object> templates = new HashMap<>();
@@ -160,7 +160,7 @@ public class FronendBaseTemplateGenerator {
 		}
 	}
 
-	public static void editAngularJsonFile(String path, String clientSubfolder, Boolean flowable, Boolean scheduler) {
+	public static void editAngularJsonFile(String path, String clientSubfolder, Boolean flowable, Boolean scheduler, Boolean email) {
 
 		try {
 
@@ -194,6 +194,12 @@ public class FronendBaseTemplateGenerator {
 			{
 				projects.put("scheduler",getSchedulerProjectNode());
 			}
+
+			if(email)
+			{
+				projects.put("ip-email-builder",getEmailBuilderProjectNode());
+			}
+			
 			projects.put("fastCodeCore",getFastCodeCoreProjectNode());
 			String prettyJsonString = beautifyJson(jsonObject); 
 			writeJsonToFile(path,prettyJsonString);
@@ -390,7 +396,7 @@ public class FronendBaseTemplateGenerator {
 		return scheduler;
 	}
 	
-	public static void editTsConfigJsonFile(String path, Boolean flowable, Boolean scheduler) {
+	public static void editTsConfigJsonFile(String path, Boolean flowable, Boolean scheduler, Boolean email) {
 
 		try {
 
@@ -428,6 +434,17 @@ public class FronendBaseTemplateGenerator {
 
 				paths.put("scheduler",schedulerNode);
 				paths.put("scheduler/*",schedulerNode1);
+			}
+
+			if(email)
+			{
+				JSONArray emailNode = new JSONArray();
+				emailNode.add("dist/ip-email-builder");
+				JSONArray emailNode1 = new JSONArray();
+				emailNode1.add("dist/ip-email-builder/*");
+				
+				paths.put("ip-email-builder",emailNode);
+				paths.put("ip-email-builder/*",emailNode1);
 			}
 
 			compilerOptions.put("paths",paths);
