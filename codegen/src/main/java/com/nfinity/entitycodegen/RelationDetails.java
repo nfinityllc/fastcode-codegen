@@ -142,36 +142,36 @@ public class RelationDetails {
 		this.isJoinColumnOptional = isJoinColumnOptional;
 	}
 
-	public Map<String,FieldDetails> FindAndSetDescriptiveField(List<String> manyToManyRshp,Map<String,FieldDetails> descriptiveFieldEntities) {
+	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities) {
 		FieldDetails descriptiveField = null;
 		
 		if (this.getRelation() == "ManyToOne" || this.getRelation() == "ManyToMany") {
 
-			if (this.getRelation() == "ManyToMany") {
-				for (String str : manyToManyRshp) {
-					int indexOfDash = str.indexOf('-');
-					String before = str.substring(0, indexOfDash);
-					String after = str.substring(indexOfDash+1);
-					if (before.equals(this.geteName())) {
-						if(!descriptiveFieldEntities.containsKey(this.geteName()))
-						{
-						descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
-						descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-						}
-					}
-					if(after.equals(this.getcName()))
-					{
-						if(!descriptiveFieldEntities.containsKey(this.getcName()))
-						{
-						descriptiveField = GetUserInput.getEntityDescriptionField(this.getcName(), this.getfDetails());
-						descriptiveFieldEntities.put(this.getcName(),descriptiveField);
-						}
-					}
-				}
-			} else {
+//			if (this.getRelation() == "ManyToMany") {
+//				for (String str : manyToManyRshp) {
+//					int indexOfDash = str.indexOf('-');
+//					String before = str.substring(0, indexOfDash);
+//					String after = str.substring(indexOfDash+1);
+//					if (before.equals(this.geteName())) {
+//						if(!descriptiveFieldEntities.containsKey(this.geteName()))
+//						{
+//						descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
+//						descriptiveFieldEntities.put(this.geteName(),descriptiveField);
+//						}
+//					}
+//					if(after.equals(this.getcName()))
+//					{
+//						if(!descriptiveFieldEntities.containsKey(this.getcName()))
+//						{
+//						descriptiveField = GetUserInput.getEntityDescriptionField(this.getcName(), this.getfDetails());
+//						descriptiveFieldEntities.put(this.getcName(),descriptiveField);
+//						}
+//					}
+//				}
+//			} else {
 				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
 				descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-			}
+//			}
 //			if (descriptiveField != null) {
 //				this.setEntityDescriptionField(descriptiveField);
 //				// descriptiveMap.put(entry.getKey(),

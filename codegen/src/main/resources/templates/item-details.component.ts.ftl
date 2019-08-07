@@ -112,7 +112,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 					value: undefined
 				},
 				<#if relationValue.relation == "ManyToMany">
-			    <#list RelationInput as relationInput>
+			    <#list CompositeKeyClasses as relationInput>
   			    <#assign parent = relationInput>
   			    <#if relationKey == parent>
   			    <#if parent?keep_after("-") == relationValue.eName>

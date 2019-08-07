@@ -8,17 +8,6 @@ import org.mapstruct.Mappings;
 <#if relationValue.relation == "ManyToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
-<#if relationValue.relation =="ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if relationKey == parent>
-<#if parent?keep_after("-") == relationValue.eName>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
-</#if>
-</#if>
-</#list>
-</#if>
 </#if>
 </#list>
 import [=PackageName].application.[=ClassName].Dto.*;
@@ -143,29 +132,7 @@ public interface [=ClassName]Mapper {
     })
     Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
   
-  <#elseif relationValue.relation == "ManyToMany">
-  <#list RelationInput as relationInput>
-  <#assign parent = relationInput>
-  <#if relationKey == parent>
-  <#if parent?keep_after("-") == relationValue.eName>
-    @Mappings({
-  <#list relationValue.fDetails as fValue>
-  <#list Fields as key,value> 
-  <#if fValue.fieldName == value.fieldName>
-    @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
-  </#if>
-  </#list>
-  </#list>
-   <#if parent?keep_before("-") == ClassName && relationValue.entityDescriptionField??>
-    @Mapping(source = "[=InstanceName].[=relationValue.entityDescriptionField.fieldName]", target = "[=InstanceName][=relationValue.entityDescriptionField.fieldName?cap_first]"),
-   </#if> 
-    @Mapping(source = "[=InstanceName].[=relationValue.referenceColumn]", target = "[=InstanceName][=relationValue.referenceColumn?cap_first]")
-    })
-    Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case],[=EntityClassName] [=InstanceName]);
-    Find[=relationValue.eName]ByIdOutput [=relationValue.eName]EntityToGetAvailable[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case]);
-    </#if>
-</#if>
-    </#list>
+  
    </#if>
   </#list>
 }

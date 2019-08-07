@@ -72,7 +72,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				<#else>
 				[=value.fieldName]: [''],
 				</#if>
-				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
+				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer">
 				<#if value.isNullable == false>   
 				[=value.fieldName]: ['', Validators.required],       
 				<#else>
@@ -113,7 +113,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 						value: undefined
 					},
 				<#if relationValue.relation == "ManyToMany">
-				<#list RelationInput as relationInput>
+				<#list CompositeKeyClasses as relationInput>
 	  			<#assign parent = relationInput>
 	  			<#if relationKey == parent>
   				<#if parent?keep_after("-") == relationValue.eName>

@@ -11,7 +11,7 @@ import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogSe
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToMany">
-<#list RelationInput as relationInput>
+<#list CompositeKeyClasses as relationInput>
 <#assign parent = relationInput>
 <#if parent?keep_before("-") == relationValue.eName>
 import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
@@ -50,7 +50,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 			filter: true,
 			type: listColumnType.String
 		},
-	<#elseif value.fieldType?lower_case == "int" || value.fieldType?lower_case == "long">
+	<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long">
 		{
 			column: '[=value.fieldName]',
 			label: '[=value.fieldName]',
@@ -100,7 +100,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
 		<#if relationValue.relation == "ManyToMany">
-		<#list RelationInput as relationInput>
+		<#list CompositeKeyClasses as relationInput>
 		<#assign parent = relationInput>
 		<#if parent?keep_before("-") == relationValue.eName>
 		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
@@ -138,7 +138,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 					value: undefined
 				},
 				<#if relationValue.relation == "ManyToMany">
-				<#list RelationInput as relationInput>
+				<#list CompositeKeyClasses as relationInput>
 				<#assign parent = relationInput>
 				<#if relationKey == parent>
   				<#if parent?keep_after("-") == relationValue.eName>

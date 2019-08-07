@@ -61,7 +61,7 @@ public class CodeGenerator {
 		root.put("ClassName", className);
 		root.put("PackageName", packageName);
 		root.put("InstanceName", instanceName);
-		root.put("RelationInput",details.getRelationInput());
+		root.put("CompositeKeyClasses",details.getCompositeKeyClasses());
 		root.put("DescriptiveField",details.getEntitiesDescriptiveFieldMap());
 		root.put("Audit", audit);
 		root.put("History", history);
@@ -74,7 +74,18 @@ public class CodeGenerator {
 
 
 		Map<String, FieldDetails> actualFieldNames = details.getFieldsMap();
+		Map<String,String> primaryKeys= new HashMap<>();
+		for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
+			if(entry.getValue().getIsPrimaryKey())
+			{
+				if(entry.getValue().getFieldType().equalsIgnoreCase("long"))
+				primaryKeys.put(entry.getValue().getFieldName(),"Long");
+				else
+			    primaryKeys.put(entry.getValue().getFieldName(), entry.getValue().getFieldType());
+			}
+		}
 
+		root.put("PrimaryKeys", primaryKeys);
 		Map<String, RelationDetails> relationMap = details.getRelationsMap();
 		List<String> searchFields = new ArrayList<>();
 
@@ -82,7 +93,6 @@ public class CodeGenerator {
 		for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
 			if (entry.getValue().getFieldType().equalsIgnoreCase("String"))
 				searchFields.add(entry.getValue().getFieldName());
-
 		}
 
 		root.put("Fields", actualFieldNames);
@@ -378,14 +388,14 @@ public class CodeGenerator {
 				destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
-				generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
+			//	generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
 			} else {
 				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
 				generateFiles(uiTemplate2DestMapping, root, destFolder);
 				destFolder = destPath +"/"+ backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString());
-				generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
+			//	generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -501,22 +511,22 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
-	private static Map<String, Object> generateCustomRepositoryTemplates(Map<String,Object> root,String destPath,String className) {
-		List<String> relationInput= (List<String>) root.get("RelationInput");
-		destPath=destPath + "/domain/IRepository";
-		Map<String, Object> backEndTemplate = new HashMap<>();
-		for(String str : relationInput)
-		{
-			if(className.equals(str.substring(0,str.lastIndexOf("-")).toString()))
-			{
-				backEndTemplate.put("icustomRepository.java.ftl", className + "CustomRepository.java");
-				backEndTemplate.put("customRepositoryImpl.java.ftl", className + "CustomRepositoryImpl.java");
-				generateFiles(backEndTemplate, root, destPath);
-			}
-		}
-
-		return backEndTemplate;
-	}
+//	private static Map<String, Object> generateCustomRepositoryTemplates(Map<String,Object> root,String destPath,String className) {
+//		List<String> relationInput= (List<String>) root.get("RelationInput");
+//		destPath=destPath + "/domain/IRepository";
+//		Map<String, Object> backEndTemplate = new HashMap<>();
+//		for(String str : relationInput)
+//		{
+//			if(className.equals(str.substring(0,str.lastIndexOf("-")).toString()))
+//			{
+//				backEndTemplate.put("icustomRepository.java.ftl", className + "CustomRepository.java");
+//				backEndTemplate.put("customRepositoryImpl.java.ftl", className + "CustomRepositoryImpl.java");
+//				generateFiles(backEndTemplate, root, destPath);
+//			}
+//		}
+//
+//		return backEndTemplate;
+//	}
 
 	private static Map<String, Object> getRepositoryTemplates(String className) {
 
@@ -564,7 +574,7 @@ public class CodeGenerator {
 		new File(destFolder).mkdirs();
 
 		Map<String,RelationDetails> relationDetails = details.getRelationsMap();
-		List<String> relationInput = details.getRelationInput();
+		List<String> relationInput = details.getCompositeKeyClasses();
 
 		for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
 			if(entry.getValue().getRelation().equals("ManyToOne"))
@@ -584,29 +594,29 @@ public class CodeGenerator {
 					e1.printStackTrace();
 				}
 			}
-			else if(entry.getValue().getRelation().equals("ManyToMany"))
-			{
-				for(String str : relationInput)
-				{
-					if(entityName.equals(str.substring(0,str.lastIndexOf("-")).toString()))
-					{
-						List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
-						root.put("RelationEntityFields",relationEntityFields);
-						root.put("RelationEntityName", entry.getValue().geteName());
-						try {
-							Template template = cfg.getTemplate("getOutput.java.ftl");
-							File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
-							PrintWriter writer = new PrintWriter(fileName);
-							template.process(root, writer);
-							writer.flush();
-							writer.close();
-						}
-						catch ( Exception  e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
-			}
+//			else if(entry.getValue().getRelation().equals("ManyToMany"))
+//			{
+//				for(String str : relationInput)
+//				{
+//					if(entityName.equals(str.substring(0,str.lastIndexOf("-")).toString()))
+//					{
+//						List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
+//						root.put("RelationEntityFields",relationEntityFields);
+//						root.put("RelationEntityName", entry.getValue().geteName());
+//						try {
+//							Template template = cfg.getTemplate("getOutput.java.ftl");
+//							File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
+//							PrintWriter writer = new PrintWriter(fileName);
+//							template.process(root, writer);
+//							writer.flush();
+//							writer.close();
+//						}
+//						catch ( Exception  e1) {
+//							e1.printStackTrace();
+//						}
+//					}
+//				}
+//			}
 		}
 	}
 

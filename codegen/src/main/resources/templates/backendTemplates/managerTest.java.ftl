@@ -29,20 +29,7 @@ import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
 <#if relationValue.relation == "ManyToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-</#if>
-<#if relationValue.relation == "ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if relationKey == parent>
-<#if parent?keep_after("-") == relationValue.eName>
-import java.util.Set;
-import java.util.List;
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import [=CommonModulePackage].Search.SearchFields;
-</#if>
-</#if>
-</#list>
-</#if>    
+</#if>   
 </#list>
 import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -82,20 +69,20 @@ public class [=ClassName]ManagerTest {
 	public void tearDown() throws Exception {
 	}
 	
-	@Test
-	public void find[=ClassName]ById_IdIsNotNullAndIdExists_Return[=ClassName]() {
-		[=ClassName]Entity [=ClassName?uncap_first] =mock([=ClassName]Entity.class);
-
-		Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(ID)).isEqualTo([=ClassName?uncap_first]);
-	}
-
-	@Test 
-	public void find[=ClassName]ById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
-
-	Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn(null);
-	Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(ID)).isEqualTo(null);
-	}
+//	@Test
+//	public void find[=ClassName]ById_IdIsNotNullAndIdExists_Return[=ClassName]() {
+//		[=ClassName]Entity [=ClassName?uncap_first] =mock([=ClassName]Entity.class);
+//
+//		Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn([=ClassName?uncap_first]);
+//		Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(ID)).isEqualTo([=ClassName?uncap_first]);
+//	}
+//
+//	@Test 
+//	public void find[=ClassName]ById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
+//
+//	Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn(null);
+//	Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(ID)).isEqualTo(null);
+//	}
 	
 	@Test
 	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExist_Store[=ClassName]() {
@@ -135,96 +122,18 @@ public class [=ClassName]ManagerTest {
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
    //[=relationValue.eName]
-	@Test
-	public void get[=relationValue.eName]_if_[=ClassName]IdIsNotNull_return[=relationValue.eName]() {
-
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-
-		Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn([=relationValue.eName?uncap_first]);
-		Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](ID)).isEqualTo([=relationValue.eName?uncap_first]);
-
-	}
+//	@Test
+//	public void get[=relationValue.eName]_if_[=ClassName]IdIsNotNull_return[=relationValue.eName]() {
+//
+//		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
+//		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
+//
+//		Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn([=ClassName?uncap_first]);
+//		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn([=relationValue.eName?uncap_first]);
+//		Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](ID)).isEqualTo([=relationValue.eName?uncap_first]);
+//
+//	}
 	
-  <#elseif relationValue.relation == "ManyToMany">
-   <#list RelationInput as relationInput>
-    <#assign parent = relationInput>
-    <#if relationKey == parent>
-    <#if parent?keep_after("-") == relationValue.eName>
-    //[=relationValue.eName]
-    @Test
-	public void add[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNull_[=relationValue.eName]Assigned() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-		
-		Set<[=relationValue.eName]Entity> su = [=ClassName?uncap_first].get[=relationValue.eName]();
-		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn(su);
-        Assertions.assertThat(_[=ClassName?uncap_first]Manager.Add[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first])).isEqualTo(true);
-
-	}
-
-	@Test
-	public void add[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNullAnd[=relationValue.eName]AlreadyAssigned_ReturnFalse() {
-		
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-        Set<[=relationValue.eName]Entity> su = [=ClassName?uncap_first].get[=relationValue.eName]();
-		su.add([=relationValue.eName?uncap_first]);
-		
-		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn(su);
-        Assertions.assertThat(_[=ClassName?uncap_first]Manager.Add[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first])).isEqualTo(false);
-
-	}
-
-	@Test
-	public void Remove[=relationValue.eName]_if[=ClassName]And[=relationValue.eName]IsNotNull_[=relationValue.eName]Removed() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-
-		_[=ClassName?uncap_first]Manager.Remove[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first]);
-		verify(_[=ClassName?uncap_first]Repository).save([=ClassName?uncap_first]);
-	}
-
-
-	@Test 
-	public void Get[=relationValue.eName]_if[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=relationValue.eName]DoesNotExist_ReturnNull() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		
-		Mockito.when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn([=ClassName?uncap_first]);
-        Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](ID,ID)).isEqualTo(null);
-	}
-
-	@Test
-	public void Get[=relationValue.eName]_if[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAndRecordExists_Return[=relationValue.eName]() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = new [=relationValue.eName]Entity();
-		[=relationValue.eName?uncap_first].setId(ID);
-	
-		Set<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = [=ClassName?uncap_first].get[=relationValue.eName]();
-		[=relationValue.eName?uncap_first]List.add([=relationValue.eName?uncap_first]);
-
-		Mockito.when(_[=ClassName?uncap_first]Repository.findById(ID)).thenReturn([=ClassName?uncap_first]);
-		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn([=relationValue.eName?uncap_first]List);
-
-		Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](ID,ID)).isEqualTo([=relationValue.eName?uncap_first]);
-
-	}
-	
-    @Test
-	public void Find[=relationValue.eName]_[=ClassName]IdIsNotNull_Return[=relationValue.eName]() {
-	    Page<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first] = mock(Page.class);
-		Pageable pageable = mock(Pageable.class);
-		List<SearchFields> list = mock(List.class);
-		String value="equals";
-
-		Mockito.when(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](anyLong(),any(List.class),anyString(),any(Pageable.class))).thenReturn([=relationValue.eName?uncap_first]);
-		Assertions.assertThat(_[=ClassName?uncap_first]Repository.getAll[=relationValue.eName](ID,list,value,pageable)).isEqualTo([=relationValue.eName?uncap_first]);
-	}
-
-    </#if>
-</#if>
-    </#list>
    </#if>
   </#list>
 }

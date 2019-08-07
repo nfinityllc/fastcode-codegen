@@ -5,26 +5,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import [=PackageName].domain.model.[=EntityClassName];
+<#if CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=ClassName]Id;
+</#if>
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
 import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
 <#if relationValue.relation == "ManyToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-</#if>
-<#if relationValue.relation =="ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if relationKey == parent>
-<#if parent?keep_after("-") == relationValue.eName>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Set;
-import [=CommonModulePackage].Search.SearchFields;
-</#if>
-</#if>
-</#list>
 </#if>
 </#list>
 
@@ -59,9 +48,17 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		return _[=InstanceName]Repository.save([=InstanceName]);
 	}
 
-	public [=EntityClassName] FindById(Long id) {
-
-		return _[=InstanceName]Repository.findById(id.longValue());
+	public [=EntityClassName] FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "int">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>)
+    {
+        <#if CompositeKeyClasses?seq_contains(ClassName)>
+        return _[=InstanceName]Repository.findById(<#list PrimaryKeys?keys as key><#if key_has_next>
+        [=ClassName?uncap_first]Id.get[=key?cap_first](),<#else>[=ClassName?uncap_first]Id.get[=key?cap_first]()</#if></#list>);
+        <#else>
+        return _[=InstanceName]Repository.findById(<#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">[=ClassName?uncap_first]Id.longValue());<#elseif value.fieldType?lower_case == "int">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "short">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "double">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "string">[=ClassName?uncap_first]Id );
+        </#if>
+        </#if>
+        </#list> 
+        </#if>
 	}
 
 	public Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable) {
@@ -72,71 +69,20 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne">
    //[=relationValue.eName]
-	public [=relationValue.eName]Entity Get[=relationValue.eName](Long [=InstanceName]Id) {
-		
-		[=EntityClassName] entity = _[=InstanceName]Repository.findById([=InstanceName]Id.longValue());
-		return entity.get[=relationValue.eName]();
-	}
-	 <#elseif relationValue.relation == "ManyToMany">
-    //[=relationValue.eName]
-    <#list RelationInput as relationInput>
-    <#assign parent = relationInput>
-    <#if relationKey == parent>
-    <#if parent?keep_after("-") == relationValue.eName>
-    //[=relationValue.eName]
-	public Page<[=relationValue.eName]Entity> Find[=relationValue.eName](Long [=ClassName?lower_case]Id,List<SearchFields> search,String operator,Pageable pageable) {
-
-		return _[=ClassName?lower_case]Repository.getAll[=relationValue.eName]([=ClassName?lower_case]Id,search,operator,pageable);
+	public [=relationValue.eName]Entity Get[=relationValue.eName](
+	<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>) {
+		<#if CompositeKeyClasses?seq_contains(ClassName)>
+		[=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list PrimaryKeys?keys as key><#if key_has_next>
+        [=ClassName?uncap_first]Id.get[=key?cap_first](),<#else>[=ClassName?uncap_first]Id.get[=key?cap_first]()</#if></#list>);
+        <#else>
+        [=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">[=ClassName?uncap_first]Id.longValue());<#elseif value.fieldType?lower_case == "integer">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "short">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "double">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "string">[=ClassName?uncap_first]Id );
+        </#if>
+        </#if>
+        </#list> 
+        </#if>
+        return entity.get[=relationValue.eName]();
 	}
 	
-	public Page<[=relationValue.eName]Entity> GetAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable) {
-
-		return _[=ClassName?lower_case]Repository.getAvailable[=relationValue.eName]List([=relationValue.joinColumn], search, pageable);
-	}
-
-	public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
-		
-		Set<[=relationValue.eName]Entity> entitySet = [=InstanceName].get[=relationValue.eName]();
-
-		if (!entitySet.contains([=relationValue.eName?lower_case])) {
-		    entitySet.add([=relationValue.eName?lower_case]);
-			[=InstanceName].set[=relationValue.eName](entitySet);
-		} else {
-			return false;
-		}
-		_[=InstanceName]Repository.save([=InstanceName]);
-		return true;
-	}
-
-	public void Remove[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]) {
-
-		 Set<[=relationValue.eName]Entity> entitySet = [=InstanceName].get[=relationValue.eName]();
-
-	        if (entitySet.contains([=relationValue.eName?lower_case])) {
-	            entitySet.remove([=relationValue.eName?lower_case]);
-	            [=InstanceName].set[=relationValue.eName](entitySet);
-	        }
-	        _[=InstanceName]Repository.save([=InstanceName]);
-	}
-
-	public [=relationValue.eName]Entity Get[=relationValue.eName](Long [=InstanceName]Id, Long [=relationValue.eName?lower_case]Id) {
-
-		[=EntityClassName] foundRecord = _[=InstanceName]Repository.findById([=InstanceName]Id.longValue());
-		
-		Set<[=relationValue.eName]Entity> [=relationValue.eName?lower_case] = foundRecord.get[=relationValue.eName]();
-		Iterator iterator = [=relationValue.eName?lower_case].iterator();
-		while (iterator.hasNext()) { 
-			[=relationValue.eName]Entity pe = ([=relationValue.eName]Entity) iterator.next();
-			if (pe.getId() == [=relationValue.eName?lower_case]Id) {
-				return pe;
-			}
-		}
-		return null;
-	}
-
-	</#if>
-    </#if>
-    </#list>
    </#if>
   </#list>
 }

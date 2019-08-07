@@ -1,7 +1,7 @@
 export interface [=IEntity] {  
 
  <#list Fields as key,value>
- <#if value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int"> 
+ <#if value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer"> 
      <#if value.isNullable == true>
       [=value.fieldName]?: number;
      <#else>

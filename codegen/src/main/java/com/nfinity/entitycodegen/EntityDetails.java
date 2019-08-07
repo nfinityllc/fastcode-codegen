@@ -14,10 +14,9 @@ public class EntityDetails {
 
 	Map<String, FieldDetails> fieldsMap = new HashMap<>();
 	Map<String, RelationDetails> relationsMap = new HashMap<>();
-	List<String> relationInput = new ArrayList<>();
+	List<String> compositeKeyClasses = new ArrayList<>();
 	Map<String, FieldDetails> entitiesDescriptiveFieldMap = new HashMap<>();
 
-	
 	public Map<String, FieldDetails> getEntitiesDescriptiveFieldMap() {
 		return entitiesDescriptiveFieldMap;
 	}
@@ -48,12 +47,12 @@ public class EntityDetails {
 		this.relationsMap = relationsMap;
 	}
 
-	public List<String> getRelationInput() {
-		return relationInput;
+	public List<String> getCompositeKeyClasses() {
+		return compositeKeyClasses;
 	}
 
-	public void setRelationInput(List<String> relationInput) {
-		this.relationInput = relationInput;
+	public void setCompositeKeyClasses(List<String> compositeKeyClasses) {
+		this.compositeKeyClasses = compositeKeyClasses;
 	}
 
 	public static EntityDetails retreiveEntityFieldsAndRships(Class<?> entityClass, String entityName,
@@ -74,7 +73,13 @@ public class EntityDetails {
 				String str = field.getType().toString();
 				int index = str.lastIndexOf(".") + 1;
 				details.setFieldName(field.getName());
-				details.setFieldType(str.substring(index));
+				String fieldType=str.substring(index);
+				if(fieldType.equals("int"))
+				{
+					fieldType="Integer";
+				}
+				fieldType=fieldType.substring(0, 1).toUpperCase() + fieldType.substring(1);
+				details.setFieldType(fieldType);
 				Annotation[] annotations = field.getAnnotations();
 				relation.setcName(className);
 				for (Annotation a : annotations) {
