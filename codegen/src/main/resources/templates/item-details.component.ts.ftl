@@ -6,7 +6,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { [=ClassName]Service } from './[=ModuleName].service';
 import { [=IEntity] } from './[=IEntityFile]';
-import { PickerDialogService } from 'fastCodeCore';
+import { PickerDialogService, ErrorService } from 'fastCodeCore';
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
@@ -35,6 +35,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		public global: Globals,
 		public dataService: [=ClassName]Service,
 		public pickerDialogService: PickerDialogService,
+		public errorService: ErrorService,
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -43,7 +44,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		</#list>
 		</#if>
 	) {
-		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService);
+		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
   }
 
 	ngOnInit() {

@@ -2,6 +2,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from "@angular/core";
 import { AuthGuard } from './core/auth-guard';
+import { CanDeactivateGuard } from 'fastCodeCore';
 <#if FlowableModule!false>
 import { TaskRoutes } from ‘task’';
 </#if>
