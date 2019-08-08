@@ -574,10 +574,10 @@ public class CodeGenerator {
 		new File(destFolder).mkdirs();
 
 		Map<String,RelationDetails> relationDetails = details.getRelationsMap();
-		List<String> relationInput = details.getCompositeKeyClasses();
+//		List<String> relationInput = details.getCompositeKeyClasses();
 
 		for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
-			if(entry.getValue().getRelation().equals("ManyToOne"))
+			if(entry.getValue().getRelation().equals("ManyToOne") || entry.getValue().getRelation().equals("OneToOne"))
 			{
 				List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
 				root.put("RelationEntityFields",relationEntityFields);

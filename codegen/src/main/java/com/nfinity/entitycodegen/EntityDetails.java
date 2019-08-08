@@ -61,6 +61,7 @@ public class EntityDetails {
 		Map<String, FieldDetails> fieldsMap = new HashMap<>();
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
+		System.out.println(" entity name " + className);
 
 		try {
 
@@ -110,6 +111,25 @@ public class EntityDetails {
 						relation.setfName(field.getName());
 						relation.seteName(details.getFieldType());
 					}
+					if (a.annotationType().toString().equals("interface javax.persistence.OneToOne")) {
+						System.out.println(" ONe to one " + a);
+						relation.setRelation("OneToOne");
+						relation.setfName(field.getName());
+						relation.seteName(details.getFieldType());
+						String[] word = a.toString().split("[\\(,//)]");
+						String mappedBy = null;
+						for (String s : word) {
+							if (s.contains("mappedBy")) {
+								String[] value = s.split("=");
+								if(value.length>1)
+								{
+								mappedBy = value[1];
+								}
+							}
+						}
+						System.out.println("mapped by "  + mappedBy);
+						relation.setMappedBy(mappedBy);
+					}
 
 					if (a.annotationType().toString().equals("interface javax.persistence.JoinColumn")) {
 						String joinColumn = a.toString();
@@ -155,35 +175,38 @@ public class EntityDetails {
 						for (String s : word) {
 							if (s.contains("targetEntity")) {
 								String[] value = s.split(" ");
+								if(value.length>1)
+								{
 								entityPackage = value[1];
+								}
 							}
 
 						}
 
 						String targetEntity = entityPackage.substring(entityPackage.lastIndexOf(".") + 1);
-						Boolean isJoinTable = checkJoinTable(entityPackage, classList);
-						if (isJoinTable) {
-							List<Map<String, String>> joinInfo = getFieldsIfJoinTable(entityPackage, classList);
-							relation.setRelation("ManyToMany");
-							relation.setJoinTable(targetEntity);
-							for (Map<String, String> map : joinInfo) {
-
-								if (className.equals(map.get("fieldType"))) {
-									relation.setJoinColumn(map.get("joinColumn"));
-									relation.setJoinColumnType(map.get("joinColumnType"));
-									relation.setIsJoinColumnOptional(Boolean.valueOf(map.get("isJoinColumnOptional")));
-									relation.setReferenceColumn(map.get("referenceColumn"));
-								} else {
-									relation.setfName(map.get("fieldName"));
-									details.setFieldName(map.get("fieldName"));
-									details.setFieldType(map.get("fieldType"));
-									relation.seteName(map.get("fieldType"));
-									relation.setInverseJoinColumn(map.get("joinColumn"));
-									relation.setIsJoinColumnOptional(Boolean.valueOf(map.get("isJoinColumnOptional")));
-									relation.setInverseReferenceColumn(map.get("referenceColumn"));
-								}
-							}
-						} else {
+//						Boolean isJoinTable = checkJoinTable(entityPackage, classList);
+//						if (isJoinTable) {
+//							List<Map<String, String>> joinInfo = getFieldsIfJoinTable(entityPackage, classList);
+//							relation.setRelation("ManyToMany");
+//							relation.setJoinTable(targetEntity);
+//							for (Map<String, String> map : joinInfo) {
+//
+//								if (className.equals(map.get("fieldType"))) {
+//									relation.setJoinColumn(map.get("joinColumn"));
+//									relation.setJoinColumnType(map.get("joinColumnType"));
+//									relation.setIsJoinColumnOptional(Boolean.valueOf(map.get("isJoinColumnOptional")));
+//									relation.setReferenceColumn(map.get("referenceColumn"));
+//								} else {
+//									relation.setfName(map.get("fieldName"));
+//									details.setFieldName(map.get("fieldName"));
+//									details.setFieldType(map.get("fieldType"));
+//									relation.seteName(map.get("fieldType"));
+//									relation.setInverseJoinColumn(map.get("joinColumn"));
+//									relation.setIsJoinColumnOptional(Boolean.valueOf(map.get("isJoinColumnOptional")));
+//									relation.setInverseReferenceColumn(map.get("referenceColumn"));
+//								}
+//							}
+//						} else {
 							relation.setRelation("OneToMany");
 							details.setFieldName(targetEntity.toLowerCase());
 							details.setFieldType(targetEntity);
@@ -193,13 +216,16 @@ public class EntityDetails {
 							for (String s : word) {
 								if (s.contains("mappedBy")) {
 									String[] value = s.split("=");
+									if(value.length>1)
+									{
 									mappedBy = value[1];
+									}
 								}
 							}
 							relation.setMappedBy(mappedBy);
 
 						}
-					}
+	///				}
 				}
 
 				if (relation.geteName() != null) {

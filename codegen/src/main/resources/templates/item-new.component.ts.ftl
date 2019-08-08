@@ -83,12 +83,21 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				</#list>
 				<#if Relationship?has_content>
 				<#list Relationship as relationKey, relationValue>
-				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+				<#if relationValue.relation == "ManyToOne">
 				<#if relationValue.isJoinColumnOptional==false>          
 				[=relationValue.joinColumn]: ['', Validators.required],
 				<#else>
 				[=relationValue.joinColumn]: [''],
 				</#if>
+				</#if>
+                <#if relationValue.relation == "OneToOne">
+                <#if relationValue.joinColumn??>
+				<#if relationValue.isJoinColumnOptional==false>          
+				[=relationValue.joinColumn]: ['', Validators.required],
+				<#else>
+				[=relationValue.joinColumn]: [''],
+				</#if>
+                </#if>
 				</#if>
 				<#if relationValue.relation == "ManyToOne">
 				<#list DescriptiveField as dEntityName, dField>
@@ -108,11 +117,13 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 	  	
 			this.associations = [
 			<#list Relationship as relationKey, relationValue>
-				{
+			<#if relationValue.joinColumn??>
+				   {
 					column: {
 						key: '[=relationValue.joinColumn]',
 						value: undefined
 					},
+				</#if>	
 				<#if relationValue.relation == "ManyToMany">
 				<#list CompositeKeyClasses as relationInput>
 	  			<#assign parent = relationInput>

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 <#if AuthenticationType != "none">
 import org.springframework.security.access.prepost.PreAuthorize;
 </#if>
-
+<#if CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=ClassName]Id;
+</#if>
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
@@ -80,29 +82,45 @@ public class [=ClassName]Controller {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
-	
-<#list Fields as key,value>
-<#if value.isPrimaryKey!false>
- <#if value.fieldType?lower_case == "long">
-    Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf(id));
- <#elseif value.fieldType?lower_case == "integer" >
-    Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Integer.valueOf(id));
- <#elseif value.fieldType?lower_case == "short" >
-  	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Short.valueOf(id));
- <#elseif value.fieldType?lower_case == "double" >
-  	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Double.valueOf(id));
- <#elseif value.fieldType?lower_case == "string">
-  	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(id);
- </#if>
-</#if>  
-</#list>
-		if (output == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] with a id=%s", id);
-			throw new EntityNotFoundException(
-					String.format("There does not exist a [=ClassName?uncap_first] with a id=%s", id));
-		}
-		_[=ClassName?uncap_first]AppService.Delete(Long.valueOf(id));
+	<#if CompositeKeyClasses?seq_contains(ClassName)>
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	if([=ClassName?lower_case]Id == null)
+	{
+		logHelper.getLogger().error("Invalid id=%s", id);
+		throw new EntityNotFoundException(
+				String.format("Invalid id=%s", id));
 	}
+	Find[=ClassName]ByIdOutput output = _[=ClassName?lower_case]AppService.FindById([=ClassName?lower_case]Id);
+	<#else>
+    <#list Fields as key,value>
+    <#if value.isPrimaryKey!false>
+    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
+    Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById([=value.fieldType?cap_first].valueOf(id));
+    <#elseif value.fieldType?lower_case == "string">
+  	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(id);
+    </#if>
+    </#if>  
+    </#list>
+    </#if>
+	if (output == null) {
+		logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] with a id=%s", id);
+		throw new EntityNotFoundException(
+			String.format("There does not exist a [=ClassName?uncap_first] with a id=%s", id));
+	}
+    <#if CompositeKeyClasses?seq_contains(ClassName)>
+	 _[=ClassName?uncap_first]AppService.Delete([=ClassName?lower_case]Id);
+    <#else>
+    <#list Fields as key,value>
+    <#if value.isPrimaryKey!false>
+    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
+    _[=ClassName?uncap_first]AppService.Delete([=value.fieldType?cap_first].valueOf(id));
+    <#elseif value.fieldType?lower_case == "string">
+  	 _[=ClassName?uncap_first]AppService.Delete(id);
+    </#if>
+    </#if>  
+    </#list>
+    </#if>
+    }
 	
 	// ------------ Update [=ClassName?uncap_first] ------------
 	<#if AuthenticationType != "none">
@@ -110,27 +128,45 @@ public class [=ClassName]Controller {
     </#if>
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Update[=ClassName]Output> Update(@PathVariable String id, @RequestBody @Valid Update[=ClassName]Input [=ClassName?uncap_first]) {
-<#list Fields as key,value>
-<#if value.isPrimaryKey!false>
- <#if value.fieldType?lower_case == "long">
-    Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf(id));
- <#elseif value.fieldType?lower_case == "integer" >
-    Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(Integer.valueOf(id));
- <#elseif value.fieldType?lower_case == "short" >
-  	Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(Short.valueOf(id));
- <#elseif value.fieldType?lower_case == "double" >
-  	Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(Double.valueOf(id));
- <#elseif value.fieldType?lower_case == "string">
+    <#if CompositeKeyClasses?seq_contains(ClassName)>
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	if([=ClassName?lower_case]Id == null)
+	{
+		logHelper.getLogger().error("Invalid id=%s", id);
+		throw new EntityNotFoundException(
+				String.format("Invalid id=%s", id));
+	}
+	Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?lower_case]AppService.FindById([=ClassName?lower_case]Id);
+	<#else>
+    <#list Fields as key,value>
+    <#if value.isPrimaryKey!false>
+    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
+    Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById([=value.fieldType?cap_first].valueOf(id));
+    <#elseif value.fieldType?lower_case == "string">
   	Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(id);
- </#if>
-</#if>  
-</#list>
+    </#if>
+    </#if>  
+    </#list>
+    </#if>
 		
 		if (current[=ClassName] == null) {
 			logHelper.getLogger().error("Unable to update. [=ClassName] with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity(_[=ClassName?uncap_first]AppService.Update(Long.valueOf(id),[=ClassName?uncap_first]), HttpStatus.OK);
+		
+	<#if CompositeKeyClasses?seq_contains(ClassName)>
+	return new ResponseEntity(_[=ClassName?uncap_first]AppService.Update([=ClassName?lower_case]Id,[=ClassName?uncap_first]), HttpStatus.OK);
+    <#else>
+    <#list Fields as key,value>
+    <#if value.isPrimaryKey!false>
+    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
+    return new ResponseEntity(_[=ClassName?uncap_first]AppService.Update([=value.fieldType?cap_first].valueOf(id),[=ClassName?uncap_first]), HttpStatus.OK);
+    <#elseif value.fieldType?lower_case == "string">
+  	return new ResponseEntity(_[=ClassName?uncap_first]AppService.Update(id,[=ClassName?uncap_first]), HttpStatus.OK);
+    </#if>
+    </#if>  
+    </#list>
+    </#if>
 	}
 
     <#if AuthenticationType != "none">
@@ -138,25 +174,30 @@ public class [=ClassName]Controller {
     </#if>
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Find[=ClassName]ByIdOutput> FindById(@PathVariable String id) {
-
-<#list Fields as key,value>
-<#if value.isPrimaryKey!false>
- <#if value.fieldType?lower_case == "long">
-    Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Long.valueOf(id));
- <#elseif value.fieldType?lower_case == "integer" >
-    Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Integer.valueOf(id));
- <#elseif value.fieldType?lower_case == "short" >
-  	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Short.valueOf(id));
- <#elseif value.fieldType?lower_case == "double" >
-  	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(Double.valueOf(id));
- <#elseif value.fieldType?lower_case == "string">
+    <#if CompositeKeyClasses?seq_contains(ClassName)>
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	if([=ClassName?lower_case]Id == null)
+	{
+		logHelper.getLogger().error("Invalid id=%s", id);
+		throw new EntityNotFoundException(
+				String.format("Invalid id=%s", id));
+	}
+	Find[=ClassName]ByIdOutput output = _[=ClassName?lower_case]AppService.FindById([=ClassName?lower_case]Id);
+	<#else>
+    <#list Fields as key,value>
+    <#if value.isPrimaryKey!false>
+    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
+    Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById([=value.fieldType?cap_first].valueOf(id));
+    <#elseif value.fieldType?lower_case == "string">
   	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById(id);
- </#if> 
-</#if> 
-</#list>
+    </#if>
+    </#if>  
+    </#list>
+    </#if>
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
+		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
     
@@ -175,15 +216,33 @@ public class [=ClassName]Controller {
 		return ResponseEntity.ok(_[=ClassName?uncap_first]AppService.Find(searchCriteria,Pageable));
 	}
    <#list Relationship as relationKey, relationValue>
-   <#if relationValue.relation == "ManyToOne">
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
-	public ResponseEntity<Get[=relationValue.eName]Output> Get[=relationValue.eName](@PathVariable String [=InstanceName]id) {
-		Get[=relationValue.eName]Output output= _[=ClassName?uncap_first]AppService.Get[=relationValue.eName](Long.valueOf([=InstanceName]id));
-		
+	public ResponseEntity<Get[=relationValue.eName]Output> Get[=relationValue.eName](@PathVariable String id) {
+	<#if CompositeKeyClasses?seq_contains(ClassName)>
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	if([=ClassName?lower_case]Id == null)
+	{
+		logHelper.getLogger().error("Invalid id=%s", id);
+		throw new EntityNotFoundException(
+				String.format("Invalid id=%s", id));
+	}
+	Get[=relationValue.eName]Output output= _[=ClassName?uncap_first]AppService.Get[=relationValue.eName]([=ClassName?lower_case]Id);
+	<#else>
+	<#list Fields as key,value>
+    <#if value.isPrimaryKey!false>
+    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
+    Get[=relationValue.eName]Output output= _[=ClassName?uncap_first]AppService.Get[=relationValue.eName]([=value.fieldType?cap_first].valueOf(id));
+    <#elseif value.fieldType?lower_case == "string">
+    Get[=relationValue.eName]Output output= _[=ClassName?uncap_first]AppService.Get[=relationValue.eName](id);
+    </#if>
+    </#if>  
+    </#list>
+    </#if>
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
@@ -205,6 +264,7 @@ public class [=ClassName]Controller {
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		searchCriteria.setJoinColumn("[=relationValue.joinColumn?uncap_first]");
 		searchCriteria.setJoinColumnValue(Long.valueOf([=InstanceName]id));
+		
     	List<Find[=relationValue.eName]ByIdOutput> output = _[=relationValue.eName?uncap_first]AppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);

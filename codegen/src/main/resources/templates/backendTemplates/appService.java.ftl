@@ -8,10 +8,10 @@ import [=PackageName].domain.model.[=EntityClassName];
 import [=PackageName].domain.model.[=ClassName]Id;
 </#if>
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToMany" || relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
@@ -65,7 +65,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+	  	<#if relationValue.joinColumn??>
 	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
 		{
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
@@ -80,7 +81,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
-		
+		</#if>
 		</#if>
 		</#list>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
@@ -88,12 +89,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=ClassName]", key = "#id")
-	public Update[=ClassName]Output Update(Long id , Update[=ClassName]Input input) {
+	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>, Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+	  	<#if relationValue.joinColumn??>
 	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
 		{
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
@@ -108,7 +110,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
-
+        </#if>
 		</#if>
 		</#list>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
@@ -136,7 +138,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	<#list Relationship as relationKey,relationValue>
-	<#if relationValue.relation == "ManyToOne">
+	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -259,9 +261,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.joinColumn??>
 		 list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]") ||
 		</#if>
+        </#if>
 		</#list>
 		
         <#list Fields?keys as key>
@@ -462,10 +466,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	    </#list>	
 		}
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne" >
+		<#if relationValue.joinColumn??>
 		if(joinColumn != null && joinColumn.equals("[=relationValue.joinColumn]")) {
+		<#if relationValue.joinColumnType == "String">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=relationValue.joinColumn].eq(joinColumnValue.toString()));
+			<#else>
 			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(joinColumnValue));
+		    </#if>
 		}
+		</#if>
 		</#if>
 		</#list>
 
@@ -473,7 +483,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
-	public [=ClassName]Id parse(String keysString) {
+	public [=ClassName]Id parse[=ClassName]Key(String keysString) {
 		
 		String[] keyEntries = keysString.split(";");
 		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
@@ -496,7 +506,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		
 		<#list PrimaryKeys as fieldName,fieldType>
-
 		<#if fieldType?lower_case == "string" >
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](keyMap.get("[=fieldName]"));
 		<#elseif fieldType?lower_case == "long" >
@@ -508,7 +517,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#elseif value.fieldType?lower_case == "double">
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Double.valueOf(keyMap.get("[=fieldName]")));
 		</#if>
-		
 		</#list>
 		return [=ClassName?uncap_first]Id;
 		
