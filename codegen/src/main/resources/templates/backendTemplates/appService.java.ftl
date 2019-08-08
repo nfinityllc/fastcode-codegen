@@ -8,10 +8,10 @@ import [=PackageName].domain.model.[=EntityClassName];
 import [=PackageName].domain.model.[=ClassName]Id;
 </#if>
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToMany" || relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
@@ -65,7 +65,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+	  	<#if relationValue.joinColumn??>
 	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
 		{
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
@@ -80,7 +81,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
-		
+		</#if>
 		</#if>
 		</#list>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
@@ -93,7 +94,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+	  	<#if relationValue.joinColumn??>
 	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
 		{
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
@@ -108,7 +110,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
-
+        </#if>
 		</#if>
 		</#list>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
@@ -136,7 +138,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	<#list Relationship as relationKey,relationValue>
-	<#if relationValue.relation == "ManyToOne">
+	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -259,9 +261,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.joinColumn??>
 		 list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]") ||
 		</#if>
+        </#if>
 		</#list>
 		
         <#list Fields?keys as key>
@@ -462,10 +466,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	    </#list>	
 		}
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne" >
+		<#if relationValue.joinColumn??>
 		if(joinColumn != null && joinColumn.equals("[=relationValue.joinColumn]")) {
+		<#if relationValue.joinColumnType == "String">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=relationValue.joinColumn].eq(joinColumnValue.toString()));
+			<#else>
 			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(joinColumnValue));
+		    </#if>
 		}
+		</#if>
 		</#if>
 		</#list>
 

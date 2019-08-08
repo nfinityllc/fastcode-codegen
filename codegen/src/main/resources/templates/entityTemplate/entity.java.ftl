@@ -40,6 +40,9 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   private String [=value.fieldName];
  </#if> 
 </#list>
+ 
+  public [=ClassName]Entity() {
+	}
 
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long">
@@ -163,6 +166,32 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   
   private [=relationValue.eName]Entity [=relationValue.fName];
 
+  </#if>
+  <#if relationValue.relation == "OneToOne">
+  <#if relationValue.joinColumn??>
+  @OneToOne
+  @JoinColumn(name = "[=relationValue.joinColumn]")
+  public [=relationValue.eName]Entity get[=relationValue.eName]() {
+    return [=relationValue.fName];
+  }
+  public void set[=relationValue.eName]([=relationValue.eName]Entity [=relationValue.fName]) {
+    this.[=relationValue.fName] = [=relationValue.fName];
+  }
+  
+  private [=relationValue.eName]Entity [=relationValue.fName];
+  <#else>
+  <#if relationValue.mappedBy??>
+  @OneToOne(mappedBy = "[=relationValue.mappedBy]")
+  public [=relationValue.eName]Entity get[=relationValue.eName]() {
+    return [=relationValue.fName];
+  }
+  public void set[=relationValue.eName]([=relationValue.eName]Entity [=relationValue.fName]) {
+    this.[=relationValue.fName] = [=relationValue.fName];
+  }
+  
+  private [=relationValue.eName]Entity [=relationValue.fName];
+  </#if>
+  </#if>
   </#if>
   </#if>
   </#list>

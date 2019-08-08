@@ -12,19 +12,21 @@ public class Create[=ClassName]Input {
 </#list>
 
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
  <#if CompositeKeyClasses?seq_contains(ClassName)>
  <#if !Fields[relationValue.joinColumn]?? >
  private [=relationValue.joinColumnType] [=relationValue.joinColumn];
  </#if>
  <#else>
+ <#if relationValue.joinColumn??>
  private [=relationValue.joinColumnType] [=relationValue.joinColumn];
+ </#if>
  </#if>
 </#if>
 </#list>
 
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if CompositeKeyClasses?seq_contains(ClassName)>
   <#if !Fields[relationValue.joinColumn]?? >
   <#if relationValue.joinColumnType?lower_case == "long" || relationValue.joinColumnType?lower_case == "integer" || relationValue.joinColumnType?lower_case == "short" || relationValue.joinColumnType?lower_case == "double" || relationValue.joinColumnType?lower_case == "string">
@@ -38,6 +40,7 @@ public class Create[=ClassName]Input {
   </#if>
   </#if>
   <#else>
+  <#if relationValue.joinColumn??>
   <#if relationValue.joinColumnType?lower_case == "long" || relationValue.joinColumnType?lower_case == "integer" || relationValue.joinColumnType?lower_case == "short" || relationValue.joinColumnType?lower_case == "double" || relationValue.joinColumnType?lower_case == "string">
   public [=relationValue.joinColumnType?cap_first] get[=relationValue.joinColumn?cap_first]() {
   return [=relationValue.joinColumn];
@@ -47,6 +50,7 @@ public class Create[=ClassName]Input {
   this.[=relationValue.joinColumn] = [=relationValue.joinColumn];
   }
 </#if> 
+</#if>
 </#if>
 </#if>
 </#list>

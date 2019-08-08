@@ -84,12 +84,21 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			</#list>
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+			<#if relationValue.relation == "ManyToOne">
 			<#if relationValue.isJoinColumnOptional==false>          
 			[=relationValue.joinColumn]: ['', Validators.required],
 			<#else>
 			[=relationValue.joinColumn]: [''],
 			</#if>
+            </#if>
+            <#if relationValue.relation == "OneToOne">
+            <#if relationValue.joinColumn??>
+			<#if relationValue.isJoinColumnOptional==false>          
+			[=relationValue.joinColumn]: ['', Validators.required],
+			<#else>
+			[=relationValue.joinColumn]: [''],
+			</#if>
+            </#if>
 			</#if>
 			</#list>
 			</#if>
@@ -106,11 +115,13 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
   	
 		this.associations = [
 		<#list Relationship as relationKey, relationValue>
-			{
+		<#if relationValue.joinColumn??>
+			  {
 				column: {
 					key: '[=relationValue.joinColumn]',
 					value: undefined
 				},
+			</#if>	
 				<#if relationValue.relation == "ManyToMany">
 			    <#list CompositeKeyClasses as relationInput>
   			    <#assign parent = relationInput>
@@ -133,7 +144,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 				service: this.[=relationValue.eName?lower_case]Service,
 				</#if>
-				<#if relationValue.relation == "ManyToOne">
+				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
 			    </#if>
@@ -164,8 +175,13 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		</#list>
 		<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+			<#if relationValue.relation == "ManyToOne">
 			[=relationValue.joinColumn]: item.[=relationValue.joinColumn],
+			</#if>
+            <#if relationValue.relation == "OneToOne">
+            <#if relationValue.joinColumn??>
+			[=relationValue.joinColumn]: item.[=relationValue.joinColumn],
+			</#if>
 			</#if>
 			</#list>
 		</#if>

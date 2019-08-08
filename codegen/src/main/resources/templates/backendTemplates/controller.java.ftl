@@ -175,7 +175,7 @@ public class [=ClassName]Controller {
 		return ResponseEntity.ok(_[=ClassName?uncap_first]AppService.Find(searchCriteria,Pageable));
 	}
    <#list Relationship as relationKey, relationValue>
-   <#if relationValue.relation == "ManyToOne">
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")

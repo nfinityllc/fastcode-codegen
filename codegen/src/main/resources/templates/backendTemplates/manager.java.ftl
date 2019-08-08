@@ -12,7 +12,7 @@ import [=PackageName].domain.model.[=ClassName]Id;
 <#if ClassName != relationValue.eName>
 import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 </#if>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
@@ -67,17 +67,13 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	}
 
   <#list Relationship as relationKey,relationValue>
-  <#if relationValue.relation == "ManyToOne">
+  <#if relationValue.relation == "ManyToOne"|| relationValue.relation == "OneToOne">
    //[=relationValue.eName]
-	public [=relationValue.eName]Entity Get[=relationValue.eName](
-	<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	public [=relationValue.eName]Entity Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>) {
 		<#if CompositeKeyClasses?seq_contains(ClassName)>
-		[=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list PrimaryKeys?keys as key><#if key_has_next>
-        [=ClassName?uncap_first]Id.get[=key?cap_first](),<#else>[=ClassName?uncap_first]Id.get[=key?cap_first]()</#if></#list>);
+		[=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list PrimaryKeys?keys as key><#if key_has_next>[=ClassName?uncap_first]Id.get[=key?cap_first](),<#else>[=ClassName?uncap_first]Id.get[=key?cap_first]()</#if></#list>);
         <#else>
-        [=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">[=ClassName?uncap_first]Id.longValue());<#elseif value.fieldType?lower_case == "integer">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "short">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "double">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "string">[=ClassName?uncap_first]Id );
-        </#if>
-        </#if>
+        [=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">[=ClassName?uncap_first]Id.longValue());<#elseif value.fieldType?lower_case == "integer">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "short">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "double">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "string">[=ClassName?uncap_first]Id );</#if></#if>
         </#list> 
         </#if>
         return entity.get[=relationValue.eName]();
