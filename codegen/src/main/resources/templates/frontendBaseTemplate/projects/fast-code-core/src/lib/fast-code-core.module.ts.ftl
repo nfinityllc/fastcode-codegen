@@ -34,11 +34,13 @@ import { PickerDialogService } from './common/components/picker/picker-dialog.se
 import { IP_CONFIG } from './tokens';
 import { IForRootConf } from './IForRootConf';
 import { Globals } from './globals';
+import { CanDeactivateGuard } from './common/core/can-deactivate.guard';
+import {IGlobalPermissionService} from './common/core/iglobal-permission.service';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
+ 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
 }
@@ -92,6 +94,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     BaseListComponent,
     BaseNewComponent,
     PickerComponent
+    
   ],
   exports: [
     FastCodeCoreComponent,
@@ -103,6 +106,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     BaseListComponent,
     BaseNewComponent,
     PickerComponent
+    
   ],
   entryComponents: [
     AddFilterFieldComponent,
@@ -121,7 +125,8 @@ export class FastCodeCoreModule {
           provide: IP_CONFIG,
           useValue: config
         },
-        Globals
+        Globals,
+        CanDeactivateGuard
       ]
     };
   }

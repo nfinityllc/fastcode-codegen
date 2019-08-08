@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { GenericApiService } from '../core/generic-api.service';
@@ -13,12 +13,27 @@ import { IAssociation } from '../core/iassociation';
 
 import { ISearchField, operatorType } from '../../common/components/list-filters/ISearchCriteria';
 import { PickerDialogService, IFCDialogConfig } from '../../common/components/picker/picker-dialog.service';
+import { IGlobalPermissionService } from '../core/iglobal-permission.service';
+import { CanDeactivateGuard } from '../core/can-deactivate.guard';
+import { ErrorService } from '../core/error.service';
+
 @Component({
 
   template: ''
 
 })
-export class BaseDetailsComponent<E extends IBase> implements OnInit {
+export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
+
+	// Guard against browser refresh, close, etc.
+	@HostListener('window:beforeunload')
+	canDeactivate(): Observable<boolean> | boolean {
+		// returning true will navigate without confirmation
+    // returning false will show a confirm dialog before navigating away
+    if(this.itemForm.touched && !this.submitted){
+      return false
+    }
+		return true;
+	}
 
   associations: IAssociationEntry[];
   toMany: IAssociationEntry[];
@@ -36,6 +51,13 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
   loading = false;
   submitted = false;
 
+  entityName: string="";
+  IsReadPermission:Boolean=false;
+	IsCreatePermission:Boolean=false;
+	IsUpdatePermission:Boolean=false;
+  IsDeletePermission:Boolean=false;
+  globalPermissionService:IGlobalPermissionService ;
+  
   isMediumDeviceOrLess: boolean;
   mediumDeviceOrLessDialogSize: string = "100%";
   largerDeviceDialogWidthSize: string = "65%";
@@ -51,14 +73,33 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
     public dialog: MatDialog,
     public global: Globals,
 		public pickerDialogService: PickerDialogService,
-    public dataService: GenericApiService<E>
+    public dataService: GenericApiService<E>,
+    public errorService: ErrorService
     
     ) {
   }
-
+  setPermissions= ()=> {    
+    
+      if(this.globalPermissionService) {
+            let entityName = this.entityName.startsWith("I") ? this.entityName.substr(1) : this.entityName;
+            this.IsCreatePermission = this.globalPermissionService.hasPermissionOnEntity(entityName, "CREATE");
+            if(this.IsCreatePermission) {
+              this.IsReadPermission = true;
+              this.IsDeletePermission = true;
+              this.IsUpdatePermission = true;
+            } else {
+              this.IsDeletePermission = this.globalPermissionService.hasPermissionOnEntity(entityName, "DELETE");
+              this.IsUpdatePermission = this.globalPermissionService.hasPermissionOnEntity(entityName, "UPDATE");
+              this.IsReadPermission = (this.IsDeletePermission || this.IsUpdatePermission)? true: this.globalPermissionService.hasPermissionOnEntity(entityName, "READ");
+            }
+        }
+      //});
+  }
   ngOnInit() {
+    this.setPermissions();
     this.idParam = this.route.snapshot.paramMap.get('id');
     this.manageScreenResizing();
+
   }
 
   manageScreenResizing() {
@@ -83,7 +124,7 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
     }
 
     this.loading = true;
-    this.dataService.update(this.itemForm.value, this.item.id)
+    this.dataService.update(this.itemForm.value, this.idParam)
       .pipe(first())
       .subscribe(
         data => {
@@ -94,9 +135,11 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
           //  this.dialogRef.close(data);
         },
         error => {
+					this.errorService.showError("Error Occured while updating");
+					this.loading = false;
+					this.dialogRef.close(null)
 
-          this.loading = false;
-        });
+				});
   }
 
   onBack(): void {
@@ -122,7 +165,11 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
 			this.pickerDialogRef.componentInstance.items = items;
 			this.updatePickerPageInfo(items);
 		},
-			error => this.errorMessage = <any>error
+			error => {
+				this.errorMessage = <any>error;
+				this.pickerDialogRef.close();
+				this.errorService.showError("An error occured while fetching results");
+			}
 		);
 
 		this.pickerDialogRef.componentInstance.onScroll.subscribe(data => {
@@ -134,8 +181,10 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
 		})
 
 		this.pickerDialogRef.afterClosed().subscribe(associatedItem => {
-			if (associatedItem) {
-				this.itemForm.get(association.column.key).setValue(associatedItem.id);
+      if (associatedItem) {
+				association.column.forEach(col => {
+					this.itemForm.get(col.key).setValue(associatedItem[col.referencedkey]);
+        });
 				this.itemForm.get(association.descriptiveField).setValue(associatedItem[parentField]);
 			}
 		});
@@ -174,12 +223,16 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
 			this.isLoadingPickerResults = true;
 			let selectedAssociation: IAssociationEntry = this.toOne.find(association => association.table === this.pickerDialogRef.componentInstance.title);
 
-			selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {
-				this.isLoadingPickerResults = false;
-				this.pickerDialogRef.componentInstance.items = this.pickerDialogRef.componentInstance.items.concat(items);
-				this.updatePickerPageInfo(items);
-			},
-				error => this.errorMessage = <any>error
+			selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
+				items => {
+					this.isLoadingPickerResults = false;
+					this.pickerDialogRef.componentInstance.items = this.pickerDialogRef.componentInstance.items.concat(items);
+					this.updatePickerPageInfo(items);
+				},
+				error => {
+					this.errorMessage = <any>error;
+					this.errorService.showError("An error occured while fetching more results");
+				}
 			);
 
 		}
@@ -199,18 +252,24 @@ export class BaseDetailsComponent<E extends IBase> implements OnInit {
 
 		let selectedAssociation: IAssociationEntry = this.toOne.find(association => association.table === this.pickerDialogRef.componentInstance.title);
 
-		selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {
-			this.isLoadingPickerResults = false;
-			this.pickerDialogRef.componentInstance.items = items;
-			this.updatePickerPageInfo(items);
-		},
-			error => this.errorMessage = <any>error
-		);
+		selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
+      items => {
+				this.isLoadingPickerResults = false;
+				this.pickerDialogRef.componentInstance.items = items;
+				this.updatePickerPageInfo(items);
+			},
+			error => {
+				this.errorMessage = <any>error
+				this.errorService.showError("An error occured while fetching results");
+      }
+    )
 	}
 
-  getQueryParams(association) {
+  getQueryParams(association: IAssociationEntry) {
     let queryParam: any = {};
-    queryParam[association.column.key] = this.item.id;
+    association.column.forEach( col => {
+      queryParam[col.key] = this.item[col.referencedkey];
+    })
     return queryParam;
   }
 
