@@ -96,15 +96,15 @@ public class [=ClassName]AppServiceTest {
 //		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(_mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?uncap_first]));
 //	}
 	
-	 @Test 
-    public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExist_Store[=ClassName]() { 
- 
-        [=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class); 
-        Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class); 
-        Mockito.when(_mapper.Create[=ClassName]InputTo[=EntityClassName](any(Create[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity); 
-        Mockito.when(_[=ClassName?uncap_first]Manager.Create(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity); 
-        Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]Entity)); 
-    } 
+//	 @Test 
+//    public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExist_Store[=ClassName]() { 
+// 
+//       [=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class); 
+//        Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class); 
+//        Mockito.when(_mapper.Create[=ClassName]InputTo[=EntityClassName](any(Create[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity); 
+//        Mockito.when(_[=ClassName?uncap_first]Manager.Create(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity); 
+//        Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]Entity)); 
+//    } 
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"  >
 
@@ -201,15 +201,15 @@ public class [=ClassName]AppServiceTest {
 <#break>
 </#if>
 </#list>
-	@Test
-	public void update[=ClassName]_[=ClassName]IdIsNotNullAndIdExists_ReturnUpdated[=ClassName]() {
-
-		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
-		Update[=ClassName]Input [=ClassName?uncap_first]= mock(Update[=ClassName]Input.class);
-		Mockito.when(_mapper.Update[=ClassName]InputTo[=EntityClassName](any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Update(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity);
-		Assertions.assertThat(_appService.Update(ID,[=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?uncap_first]Entity));
-	}
+//	@Test
+//	public void update[=ClassName]_[=ClassName]IdIsNotNullAndIdExists_ReturnUpdated[=ClassName]() {
+//
+//		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
+//		Update[=ClassName]Input [=ClassName?uncap_first]= mock(Update[=ClassName]Input.class);
+//		Mockito.when(_mapper.Update[=ClassName]InputTo[=EntityClassName](any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
+//		Mockito.when(_[=ClassName?uncap_first]Manager.Update(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity);
+//		Assertions.assertThat(_appService.Update(ID,[=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?uncap_first]Entity));
+//	}
     
 //	@Test
 //	public void delete[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]Exists_[=ClassName]Removed() {

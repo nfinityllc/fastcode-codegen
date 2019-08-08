@@ -89,8 +89,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=ClassName]", key = "#id")
-	public Update[=ClassName]Output Update(Long id , Update[=ClassName]Input input) {
+	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>, Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
@@ -483,7 +483,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
-	public [=ClassName]Id parse(String keysString) {
+	public [=ClassName]Id parse[=ClassName]Key(String keysString) {
 		
 		String[] keyEntries = keysString.split(";");
 		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
@@ -506,7 +506,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		
 		<#list PrimaryKeys as fieldName,fieldType>
-
 		<#if fieldType?lower_case == "string" >
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](keyMap.get("[=fieldName]"));
 		<#elseif fieldType?lower_case == "long" >
@@ -518,7 +517,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#elseif value.fieldType?lower_case == "double">
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Double.valueOf(keyMap.get("[=fieldName]")));
 		</#if>
-		
 		</#list>
 		return [=ClassName?uncap_first]Id;
 		
