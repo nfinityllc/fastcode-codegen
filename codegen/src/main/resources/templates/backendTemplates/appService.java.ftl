@@ -482,6 +482,50 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return builder;
 	}
 	
+	<#if CompositeKeyClasses?seq_contains(ClassName)>
+	public [=ClassName]Id parse(String keysString) {
+		
+		String[] keyEntries = keysString.split(";");
+		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
+		
+		Map<String,String> keyMap = new HashMap<String,String>();
+		if(keyEntries.length > 1) {
+			for(String keyEntry: keyEntries)
+			{
+				String[] keyEntryArr = keyEntry.split("=");
+				if(keyEntryArr.length > 1) {
+					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
+				}
+				else {
+					//error
+				}
+			}
+		}
+		else {
+			//error
+		}
+		
+		<#list PrimaryKeys as fieldName,fieldType>
+
+		<#if fieldType?lower_case == "string" >
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](keyMap.get("[=fieldName]"));
+		<#elseif fieldType?lower_case == "long" >
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Long.valueOf(keyMap.get("[=fieldName]")));
+		<#elseif value.fieldType?lower_case == "integer">
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Integer.valueOf(keyMap.get("[=fieldName]")));
+        <#elseif value.fieldType?lower_case == "short">
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Short.valueOf(keyMap.get("[=fieldName]")));
+        <#elseif value.fieldType?lower_case == "double">
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Double.valueOf(keyMap.get("[=fieldName]")));
+		</#if>
+		
+		</#list>
+		return [=ClassName?uncap_first]Id;
+		
+	}	
+	</#if>
+	
+	
 }
 
 
