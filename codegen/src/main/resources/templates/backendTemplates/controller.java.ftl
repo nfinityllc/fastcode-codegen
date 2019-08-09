@@ -83,14 +83,14 @@ public class [=ClassName]Controller {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
-	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?uncap_first]AppService.parse[=ClassName]Key(id);
 	if([=ClassName?lower_case]Id == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	Find[=ClassName]ByIdOutput output = _[=ClassName?lower_case]AppService.FindById([=ClassName?lower_case]Id);
+	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById([=ClassName?lower_case]Id);
 	<#else>
     <#list Fields as key,value>
     <#if value.isPrimaryKey!false>
@@ -129,14 +129,14 @@ public class [=ClassName]Controller {
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Update[=ClassName]Output> Update(@PathVariable String id, @RequestBody @Valid Update[=ClassName]Input [=ClassName?uncap_first]) {
     <#if CompositeKeyClasses?seq_contains(ClassName)>
-	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?uncap_first]AppService.parse[=ClassName]Key(id);
 	if([=ClassName?lower_case]Id == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?lower_case]AppService.FindById([=ClassName?lower_case]Id);
+	Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById([=ClassName?lower_case]Id);
 	<#else>
     <#list Fields as key,value>
     <#if value.isPrimaryKey!false>
@@ -175,14 +175,14 @@ public class [=ClassName]Controller {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Find[=ClassName]ByIdOutput> FindById(@PathVariable String id) {
     <#if CompositeKeyClasses?seq_contains(ClassName)>
-	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?uncap_first]AppService.parse[=ClassName]Key(id);
 	if([=ClassName?lower_case]Id == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	Find[=ClassName]ByIdOutput output = _[=ClassName?lower_case]AppService.FindById([=ClassName?lower_case]Id);
+	Find[=ClassName]ByIdOutput output = _[=ClassName?uncap_first]AppService.FindById([=ClassName?lower_case]Id);
 	<#else>
     <#list Fields as key,value>
     <#if value.isPrimaryKey!false>
@@ -224,7 +224,7 @@ public class [=ClassName]Controller {
 	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity<Get[=relationValue.eName]Output> Get[=relationValue.eName](@PathVariable String id) {
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
-	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?lower_case]AppService.parse[=ClassName]Key(id);
+	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?uncap_first]AppService.parse[=ClassName]Key(id);
 	if([=ClassName?lower_case]Id == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);

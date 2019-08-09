@@ -71,27 +71,5 @@ public class AuditController {
         return javers.getJsonConverter().toJson(changes);
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

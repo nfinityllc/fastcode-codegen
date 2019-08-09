@@ -19,31 +19,29 @@ public interface [=ClassName]Mapper {
 
     [=ClassName]Entity Create[=ClassName]InputTo[=ClassName]Entity(Create[=ClassName]Input [=ClassName?lower_case]Dto);
    
-      <#list Relationship as relationKey, relationValue> 
+   <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
+   <#if DescriptiveField[relationValue.eName]??> 
+   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
+   </#if> 
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+   <#if joinDetails.joinColumn??> 
+   @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
+   </#list>
+   </#list>
+   <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=relationValue.entityDescriptionField.fieldName]", target = "[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]"),                   
-   </#if> 
-   <#if relationValue.joinColumn??> 
-   <#list relationValue.fDetails as fvalue> 
-   <#if fvalue.isPrimaryKey?string('true','false') == "true" > 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=fvalue.fieldName]", target = "[=relationValue.joinColumn]"),                   
-   </#if> 
-   </#list> 
-   </#if> 
-   </#if> 
-   </#list> 
-    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    }) 
    <#break> 
    </#if> 
@@ -53,31 +51,29 @@ public interface [=ClassName]Mapper {
 
     [=ClassName]Entity Update[=ClassName]InputTo[=ClassName]Entity(Update[=ClassName]Input [=ClassName?lower_case]Dto);
 
-    <#list Relationship as relationKey, relationValue> 
+  <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
+   <#if DescriptiveField[relationValue.eName]??> 
+   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
+   </#if> 
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+   <#if joinDetails.joinColumn??> 
+   @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
+   </#list>
+   </#list>
+   <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=relationValue.entityDescriptionField.fieldName]", target = "[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]"),                   
-   </#if> 
-   <#if relationValue.joinColumn??> 
-   <#list relationValue.fDetails as fvalue> 
-   <#if fvalue.isPrimaryKey?string('true','false') == "true" > 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=fvalue.fieldName]", target = "[=relationValue.joinColumn]"),                   
-   </#if> 
-   </#list> 
-   </#if> 
-   </#if> 
-   </#list> 
-    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    }) 
    <#break> 
    </#if> 
@@ -85,44 +81,42 @@ public interface [=ClassName]Mapper {
    </#list> 
     Update[=ClassName]Output [=ClassName]EntityToUpdate[=ClassName]Output([=ClassName]Entity entity);
 
-      <#list Relationship as relationKey, relationValue> 
+   <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
+   <#if DescriptiveField[relationValue.eName]??> 
+   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
+   </#if> 
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+   <#if joinDetails.joinColumn??> 
+   @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
+   </#list>
+   </#list>
+   <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=relationValue.entityDescriptionField.fieldName]", target = "[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]"),                   
-   </#if> 
-   <#if relationValue.joinColumn??> 
-   <#list relationValue.fDetails as fvalue> 
-   <#if fvalue.isPrimaryKey?string('true','false') == "true" > 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=fvalue.fieldName]", target = "[=relationValue.joinColumn]"),                   
-   </#if> 
-   </#list> 
-   </#if> 
-   </#if> 
-   </#list> 
-    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content>  
    }) 
    <#break> 
    </#if> 
    </#if> 
    </#list> 
-    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
+   Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
-  <#list Relationship as relationKey, relationValue>
+   <#list Relationship as relationKey, relationValue>
 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-  @Mappings({
-  <#list relationValue.fDetails as fValue>
-  <#list Fields as key,value> 
+   @Mappings({
+   <#list relationValue.fDetails as fValue>
+   <#list Fields as key,value> 
    <#if fValue.fieldName == value.fieldName>
     @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
    </#if>
@@ -131,8 +125,8 @@ public interface [=ClassName]Mapper {
     @Mapping(source = "[=InstanceName].id", target = "[=InstanceName]Id")
     })
     Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
-  
-  
+ 
    </#if>
-  </#list>
+   </#list>
+
 }

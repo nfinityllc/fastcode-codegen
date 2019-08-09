@@ -8,6 +8,7 @@ public class Get[=RelationEntityName]Output {
   private [=value.fieldType] [=value.fieldName];
  </#if> 
 </#list>
+
 <#list Fields as fkey,fvalue>
  <#if fvalue.isPrimaryKey!false>
   <#if fvalue.fieldType?lower_case == "long" || fvalue.fieldType?lower_case == "integer" || fvalue.fieldType?lower_case == "short" || fvalue.fieldType?lower_case == "double" || fvalue.fieldType?lower_case == "boolean" || fvalue.fieldType?lower_case == "date" || fvalue.fieldType?lower_case == "string">

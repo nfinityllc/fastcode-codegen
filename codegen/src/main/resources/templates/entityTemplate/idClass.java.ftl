@@ -8,10 +8,10 @@ public class [=ClassName]Id implements Serializable {
  <#if value.isPrimaryKey !false>
  <#if value.fieldType?lower_case == "long">
   private Long [=value.fieldName];
- <#elseif value.fieldType?lower_case == "int" >
-  private int [=value.fieldName];
+ <#elseif value.fieldType?lower_case == "integer" >
+  private Integer [=value.fieldName];
  <#elseif value.fieldType?lower_case == "short" >
-  private short [=value.fieldName];
+  private Short [=value.fieldName];
  <#elseif value.fieldType?lower_case == "double" >
   private Double [=value.fieldName];
  <#elseif value.fieldType?lower_case == "string">
@@ -39,18 +39,18 @@ public class [=ClassName]Id implements Serializable {
     public void set[=value.fieldName?cap_first](Long [=value.fieldName]){
         this.[=value.fieldName] = [=value.fieldName];
     }
- <#elseif value.fieldType?lower_case == "int" >
-    public int get[=value.fieldName?cap_first]() {
+ <#elseif value.fieldType?lower_case == "integer" >
+    public Integer get[=value.fieldName?cap_first]() {
         return [=value.fieldName];
     }
-    public void set[=value.fieldName?cap_first](int [=value.fieldName]){
+    public void set[=value.fieldName?cap_first](Integer [=value.fieldName]){
         this.[=value.fieldName] = [=value.fieldName];
     }
  <#elseif value.fieldType?lower_case == "short" >
-    public short get[=value.fieldName?cap_first]() {
+    public Short get[=value.fieldName?cap_first]() {
         return [=value.fieldName];
     }
-    public void set[=value.fieldName?cap_first](short [=value.fieldName]){
+    public void set[=value.fieldName?cap_first](Short [=value.fieldName]){
         this.[=value.fieldName] = [=value.fieldName];
     }
  <#elseif value.fieldType?lower_case == "double" >

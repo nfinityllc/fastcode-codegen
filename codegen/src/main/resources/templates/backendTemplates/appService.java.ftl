@@ -66,22 +66,26 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-	  	<#if relationValue.joinColumn??>
-	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null)
 		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
 		if(found[=relationValue.eName]!=null)
 		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-		<#if relationValue.isJoinColumnOptional==false>
+		<#if joinDetails.isJoinColumnOptional==false>
 		else
 		return null;
 		</#if>
 		}
-		<#if relationValue.isJoinColumnOptional==false>
+		<#if joinDetails.isJoinColumnOptional==false>
 		else
 		return null;
 		</#if>
 		</#if>
+        </#if>
+        </#list>
 		</#if>
 		</#list>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
@@ -95,22 +99,26 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-	  	<#if relationValue.joinColumn??>
-	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null)
 		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
 		if(found[=relationValue.eName]!=null)
 		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-		<#if relationValue.isJoinColumnOptional==false>
+		<#if joinDetails.isJoinColumnOptional==false>
 		else
 		return null;
 		</#if>
 		}
-		<#if relationValue.isJoinColumnOptional==false>
+		<#if joinDetails.isJoinColumnOptional==false>
 		else
 		return null;
 		</#if>
         </#if>
+        </#if>
+		</#list>
 		</#if>
 		</#list>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
@@ -262,9 +270,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		if(!(
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-		<#if relationValue.joinColumn??>
-		 list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]") ||
+		<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+		 list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]") ||
 		</#if>
+        </#if>
+		</#list>
         </#if>
 		</#list>
 		
@@ -339,9 +351,15 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#list>
         <#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne">
-		  if(list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]")) {
+		<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+		  if(list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]")) {
 			builder.or([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(Long.parseLong(value)));
 			}
+		</#if>
+		</#if>
+		</#list>
 		</#if>
 		</#list>
 		}
@@ -467,15 +485,19 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne" >
-		<#if relationValue.joinColumn??>
-		if(joinColumn != null && joinColumn.equals("[=relationValue.joinColumn]")) {
-		<#if relationValue.joinColumnType == "String">
-		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=relationValue.joinColumn].eq(joinColumnValue.toString()));
+		<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+		if(joinColumn != null && joinColumn.equals("[=joinDetails.joinColumn]")) {
+		<#if joinDetails.joinColumnType == "String">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.joinColumn].eq(joinColumnValue.toString()));
 			<#else>
-			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(joinColumnValue));
+			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(joinColumnValue));
 		    </#if>
 		}
 		</#if>
+        </#if>
+		</#list>
 		</#if>
 		</#list>
 

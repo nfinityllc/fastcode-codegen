@@ -155,8 +155,11 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#list Relationship as relationKey, relationValue>
   <#if value.fieldType == relationValue.eName>
   <#if relationValue.relation == "ManyToOne">
+  <#list relationValue.joinDetails as joinDetails>
+  <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if joinDetails.joinColumn??>
   @ManyToOne
-  @JoinColumn(name = "[=relationValue.joinColumn]")
+  @JoinColumn(name = "[=joinDetails.joinColumn]")
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }
@@ -165,12 +168,16 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
-
+  </#if>
+  </#if>
+  </#list>
   </#if>
   <#if relationValue.relation == "OneToOne">
-  <#if relationValue.joinColumn??>
+  <#list relationValue.joinDetails as joinDetails>
+  <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if joinDetails.joinColumn??>
   @OneToOne
-  @JoinColumn(name = "[=relationValue.joinColumn]")
+  @JoinColumn(name = "[=joinDetails.joinColumn]")
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }
@@ -179,9 +186,9 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
-  <#else>
-  <#if relationValue.mappedBy??>
-  @OneToOne(mappedBy = "[=relationValue.mappedBy]")
+  </#if>
+  <#if joinDetails.mappedBy??>
+  @OneToOne(mappedBy = "[=joinDetails.mappedBy]")
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }
@@ -192,6 +199,8 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   private [=relationValue.eName]Entity [=relationValue.fName];
   </#if>
   </#if>
+  </#list>
+  
   </#if>
   </#if>
   </#list>

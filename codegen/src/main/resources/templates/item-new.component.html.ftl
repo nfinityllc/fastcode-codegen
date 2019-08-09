@@ -27,7 +27,7 @@
 				<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">{{'GENERAL.ERRORS.REQUIRED' | translate}}</mat-error>
 				</#if>
 			</mat-form-field>
-		<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer">
+		<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "double" ||  value.fieldType?lower_case == "short">
 			<mat-form-field>
 				<input type="number" formControlName="[=value.fieldName]" matInput placeholder="Enter [=value.fieldName]">
 				<#if value.isNullable == false>

@@ -50,7 +50,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 			filter: true,
 			type: listColumnType.String
 		},
-	<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long">
+	<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short">
 		{
 			column: '[=value.fieldName]',
 			label: '[=value.fieldName]',
@@ -99,14 +99,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		public dataService: [=ClassName]Service,
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToMany">
-		<#list CompositeKeyClasses as relationInput>
-		<#assign parent = relationInput>
-		<#if parent?keep_before("-") == relationValue.eName>
-		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
-		</#if>
-		</#list>
-		<#elseif relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne">
 		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
 		</#if>
 		</#list>
@@ -127,38 +120,23 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
   	
 		this.associations = [
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "ManyToMany">
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 			{
-				column: {
-					<#if relationValue.relation == "ManyToMany">
-					key: '[=relationValue.inverseJoinColumn]',
-					<#else>
-					key: '[=relationValue.joinColumn]',
-					</#if>
-					value: undefined
-				},
-				<#if relationValue.relation == "ManyToMany">
-				<#list CompositeKeyClasses as relationInput>
-				<#assign parent = relationInput>
-				<#if relationKey == parent>
-  				<#if parent?keep_after("-") == relationValue.eName>
-				isParent: true,
-				</#if>
-            	</#if>
-				<#if parent?keep_before("-") == relationValue.eName>
-				isParent: false,
-				<#if DescriptiveField[relationValue.eName]??>
-				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
-				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
-				<#if DescriptiveField[relationValue.cName]??>
-				childDescriptiveField : '[=DescriptiveField[relationValue.cName].fieldName]',
-				</#if>
-				</#if>
-				service: this.[=relationValue.eName?uncap_first]Service,
-				associatedObj: undefined,
-				</#if>
-				</#list>
-				<#else>
+				column: [
+				      <#list relationValue.joinDetails as joinDetails>
+                      <#if joinDetails.joinEntityName == relationValue.eName>
+                      <#if joinDetails.joinColumn??>
+                      {
+					  key: '[=joinDetails.joinColumn]',
+					  value: undefined,
+					  referencedkey: '[=joinDetails.referenceColumn]'
+					  },
+					  </#if>
+                      </#if>
+                      </#list>
+					  
+				],
+				<#if relationValue.relation == "ManyToOne">
 				isParent: false,
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
@@ -167,6 +145,17 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
 				</#if>
+                <#if relationValue.relation == "OneToOne">
+                <#if relationValue.isParent==false>
+                isParent: false,
+				<#if DescriptiveField[relationValue.eName]??>
+				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
+				</#if>
+				service: this.[=relationValue.eName?uncap_first]Service,
+				associatedObj: undefined,
+				</#if>
+                </#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]'
 			},

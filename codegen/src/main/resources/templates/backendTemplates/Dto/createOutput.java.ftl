@@ -16,15 +16,23 @@ public class Create[=ClassName]Output {
 </#if>
 <#list Relationship as relationKey,relationValue>
  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
- <#if CompositeKeyClasses?seq_contains(ClassName)>
- <#if !Fields[relationValue.joinColumn]?? >
- private [=relationValue.joinColumnType] [=relationValue.joinColumn];
+  <#if CompositeKeyClasses?seq_contains(ClassName)>
+ <#list relationValue.joinDetails as joinDetails>
+ <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if !Fields[joinDetails.joinColumn]?? >
+ private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
  </#if>
+</#if>
+</#list>
  <#else>
- <#if relationValue.joinColumn??>
- private [=relationValue.joinColumnType] [=relationValue.joinColumn];
- </#if>  
- </#if>     
+ <#list relationValue.joinDetails as joinDetails>
+ <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if joinDetails.joinColumn??>
+ private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+ </#if>
+</#if>
+</#list>
+ </#if> 
  </#if>
 
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -39,30 +47,38 @@ public class Create[=ClassName]Output {
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if CompositeKeyClasses?seq_contains(ClassName)>
-  <#if !Fields[relationValue.joinColumn]?? >
-  <#if relationValue.joinColumnType?lower_case == "long" || relationValue.joinColumnType?lower_case == "integer" || relationValue.joinColumnType?lower_case == "short" || relationValue.joinColumnType?lower_case == "double" || relationValue.joinColumnType?lower_case == "string">
-  public [=relationValue.joinColumnType?cap_first] get[=relationValue.joinColumn?cap_first]() {
-  return [=relationValue.joinColumn];
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if !Fields[joinDetails.joinColumn]?? >
+  <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
+  public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
+  return [=joinDetails.joinColumn];
   }
 
-  public void set[=relationValue.joinColumn?cap_first]([=relationValue.joinColumnType?cap_first] [=relationValue.joinColumn]){
-  this.[=relationValue.joinColumn] = [=relationValue.joinColumn];
+  public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
+  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
   </#if>
   </#if>
-  <#else> 
-  <#if relationValue.joinColumn??>
-  <#if relationValue.joinColumnType?lower_case == "long" || relationValue.joinColumnType?lower_case == "integer" || relationValue.joinColumnType?lower_case == "short" || relationValue.joinColumnType?lower_case == "double" || relationValue.joinColumnType?lower_case == "string">
-  public [=relationValue.joinColumnType?cap_first] get[=relationValue.joinColumn?cap_first]() {
-  return [=relationValue.joinColumn];
+</#if>
+</#list>
+  <#else>
+  <#list relationValue.joinDetails as joinDetails>
+ <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if joinDetails.joinColumn??>
+  <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
+  public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
+  return [=joinDetails.joinColumn];
   }
 
-  public void set[=relationValue.joinColumn?cap_first]([=relationValue.joinColumnType?cap_first] [=relationValue.joinColumn]){
-  this.[=relationValue.joinColumn] = [=relationValue.joinColumn];
+  public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
+  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
-  </#if>
-  </#if>
-  </#if>
+</#if> 
+</#if>
+</#if>
+</#list>
+</#if>
   </#if>
 
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">

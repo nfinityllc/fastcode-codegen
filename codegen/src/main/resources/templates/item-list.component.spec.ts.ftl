@@ -53,7 +53,7 @@ describe('[=ClassName]ListComponent', () => {
 			[=key]: true,
 				<#elseif value.fieldType?lower_case == "string">              
 			[=key]: '[=key][=index]',
-				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">              
+				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "double" ||  value.fieldType?lower_case == "short">              
 			[=key]: [=index],
 				</#if> 
 			</#list>    

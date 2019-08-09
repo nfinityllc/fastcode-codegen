@@ -74,7 +74,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#else>
 			[=value.fieldName]: [''],
 			</#if>
-			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">
+			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "short" ||  value.fieldType?lower_case == "double">
 			<#if value.isNullable == false>          
 			[=value.fieldName]: ['', Validators.required],
 			<#else>
@@ -85,20 +85,30 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne">
-			<#if relationValue.isJoinColumnOptional==false>          
-			[=relationValue.joinColumn]: ['', Validators.required],
+			<#list relationValue.joinDetails as joinDetails>
+            <#if joinDetails.joinEntityName == relationValue.eName>
+            <#if joinDetails.joinColumn??>
+			<#if joinDetails.isJoinColumnOptional==false>          
+			[=joinDetails.joinColumn]: ['', Validators.required],
 			<#else>
-			[=relationValue.joinColumn]: [''],
+			[=joinDetails.joinColumn]: [''],
 			</#if>
+            </#if>
+            </#if>
+            </#list>
             </#if>
             <#if relationValue.relation == "OneToOne">
-            <#if relationValue.joinColumn??>
-			<#if relationValue.isJoinColumnOptional==false>          
-			[=relationValue.joinColumn]: ['', Validators.required],
+            <#list relationValue.joinDetails as joinDetails>
+            <#if joinDetails.joinEntityName == relationValue.eName>
+            <#if joinDetails.joinColumn??>
+			<#if joinDetails.isJoinColumnOptional==false>          
+			[=joinDetails.joinColumn]: ['', Validators.required],
 			<#else>
-			[=relationValue.joinColumn]: [''],
+			[=joinDetails.joinColumn]: [''],
 			</#if>
             </#if>
+            </#if>
+            </#list>
 			</#if>
 			</#list>
 			</#if>
@@ -115,29 +125,32 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
   	
 		this.associations = [
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.joinColumn??>
 			  {
-				column: {
-					key: '[=relationValue.joinColumn]',
-					value: undefined
-				},
-			</#if>	
-				<#if relationValue.relation == "ManyToMany">
-			    <#list CompositeKeyClasses as relationInput>
-  			    <#assign parent = relationInput>
-  			    <#if relationKey == parent>
-  			    <#if parent?keep_after("-") == relationValue.eName>
-				isParent: true,
-			    </#if>
-                </#if>
-			    <#if parent?keep_before("-") == relationValue.eName>
-				isParent: false,
-				</#if>
-				</#list>
-				<#elseif relationValue.relation == "OneToMany">
+			column: [
+				      <#list relationValue.joinDetails as joinDetails>
+                      <#if joinDetails.joinEntityName == relationValue.eName>
+                      <#if joinDetails.joinColumn??>
+                      {
+					  key: '[=joinDetails.joinColumn]',
+					  value: undefined,
+					  referencedkey: '[=joinDetails.referenceColumn]'
+					  },
+					  </#if>
+                      </#if>
+                      </#list>
+					  
+				],
+	
+				<#if relationValue.relation == "OneToMany">
 				isParent: true,
 				<#elseif relationValue.relation == "ManyToOne">
 				isParent: false,
+				<#elseif relationValue.relation == "OneToOne">
+				<#if relationValue.isParent!false>
+				isParent: true,
+				<#else>
+				isParent: false,
+				</#if>
 				</#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]',
@@ -169,19 +182,29 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		 	<#assign fieldType = value.fieldType?lower_case fieldName = value.fieldName?lower_case>
 		    <#if fieldName == "id" || fieldType == "string" || fieldType == "boolean" || fieldType == "int" || fieldType == "long">              
 			[=value.fieldName]: item.[=value.fieldName],
-				<#elseif fieldType == "date">
+			<#elseif fieldType == "date">
 			[=value.fieldName]: item.[=value.fieldName]? new Date(item.[=value.fieldName]): null,
-				</#if>
+		    </#if>
 		</#list>
 		<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne">
-			[=relationValue.joinColumn]: item.[=relationValue.joinColumn],
+			<#list relationValue.joinDetails as joinDetails>
+            <#if joinDetails.joinEntityName == relationValue.eName>
+            <#if joinDetails.joinColumn??>
+			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
+			</#if>
+			</#if>
+			</#list>
 			</#if>
             <#if relationValue.relation == "OneToOne">
-            <#if relationValue.joinColumn??>
-			[=relationValue.joinColumn]: item.[=relationValue.joinColumn],
+            <#list relationValue.joinDetails as joinDetails>
+            <#if joinDetails.joinEntityName == relationValue.eName>
+            <#if joinDetails.joinColumn??>
+			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
 			</#if>
+			</#if>
+			</#list>
 			</#if>
 			</#list>
 		</#if>
