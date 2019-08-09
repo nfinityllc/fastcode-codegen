@@ -41,12 +41,12 @@
 			</#list>
 			
 				<mat-form-field *ngFor="let association of toOne">
-					<input matInput disabled placeholder="{{association.table}}" value="{{item[association.descriptiveField]}}">
+					<input matInput disabled placeholder="{{association.table}}" formControlName="{{association.descriptiveField}}">
+					<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
 				</mat-form-field>
 				
 				<div *ngFor="let association of toMany">
 					<a [routerLink]="['/' + association.table]" [queryParams]="getQueryParams(association)" class="btn btn-link">{{association.table}}</a>
-					<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
 				</div>
 			</form>
 		</mat-card-content>
