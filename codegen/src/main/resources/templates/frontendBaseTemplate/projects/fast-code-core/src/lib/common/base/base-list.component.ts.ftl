@@ -67,7 +67,7 @@ export class BaseListComponent<E> implements OnInit {
 
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.dialog.openDialogs.length > 0) {
+    if (this.dialogRef && this.dialogRef.componentInstance && this.dialogRef.componentInstance.itemForm.dirty && !this.dialogRef.componentInstance.submitted) {
       return false;
     }
     return true;

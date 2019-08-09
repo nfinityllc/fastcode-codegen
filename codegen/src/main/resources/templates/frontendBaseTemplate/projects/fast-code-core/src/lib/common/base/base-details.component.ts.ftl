@@ -29,7 +29,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
 	canDeactivate(): Observable<boolean> | boolean {
 		// returning true will navigate without confirmation
     // returning false will show a confirm dialog before navigating away
-    if(this.itemForm.touched && !this.submitted){
+    if(this.itemForm.dirty && !this.submitted){
       return false
     }
 		return true;
