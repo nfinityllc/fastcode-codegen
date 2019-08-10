@@ -532,11 +532,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](keyMap.get("[=fieldName]"));
 		<#elseif fieldType?lower_case == "long" >
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Long.valueOf(keyMap.get("[=fieldName]")));
-		<#elseif value.fieldType?lower_case == "integer">
+		<#elseif fieldType?lower_case == "integer">
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Integer.valueOf(keyMap.get("[=fieldName]")));
-        <#elseif value.fieldType?lower_case == "short">
+        <#elseif fieldType?lower_case == "short">
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Short.valueOf(keyMap.get("[=fieldName]")));
-        <#elseif value.fieldType?lower_case == "double">
+        <#elseif fieldType?lower_case == "double">
 		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Double.valueOf(keyMap.get("[=fieldName]")));
 		</#if>
 		</#list>
