@@ -28,6 +28,7 @@ public interface [=ClassName]Mapper {
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
    <#if DescriptiveField[relationValue.eName]??> 
    @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
    </#if> 
@@ -38,6 +39,7 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#list>
+   </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
@@ -60,6 +62,7 @@ public interface [=ClassName]Mapper {
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
    <#if DescriptiveField[relationValue.eName]??> 
    @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
    </#if> 
@@ -70,6 +73,7 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#list>
+   </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
@@ -90,6 +94,7 @@ public interface [=ClassName]Mapper {
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
    <#if DescriptiveField[relationValue.eName]??> 
    @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
    </#if> 
@@ -100,6 +105,7 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#list>
+   </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
@@ -118,11 +124,17 @@ public interface [=ClassName]Mapper {
    <#list relationValue.fDetails as fValue>
    <#list Fields as key,value> 
    <#if fValue.fieldName == value.fieldName>
-    @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
+   @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
    </#if>
    </#list>
    </#list> 
-    @Mapping(source = "[=InstanceName].id", target = "[=InstanceName]Id")
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+   <#if joinDetails.joinColumn??> 
+    @Mapping(source = "[=InstanceName].[=joinDetails.joinColumn]", target = "[=InstanceName][=joinDetails.joinColumn?cap_first]")
+    </#if>
+    </#if>
+    </#list>
     })
     Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
  

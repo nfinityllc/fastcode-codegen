@@ -172,6 +172,24 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   </#if>
   </#list>
   </#if>
+  <#if relationValue.relation == "OneToMany">   
+  <#list relationValue.joinDetails as joinDetails>
+  <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if joinDetails.mappedBy??>
+    @OneToMany(mappedBy = "[=joinDetails.mappedBy]", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<[=relationValue.eName]Entity> get[=relationValue.eName]Set() { 
+        return [=relationValue.fName]Set; 
+    } 
+ 
+    public void set[=relationValue.eName]Set(Set<[=relationValue.eName]Entity> [=relationValue.fName]) { 
+        this.[=relationValue.fName]Set = [=relationValue.fName]; 
+    } 
+ 
+    private Set<[=relationValue.eName]Entity> [=relationValue.fName]Set = new HashSet<[=relationValue.eName]Entity>(); 
+  </#if>
+  </#if>
+  </#list>
+  </#if>
   <#if relationValue.relation == "OneToOne">
   <#list relationValue.joinDetails as joinDetails>
   <#if joinDetails.joinEntityName == relationValue.eName>

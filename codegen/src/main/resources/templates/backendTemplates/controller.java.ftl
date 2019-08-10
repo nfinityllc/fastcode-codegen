@@ -262,8 +262,8 @@ public class [=ClassName]Controller {
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		searchCriteria.setJoinColumn("[=relationValue.joinColumn?uncap_first]");
-		searchCriteria.setJoinColumnValue(Long.valueOf([=InstanceName]id));
+		//searchCriteria.setJoinColumn("[relationValue.joinColumn?uncap_first]");//set join column search object 
+		//searchCriteria.setJoinColumnValue(Long.valueOf([=InstanceName]id));
 		
     	List<Find[=relationValue.eName]ByIdOutput> output = _[=relationValue.eName?uncap_first]AppService.Find(searchCriteria,pageable);
 		if (output == null) {

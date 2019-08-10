@@ -43,18 +43,5 @@ public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName
   </#if>
 </#list>
 </#if>
-
-	 <#list Relationship as relationKey, relationValue>
-     <#if relationValue.relation == "OneToMany">
-     <#list relationValue.joinDetails as joinDetails>
-     <#if joinDetails.joinEntityName == relationValue.eName>
-     <#if joinDetails.joinColumn??>
-	  @Query("select e from [=relationValue.eName]Entity e where e.[=ClassName?uncap_first].[=joinDetails.joinColumn] = ?1")
-	  List<[=relationValue.eName]Entity> findBy[=relationValue.eName]([=joinDetails.joinColumnType] [=joinDetails.joinColumn]);
-	 </#if>
-     </#if>
-     </#list>
-     </#if>
-     </#list>
 	   
 }

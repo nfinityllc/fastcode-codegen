@@ -67,7 +67,7 @@ public class EntityDetails {
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 		List<JoinDetails> joinDetailsList= new ArrayList<JoinDetails>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-		System.out.println(" entity name " + className);
+		//System.out.println(" entity name " + className);
 
 		try {
 
@@ -140,7 +140,12 @@ public class EntityDetails {
 							else
 								relation.setIsParent(false);
 						}
-						System.out.println("mapped by "  + mappedBy);
+						String entity = StringUtils.substringBeforeLast(entityName, ".");
+						String referenceColumn = findPrimaryKey(
+								entity.concat("." + relation.geteName()), classList);
+						if (referenceColumn != null)
+							joinDetails.setReferenceColumn(referenceColumn);
+					//	System.out.println("mapped by "  + mappedBy);
 						joinDetails.setMappedBy(mappedBy);
 					}
 
@@ -191,26 +196,26 @@ public class EntityDetails {
 					}
 
 					if (a.annotationType().toString().equals("interface javax.persistence.OneToMany")) {
-
 						String relationalEntity = a.toString();
-//						String entityPackage = null;
+						String entityPackage = null;
 						String[] word = relationalEntity.split("[\\(,//)]");
-//						for (String s : word) {
-//							if (s.contains("targetEntity")) {
-//								String[] value = s.split(" ");
-//								if(value.length>1)
-//								{
-//								entityPackage = value[1];
-//								}
-//							}
-//
-//						}
-//						String targetEntity = entityPackage.substring(entityPackage.lastIndexOf(".") + 1);
-//							relation.setRelation("OneToMany");
-//							details.setFieldName(targetEntity.toLowerCase());
-//							details.setFieldType(targetEntity);
-//							relation.seteName(targetEntity);
-//							relation.setfName(targetEntity.toLowerCase());
+						for (String s : word) {
+							if (s.contains("targetEntity")) {
+								String[] value = s.split(" ");
+								if(value.length>1)
+								{
+								entityPackage = value[1];
+								}
+							}
+
+           				}
+						String targetEntity = entityPackage.substring(entityPackage.lastIndexOf(".") + 1);
+							relation.setRelation("OneToMany");
+							details.setFieldName(targetEntity.toLowerCase());
+							details.setFieldType(targetEntity);
+							relation.seteName(targetEntity);
+							relation.setfName(targetEntity.toLowerCase());
+							joinDetails.setJoinEntityName(details.getFieldType());
 							String mappedBy = null;
 							for (String s : word) {
 								if (s.contains("mappedBy")) {
@@ -221,7 +226,9 @@ public class EntityDetails {
 									}
 								}
 							}
+						
 							joinDetails.setMappedBy(mappedBy);
+							
 
 						}
 	
@@ -427,95 +434,98 @@ public class EntityDetails {
 
 	}
 
-	public static Map<String, RelationDetails> FindOneToManyJoinColFromChildEntity(
-			Map<String, RelationDetails> relationMap, List<Class<?>> classList) {
-		
-		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-			
-			if (entry.getValue().getRelation() == "OneToMany") {
-				List<JoinDetails> joinDetailsList= new ArrayList<JoinDetails>();
-				for (Class<?> currentClass : classList) {
-					String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1);
-					if (entityName.equals(entry.getValue().geteName())) {
-						
-						try {
-							Class<?> myClass = currentClass;
-							Object classObj = (Object) myClass.newInstance();
-							Field[] fields = classObj.getClass().getDeclaredFields();
-							
-							for (Field field : fields) {
-								Annotation[] annotations = field.getAnnotations();
-								JoinDetails joinDetails=new JoinDetails();
-								for (Annotation a : annotations) {
-									
-									if (a.annotationType().toString().equals("interface javax.persistence.JoinColumn")) {
-										String joinColumn = a.toString();
-										String[] word = joinColumn.split("[\\(,//)]");
-										for (String s : word) {
-											if (s.contains("name")) {
-												String[] value = s.split("=");
-												joinDetails.setJoinColumn(
-														CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, value[1]));
-												break;
-											}
-										}
-										for (String s : word) {
-											if (s.contains("nullable")) {
-												String[] value = s.split("=");
-												Boolean nullable = Boolean.valueOf(value[1]);
-												joinDetails.setIsJoinColumnOptional(nullable);
-											}
-											if (s.contains("columnDefinition")) {
-												String[] value = s.split("=");
-												if(value.length>1)
-												{
-												String columnType = value[1];
-												if (columnType.equals("bigserial") || columnType.equals("int8")
-														|| columnType.equals("int4"))
-													joinDetails.setJoinColumnType("Long");
-												else
-													joinDetails.setJoinColumnType("String");
-												}
-												else
-													joinDetails.setJoinColumnType("String");
-											}
+    public static Map<String, RelationDetails> FindOneToManyJoinColFromChildEntity( 
+            Map<String, RelationDetails> relationMap, List<Class<?>> classList) { 
+        for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) { 
+            if (entry.getValue().getRelation() == "OneToMany") { 
+                for (Class<?> currentClass : classList) { 
+                    String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1); 
+                    if (entityName.equals(entry.getValue().geteName())) {
+                    	
+                        List<JoinDetails> joinDetailsList = new ArrayList<JoinDetails>();
+                        try { 
+                            Class<?> myClass = currentClass; 
+                            Object classObj = (Object) myClass.newInstance(); 
+                            Field[] fields = classObj.getClass().getDeclaredFields(); 
+                            for (Field field : fields) { 
+                            	JoinDetails joinDetails = new JoinDetails();
+                                Annotation[] annotations = field.getAnnotations(); 
+ 
+                                for (Annotation a : annotations) { 
+                                    if (a.annotationType().toString() 
+                                            .equals("interface javax.persistence.JoinColumn")) { 
+                                        String joinColumn = a.toString(); 
+                                        String[] word = joinColumn.split("[\\(,//)]"); 
+                                      
+                                        for (String s : word) { 
+                                            if (s.contains("name")) { 
+                                                String[] value = s.split("="); 
+                                                if (entry.getKey().contains(entry.getValue().getcName())) 
+                                                    joinDetails.setJoinColumn(CaseFormat.LOWER_UNDERSCORE 
+                                                            .to(CaseFormat.LOWER_CAMEL, value[1])); 
+                                                break; 
+                                            } 
+                                        } 
+                                        for (String s : word) { 
+                                            if (s.contains("nullable")) { 
+                                                String[] value = s.split("="); 
+                                                Boolean nullable = Boolean.valueOf(value[1]); 
+                                                joinDetails.setIsJoinColumnOptional(nullable); 
+                                            } 
+                                            if (s.contains("columnDefinition")) { 
+                                                String[] value = s.split("="); 
+                                                if(value.length>1) 
+                                                { 
+                                                String columnType = value[1]; 
+                                                if (columnType.equals("bigserial") || columnType.equals("int8") 
+                                                        || columnType.equals("int4")) 
+                                                	joinDetails.setJoinColumnType("Long"); 
+                                                else 
+                                                	joinDetails.setJoinColumnType("String"); 
+                                                } 
+                                                else 
+                                                	joinDetails.setJoinColumnType("String"); 
+                                            } 
+ 
+                                        }   
+                                     
+                                        if (joinDetails.getJoinColumn() != null) {
+                                        	joinDetails.setJoinEntityName(entry.getValue().geteName());
+                							String entity = StringUtils.substringBeforeLast(currentClass.getName(), ".");
+                							System.out.println(" Sen  " + entity);
+                							String referenceColumn = findPrimaryKey(
+                									entity.concat("." + entry.getValue().geteName()), classList);
+                							if (referenceColumn != null)
+                								joinDetails.setReferenceColumn(referenceColumn);
+                							joinDetailsList.add(joinDetails);
+                                            entry.getValue().setJoinDetails(joinDetailsList);
+                						}
+                                    } 
+                                    
+                                } 
+                                
+                           //  Set<JoinDetails> setOfJoinDetails = new LinkedHashSet<>(joinDetailsList);
 
-										}
-										
-										if (joinDetails.getJoinColumn() != null) {
-											String entity = StringUtils.substringBeforeLast(entityName, ".");
-											String referenceColumn = findPrimaryKey(
-													entity.concat("." + entry.getValue().geteName()), classList);
-											if (referenceColumn != null)
-												joinDetails.setReferenceColumn(referenceColumn);
-							
-										}
-									}
-								}
-								 
-								
-
-							}
-							 Set<JoinDetails> setOfJoinDetails = new LinkedHashSet<>(joinDetailsList);
-
-							 joinDetailsList.clear();
-							 joinDetailsList.addAll(setOfJoinDetails);
-							 entry.getValue().setJoinDetails(joinDetailsList);
-
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
-						
-					}
-					
-				}
-               
-			}
-		}
-
-		return relationMap;
-	}
-
+           				//	 joinDetailsList.clear();
+           				//	 joinDetailsList.addAll(setOfJoinDetails);
+                              
+                            
+                            } 
+                            
+ 
+                        } catch (InstantiationException e) { 
+                            e.printStackTrace(); 
+                        } catch (IllegalAccessException e) { 
+                            e.printStackTrace(); 
+                        } 
+ 
+                    } 
+                } 
+ 
+            } 
+        } 
+ 
+        return relationMap; 
+    } 
+ 
 }
