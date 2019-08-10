@@ -5,7 +5,7 @@ import { [=IEntity] } from './[=IEntityFile]';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 <#if Relationship?has_content>
@@ -34,6 +34,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			public global: Globals,
 			public pickerDialogService: PickerDialogService,
 			public dataService: [=ClassName]Service,
+			public errorService: ErrorService,
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -42,7 +43,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#list>
 			</#if>
 		) {
-			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService);
+			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
 	  }
  
     ngOnInit() {

@@ -1,6 +1,6 @@
-
+import { AssociationColumn } from './association-column.interface'
 export interface IAssociationEntry {
-  column: any,
+  column: AssociationColumn[],
   table: string,
   isParent?: boolean,
   service?: any,

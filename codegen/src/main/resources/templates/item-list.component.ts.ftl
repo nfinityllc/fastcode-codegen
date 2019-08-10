@@ -5,7 +5,7 @@ import { [=IEntity] } from './[=IEntityFile]';
 import { [=ClassName]Service } from './[=ModuleName].service';
 import { Router, ActivatedRoute } from '@angular/router';
 import {[=ClassName]NewComponent} from './[=ModuleName]-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService } from 'fastCodeCore';
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 
 <#if Relationship?has_content>
@@ -97,6 +97,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
 		public dataService: [=ClassName]Service,
+		public errorService: ErrorService,
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
 		<#if relationValue.relation == "ManyToOne">
@@ -105,7 +106,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		</#list>
 		</#if>
 	) { 
-		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService)
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
   }
 
 	ngOnInit() {
