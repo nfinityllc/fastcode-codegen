@@ -128,10 +128,10 @@ public interface [=ClassName]Mapper {
    </#if>
    </#list>
    </#list> 
-   <#list relationValue.joinDetails as joinDetails>
-   <#if joinDetails.joinEntityName == relationValue.eName>
-   <#if joinDetails.joinColumn??> 
-    @Mapping(source = "[=InstanceName].[=joinDetails.joinColumn]", target = "[=InstanceName][=joinDetails.joinColumn?cap_first]")
+   <#list Fields as fkey,fvalue>
+   <#if fvalue.isPrimaryKey!false>
+   <#if fvalue.fieldType?lower_case == "long" || fvalue.fieldType?lower_case == "integer" || fvalue.fieldType?lower_case == "short" || fvalue.fieldType?lower_case == "double" || fvalue.fieldType?lower_case == "boolean" || fvalue.fieldType?lower_case == "date" || fvalue.fieldType?lower_case == "string">
+    @Mapping(source = "[=ClassName?uncap_first].[=fvalue.fieldName]", target = "[=ClassName?uncap_first][=fvalue.fieldName?cap_first]"),
     </#if>
     </#if>
     </#list>
