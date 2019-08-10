@@ -228,8 +228,6 @@ public class EntityDetails {
 							}
 						
 							joinDetails.setMappedBy(mappedBy);
-							
-
 						}
 	
 				}
@@ -438,17 +436,17 @@ public class EntityDetails {
             Map<String, RelationDetails> relationMap, List<Class<?>> classList) { 
         for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) { 
             if (entry.getValue().getRelation() == "OneToMany") { 
+            	List<JoinDetails> mappedByMapList = entry.getValue().getJoinDetails();
                 for (Class<?> currentClass : classList) { 
                     String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1); 
                     if (entityName.equals(entry.getValue().geteName())) {
-                    	
                         List<JoinDetails> joinDetailsList = new ArrayList<JoinDetails>();
                         try { 
                             Class<?> myClass = currentClass; 
                             Object classObj = (Object) myClass.newInstance(); 
                             Field[] fields = classObj.getClass().getDeclaredFields(); 
-                            for (Field field : fields) { 
-                            	JoinDetails joinDetails = new JoinDetails();
+                           for (Field field : fields) { 
+                             	JoinDetails joinDetails = new JoinDetails();
                                 Annotation[] annotations = field.getAnnotations(); 
  
                                 for (Annotation a : annotations) { 
@@ -490,6 +488,20 @@ public class EntityDetails {
                                         }   
                                      
                                         if (joinDetails.getJoinColumn() != null) {
+                                        	for(int i=0; i<mappedByMapList.size();i++)
+                                        	{
+                                        		System.out.println(" heee ");
+                                        		System.out.println("mmapped by  " + mappedByMapList.get(i).getMappedBy() + " vol " + mappedByMapList.get(i).getJoinColumn());
+                                    			
+                                        		if(mappedByMapList.get(i).getJoinColumn()==joinDetails.getJoinColumn())
+                                        		{
+                                        			System.out.println("mmapped by  " + mappedByMapList.get(i).getMappedBy());
+                                        			if(mappedByMapList.get(i).getMappedBy()!=null)
+                                        			{
+                                        			joinDetails.setMappedBy(mappedByMapList.get(i).getMappedBy());
+                                        			}
+                                        	    }
+                                        	}
                                         	joinDetails.setJoinEntityName(entry.getValue().geteName());
                 							String entity = StringUtils.substringBeforeLast(currentClass.getName(), ".");
                 							System.out.println(" Sen  " + entity);
