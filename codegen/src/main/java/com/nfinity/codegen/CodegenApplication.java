@@ -39,19 +39,19 @@ public class CodegenApplication implements ApplicationRunner {
 		input.setGenerationType(
 				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
 		input.setAudit(root.get("audit") == null
-				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
+				? false//(GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
 				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 		input.setEmail(root.get("email") == null
-				? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
+				? false//(GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
 				: (root.get("email").toLowerCase().equals("true") ? true : false));
 		input.setScheduler(root.get("scheduler") == null
-				? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false)
+				? false//(GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false)
 				: (root.get("scheduler").toLowerCase().equals("true") ? true : false));
 		input.setFlowable(root.get("flowable") == null
-				? (GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false)
+				? false//(GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false)
 				: (root.get("flowable").toLowerCase().equals("true") ? true : false));
 		input.setHistory(root.get("h") == null
-				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
+				? true//(GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
 				: (root.get("h").toLowerCase().equals("true") ? true : false));
 		
 		System.out.print("\nSelect Authentication and Authorization method :");
@@ -59,7 +59,7 @@ public class CodegenApplication implements ApplicationRunner {
 		System.out.print("\n2. database");
 		System.out.print("\n3. ldap");
 		System.out.print("\nEnter 1,2,or 3 : ");
-		int value = scanner.nextInt();
+		int value = 1;//scanner.nextInt();
 		while (value < 1 || value > 3) {
 			System.out.println("\nInvalid Input \nEnter again :");
 			value = scanner.nextInt();
@@ -86,6 +86,15 @@ public class CodegenApplication implements ApplicationRunner {
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		UserInput input = composeInput(configProperties);
+
+		if (configProperties.getUseGit() != null
+				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
+				: false) {
+			if(GitRepositoryManager.hasUncommittedChanges(input.getDestinationPath())) {
+				System.out.print("\nGit has uncommitted changes. ");
+				return;
+			}
+		}
 
 		String groupArtifactId = input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
@@ -142,16 +151,18 @@ public class CodegenApplication implements ApplicationRunner {
         {
         	FlowableFrontendCodeGenerator.generate(input.getDestinationPath(), artifactId + "Client");
         }
-        
-		
+
+		try {
+			Thread.sleep(28000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		if (configProperties.getUseGit() != null
 				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
 				: false) {
 			GitRepositoryManager.addToGitRepository(input.getDestinationPath());
 		}
-		
-		
-        
 	}
 
 	@Override

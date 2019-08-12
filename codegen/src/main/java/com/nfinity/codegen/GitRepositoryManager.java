@@ -1,15 +1,22 @@
 package com.nfinity.codegen;
 
+import org.h2.command.Command;
+
 class GitRepositoryManager {
     private static String destinationPath = null;
     private static String command = null;
 
-    static void addToGitRepository(String path) {
+    static Boolean addToGitRepository(String path) {
+        Boolean retVal = true;
         destinationPath = path;
         // Check if the application is already initialized as a git repository
         if (GitRepositoryManager.isGitInitialized()) {
             // Check to ensure that there are no un-committed local changes in the
             // repository- TODO
+//            if(hasUncommittedChanges()) {
+//                System.out.print("\nGit has uncommitted changes. ");
+//                return false;
+//            }
             // exit if there are un-committed local changes
 
             // Delete if upgrade orphan branch exists
@@ -21,6 +28,14 @@ class GitRepositoryManager {
             // Add code to master branch
             createMasterBranch();
         }
+        return true;
+    }
+
+    public static boolean hasUncommittedChanges(String path) {
+        //get git status
+        command = "git status";
+        String cmdOutput = CommandUtils.runProcess(command, path);
+        return !cmdOutput.toLowerCase().contains("working tree clean");
     }
 
     private static void createMasterBranch() {
