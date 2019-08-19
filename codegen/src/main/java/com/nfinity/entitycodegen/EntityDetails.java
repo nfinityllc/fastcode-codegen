@@ -67,7 +67,7 @@ public class EntityDetails {
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 		List<JoinDetails> joinDetailsList= new ArrayList<JoinDetails>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-		//System.out.println(" entity name " + className);
+		System.out.println(" entity name " + className);
 
 		try {
 
@@ -92,7 +92,7 @@ public class EntityDetails {
 				Annotation[] annotations = field.getAnnotations();
 				relation.setcName(className);
 				for (Annotation a : annotations) {
-					
+					System.out.println("\n anno " + a.toString());
 					if (a.annotationType().toString().equals("interface javax.persistence.Column")) {
 						String column = a.toString();
 						String[] word = column.split("[\\(,//)]");
@@ -150,7 +150,6 @@ public class EntityDetails {
 					}
 
 					if (a.annotationType().toString().equals("interface javax.persistence.JoinColumn")) {
-						System.out.println("\n JOIN COLUIMN \n" + a.toString());
 						String joinColumn = a.toString();
 						String[] word = joinColumn.split("[\\(,//)]");
 						for (String s : word) {
@@ -172,9 +171,10 @@ public class EntityDetails {
 								if(value.length>1)
 								{
 								String columnType = value[1];
-								if (columnType.equals("bigserial") || columnType.equals("int8")
-										|| columnType.equals("int4"))
+								if (columnType.equals("bigserial") || columnType.equals("int8"))
 									joinDetails.setJoinColumnType("Long");
+								else if(columnType.equals("serial") || columnType.equals("int4"))
+									joinDetails.setJoinColumnType("Integer");
 								else
 									joinDetails.setJoinColumnType("String");
 								}
@@ -476,9 +476,10 @@ public class EntityDetails {
                                                 if(value.length>1) 
                                                 { 
                                                 String columnType = value[1]; 
-                                                if (columnType.equals("bigserial") || columnType.equals("int8") 
-                                                        || columnType.equals("int4")) 
-                                                	joinDetails.setJoinColumnType("Long"); 
+                                                if (columnType.equals("bigserial") || columnType.equals("int8"))
+                									joinDetails.setJoinColumnType("Long");
+                								else if(columnType.equals("serial") || columnType.equals("int4"))
+                									joinDetails.setJoinColumnType("Integer");
                                                 else 
                                                 	joinDetails.setJoinColumnType("String"); 
                                                 } 
