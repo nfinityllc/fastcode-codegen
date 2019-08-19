@@ -28,8 +28,7 @@
 			</mat-cell>
 		</ng-container>   
 		<#list Fields as key,value>
-		<#if value.fieldName?lower_case == "id">
-		<#elseif value.fieldType == "Date">
+		<#if value.fieldType == "Date">
 		<ng-container matColumnDef="[=value.fieldName]">
 			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName] </mat-header-cell>
 			<mat-cell *matCellDef="let item">
@@ -37,12 +36,18 @@
 				{{item.[=value.fieldName] | date: defaultDateFormat}}
 			</mat-cell>
 		</ng-container>
-		<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer">
+		<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
 		<ng-container matColumnDef="[=value.fieldName]">
 			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName]</mat-header-cell>
 			<mat-cell *matCellDef="let item">
 				<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
+				<#if value?index == 0>
+				<a routerLink="/[=ApiPath]/{{item.id}}">
+					{{ item.[=value.fieldName]}}
+				</a>
+				<#else>
 				{{ item.[=value.fieldName] }}
+				</#if>
 			</mat-cell>
 		</ng-container>
 		</#if> 

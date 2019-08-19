@@ -33,16 +33,8 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 	title:string = "[=ClassName]";
   
 	columns: IListColumn[] = [
-		{
-			column: 'id',
-			label: 'id',
-			sort: true,
-			filter: false,
-			type: listColumnType.Number
-		},
 	<#list Fields as key,value>
-	<#if value.fieldName?lower_case == "id">  
-	<#elseif value.fieldType?lower_case == "string">
+	<#if value.fieldType?lower_case == "string">
 		{
 			column: '[=value.fieldName]',
 			label: '[=value.fieldName]',

@@ -54,8 +54,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 		  
 			this.itemForm = this.formBuilder.group({
 				<#list Fields as key,value>
-				<#if value.fieldName?lower_case == "id">
-				<#elseif value.fieldType == "Date">    
+				<#if value.fieldType?lower_case == "string" || value.fieldType == "Date" || value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "double" ||  value.fieldType?lower_case == "short">    
 				<#if value.isNullable == false>          
 				[=value.fieldName]: ['', Validators.required],
 				<#else>
@@ -67,18 +66,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				<#else>
 				[=value.fieldName]: [false],
 				</#if>            
-				<#elseif value.fieldType?lower_case == "string">                
-				<#if value.isNullable == false>          
-				[=value.fieldName]: ['', Validators.required], 
-				<#else>
-				[=value.fieldName]: [''],
-				</#if>
-				<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "double" ||  value.fieldType?lower_case == "short">
-				<#if value.isNullable == false>   
-				[=value.fieldName]: ['', Validators.required],       
-				<#else>
-				[=value.fieldName]: [''],
-				</#if>
+				
 				</#if> 
 				</#list>
 				<#if Relationship?has_content>
