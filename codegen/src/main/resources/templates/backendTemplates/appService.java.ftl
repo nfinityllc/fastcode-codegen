@@ -545,6 +545,51 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}	
 	</#if>
 	
+	<#list Relationship as relationKey,relationValue>
+	<#if relationValue.relation == "OneToMany">
+	
+	public Map<String,String> parse[=relationValue.eName]JoinColumn(String keysString) {
+		
+		String[] keyEntries = keysString.split(";");
+		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
+		
+		Map<String,String> keyMap = new HashMap<String,String>();
+		if(keyEntries.length > 1) {
+			for(String keyEntry: keyEntries)
+			{
+				String[] keyEntryArr = keyEntry.split("=");
+				if(keyEntryArr.length > 1) {
+					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
+				}
+				else {
+					//error
+				}
+			}
+		}
+		else {
+			<#if CompositeKeyClasses?seq_contains(ClassName)>
+			//error
+			</#if>
+		}
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		<#list relationValue.joinDetails as joinDetails>
+		<#if joinDetails.joinEntityName == relationValue.eName>
+		<#if joinDetails.joinColumn??>
+		<#if CompositeKeyClasses?seq_contains(ClassName)>
+		joinColumnMap.put([=joinDetails.joinColumn?uncap_first], keyMap.get([=joinDetails.referenceColumn]))
+		<#else>
+		joinColumnMap.put([=joinDetails.joinColumn?uncap_first], keysString)
+		</#if>
+		</#if>
+		</#if>
+		</#list>
+		return joinColumnMap;
+		
+	}
+	
+    </#if>
+    </#list>
 	
 }
 
