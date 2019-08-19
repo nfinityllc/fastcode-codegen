@@ -150,6 +150,7 @@ public class EntityDetails {
 					}
 
 					if (a.annotationType().toString().equals("interface javax.persistence.JoinColumn")) {
+						System.out.println("\n JOIN COLUIMN \n" + a.toString());
 						String joinColumn = a.toString();
 						String[] word = joinColumn.split("[\\(,//)]");
 						for (String s : word) {
@@ -488,23 +489,17 @@ public class EntityDetails {
                                         }   
                                      
                                         if (joinDetails.getJoinColumn() != null) {
+                                        	joinDetails.setJoinEntityName(entry.getValue().getcName());
                                         	for(int i=0; i<mappedByMapList.size();i++)
                                         	{
-                                        		System.out.println(" heee ");
-                                        		System.out.println("mmapped by  " + mappedByMapList.get(i).getMappedBy() + " vol " + mappedByMapList.get(i).getJoinColumn());
-                                    			
-                                        		if(mappedByMapList.get(i).getJoinColumn()==joinDetails.getJoinColumn())
-                                        		{
-                                        			System.out.println("mmapped by  " + mappedByMapList.get(i).getMappedBy());
-                                        			if(mappedByMapList.get(i).getMappedBy()!=null)
+                                        			if(mappedByMapList.get(i).getMappedBy()!=null && joinDetails.getJoinEntityName()==mappedByMapList.get(i).getJoinEntityName())
                                         			{
                                         			joinDetails.setMappedBy(mappedByMapList.get(i).getMappedBy());
-                                        			}
-                                        	    }
+                                        			}   
                                         	}
-                                        	joinDetails.setJoinEntityName(entry.getValue().geteName());
+                                        	
                 							String entity = StringUtils.substringBeforeLast(currentClass.getName(), ".");
-                							System.out.println(" Sen  " + entity);
+                
                 							String referenceColumn = findPrimaryKey(
                 									entity.concat("." + entry.getValue().geteName()), classList);
                 							if (referenceColumn != null)

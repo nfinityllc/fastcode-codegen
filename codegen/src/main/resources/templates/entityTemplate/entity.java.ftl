@@ -115,7 +115,6 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   } 
   
  <#elseif value.fieldType?lower_case == "boolean">
-  
   @Basic
   @Column(name = "[=value.fieldName]", nullable = [=value.isNullable?string('true','false')])
   public Boolean get[=value.fieldName?cap_first]() {
@@ -125,8 +124,8 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   public void set[=value.fieldName?cap_first](Boolean [=value.fieldName]){
   this.[=value.fieldName] = [=value.fieldName];
   }
- <#elseif value.fieldType?lower_case == "date">
   
+ <#elseif value.fieldType?lower_case == "date">
   @Basic
   @Column(name = "[=value.fieldName]", nullable = [=value.isNullable?string('true','false')])
   public Date get[=value.fieldName?cap_first]() {
@@ -136,6 +135,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   public void set[=value.fieldName?cap_first](Date [=value.fieldName]){
   this.[=value.fieldName] = [=value.fieldName];
   }
+  
  <#elseif value.fieldType?lower_case == "string">
   <#if value.isPrimaryKey!false> 
   @Id
@@ -168,26 +168,27 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
+  
   </#if>
   </#if>
   </#list>
   </#if>
   <#if relationValue.relation == "OneToMany">   
   <#list relationValue.joinDetails as joinDetails>
-  <#if joinDetails.joinEntityName == relationValue.eName>
-  <#if joinDetails.mappedBy??>
-    @OneToMany(mappedBy = "[=joinDetails.mappedBy]", cascade = CascadeType.ALL, orphanRemoval = true) 
-    public Set<[=relationValue.eName]Entity> get[=relationValue.eName]Set() { 
-        return [=relationValue.fName]Set; 
-    } 
+  <#if joinDetails.joinEntityName == relationValue.cName>
+  @OneToMany(mappedBy = "[=ClassName?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
+  public Set<[=relationValue.eName]Entity> get[=relationValue.eName]Set() { 
+      return [=relationValue.fName]Set; 
+  } 
  
-    public void set[=relationValue.eName]Set(Set<[=relationValue.eName]Entity> [=relationValue.fName]) { 
-        this.[=relationValue.fName]Set = [=relationValue.fName]; 
-    } 
+  public void set[=relationValue.eName]Set(Set<[=relationValue.eName]Entity> [=relationValue.fName]) { 
+      this.[=relationValue.fName]Set = [=relationValue.fName]; 
+  } 
  
-    private Set<[=relationValue.eName]Entity> [=relationValue.fName]Set = new HashSet<[=relationValue.eName]Entity>(); 
+  private Set<[=relationValue.eName]Entity> [=relationValue.fName]Set = new HashSet<[=relationValue.eName]Entity>(); 
+  
   </#if>
-  </#if>
+  <#break>
   </#list>
   </#if>
   <#if relationValue.relation == "OneToOne">
@@ -204,6 +205,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
+  
   </#if>
   <#if joinDetails.mappedBy??>
   @OneToOne(mappedBy = "[=joinDetails.mappedBy]")
@@ -215,6 +217,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
+  
   </#if>
   </#if>
   </#list>
@@ -231,6 +234,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
 //        [=ClassName]Entity [=ClassName?lower_case] = ([=ClassName]Entity) o;
 //        return id != null && id.equals([=ClassName?lower_case].id);
 //  }
+
 }
 
   
