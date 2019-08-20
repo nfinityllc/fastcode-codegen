@@ -88,7 +88,7 @@ public class EntityGenerator {
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
                         for(JoinDetails j : entry.getValue().getJoinDetails())
                         {
-                        	System.out.println("\nj details for "+j.getJoinColumn()+ "  r  entity name " + entry.getValue().geteName());
+                        //	System.out.println("\nj details for "+j.getJoinColumn()+ "  r  entity name " + entry.getValue().geteName());
 						if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
 						{
 							descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(descriptiveFieldEntities);
