@@ -1,6 +1,8 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" fixedInViewport="true" [attr.role]="(isSmallDevice$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isSmallDevice$ | async) ? 'over' : 'side'" [opened]="!(isSmallDevice$ | async)">
+    [mode]="(isSmallDevice$ | async) ? 'over' : 'side'"
+    [opened]="!(isSmallDevice$ | async) && !isCurrentRootRoute <#if AuthenticationType != "none">&&  Auth.token</#if>">
+
     <mat-toolbar color="primary">Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item class="sidenav-list-item" routerLink="/">{{'MainNav.Home' | translate }}</a>
@@ -167,6 +169,10 @@
       <i class="material-icons">
         account_box
       </i>
+      <#if AuthenticationType != "none">
+      <a *ngIf="!Auth.token" (click)="login()">Login</a>
+      <a *ngIf="Auth.token" (click)="logout()">Logout</a>
+      </#if>
     </mat-toolbar>
 <#if FlowableModule!false>
 	<div ng-view style="height: 100%;overflow: auto"></div>

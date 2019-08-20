@@ -37,7 +37,7 @@ public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
-	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable) {
+	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable, String authenticationType) {
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
 		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json",flowable);
@@ -57,6 +57,7 @@ public class FronendBaseTemplateGenerator {
 		root.put("EmailModule", email);
 		root.put("SchedulerModule", scheduler);
 		root.put("FlowableModule", flowable);
+		root.put("AuthenticationType",authenticationType);
 
 
 		for (String filePath : fl) {
@@ -170,6 +171,11 @@ public class FronendBaseTemplateGenerator {
 			JSONObject projects = (JSONObject) jsonObject.get("projects");
 			JSONObject project = (JSONObject) projects.get(clientSubfolder);
 			JSONObject architect = (JSONObject) project.get("architect");
+			
+			JSONObject serve = (JSONObject) architect.get("serve");
+			JSONObject serveOptions = (JSONObject) serve.get("options");
+			serveOptions.put("proxyConfig", "proxy.conf.json");
+		
 			JSONObject build = (JSONObject) architect.get("build");
 			JSONObject options = (JSONObject) build.get("options");
 			JSONArray styles = (JSONArray) options.get("styles");

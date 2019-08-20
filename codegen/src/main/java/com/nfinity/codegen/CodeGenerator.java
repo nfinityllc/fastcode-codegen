@@ -174,6 +174,8 @@ public class CodeGenerator {
 		
 		updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
 		updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
+		
+		authorizationEntities.add("login");
 		for(String entity: authorizationEntities) {
 			generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType);
 		}

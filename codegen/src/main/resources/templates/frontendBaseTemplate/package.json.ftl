@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --ssl",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e", 
+    "build-lib": "ng build --prod --project=ip-email-builder"
   },
   "private": true,
   "dependencies": {
@@ -22,9 +23,12 @@
     "@angular/material": "^6.4.5",
     "@angular/platform-browser": "^6.1.0",
     "@angular/platform-browser-dynamic": "^6.1.0",
+    "@angular/pwa": "^0.802.0", 
     "@angular/router": "^6.1.0",
+    "@auth0/angular-jwt": "^3.0.0",
     "@ngx-translate/core": "^10.0.2",
     "@ngx-translate/http-loader": "^3.0.1",
+    "angular-oauth2-oidc": "^8.0.4",
     "class-transformer": "^0.1.9",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",

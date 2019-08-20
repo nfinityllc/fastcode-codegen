@@ -9,6 +9,12 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { HomeComponent } from './home/index';
+<#if AuthenticationType != "none">
+import { LoginComponent } from './login/index';
+</#if>
+
 <#if EmailModule!false>
 import { IpEmailBuilderModule } from 'ip-email-builder';
 </#if>
@@ -79,6 +85,11 @@ shouldProcessUrl(url) {
 </#if>
 @NgModule({
   declarations: [
+  	HomeComponent,
+  	DashboardComponent,
+  	<#if AuthenticationType != "none">
+	LoginComponent,
+	</#if>
     AppComponent,
     MainNavComponent,
     BottomTabNavComponent,

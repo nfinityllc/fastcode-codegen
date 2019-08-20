@@ -3,25 +3,41 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { Globals } from 'fastCodeCore';
+import { Globals } from '../../../globals';
+import { AuthenticationService } from '../../../core/authentication.service';
+import { ActivatedRoute, Router, Event } from '@angular/router';
 import entities from './entities.json';
 
 @Component({
-  selector: 'app-main-nav',
-  templateUrl: './main-nav.component.html',
-  styleUrls: ['./main-nav.component.scss']
+	selector: 'app-main-nav',
+	templateUrl: './main-nav.component.html',
+	styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent {
 	selectedLanguage = "en";
 	entityList = entities;
-	  
-	isSmallDevice$: Observable<boolean> ;
-	isMediumDevice$: Observable<boolean> ;
-	constructor(private breakpointObserver: BreakpointObserver,
-		public translate: TranslateService, public Global: Globals) {
+	
+	/*isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset) 
+	  .pipe( 
+		map(result => result.matches) 
+	  ); 
+	  isHandset$: Observable<boolean> = this.breakpointObserver.observe(['(max-width: 768px)']) 
+	  .pipe( 
+		map(result => result.matches) 
+	  );*/
+
+	isSmallDevice$: Observable<boolean>;
+	isMediumDevice$: Observable<boolean>;
+	isCurrentRootRoute: boolean = false;
+	constructor(private breakpointObserver: BreakpointObserver, private router: Router,
+		public translate: TranslateService, public Global: Globals, public Auth: AuthenticationService) {
 
 		this.isSmallDevice$ = Global.isSmallDevice$;
 		this.isMediumDevice$ = Global.isMediumDevice$;
+
+		this.router.events.subscribe((event: Event) => {
+			this.isCurrentRootRoute = (this.router.url == '/') ? true : false;
+		})
 	}
 
 	switchLanguage(language: string) {
@@ -30,5 +46,12 @@ export class MainNavComponent {
 	}
 	onNavMenuClicked() {
 		console.log('nav clicked');
+	}
+	login() {
+		this.router.navigate(['/login'], { queryParams: { returnUrl: 'dashboard' } });
+	}
+	logout() {
+		this.Auth.logout();
+		this.router.navigate(['/']);
 	}
 }
