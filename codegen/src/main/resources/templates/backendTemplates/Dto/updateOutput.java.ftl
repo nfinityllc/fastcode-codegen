@@ -20,7 +20,7 @@ public class Update[=ClassName]Output {
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if !Fields[joinDetails.joinColumn]?? >
- private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
  </#if>
 </#if>
 </#list>
@@ -28,7 +28,9 @@ public class Update[=ClassName]Output {
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if joinDetails.joinColumn??>
- private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+ <#if !Fields[joinDetails.joinColumn]?? >
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+ </#if>
  </#if>
 </#if>
 </#list>
@@ -66,6 +68,7 @@ public class Update[=ClassName]Output {
   <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if joinDetails.joinColumn??>
+  <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
   return [=joinDetails.joinColumn];
@@ -75,6 +78,7 @@ public class Update[=ClassName]Output {
   this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
 </#if> 
+</#if>
 </#if>
 </#if>
 </#list>

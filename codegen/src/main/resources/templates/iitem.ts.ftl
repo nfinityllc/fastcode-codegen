@@ -44,7 +44,7 @@ export interface [=IEntity] {
 <#if joinDetails.isJoinColumnOptional==false>
  <#if joinDetails.joinColumnType?lower_case == "long" ||  joinDetails.joinColumnType?lower_case == "int" ||  joinDetails.joinColumnType?lower_case == "short" ||  joinDetails.joinColumnType?lower_case == "double"> 
       [=joinDetails.joinColumn]: number;
-  <#elseif relationValue.joinColumnType?lower_case == "boolean">
+  <#elseif joinDetails.joinColumnType?lower_case == "boolean">
       [=joinDetails.joinColumn]: boolean;
   <#else>    
       [=joinDetails.joinColumn]: string;

@@ -155,6 +155,8 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#list Relationship as relationKey, relationValue>
   <#if value.fieldType == relationValue.eName>
   <#if relationValue.relation == "ManyToOne">
+  <#assign i=relationValue.joinDetails?size>
+  <#if i==1>
   <#list relationValue.joinDetails as joinDetails>
   <#if joinDetails.joinEntityName == relationValue.eName>
   <#if joinDetails.joinColumn??>
@@ -168,14 +170,26 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
-  
   </#if>
   </#if>
   </#list>
+ 
+  <#else>
+  
+  @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
+  @JoinColumns({<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", nullable=<#if joinDetails.isJoinColumnOptional!false>true<#else>false</#if>),<#else>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", nullable=<#if joinDetails.isJoinColumnOptional!false>true<#else>false</#if>)</#if></#list>})
+  public [=relationValue.eName]Entity get[=relationValue.eName]() {
+    return [=relationValue.fName];
+  }
+  public void set[=relationValue.eName]([=relationValue.eName]Entity [=relationValue.fName]) {
+    this.[=relationValue.fName] = [=relationValue.fName];
+  }
+  
+  private [=relationValue.eName]Entity [=relationValue.fName];
+  </#if>
   </#if>
   <#if relationValue.relation == "OneToMany">   
   <#list relationValue.joinDetails as joinDetails>
-  <#if joinDetails.joinEntityName == relationValue.cName>
   @OneToMany(mappedBy = "[=ClassName?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
   public Set<[=relationValue.eName]Entity> get[=relationValue.eName]Set() { 
       return [=relationValue.fName]Set; 
@@ -186,8 +200,6 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   } 
  
   private Set<[=relationValue.eName]Entity> [=relationValue.fName]Set = new HashSet<[=relationValue.eName]Entity>(); 
-  
-  </#if>
   <#break>
   </#list>
   </#if>
