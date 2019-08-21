@@ -281,24 +281,24 @@ public class [=ClassName]AppServiceTest {
 		Assertions.assertThat(_appService.searchSpecificProperty([=ClassName?uncap_first], list,"xyz",operator)).isEqualTo(builder);
 	}
 	
-	@Test
-	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
-		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
-	    SearchFields searchFields = new SearchFields();
-		searchFields.setOperator("equals");
-		searchFields.setSearchValue("xyz");
-	    Map map = new HashMap();
-	    <#list SearchFields as fields>
-        map.put("[=fields]",searchFields);
-        <#break>
-		</#list>		
-		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.and([=ClassName?uncap_first].[=fields].eq("xyz"));
-        <#break>
-		</#list>
-		Assertions.assertThat(_appService.searchKeyValuePair([=ClassName?uncap_first],map,"xyz",ID)).isEqualTo(builder);
-	}
+//	@Test
+//	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
+//		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
+//	    SearchFields searchFields = new SearchFields();
+//		searchFields.setOperator("equals");
+//		searchFields.setSearchValue("xyz");
+//	    Map map = new HashMap();
+//	    <#list SearchFields as fields>
+//        map.put("[=fields]",searchFields);
+//        <#break>
+//		</#list>		
+//		BooleanBuilder builder = new BooleanBuilder();
+//		<#list SearchFields as fields>
+//        builder.and([=ClassName?uncap_first].[=fields].eq("xyz"));
+//        <#break>
+//		</#list>
+//		Assertions.assertThat(_appService.searchKeyValuePair([=ClassName?uncap_first],map,"xyz",ID)).isEqualTo(builder);
+//	}
 	
 	@Test (expected = Exception.class)
 	public void checkProperties_PropertyDoesNotExist_ThrowException() throws Exception {
@@ -355,32 +355,32 @@ public class [=ClassName]AppServiceTest {
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
 	
-	@Test
-	public void  search_SearchIsNotNullAndSearchContainsCaseThree_ReturnBooleanBuilder() throws Exception {
-
-		Map<String,SearchFields> map = new HashMap<>();
-		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
-		List<SearchFields> fieldsList= new ArrayList<>();
-		SearchFields fields=new SearchFields();
-		SearchCriteria search= new SearchCriteria();
-		search.setType(3);
-		search.setValue("xyz");
-		search.setOperator("equals");
-		<#list SearchFields as fields>
-		fields.setFieldName("[=fields]");
-		<#break>
-		</#list>
-        fields.setOperator("equals");
-		fields.setSearchValue("xyz");
-        fieldsList.add(fields);
-        search.setFields(fieldsList);
-		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
-        <#break>
-		</#list>
-		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
-	}
+//	@Test
+//	public void  search_SearchIsNotNullAndSearchContainsCaseThree_ReturnBooleanBuilder() throws Exception {
+//
+//		Map<String,SearchFields> map = new HashMap<>();
+//		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
+//		List<SearchFields> fieldsList= new ArrayList<>();
+//		SearchFields fields=new SearchFields();
+//		SearchCriteria search= new SearchCriteria();
+//		search.setType(3);
+//		search.setValue("xyz");
+//		search.setOperator("equals");
+//		<#list SearchFields as fields>
+//		fields.setFieldName("[=fields]");
+//		<#break>
+//		</#list>
+//        fields.setOperator("equals");
+//		fields.setSearchValue("xyz");
+//        fieldsList.add(fields);
+//        search.setFields(fieldsList);
+//		BooleanBuilder builder = new BooleanBuilder();
+//		<#list SearchFields as fields>
+//        builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
+//        <#break>
+//		</#list>
+//		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
+//	}
 	
 	@Test
 	public void  search_StringIsNull_ReturnNull() throws Exception {

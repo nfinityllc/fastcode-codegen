@@ -29,6 +29,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.apache.bval.jsr.xml.FieldType;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -582,6 +583,7 @@ public class CodeGenerator {
 			if(entry.getValue().getRelation().equals("ManyToOne") || entry.getValue().getRelation().equals("OneToOne"))
 			{
 				List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
+				
 				root.put("RelationEntityFields",relationEntityFields);
 				root.put("RelationEntityName", entry.getValue().geteName());
 				try {
