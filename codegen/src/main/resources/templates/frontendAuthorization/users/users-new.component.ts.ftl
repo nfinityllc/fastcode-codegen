@@ -5,7 +5,7 @@ import { IUsers } from './iusers';
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { RolesService } from '../roles/roles.service';
@@ -28,9 +28,10 @@ export class UsersNewComponent extends BaseNewComponent<IUsers> implements OnIni
 		public global: Globals,
 		public pickerDialogService: PickerDialogService,
 		public dataService: UsersService,
-		public rolesService: RolesService
+		public rolesService: RolesService,
+		public errorService: ErrorService
 	) {
-		super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService);
+		super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
 	}
 
 	ngOnInit() {
@@ -55,10 +56,13 @@ export class UsersNewComponent extends BaseNewComponent<IUsers> implements OnIni
 
 		this.associations = [
 			{
-				column: {
-					key: 'roleId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: false,
 				table: 'roles',
 				type: 'ManyToOne',
@@ -66,10 +70,13 @@ export class UsersNewComponent extends BaseNewComponent<IUsers> implements OnIni
 				descriptiveField: 'rolesName',
 			},
 			{
-				column: {
-					key: 'userId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'userId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: true,
 				table: 'permissions',
 				type: 'ManyToMany',
@@ -80,8 +87,5 @@ export class UsersNewComponent extends BaseNewComponent<IUsers> implements OnIni
 		});
 
 	}
-
-	// convenience getter for easy access to form fields
-
 
 }

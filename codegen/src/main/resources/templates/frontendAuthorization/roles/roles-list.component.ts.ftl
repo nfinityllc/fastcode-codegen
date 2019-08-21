@@ -5,7 +5,7 @@ import { IRoles } from './iroles';
 import { RolesService } from './roles.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RolesNewComponent } from './roles-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService } from 'fastCodeCore';
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 import { PermissionsService } from '../permissions/permissions.service';
 
@@ -62,8 +62,9 @@ export class RolesListComponent extends BaseListComponent<IRoles> implements OnI
 		public pickerDialogService: PickerDialogService,
 		public rolesService: RolesService,
 		public permissionsService: PermissionsService,
+		public errorService: ErrorService,
 	) {
-		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, rolesService)
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, rolesService, errorService)
 	}
 
 	ngOnInit() {
@@ -75,10 +76,13 @@ export class RolesListComponent extends BaseListComponent<IRoles> implements OnI
 
 		this.associations = [
 			{
-				column: {
-					key: 'permissionId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: true,
 				descriptiveField: 'permissionsName',
 				referencedDescriptiveField: 'name',
