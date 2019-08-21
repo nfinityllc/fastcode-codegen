@@ -125,7 +125,7 @@ shouldProcessUrl(url) {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatChipsModule,
-    NgxMaterialTimepickerModule.forRoot(),
+    NgxMaterialTimepickerModule,
     <#if EmailModule!false>
     IpEmailBuilderModule.forRoot({
       xApiKey: 't7HdQfZjGp6R96fOV4P8v18ggf6LLTQZ1puUI2tz',
