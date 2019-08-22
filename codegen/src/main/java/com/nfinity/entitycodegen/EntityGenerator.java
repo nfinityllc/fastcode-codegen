@@ -87,12 +87,8 @@ public class EntityGenerator {
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
                         for(JoinDetails j : entry.getValue().getJoinDetails())
                         {
-                        	if(entry.getValue().getRelation().equals("OneToMany"))
-                        	{
-                     		System.out.println("\nj details for join column "+j.getJoinColumn());
-                        	}
-                        //	System.out.println("\nj details for "+j.getJoinColumn()+ "  r  entity name " + entry.getValue().geteName());
-						if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
+                       
+                        if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
 						{
 							descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(descriptiveFieldEntities);
 						}
@@ -112,7 +108,7 @@ public class EntityGenerator {
 			ex.printStackTrace();
 		}
 
-		//		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
 		return entityDetailsMap;

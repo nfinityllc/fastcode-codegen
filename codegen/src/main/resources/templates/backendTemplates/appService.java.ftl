@@ -305,8 +305,10 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
+        <#if !Fields[joinDetails.joinColumn]?? >
 		 list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]") ||
 		</#if>
+        </#if>
         </#if>
 		</#list>
         </#if>

@@ -36,4 +36,4 @@ fastcode.emailconverter.url=http://localhost:3001/
 fastCode.offset.default=0
 fastCode.limit.default=10
 fastCode.sort.direction.default=ASC
-fastCode.sort.property.default=id
+#fastCode.sort.property.default=id

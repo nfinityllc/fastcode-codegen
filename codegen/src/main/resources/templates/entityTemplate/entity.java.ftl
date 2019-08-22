@@ -161,7 +161,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#if joinDetails.joinEntityName == relationValue.eName>
   <#if joinDetails.joinColumn??>
   @ManyToOne
-  @JoinColumn(name = "[=joinDetails.joinColumn]")
+  @JoinColumn(name = "[=joinDetails.joinColumn]"<#if CompositeKeyClasses?seq_contains(ClassName)>, insertable=false, updatable=false</#if>)
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }

@@ -1,6 +1,9 @@
 package [=PackageName].application.[=ClassName].Dto;
 
 import java.util.Date;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+
 public class Update[=ClassName]Input {
 
 <#list Fields as key,value>
