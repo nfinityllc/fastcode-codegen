@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
       //localStorage.removeItem('token');
       
   		return true;
-  	}
+    }
  /*   this.authSrv.postLogin({"userName": "employee1","password": "secret" }).subscribe(log=> {
         let l = log;
         return true;
@@ -21,12 +21,12 @@ export class AuthGuard implements CanActivate {
         return false;
       });  	*/
     if(this.authSrv.loginType == 'oidc') {
-      this.authSrv.AuthLogin({"userName": "employee1","password": "secret" }).subscribe(log=> {
-        let l = log;
-        return true;
-      },error => {
-        return false;
-      });
+        this.authSrv.AuthLogin({"userName": "employee1","password": "secret" }).subscribe(log=> {
+          let l = log;
+          return true;
+        },error => {
+          return false;
+        });
     }
     else {
     this.router.navigate( ['/login'], { queryParams: { returnUrl: state.url } } );

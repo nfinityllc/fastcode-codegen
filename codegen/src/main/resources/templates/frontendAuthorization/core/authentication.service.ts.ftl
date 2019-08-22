@@ -7,9 +7,11 @@ import { IPermissions } from '../permissions';
 //import { IUser } from '../users/iuser';
 import { JwtHelperService } from "@auth0/angular-jwt";
 //import {ITokenDetail} from "./itoken-detail";
-import { IGlobalPermissionService,ITokenDetail } from 'projects/fast-code-core/src/public_api';
+import { IGlobalPermissionService,ITokenDetail } from 'fastCodeCore';
+//import {AuthOidcConfig} from './oauth/auth-oidc-config'
 const API_URL = environment.apiUrl;
 const helper = new JwtHelperService();
+
 @Injectable()
 export class AuthenticationService  {
   private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ).append('Access-Control-Allow-Origin', '*') };
@@ -19,8 +21,10 @@ export class AuthenticationService  {
   public authUrl = environment.authUrl;
   private userPermissions:IPermissions[];
   private decodedToken:ITokenDetail;
-  constructor(private http: HttpClient ) { 
+  constructor(private http: HttpClient) { 
+    //this.configure();
   }
+  
   getMainUsers(): Observable<any> {    
    return this.http.get<any[]>(this.apiUrl + '/users' ).pipe( catchError(this.handleError));
    
@@ -36,7 +40,11 @@ export class AuthenticationService  {
    else {
       if(this.token)
       { 
-        this.decodedToken = helper.decodeToken(this.token) as ITokenDetail;
+       // this.decodedToken = helper.decodeToken(this.token) as ITokenDetail;
+        let decodedToken:ITokenDetail = helper.decodeToken(this.token) as ITokenDetail;
+        if(!decodedToken.scopes)
+          decodedToken.scopes = ['ROLES_CREATE'];
+        this.decodedToken = decodedToken;
         return this.decodedToken;
       }
       else 
@@ -56,6 +64,7 @@ export class AuthenticationService  {
       }));      
   //    return this.http.post<any>(this.apiUrl +'/login', user, this._reqOptionsArgs).pipe(catchError(this.handleError));
   }
+
   AuthLogin(user: any): Observable<any> {
     console.log("AFSD")
     return this.http.get<any>(this.authUrl+'/oidc',this._reqOptionsArgs).pipe(map(res => {
@@ -64,14 +73,14 @@ export class AuthenticationService  {
         localStorage.setItem("salt", retval.salt);  
         localStorage.setItem("token", retval.token);
         return retval;
-    }),catchError(error=> {
+    }),catchError((error, caught)=> {
         let err = error;
+        let c = caught;
         return error;
     }));      
 //    return this.http.post<any>(this.apiUrl +'/login', user, this._reqOptionsArgs).pipe(catchError(this.handleError));
 }
   logout() {
-   
     localStorage.removeItem('token');
 }
   

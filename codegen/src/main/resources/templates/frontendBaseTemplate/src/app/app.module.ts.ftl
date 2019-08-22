@@ -13,6 +13,16 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/index';
 <#if AuthenticationType != "none">
 import { LoginComponent } from './login/index';
+
+/** core components and filters for authorization and authentication **/
+
+import { AuthenticationService } from './core/authentication.service';
+import { AuthGuard } from './core/auth-guard';
+import { JwtInterceptor } from './core/jwt-interceptor';
+import { JwtErrorInterceptor } from './core/jwt-error-interceptor';
+import { GlobalPermissionService } from './core/global-permission.service';
+
+/** end of core components and filters for authorization and authentication **/
 </#if>
 
 <#if EmailModule!false>
@@ -42,14 +52,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 import { routingModule } from './app.routing';
 import { FastCodeCoreModule } from 'fastCodeCore';
-
-/** core components and filters **/
-import { AuthenticationService } from './core/authentication.service';
-import { AuthGuard } from './core/auth-guard';
-import { JwtInterceptor } from './core/jwt-interceptor';
-import { JwtErrorInterceptor } from './core/jwt-error-interceptor';
-
-/** end of core components and filters **/
 
 /** common components and filters **/
 
@@ -125,7 +127,7 @@ shouldProcessUrl(url) {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatChipsModule,
-    NgxMaterialTimepickerModule.forRoot(),
+    NgxMaterialTimepickerModule,
     <#if EmailModule!false>
     IpEmailBuilderModule.forRoot({
       xApiKey: 't7HdQfZjGp6R96fOV4P8v18ggf6LLTQZ1puUI2tz',
@@ -158,13 +160,17 @@ shouldProcessUrl(url) {
 
   ],
   providers: [
-		AuthenticationService,
 		<#if FlowableModule!false>
 		{ provide: UrlHandlingStrategy, useClass: CustomHandlingStrategy },
 		</#if>
+		<#if AuthenticationType != "none">
+		AuthenticationService,
+		GlobalPermissionService,
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtErrorInterceptor, multi: true },
 		AuthGuard,
+		</#if>
+		
 		Globals
 	],
   bootstrap: [AppComponent],

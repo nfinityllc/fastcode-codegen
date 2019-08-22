@@ -5,7 +5,9 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { Globals } from '../globals';
 import { MatDialogRef } from '@angular/material/dialog';
+<#if AuthenticationType != "none">
 import { AuthenticationService } from '../core/authentication.service';
+</#if>
  
 @Component({ 
   selector: 'app-home',
@@ -19,8 +21,14 @@ export class HomeComponent implements OnInit {
     loading = false;
     submitted = false;
     returnUrl: string;
-    constructor(private formBuilder: FormBuilder,private route: ActivatedRoute, public router: Router,
-       private global:Globals, public Auth: AuthenticationService,
+    constructor(
+    	private formBuilder: FormBuilder,
+    	private route: ActivatedRoute,
+    	public router: Router,
+		private global:Globals,
+		<#if AuthenticationType != "none">
+		public Auth: AuthenticationService,
+		</#if>
        
         ) { }
  
@@ -37,9 +45,7 @@ export class HomeComponent implements OnInit {
        */
     }
    
-    // convenience getter for easy access to form fields
-    get f() { return this.itemForm.controls; }
- 
+   <#if AuthenticationType != "none">
     onSubmit() {
        // this.submitted = true;
        
@@ -55,6 +61,7 @@ export class HomeComponent implements OnInit {
         }
         
     }
+    </#if>
     onBack(): void {
        // this.router.navigate(['/']);
       }

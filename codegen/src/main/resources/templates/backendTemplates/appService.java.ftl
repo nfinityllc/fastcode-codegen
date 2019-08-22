@@ -546,14 +546,14 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
 	public [=ClassName]Id parse[=ClassName]Key(String keysString) {
 		
-		String[] keyEntries = keysString.split(";");
+		String[] keyEntries = keysString.split(",");
 		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
 		
 		Map<String,String> keyMap = new HashMap<String,String>();
 		if(keyEntries.length > 1) {
 			for(String keyEntry: keyEntries)
 			{
-				String[] keyEntryArr = keyEntry.split("=");
+				String[] keyEntryArr = keyEntry.split(":");
 				if(keyEntryArr.length > 1) {
 					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
 				}
@@ -589,13 +589,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	public Map<String,String> parse[=relationValue.eName]JoinColumn(String keysString) {
 		
-		String[] keyEntries = keysString.split(";");
+		<#list relationValue.joinDetails as joinDetails>
+		<#assign i=relationValue.joinDetails?size>
+        <#if i==1>
+		String[] keyEntries = keysString.split(",");
 		
 		Map<String,String> keyMap = new HashMap<String,String>();
 		if(keyEntries.length > 1) {
 			for(String keyEntry: keyEntries)
 			{
-				String[] keyEntryArr = keyEntry.split("=");
+				String[] keyEntryArr = keyEntry.split(":");
 				if(keyEntryArr.length > 1) {
 					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
 				}
@@ -609,6 +612,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			//error
 			</#if>
 		}
+		</#if>
+		</#list>
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
 		<#list relationValue.joinDetails as joinDetails>

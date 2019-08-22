@@ -5,11 +5,12 @@ import { IUsers } from './iusers';
 import { UsersService } from './users.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsersNewComponent } from './users-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService } from 'fastCodeCore';
-
+//import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService } from 'fastCodeCore';
+import { BaseListComponent,Globals, IListColumn, listColumnType, PickerDialogService, ErrorService  } from 'fastCodeCore';
 
 import { RolesService } from '../roles/roles.service';
 import { PermissionsService } from '../permissions/permissions.service';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
 	selector: 'app-users-list',
@@ -19,7 +20,7 @@ import { PermissionsService } from '../permissions/permissions.service';
 export class UsersListComponent extends BaseListComponent<IUsers> implements OnInit {
 
 	title: string = "Users";
-
+    entityName:string =  'IUsers';
 	columns: IListColumn[] = [
 		{
 			column: 'id',
@@ -30,35 +31,35 @@ export class UsersListComponent extends BaseListComponent<IUsers> implements OnI
 		},
 		{
 			column: 'emailAddress',
-			label: 'Email Address',
+			label: 'emailAddress',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'firstName',
-			label: 'First Name',
+			label: 'firstName',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'isActive',
-			label: 'Active',
+			label: 'isActive',
 			sort: true,
 			filter: true,
 			type: listColumnType.Boolean
 		},
 		{
 			column: 'lastName',
-			label: 'Last Name',
+			label: 'lastName',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'userName',
-			label: 'Username',
+			label: 'userName',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
@@ -86,23 +87,32 @@ export class UsersListComponent extends BaseListComponent<IUsers> implements OnI
 		public usersService: UsersService,
 		public rolesService: RolesService,
 		public permissionsService: PermissionsService,
+		public globalPermissionService: GlobalPermissionService,
+		public errorService: ErrorService
 	) {
-		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, usersService)
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, usersService, errorService);
+		//this.globalPermissionService=globalPermissionService;
 	}
 
 	ngOnInit() {
+		
+		let test = this.IsDeletePermission;
 		this.setAssociation();
 		super.ngOnInit();
+		let x = this.IsDeletePermission;
 	}
 
 	setAssociation() {
 
 		this.associations = [
 			{
-				column: {
-					key: 'roleId',
-					value: undefined
-				},
+				column:[ 
+					{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: false,
 				descriptiveField: 'rolesName',
 				referencedDescriptiveField: 'name',
@@ -112,10 +122,13 @@ export class UsersListComponent extends BaseListComponent<IUsers> implements OnI
 				type: 'ManyToOne'
 			},
 			{
-				column: {
-					key: 'permissionId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: true,
 				descriptiveField: 'permissionsUserName',
 				referencedDescriptiveField: 'userName',

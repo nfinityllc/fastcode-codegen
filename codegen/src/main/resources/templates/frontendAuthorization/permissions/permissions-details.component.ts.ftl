@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute,Router} from "@angular/router";
-import { FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
@@ -8,18 +8,18 @@ import { PermissionsService } from './permissions.service';
 import { IPermissions } from './ipermissions';
 
 
-import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { BaseDetailsComponent, Globals, ErrorService } from 'fastCodeCore';
 import { PickerDialogService } from 'fastCodeCore';
 
 @Component({
-  selector: 'app-permissions-details',
-  templateUrl: './permissions-details.component.html',
-  styleUrls: ['./permissions-details.component.scss']
+	selector: 'app-permissions-details',
+	templateUrl: './permissions-details.component.html',
+	styleUrls: ['./permissions-details.component.scss']
 })
 export class PermissionsDetailsComponent extends BaseDetailsComponent<IPermissions> implements OnInit {
-  title:string='Permissions';
-  parentUrl:string='permissions';
-  //roles: IRole[];  
+	title: string = 'Permissions';
+	parentUrl: string = 'permissions';
+	//roles: IRole[];  
 	constructor(
 		public formBuilder: FormBuilder,
 		public router: Router,
@@ -28,58 +28,66 @@ export class PermissionsDetailsComponent extends BaseDetailsComponent<IPermissio
 		public global: Globals,
 		public pickerDialogService: PickerDialogService,
 		public dataService: PermissionsService,
+		public errorService: ErrorService,
 	) {
-		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService);
-  }
+		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
+	}
 
 	ngOnInit() {
 		this.setAssociations();
 		super.ngOnInit();
-	  
+
 		this.itemForm = this.formBuilder.group({
 			displayName: [''],
 			id: [],
 			name: ['', Validators.required],
-	        
-	     });
-	    if (this.idParam) {
-	      const id = +this.idParam;
-	      this.getItem(id).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
-	    }
-  }
-  
-	setAssociations(){
-  	
+
+		});
+		if (this.idParam) {
+			const id = +this.idParam;
+			this.getItem(id).subscribe(x => this.onItemFetched(x), error => this.errorMessage = <any>error);
+		}
+	}
+
+	setAssociations() {
+
 		this.associations = [
 			{
-				column: {
-					key: 'permissionId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: false,
 				table: 'users',
 				type: 'ManyToMany',
 			},
 			{
-				column: {
-					key: 'permissionId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+
+					}
+				],
 				isParent: false,
 				table: 'roles',
 				type: 'ManyToMany',
 			},
 		];
 		this.toMany = this.associations.filter(association => {
-			return ((['ManyToMany','OneToMany'].indexOf(association.type) > - 1) && association.isParent);
+			return ((['ManyToMany', 'OneToMany'].indexOf(association.type) > - 1) && association.isParent);
 		});
 
 		this.toOne = this.associations.filter(association => {
-			return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1));
+			return ((['ManyToOne', 'OneToOne'].indexOf(association.type) > - 1));
 		});
 	}
 
-	onItemFetched(item:IPermissions) {
+	onItemFetched(item: IPermissions) {
 		this.item = item;
 		this.itemForm.patchValue({
 			displayName: item.displayName,
@@ -87,6 +95,6 @@ export class PermissionsDetailsComponent extends BaseDetailsComponent<IPermissio
 			name: item.name,
 		});
 	}
-  
-  
+
+
 }

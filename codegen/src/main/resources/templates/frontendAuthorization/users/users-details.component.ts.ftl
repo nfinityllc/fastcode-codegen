@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute,Router} from "@angular/router";
-import { FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
@@ -9,18 +9,17 @@ import { IUsers } from './iusers';
 
 import { RolesService } from '../roles/roles.service'
 
-import { BaseDetailsComponent, Globals } from 'fastCodeCore';
-import { PickerDialogService } from 'fastCodeCore';
+import { BaseDetailsComponent, Globals, ErrorService, PickerDialogService } from 'fastCodeCore';
 
 @Component({
-  selector: 'app-users-details',
-  templateUrl: './users-details.component.html',
-  styleUrls: ['./users-details.component.scss']
+	selector: 'app-users-details',
+	templateUrl: './users-details.component.html',
+	styleUrls: ['./users-details.component.scss']
 })
 export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implements OnInit {
-  title:string='Users';
-  parentUrl:string='users';
-  //roles: IRole[];  
+	title: string = 'Users';
+	parentUrl: string = 'users';
+	//roles: IRole[];  
 	constructor(
 		public formBuilder: FormBuilder,
 		public router: Router,
@@ -29,15 +28,16 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 		public global: Globals,
 		public dataService: UsersService,
 		public pickerDialogService: PickerDialogService,
-		public rolesService: RolesService
+		public rolesService: RolesService,
+		public errorService: ErrorService,
 	) {
-		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService);
-  }
+		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
+	}
 
 	ngOnInit() {
 		this.setAssociations();
 		super.ngOnInit();
-	  
+
 		this.itemForm = this.formBuilder.group({
 			firstName: ['', Validators.required],
 			lastName: ['', Validators.required],
@@ -47,21 +47,24 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 			isActive: [false],
 			roleId: [''],
 			rolesName: [''],
-	     });
-	    if (this.idParam) {
-	      const id = +this.idParam;
-	      this.getItem(id).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
-	    }
-  }
-  
-	setAssociations(){
-  	
+		});
+		if (this.idParam) {
+			const id = +this.idParam;
+			this.getItem(id).subscribe(x => this.onItemFetched(x), error => this.errorMessage = <any>error);
+		}
+	}
+
+	setAssociations() {
+
 		this.associations = [
 			{
-				column: {
-					key: 'roleId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: false,
 				table: 'roles',
 				type: 'ManyToOne',
@@ -69,25 +72,28 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 				descriptiveField: 'rolesName',
 			},
 			{
-				column: {
-					key: 'userId',
-					value: undefined
-				},
+				column: [
+					{
+						key: 'userId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
 				isParent: true,
 				table: 'permissions',
 				type: 'ManyToMany',
 			},
 		];
 		this.toMany = this.associations.filter(association => {
-			return ((['ManyToMany','OneToMany'].indexOf(association.type) > - 1) && association.isParent);
+			return ((['ManyToMany', 'OneToMany'].indexOf(association.type) > - 1) && association.isParent);
 		});
 
 		this.toOne = this.associations.filter(association => {
-			return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1));
+			return ((['ManyToOne', 'OneToOne'].indexOf(association.type) > - 1));
 		});
 	}
 
-	onItemFetched(item:IUsers) {
+	onItemFetched(item: IUsers) {
 		this.item = item;
 		this.itemForm.patchValue({
 			emailAddress: item.emailAddress,
@@ -101,6 +107,6 @@ export class UsersDetailsComponent extends BaseDetailsComponent<IUsers> implemen
 			rolesName: item.rolesName,
 		});
 	}
-  
-  
+
+
 }

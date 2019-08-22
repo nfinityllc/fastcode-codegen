@@ -135,7 +135,7 @@ public class CodeGenerator {
 			generateFrontendAuthorization(destPath, appName, authenticationType);
 		}
 		
-		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
+		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
@@ -174,9 +174,10 @@ public class CodeGenerator {
 		}
 		
 		updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
-		updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
+		updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType);
 		
 		authorizationEntities.add("login");
+		authorizationEntities.add("core");
 		for(String entity: authorizationEntities) {
 			generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType);
 		}
@@ -673,15 +674,27 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void updateAppRouting(String destPath,String appName, List<String> entityName)
+	public static void updateAppRouting(String destPath,String appName, List<String> entityName, String authenticationType)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 
 		for(String str: entityName)
 		{
-			sourceBuilder.append("\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canActivate: [ AuthGuard ], canDeactivate: [CanDeactivateGuard] },");
-			sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n");
-			sourceBuilder.append("\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ], canDeactivate: [CanDeactivateGuard] }," );
+			String listComp,newComp,detailsComp;
+			if(authenticationType == "none") {
+				listComp = "\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canDeactivate: [CanDeactivateGuard] },";
+				newComp = "\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent }," + "\n";
+				detailsComp = "\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent, canDeactivate: [CanDeactivateGuard] },";
+			}
+			else {
+				listComp = "\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canActivate: [ AuthGuard ], canDeactivate: [CanDeactivateGuard] },";
+				newComp = "\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n";
+				detailsComp = "\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ], canDeactivate: [CanDeactivateGuard] },";
+			}
+			
+			sourceBuilder.append(listComp);
+			sourceBuilder.append(newComp);
+			sourceBuilder.append(detailsComp);
 		}
 		String data = " ";
 		try {

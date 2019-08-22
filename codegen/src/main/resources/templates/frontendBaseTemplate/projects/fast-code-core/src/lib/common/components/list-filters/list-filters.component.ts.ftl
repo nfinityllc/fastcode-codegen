@@ -38,8 +38,8 @@ export class ListFiltersComponent implements OnInit {
 
   filterCtrl = new FormControl();
 
-  @ViewChild('filterInput') filterInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  @ViewChild('filterInput',{ read: ElementRef, static: false }) filterInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto',{ read: MatAutocomplete, static: false }) matAutocomplete: MatAutocomplete;
 
 
   addFieldDialogRef: MatDialogRef<any>;

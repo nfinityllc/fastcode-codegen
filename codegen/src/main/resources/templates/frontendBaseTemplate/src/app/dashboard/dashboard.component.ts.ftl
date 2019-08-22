@@ -5,8 +5,10 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { Globals } from '../globals';
 import { MatDialogRef } from '@angular/material/dialog';
+<#if AuthenticationType != "none">
 import { AuthenticationService } from '../core/authentication.service';
 import { GlobalPermissionService } from '../core/global-permission.service';
+</#if>
  
 @Component({ 
   selector: 'app-dashboard',
@@ -20,11 +22,17 @@ export class DashboardComponent implements OnInit {
     loading = false;
     submitted = false;
     returnUrl: string;
-    constructor(private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router,
-       private global:Globals, private authenticationService: AuthenticationService,
-       private globalService: GlobalPermissionService
+    constructor(
+    	private formBuilder: FormBuilder,
+    	private route: ActivatedRoute,
+    	private router: Router,
+		private global:Globals,
+		<#if AuthenticationType != "none">
+		private authenticationService: AuthenticationService,
+		private globalService: GlobalPermissionService
+		</#if>
        
-        ) { }
+	) { }
  
     ngOnInit() {
        

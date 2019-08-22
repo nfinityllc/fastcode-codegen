@@ -20,7 +20,24 @@
 
         </mat-nav-list>
       </mat-expansion-panel>
+      
+      <#if AuthenticationType != "none">
+      <mat-expansion-panel class="expansion-panel">
+        <mat-expansion-panel-header class="subnav-header">
+          {{'MainNav.AccessMgmt' | translate }}
+        </mat-expansion-panel-header>
 
+        <mat-nav-list class="subnav">
+
+          <#if AuthenticationType != "database">
+          <a mat-list-item class="mat-sub-list-item" routerLink="users">{{'MainNav.Users' | translate }} </a>
+          </#if>          
+          <a mat-list-item class="mat-sub-list-item" routerLink="roles">Roles</a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="permissions">Permissions</a>
+
+        </mat-nav-list>
+      </mat-expansion-panel>
+      </#if>
       <!-- <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
 
       <mat-expansion-panel class="expansion-panel">

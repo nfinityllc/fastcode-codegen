@@ -37,8 +37,8 @@ export class BaseListComponent<E> implements OnInit {
   defaultDateFormat: string = "mediumDate";
   associations: IAssociationEntry[];
   selectedAssociation: IAssociationEntry;
-
-  @ViewChild(MatSort) sort: MatSort;
+ 
+  @ViewChild(MatSort,{  static: true }) sort: MatSort;
 
   //users$: Object;
   title: string = "title";

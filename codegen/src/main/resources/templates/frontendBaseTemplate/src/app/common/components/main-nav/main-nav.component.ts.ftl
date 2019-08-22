@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { Globals } from '../../../globals';
+<#if AuthenticationType != "none">
 import { AuthenticationService } from '../../../core/authentication.service';
+</#if>
 import { ActivatedRoute, Router, Event } from '@angular/router';
 import entities from './entities.json';
 
@@ -29,8 +31,15 @@ export class MainNavComponent {
 	isSmallDevice$: Observable<boolean>;
 	isMediumDevice$: Observable<boolean>;
 	isCurrentRootRoute: boolean = false;
-	constructor(private breakpointObserver: BreakpointObserver, private router: Router,
-		public translate: TranslateService, public Global: Globals, public Auth: AuthenticationService) {
+	constructor(
+		private breakpointObserver: BreakpointObserver,
+		private router: Router,
+		public translate: TranslateService,
+		public Global: Globals,
+		<#if AuthenticationType != "none">
+		public Auth: AuthenticationService,
+		</#if>
+	) {
 
 		this.isSmallDevice$ = Global.isSmallDevice$;
 		this.isMediumDevice$ = Global.isMediumDevice$;
@@ -47,6 +56,7 @@ export class MainNavComponent {
 	onNavMenuClicked() {
 		console.log('nav clicked');
 	}
+	<#if AuthenticationType != "none">
 	login() {
 		this.router.navigate(['/login'], { queryParams: { returnUrl: 'dashboard' } });
 	}
@@ -54,4 +64,6 @@ export class MainNavComponent {
 		this.Auth.logout();
 		this.router.navigate(['/']);
 	}
+	</#if>
+	
 }

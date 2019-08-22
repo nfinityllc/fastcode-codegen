@@ -55,7 +55,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 	  
 		this.itemForm = this.formBuilder.group({
 			<#list Fields as key,value>
-	        <#if value.fieldType?lower_case == "boolean">              
+	        <#if value.fieldType?lower_case == "boolean">            
 			<#if value.isNullable == false>          
 			[=value.fieldName]: [false, Validators.required],
 			<#else>
@@ -116,8 +116,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 	        
 	     });
 	    if (this.idParam) {
-	      const id = +this.idParam;
-	      this.getItem(id).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
+	      this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
 	    }
   }
   
@@ -194,6 +193,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
 			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
+			[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=dField.fieldName?cap_first],
 			</#if>
 			</#if>
 			</#list>

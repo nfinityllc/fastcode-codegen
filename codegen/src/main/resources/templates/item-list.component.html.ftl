@@ -17,16 +17,7 @@
 	<app-list-filters [columnsList]="selectedColumns" (onSearch)="applyFilter($event)"></app-list-filters>
 	<div class="table-container" (onScroll)="onTableScroll()" appVirtualScroll>
 		<mat-table matSort [dataSource]="items" class="mat-elevation-z8">
-		
-		<ng-container matColumnDef="id">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> id</mat-header-cell>
-			<mat-cell *matCellDef="let item">
-			<span class="mobile-label">{{getMobileLabelForField("id")}}:</span>
-			<a routerLink="/[=ApiPath]/{{item.id}}">
-				{{ item.id}}
-			</a>
-			</mat-cell>
-		</ng-container>   
+		  
 		<#list Fields as key,value>
 		<#if value.fieldType == "Date">
 		<ng-container matColumnDef="[=value.fieldName]">
