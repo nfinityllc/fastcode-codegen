@@ -12,6 +12,10 @@ import [=PackageName].domain.model.[=ClassName]Id;
 import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+<#assign i=relationValue.joinDetails?size>
+<#if i!=0 && i!=1>
+import [=PackageName].domain.model.[=relationValue.eName]Id;
+</#if>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
@@ -66,6 +70,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#assign i=relationValue.joinDetails?size>
+        <#if i==1>
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
@@ -86,6 +92,18 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
         </#if>
         </#list>
+        <#else>
+        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
+		{
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+		if(found[=relationValue.eName]!=null)
+		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+		else
+		return null;
+		}
+		else
+		return null;
+		</#if>
 		</#if>
 		</#list>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
@@ -99,6 +117,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+	  	<#assign i=relationValue.joinDetails?size>
+        <#if i==1>
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
@@ -116,9 +136,21 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
+		</#if>
         </#if>
-        </#if>
-		</#list>
+        </#list>
+        <#else>
+        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
+		{
+		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+		if(found[=relationValue.eName]!=null)
+		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+		else
+		return null;
+		}
+		else
+		return null;
+		</#if>
 		</#if>
 		</#list>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
@@ -207,7 +239,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 				}
 				List<String> keysList = new ArrayList<String>(map.keySet());
 				checkProperties(keysList);
-				return searchKeyValuePair([=ClassName?uncap_first], map,search.getJoinColumn(),search.getJoinColumnValue());
+				return searchKeyValuePair([=ClassName?uncap_first], map,search.getJoinColumns());
 			}
 
 		}
@@ -355,7 +387,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
 		  if(list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]")) {
-			builder.or([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(Long.parseLong(value)));
+			builder.or([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(<#if joinDetails.joinColumnType == "Long">Long.parseLong(value)<#elseif joinDetails.joinColumnType == "Integer">Integer.parseInt(value)<#elseif joinDetails.joinColumnType == "Double">Double.parseDouble(value)<#elseif joinDetails.joinColumnType == "String">value</#if>));
 			}
 		</#if>
 		</#if>
@@ -366,7 +398,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return builder;
 	}
 	
-	BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
+	BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
@@ -485,22 +517,27 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne" >
+		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
 		<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
-		if(joinColumn != null && joinColumn.equals("[=joinDetails.joinColumn]")) {
+        if(joinCol != null && joinCol.getKey().equals("[=joinDetails.joinColumn]")) {
 		<#if joinDetails.joinColumnType == "String">
-		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.joinColumn].eq(joinColumnValue.toString()));
-			<#else>
-			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(joinColumnValue));
-		    </#if>
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(joinCol.getValue()));
+		<#elseif joinDetails.joinColumnType == "Long">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Long.parseLong(joinCol.getValue())));
+		<#elseif joinDetails.joinColumnType == "Integer">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Integer.parseInt(joinCol.getValue())));
+		<#elseif joinDetails.joinColumnType == "Double">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Double.parseDouble(joinCol.getValue())));
+        </#if>
 		}
 		</#if>
         </#if>
 		</#list>
+        }
 		</#if>
 		</#list>
-
 		return builder;
 	}
 	
@@ -551,7 +588,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	public Map<String,String> parse[=relationValue.eName]JoinColumn(String keysString) {
 		
 		String[] keyEntries = keysString.split(";");
-		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
 		
 		Map<String,String> keyMap = new HashMap<String,String>();
 		if(keyEntries.length > 1) {
@@ -574,14 +610,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
 		<#list relationValue.joinDetails as joinDetails>
-		<#if joinDetails.joinEntityName == relationValue.eName>
-		<#if joinDetails.joinColumn??>
-		<#if CompositeKeyClasses?seq_contains(ClassName)>
-		joinColumnMap.put([=joinDetails.joinColumn?uncap_first], keyMap.get([=joinDetails.referenceColumn]))
+		<#assign i=relationValue.joinDetails?size>
+        <#if i==1>
+		joinColumnMap.put("[=joinDetails.joinColumn?uncap_first]", keysString);
 		<#else>
-		joinColumnMap.put([=joinDetails.joinColumn?uncap_first], keysString)
-		</#if>
-		</#if>
+		joinColumnMap.put("[=joinDetails.joinColumn?uncap_first]", keyMap.get("[=joinDetails.referenceColumn]"));
 		</#if>
 		</#list>
 		return joinColumnMap;

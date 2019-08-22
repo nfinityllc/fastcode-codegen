@@ -76,9 +76,8 @@ public class EntityGenerator {
 				
 				// process each entities except many to many association entities
 				if (!entityName.endsWith("Id")) {
-				//	System.out.println(" entity name : " + entityName);
+				
 					EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
-					// entityName, classList);
 					details.setCompositeKeyClasses(compositePrimaryKeyEntities);
 
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
@@ -88,6 +87,10 @@ public class EntityGenerator {
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
                         for(JoinDetails j : entry.getValue().getJoinDetails())
                         {
+                        	if(entry.getValue().getRelation().equals("OneToMany"))
+                        	{
+                     		System.out.println("\nj details for join column "+j.getJoinColumn());
+                        	}
                         //	System.out.println("\nj details for "+j.getJoinColumn()+ "  r  entity name " + entry.getValue().geteName());
 						if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
 						{

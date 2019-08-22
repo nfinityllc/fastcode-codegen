@@ -248,7 +248,7 @@ public class [=ClassName]Controller {
 		}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
-   <#elseif relationValue.relation == "OneToMany">
+    <#elseif relationValue.relation == "OneToMany">
     
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
@@ -262,7 +262,7 @@ public class [=ClassName]Controller {
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		searchCriteria.setJoinColumns(_[=relationValue.eName?uncap_first]AppService.parse[=relationValue.eName]JoinColumn());
+		searchCriteria.setJoinColumns(_[=ClassName?uncap_first]AppService.parse[=relationValue.eName]JoinColumn([=InstanceName]id));
 		
     	List<Find[=relationValue.eName]ByIdOutput> output = _[=relationValue.eName?uncap_first]AppService.Find(searchCriteria,pageable);
 		if (output == null) {

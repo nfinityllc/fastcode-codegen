@@ -35,7 +35,11 @@ public interface [=ClassName]Mapper {
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]??> 
+   <#if DescriptiveField[relationValue.eName].fieldName !=joinDetails.referenceColumn >
    @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
    </#if>
    </#if>
    </#list>
@@ -49,7 +53,7 @@ public interface [=ClassName]Mapper {
    </#if> 
    </#if> 
    </#list> 
-    Create[=ClassName]Output [=ClassName]EntityToCreate[=ClassName]Output([=ClassName]Entity entity);
+   Create[=ClassName]Output [=ClassName]EntityToCreate[=ClassName]Output([=ClassName]Entity entity);
 
     [=ClassName]Entity Update[=ClassName]InputTo[=ClassName]Entity(Update[=ClassName]Input [=ClassName?lower_case]Dto);
 
@@ -69,7 +73,11 @@ public interface [=ClassName]Mapper {
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]??> 
+   <#if DescriptiveField[relationValue.eName].fieldName !=joinDetails.referenceColumn >
    @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
    </#if>
    </#if>
    </#list>
@@ -83,7 +91,7 @@ public interface [=ClassName]Mapper {
    </#if> 
    </#if> 
    </#list> 
-    Update[=ClassName]Output [=ClassName]EntityToUpdate[=ClassName]Output([=ClassName]Entity entity);
+   Update[=ClassName]Output [=ClassName]EntityToUpdate[=ClassName]Output([=ClassName]Entity entity);
 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
@@ -101,7 +109,11 @@ public interface [=ClassName]Mapper {
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??> 
+   <#if DescriptiveField[relationValue.eName]??> 
+   <#if DescriptiveField[relationValue.eName].fieldName !=joinDetails.referenceColumn >
    @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
    </#if>
    </#if>
    </#list>
@@ -131,12 +143,12 @@ public interface [=ClassName]Mapper {
    <#list Fields as fkey,fvalue>
    <#if fvalue.isPrimaryKey!false>
    <#if fvalue.fieldType?lower_case == "long" || fvalue.fieldType?lower_case == "integer" || fvalue.fieldType?lower_case == "short" || fvalue.fieldType?lower_case == "double" || fvalue.fieldType?lower_case == "boolean" || fvalue.fieldType?lower_case == "date" || fvalue.fieldType?lower_case == "string">
-    @Mapping(source = "[=ClassName?uncap_first].[=fvalue.fieldName]", target = "[=ClassName?uncap_first][=fvalue.fieldName?cap_first]"),
-    </#if>
-    </#if>
-    </#list>
-    })
-    Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
+   @Mapping(source = "[=ClassName?uncap_first].[=fvalue.fieldName]", target = "[=ClassName?uncap_first][=fvalue.fieldName?cap_first]"),
+   </#if>
+   </#if>
+   </#list>
+   })
+   Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
  
    </#if>
    </#list>

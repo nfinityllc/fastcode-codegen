@@ -20,7 +20,7 @@ public class Find[=ClassName]ByIdOutput {
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if !Fields[joinDetails.joinColumn]?? >
- private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
  </#if>
 </#if>
 </#list>
@@ -29,7 +29,7 @@ public class Find[=ClassName]ByIdOutput {
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if joinDetails.joinColumn??>
  <#if !Fields[joinDetails.joinColumn]?? >
- private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
  </#if>
  </#if>
  </#if>

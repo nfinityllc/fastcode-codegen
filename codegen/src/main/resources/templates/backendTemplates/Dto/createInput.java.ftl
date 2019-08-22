@@ -17,7 +17,7 @@ public class Create[=ClassName]Input {
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if joinDetails.joinColumn??>
  <#if !Fields[joinDetails.joinColumn]??>
- private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
  </#if>
  </#if>
  </#if>

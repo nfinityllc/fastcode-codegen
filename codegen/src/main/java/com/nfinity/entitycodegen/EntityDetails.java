@@ -70,7 +70,6 @@ public class EntityDetails {
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-		System.out.println(" entity name " + className);
 
 		try {
 
@@ -96,7 +95,7 @@ public class EntityDetails {
 				Annotation[] annotations = field.getAnnotations();
 				relation.setcName(className);
 				for (Annotation a : annotations) {
-					System.out.println("\n anno " + a.toString());
+
 					if (a.annotationType().toString().equals("interface javax.persistence.Column")) {
 						String column = a.toString();
 						String[] word = column.split("[\\(,//)]");
@@ -196,6 +195,8 @@ public class EntityDetails {
 											joinDetails.setJoinColumnType("Long");
 										else if(columnType.equals("serial") || columnType.equals("int4"))
 											joinDetails.setJoinColumnType("Integer");
+										else if(columnType.equals("decimal"))
+											joinDetails.setJoinColumnType("Double");
 										else
 											joinDetails.setJoinColumnType("String");
 									}
@@ -466,7 +467,13 @@ public class EntityDetails {
 						String str = field.getType().toString();
 						int index = str.lastIndexOf(".") + 1;
 						details.setFieldName(field.getName());
-						details.setFieldType(str.substring(index));
+						String fieldType=str.substring(index);
+						if(fieldType.equals("int"))
+						{
+							fieldType="Integer";
+						}
+						fieldType=fieldType.substring(0, 1).toUpperCase() + fieldType.substring(1);
+						details.setFieldType(fieldType);
 						Annotation[] annotations = field.getAnnotations();
 						for (Annotation a : annotations) {
 
@@ -493,7 +500,7 @@ public class EntityDetails {
 			Map<String, RelationDetails> relationMap, List<Class<?>> classList) { 
 		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) { 
 			if (entry.getValue().getRelation() == "OneToMany") { 
-				List<JoinDetails> mappedByMapList = entry.getValue().getJoinDetails();
+			//	List<JoinDetails> mappedByMapList = entry.getValue().getJoinDetails();
 				for (Class<?> currentClass : classList) { 
 					String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1); 
 					if (entityName.equals(entry.getValue().geteName())) {
@@ -514,8 +521,6 @@ public class EntityDetails {
 										JoinColumn[] joinColumnArray = joinColumnsAnnotation.value();
 
 										for (JoinColumn j : joinColumnArray) {
-											System.out.println(" jj   " + j);
-
 											joinDetails=new JoinDetails();
 											String[] word = j.toString().split("[\\(,//)]");
 											joinDetails.setJoinEntityName(entry.getValue().getcName());
@@ -554,6 +559,8 @@ public class EntityDetails {
 															joinDetails.setJoinColumnType("Long");
 														else if(columnType.equals("serial") || columnType.equals("int4"))
 															joinDetails.setJoinColumnType("Integer");
+														else if(columnType.equals("decimal"))
+															joinDetails.setJoinColumnType("Double");
 														else
 															joinDetails.setJoinColumnType("String");
 													}
@@ -562,20 +569,17 @@ public class EntityDetails {
 												}
 
 											}
-											System.out.println("Join XCol " + joinDetails.getJoinColumn());
 
 											joinDetailsList.add(joinDetails);
-											System.out.println("zise " + joinDetailsList.size());
-											for(int i=0; i<joinDetailsList.size();i++)
-											{
-												System.out.println(" join col " + joinDetailsList.get(i).getJoinColumn() );
-											}
+
 										}
+										entry.getValue().setJoinDetails(joinDetailsList);
 
 									}
 									if (a.annotationType().toString() 
 											.equals("interface javax.persistence.JoinColumn")) { 
 										String joinColumn = a.toString(); 
+								
 										String[] word = joinColumn.split("[\\(,//)]"); 
 
 										for (String s : word) { 
@@ -602,6 +606,8 @@ public class EntityDetails {
 														joinDetails.setJoinColumnType("Long");
 													else if(columnType.equals("serial") || columnType.equals("int4"))
 														joinDetails.setJoinColumnType("Integer");
+													else if(columnType.equals("decimal"))
+														joinDetails.setJoinColumnType("Double");
 													else 
 														joinDetails.setJoinColumnType("String"); 
 												} 
@@ -610,18 +616,18 @@ public class EntityDetails {
 											} 
 
 										}   
+										if(joinDetailsList.isEmpty())
+										{
+											if (joinDetails.getJoinColumn() != null) {
 
-										if (joinDetails.getJoinColumn() != null) {
-											if(joinDetailsList.isEmpty())
-											{
 												joinDetails.setJoinEntityName(entry.getValue().getcName());
-												for(int i=0; i<mappedByMapList.size();i++)
-												{
-													if(mappedByMapList.get(i).getMappedBy()!=null && joinDetails.getJoinEntityName()==mappedByMapList.get(i).getJoinEntityName())
-													{
-														joinDetails.setMappedBy(mappedByMapList.get(i).getMappedBy());
-													}   
-												}
+//												for(int i=0; i<mappedByMapList.size();i++)
+//												{
+//													if(mappedByMapList.get(i).getMappedBy()!=null && joinDetails.getJoinEntityName()==mappedByMapList.get(i).getJoinEntityName())
+//													{
+//														joinDetails.setMappedBy(mappedByMapList.get(i).getMappedBy());
+//													}   
+//												}
 
 												String entity = StringUtils.substringBeforeLast(currentClass.getName(), ".");
 
@@ -631,9 +637,15 @@ public class EntityDetails {
 													joinDetails.setReferenceColumn(referenceColumn);
 
 												joinDetailsList.add(joinDetails);
+												entry.getValue().setJoinDetails(joinDetailsList);
 											}
-											entry.getValue().setJoinDetails(joinDetailsList);
+
+
 										}
+//										for(int i=0;i<joinDetailsList.size();i++)
+//										{
+//											System.out.println("JOIN COLUMN " + joinDetailsList.get(i).getJoinColumn());
+//										}
 									} 
 
 								} 
