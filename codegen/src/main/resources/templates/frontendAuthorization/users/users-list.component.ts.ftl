@@ -1,162 +1,147 @@
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Injectable, CUSTOM_ELEMENTS_SCHEMA ,NO_ERRORS_SCHEMA, Input} from '@angular/core';
-import {  HttpTestingController } from '@angular/common/http/testing';
-import { Observable, throwError,of } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
-import {Component, Directive, ChangeDetectorRef} from '@angular/core';
-import {IUsers,UsersListComponent,UsersService } from './index';
-import { TestingModule,EntryComponents } from '../../testing/utils';
-import { environment } from '../../environments/environment';
+import { IUsers } from './iusers';
+import { UsersService } from './users.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { UsersNewComponent } from './users-new.component';
+//import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService } from 'fastCodeCore';
+import { BaseListComponent,Globals, IListColumn, listColumnType, PickerDialogService, ErrorService  } from 'fastCodeCore';
 
+import { RolesService } from '../roles/roles.service';
+import { PermissionsService } from '../permissions/permissions.service';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
-@Injectable()
-class MockRouter { navigate = ()=> {}; }
-      
-@Injectable()
-class MockGlobals { }
-      
-@Injectable()
-class MockUsersService { }
-      
-@Injectable()
-class MockPickerDialogService { }
-@Directive({
-selector:'[routerlink]',
-host: {'(click)':'onClick()'}
+@Component({
+	selector: 'app-users-list',
+	templateUrl: './users-list.component.html',
+	styleUrls: ['./users-list.component.scss']
 })
-export  class RouterLinkDirectiveStub {
-  @Input('routerLink') linkParams: any;
-  navigatedTo: any = null;
-  onClick () {
-    this.navigatedTo = this.linkParams;
-  }
+export class UsersListComponent extends BaseListComponent<IUsers> implements OnInit {
+
+	title: string = "Users";
+    entityName:string =  'IUsers';
+	columns: IListColumn[] = [
+		{
+			column: 'id',
+			label: 'id',
+			sort: true,
+			filter: false,
+			type: listColumnType.Number
+		},
+		{
+			column: 'emailAddress',
+			label: 'emailAddress',
+			sort: true,
+			filter: true,
+			type: listColumnType.String
+		},
+		{
+			column: 'firstName',
+			label: 'firstName',
+			sort: true,
+			filter: true,
+			type: listColumnType.String
+		},
+		{
+			column: 'isActive',
+			label: 'isActive',
+			sort: true,
+			filter: true,
+			type: listColumnType.Boolean
+		},
+		{
+			column: 'lastName',
+			label: 'lastName',
+			sort: true,
+			filter: true,
+			type: listColumnType.String
+		},
+		{
+			column: 'userName',
+			label: 'userName',
+			sort: true,
+			filter: true,
+			type: listColumnType.String
+		},
+		{
+			column: 'actions',
+			label: 'Actions',
+			sort: false,
+			filter: false,
+			type: listColumnType.String
+		}
+	];
+
+	selectedColumns = this.columns;
+	displayedColumns: string[] = this.columns.map((obj) => { return obj.column });
+
+
+	constructor(
+		public router: Router,
+		public route: ActivatedRoute,
+		public global: Globals,
+		public dialog: MatDialog,
+		public changeDetectorRefs: ChangeDetectorRef,
+		public pickerDialogService: PickerDialogService,
+		public usersService: UsersService,
+		public rolesService: RolesService,
+		public permissionsService: PermissionsService,
+		public globalPermissionService: GlobalPermissionService,
+		public errorService: ErrorService
+	) {
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, usersService, errorService);
+		//this.globalPermissionService=globalPermissionService;
+	}
+
+	ngOnInit() {
+		
+		let test = this.IsDeletePermission;
+		this.setAssociation();
+		super.ngOnInit();
+		let x = this.IsDeletePermission;
+	}
+
+	setAssociation() {
+
+		this.associations = [
+			{
+				column:[ 
+					{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
+				isParent: false,
+				descriptiveField: 'rolesName',
+				referencedDescriptiveField: 'name',
+				service: this.rolesService,
+				associatedObj: undefined,
+				table: 'roles',
+				type: 'ManyToOne'
+			},
+			{
+				column: [
+					{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+					}
+				],
+				isParent: true,
+				descriptiveField: 'permissionsUserName',
+				referencedDescriptiveField: 'userName',
+				service: this.permissionsService,
+				associatedObj: undefined,
+				table: 'permissions',
+				type: 'ManyToMany'
+			},
+		];
+	}
+
+	addNew() {
+		super.addNew(UsersNewComponent);
+	}
+
 }
-describe('UsersListComponent', () => {
-  let fixture:ComponentFixture<UsersListComponent>;
-  let component:UsersListComponent;
-  let httpTestingController: HttpTestingController;
-  let usersService: UsersService;
-  let url:string = environment.apiUrl + '/users';
-  let mockGlobal = {
-    isSmallDevice$: of({value:true})
-  }; 
-  let data:IUsers [] = [
-		{   
-			accessFailedCount: 1,
-			authenticationSource: 'authenticationSource1',
-			emailAddress: 'emailAddress1',
-			emailConfirmationCode: 'emailConfirmationCode1',
-			firstName: 'firstName1',
-			id:1,
-			isActive: true,
-			isEmailConfirmed: true,
-			isLockoutEnabled: true,
-			isPhoneNumberConfirmed: 'isPhoneNumberConfirmed1',
-			lastLoginTime: new Date().toLocaleDateString("en-US") ,
-			lastName: 'lastName1',
-			lockoutEndDateUtc: new Date().toLocaleDateString("en-US") ,
-			password: 'password1',
-			passwordResetCode: 'passwordResetCode1',
-			phoneNumber: 'phoneNumber1',
-			profilePictureId: 1,
-			twoFactorEnabled: true,
-			userName: 'userName1',
-		},
-		{   
-			accessFailedCount: 2,
-			authenticationSource: 'authenticationSource2',
-			emailAddress: 'emailAddress2',
-			emailConfirmationCode: 'emailConfirmationCode2',
-			firstName: 'firstName2',
-			id:2,
-			isActive: true,
-			isEmailConfirmed: true,
-			isLockoutEnabled: true,
-			isPhoneNumberConfirmed: 'isPhoneNumberConfirmed2',
-			lastLoginTime: new Date().toLocaleDateString("en-US") ,
-			lastName: 'lastName2',
-			lockoutEndDateUtc: new Date().toLocaleDateString("en-US") ,
-			password: 'password2',
-			passwordResetCode: 'passwordResetCode2',
-			phoneNumber: 'phoneNumber2',
-			profilePictureId: 2,
-			twoFactorEnabled: true,
-			userName: 'userName2',
-		},
-  ]; 
-
-  beforeEach(async(() => {
-    
-    TestBed.configureTestingModule({
-      declarations: [
-        UsersListComponent       
-      ].concat(EntryComponents),
-      imports: [TestingModule],
-      providers: [
-      UsersService,      
-        ChangeDetectorRef,
-      ]      
-   
-    }).compileComponents();
-  
-  }));
-  beforeEach(() => {
-    fixture = TestBed.createComponent(UsersListComponent);
-    httpTestingController = TestBed.get(HttpTestingController);
-    usersService = TestBed.get(UsersService);
-    component = fixture.componentInstance;
-  });
-
-  it('should create a component', async () => {
-    expect(component).toBeTruthy();
-  });  
-    
-  it('should run #ngOnInit()', async () => {
-       
-    httpTestingController = TestBed.get(HttpTestingController);
-    fixture.detectChanges();
-   
-    const req = httpTestingController.expectOne(req => req.method === 'GET' && req.url === url ).flush(data);   
-   
-    expect(component.items.length).toEqual(2);
-    httpTestingController.verify(); 
-  });
-    
-    
-  it('should list items', async () => {
-    
-    fixture.detectChanges();
-    httpTestingController = TestBed.get(HttpTestingController);   
-    const req = httpTestingController.expectOne(req => req.method === 'GET' && req.url === url).flush(data);
-  
-   expect(component.items.length).toEqual(data.length);
-   fixture.detectChanges(); 
- 
-    httpTestingController.verify()
-  });   
-	it('should run #addNew()', async () => {   
-		httpTestingController = TestBed.get(HttpTestingController);
-		fixture.detectChanges();
-		const req = httpTestingController.expectOne(req => req.method === 'GET' && req.url === url ).flush(data);
-		fixture.detectChanges();
-		const result = component.addNew();
-		httpTestingController.verify();
-	});
-        
-  it('should run #delete()', async () => {
-    
-    fixture.detectChanges();
-    httpTestingController = TestBed.get(HttpTestingController);
-   
-   const req = httpTestingController.expectOne(req => req.method === 'GET' && req.url === url ).flush(data);
-    
-   const result = component.delete(data[0]);   
-   const req2 = httpTestingController.expectOne(req => req.method === 'DELETE' && req.url === url + '/'+ data[0].id).flush(null);
-   expect(component.items.length).toEqual(1);
-   //fixture.detectChanges();
-   httpTestingController.verify();
- 
-  });
-        
-});

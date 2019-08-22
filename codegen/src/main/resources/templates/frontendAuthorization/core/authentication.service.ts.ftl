@@ -7,10 +7,7 @@ import { IPermissions } from '../permissions';
 //import { IUser } from '../users/iuser';
 import { JwtHelperService } from "@auth0/angular-jwt";
 //import {ITokenDetail} from "./itoken-detail";
-import { IGlobalPermissionService,ITokenDetail } from 'projects/fast-code-core/src/public_api';
-import {AuthOidcConfig} from '../oauth/auth-oidc-config';
-import { OAuthService, JwksValidationHandler, OAuthStorage, OAuthErrorEvent, OAuthSuccessEvent, OAuthInfoEvent } from 'angular-oauth2-oidc';
-import { Router } from '@angular/router';
+import { IGlobalPermissionService,ITokenDetail } from 'fastCodeCore';
 //import {AuthOidcConfig} from './oauth/auth-oidc-config'
 const API_URL = environment.apiUrl;
 const helper = new JwtHelperService();
@@ -24,49 +21,15 @@ export class AuthenticationService  {
   public authUrl = environment.authUrl;
   private userPermissions:IPermissions[];
   private decodedToken:ITokenDetail;
-  constructor(private http: HttpClient,private router: Router,private oauthService: OAuthService,private authStorage: OAuthStorage ) { 
+  constructor(private http: HttpClient) { 
     //this.configure();
   }
-   configure() {
-    
-    this.oauthService.configure(AuthOidcConfig);
-    this.oauthService.tokenValidationHandler = new JwksValidationHandler();
-    
-    this.oauthService.events.subscribe(event => {
-            if (event instanceof OAuthErrorEvent) {
-              console.error(event);
-            }
-            else if (event instanceof OAuthSuccessEvent) {
-            
-              console.log('Oauth success:' + event.type);
-              if(event.type == "token_received"){
-                this.router.navigate(['dashboard'])
-              }
-               
-            }
-            else if (event instanceof OAuthInfoEvent) {
-              console.log(event);
-            }
-            else {
-              console.warn(event);
-            }
-    });
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(r=> {
-      console.log("logged in!");
-    }).catch(err => {
-          console.log("Unable to login");
-        }); //with login form
-    //this.oauthService.loadDiscoveryDocumentAndLogin()
-  }
+  
   getMainUsers(): Observable<any> {    
    return this.http.get<any[]>(this.apiUrl + '/users' ).pipe( catchError(this.handleError));
    
     }
     get token():string {
-      if(environment.loginType == 'oidc'){
-         return this.authStorage.getItem('access_token')
-      }
-      else
       return !localStorage.getItem("token") ? null : localStorage.getItem("token");
   }
   decodeToken():ITokenDetail {
@@ -101,13 +64,8 @@ export class AuthenticationService  {
       }));      
   //    return this.http.post<any>(this.apiUrl +'/login', user, this._reqOptionsArgs).pipe(catchError(this.handleError));
   }
-  AuthLogin(): void {
-    console.log("AuthLogin start ...")
-    this.oauthService.initLoginFlow();
-//    return this.http.post<any>(this.apiUrl +'/login', user, this._reqOptionsArgs).pipe(catchError(this.handleError));
-}
 
-  AuthLoginOld(user: any): Observable<any> {
+  AuthLogin(user: any): Observable<any> {
     console.log("AFSD")
     return this.http.get<any>(this.authUrl+'/oidc',this._reqOptionsArgs).pipe(map(res => {
         let retval = res;
@@ -123,8 +81,6 @@ export class AuthenticationService  {
 //    return this.http.post<any>(this.apiUrl +'/login', user, this._reqOptionsArgs).pipe(catchError(this.handleError));
 }
   logout() {
-    if(environment.loginType == "oidc")
-      this.oauthService.logOut();
     localStorage.removeItem('token');
 }
   

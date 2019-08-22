@@ -5,7 +5,7 @@ import { catchError, tap, map,filter } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IPermissions } from '../permissions';
 //import { IUser } from '../users/iuser';
-import { IGlobalPermissionService,ITokenDetail } from 'projects/fast-code-core/src/public_api';
+import { IGlobalPermissionService,ITokenDetail } from 'fastCodeCore';
 import { AuthenticationService } from './authentication.service';
 //import { ITokenDetail } from './itoken-detail';
 const API_URL = environment.apiUrl;

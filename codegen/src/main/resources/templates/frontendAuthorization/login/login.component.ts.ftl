@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
         {    
             console.log("login query parameter");
             this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || 'dashboard';
+            let code =  this.route.snapshot.queryParams['code'] ;
        }
      
         let token = this.authenticationService.decodeToken();
@@ -58,8 +59,8 @@ export class LoginComponent implements OnInit {
     validateEmailAndPassword: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
         const name = control.get('userName');
         const alterEgo = control.get('password');
-      
-        return   this.authenticationService.postLogin(this.iLogin)
+      return null;
+       /* return   this.authenticationService.postLogin(this.iLogin)
         .pipe(first())
         .subscribe(
             data => {                  
@@ -68,7 +69,7 @@ export class LoginComponent implements OnInit {
             error => {
             
                 return { passwordUserNameError: true }
-            });
+            });*/
       };
     
     onSubmit() {
