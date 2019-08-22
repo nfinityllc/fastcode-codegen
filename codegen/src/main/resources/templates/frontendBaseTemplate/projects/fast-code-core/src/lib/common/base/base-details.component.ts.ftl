@@ -111,7 +111,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
     });
   }
 
-  getItem(id: number): Observable<E> {
+  getItem(id: any): Observable<E> {
     return this.dataService.getById(id);
   }
 
