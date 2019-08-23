@@ -179,7 +179,7 @@ public class CodeGenerator {
 		propertyInfo.put("appName", appName.substring(appName.lastIndexOf(".") + 1));
 		propertyInfo.put("schema", schema);
 		propertyInfo.put("EmailModule",email);
-		propertyInfo.put("packageName",appName.replaceAll(".", "/"));
+		propertyInfo.put("packageName",appName.replace(".", "/"));
 
 		return propertyInfo;
 	}
