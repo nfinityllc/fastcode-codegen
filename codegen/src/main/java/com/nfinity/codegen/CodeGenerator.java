@@ -128,7 +128,7 @@ public class CodeGenerator {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 			generateEntityHistoryComponent(appFolderPath);
 			addhistoryComponentsToAppModule(appFolderPath);
-			addhistoryComponentsToAppRoutingModule(appFolderPath);
+			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType);
 			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
 			
 		}
@@ -318,13 +318,19 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void addhistoryComponentsToAppRoutingModule(String destPath)
+	public static void addhistoryComponentsToAppRoutingModule(String destPath, String authenticationType)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
 		
-		sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent ,canActivate: [ AuthGuard ]},");
-		sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+		if(authenticationType == "none") {
+			sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent");
+			sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent");
+		}
+		else {
+			sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+			sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+		}
 
 		String data = " ";
 		try {
