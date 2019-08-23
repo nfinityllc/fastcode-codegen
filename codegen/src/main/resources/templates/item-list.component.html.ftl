@@ -45,12 +45,12 @@
 		</#list>
 		<ng-container matColumnDef="actions">
 			<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
-			<mat-cell *matCellDef="let item"> 
+			<mat-cell *matCellDef="let item" (click)="$event.stopPropagation()"> 
 				<button mat-button color="accent"(click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany") ? ('GENERAL.ACTIONS.DE-LINK' | translate) : ('GENERAL.ACTIONS.DELETE' | translate) }}</button>
 			</mat-cell>
 		</ng-container>
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDetails(row)"></mat-row>
 		</mat-table>
 	</div>
 </div>
