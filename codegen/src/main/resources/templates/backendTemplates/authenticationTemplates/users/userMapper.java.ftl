@@ -1,9 +1,9 @@
-package [=PackageName].application.Authorization.Users;
+package [=PackageName].application.Authorization.User;
 
-import [=PackageName].application.Authorization.Users.Dto.*;
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.model.UsersEntity;
+import [=PackageName].application.Authorization.User.Dto.*;
+import [=PackageName].domain.model.PermissionEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.model.UserEntity;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,46 +22,33 @@ public interface UserMapper {
     Role => GetRoleOutput
      */
 
-    UsersEntity CreateUserInputToUsersEntity(CreateUserInput userDto);
+    UserEntity CreateUserInputToUserEntity(CreateUserInput userDto);
     
     @Mappings({ 
     @Mapping(source = "role.name", target = "rolesName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
-    CreateUserOutput UsersEntityToCreateUserOutput(UsersEntity entity);
+     CreateUserOutput UserEntityToCreateUserOutput(UserEntity entity);
 
-    UsersEntity UpdateUserInputToUsersEntity(UpdateUserInput userDto);
-
-    @Mappings({ 
-    @Mapping(source = "role.name", target = "rolesName"),                   
-    @Mapping(source = "role.id", target = "roleId"),                   
-    }) 
-    UpdateUserOutput UsersEntityToUpdateUserOutput(UsersEntity entity);
+    UserEntity UpdateUserInputToUserEntity(UpdateUserInput userDto);
 
     @Mappings({ 
     @Mapping(source = "role.name", target = "rolesName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
-    FindUserByIdOutput UsersEntityToFindUserByIdOutput(UsersEntity entity);
+    UpdateUserOutput UserEntityToUpdateUserOutput(UserEntity entity);
+
+    @Mappings({ 
+    @Mapping(source = "role.name", target = "rolesName"),                   
+    @Mapping(source = "role.id", target = "roleId"),                   
+    }) 
+    FindUserByIdOutput UserEntityToFindUserByIdOutput(UserEntity entity);
     
     @Mappings({ 
     @Mapping(source = "role.name", target = "rolesName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     FindUserByNameOutput UsersEntityToFindUserByNameOutput(UsersEntity entity);
-
-    @Mappings({
-            @Mapping(source = "permission.id", target = "id"),
-              <#if Audit!false>
-            @Mapping(source = "permission.creationTime", target = "creationTime"),
-            @Mapping(source = "permission.creatorUserId", target = "creatorUserId"),
-            @Mapping(source = "permission.lastModifierUserId", target = "lastModifierUserId"),
-            @Mapping(source = "permission.lastModificationTime", target = "lastModificationTime"),
-            </#if>
-            @Mapping(source = "user.id", target = "userId"),
-            @Mapping(source = "user.userName", target = "userName")
-    })
-    GetPermissionOutput PermissionsEntityToGetPermissionOutput(PermissionsEntity permission, UsersEntity user);
 
     @Mappings({
             @Mapping(source = "role.id", target = "id"),
@@ -74,5 +61,5 @@ public interface UserMapper {
             @Mapping(source = "user.id", target = "userId"),
             @Mapping(source = "user.userName", target = "userName")
     })
-    GetRoleOutput RolesEntityToGetRoleOutput(RolesEntity role, UsersEntity user);
+    GetRoleOutput RoleEntityToGetRoleOutput(RoleEntity role, UserEntity user);
 }

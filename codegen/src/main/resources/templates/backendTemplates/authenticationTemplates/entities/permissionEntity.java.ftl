@@ -1,6 +1,6 @@
 package [=PackageName].domain.model;
 
-import [=PackageName].domain.model.RolesEntity;
+import [=PackageName].domain.model.RoleEntity;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import [=PackageName].Audit.AuditedEntity;
@@ -12,12 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Permissions")
+@Table(name = "Permission")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
 
-public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class PermissionEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
     private Long id;
     private String name;
     private String displayName;
@@ -69,16 +69,29 @@ public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#
         return 31;
     }
 
-    @ManyToMany(mappedBy = "permissions")
-    public Set<RolesEntity> getRoles() { return roles; }
-    public void setRoles(Set<RolesEntity> roles) { this.roles = roles; }
-    private Set<RolesEntity> roles = new HashSet<>();
-
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<RolepermissionEntity> getRolepermissionSet() { 
+      return rolepermissionSet; 
+    } 
+ 
+    public void setRolepermissionSet(Set<RolepermissionEntity> rolepermission) { 
+      this.rolepermissionSet = rolepermission; 
+    } 
+ 
+    private Set<RolepermissionEntity> rolepermissionSet = new HashSet<RolepermissionEntity>(); 
+  
    
     <#if AuthenticationType == "database">
-    @ManyToMany(mappedBy = "permissions")
-    public Set<UsersEntity> getUsers() { return users; }
-    public void setUsers(Set<UsersEntity> users) { this.users = users; }
-    private Set<UsersEntity> users = new HashSet<>();
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<UserpermissionEntity> getUserpermissionSet() { 
+      return userpermissionSet; 
+    } 
+ 
+    public void setUserpermissionSet(Set<UserpermissionEntity> userpermission) { 
+      this.userpermissionSet = userpermission; 
+    } 
+ 
+    private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>(); 
+
     </#if>
 }

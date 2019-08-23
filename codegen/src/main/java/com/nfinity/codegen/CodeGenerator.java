@@ -140,8 +140,33 @@ public class CodeGenerator {
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
 
-		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName.substring(appName.lastIndexOf(".") + 1), connectionString, schema,email);
+		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName, connectionString, schema,email);
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
+		generateBeanConfigAndAuditAwareImpl(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
+		
+	}
+	
+	private static void generateBeanConfigAndAuditAwareImpl(String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType){
+
+		String backendAppFolder = backEndRootFolder + "/src/main/java";
+		
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/authenticationTemplates");// "/templates/backendTemplates/"); 
+        MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
+ 
+        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 
+        cfg.setDefaultEncoding("UTF-8"); 
+        cfg.setTemplateLoader(mtl); 
+		
+		Map<String, Object> root = new HashMap<>();
+
+		root.put("PackageName", packageName);
+		root.put("AuthenticationType", authenticationType);
+		Map<String, Object> template = new HashMap<>();
+		template.put("BeanConfig.java.ftl", "BeanConfig.java");
+		template.put("AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");
+		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/") ;
+		new File(destFolder).mkdirs();
+		generateFiles(template, root, destFolder);
 
 	}
 
@@ -149,9 +174,10 @@ public class CodeGenerator {
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
-		propertyInfo.put("appName", appName);
+		propertyInfo.put("appName", appName.substring(appName.lastIndexOf(".") + 1));
 		propertyInfo.put("schema", schema);
 		propertyInfo.put("EmailModule",email);
+		propertyInfo.put("packageName",appName.replaceAll(".", "/"));
 
 		return propertyInfo;
 	}
@@ -193,8 +219,6 @@ public class CodeGenerator {
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setTemplateLoader(mtl);
-
-
 
 		for (String filePath : fl) {
 			String p = filePath.replace("BOOT-INF/classes" + templatePath,"");
@@ -578,7 +602,6 @@ public class CodeGenerator {
 		new File(destFolder).mkdirs();
 
 		Map<String,RelationDetails> relationDetails = details.getRelationsMap();
-//		List<String> relationInput = details.getCompositeKeyClasses();
 
 		for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
 			if(entry.getValue().getRelation().equals("ManyToOne") || entry.getValue().getRelation().equals("OneToOne"))
@@ -599,29 +622,6 @@ public class CodeGenerator {
 					e1.printStackTrace();
 				}
 			}
-//			else if(entry.getValue().getRelation().equals("ManyToMany"))
-//			{
-//				for(String str : relationInput)
-//				{
-//					if(entityName.equals(str.substring(0,str.lastIndexOf("-")).toString()))
-//					{
-//						List<FieldDetails> relationEntityFields= entry.getValue().getfDetails();
-//						root.put("RelationEntityFields",relationEntityFields);
-//						root.put("RelationEntityName", entry.getValue().geteName());
-//						try {
-//							Template template = cfg.getTemplate("getOutput.java.ftl");
-//							File fileName = new File(destFolder + "/" +  "Get"+ entry.getValue().geteName() + "Output.java");
-//							PrintWriter writer = new PrintWriter(fileName);
-//							template.process(root, writer);
-//							writer.flush();
-//							writer.close();
-//						}
-//						catch ( Exception  e1) {
-//							e1.printStackTrace();
-//						}
-//					}
-//				}
-//			}
 		}
 	}
 

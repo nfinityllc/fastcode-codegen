@@ -158,17 +158,17 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=ClassName]", key = "#id")
+	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
 
-	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id) ; 
 		_[=ClassName?uncap_first]Manager.Delete(existing);
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "[=ClassName]", key = "#id")
-	public Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null)  
@@ -183,7 +183,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
-	public Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	public Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
@@ -196,7 +196,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     
    </#if>
    </#list>
-
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "[=ClassName]")
 	public List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
@@ -591,7 +590,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		
 		<#list relationValue.joinDetails as joinDetails>
 		<#assign i=relationValue.joinDetails?size>
-        <#if i==1>
+        <#if i!=1>
 		String[] keyEntries = keysString.split(",");
 		
 		Map<String,String> keyMap = new HashMap<String,String>();
@@ -603,14 +602,12 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
 				}
 				else {
-					//error
+					return null;
 				}
 			}
 		}
 		else {
-			<#if CompositeKeyClasses?seq_contains(ClassName)>
-			//error
-			</#if>
+			return null;
 		}
 		</#if>
 		</#list>

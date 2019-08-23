@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.User.Dto;
 
 import java.sql.Date;
 
@@ -26,8 +26,8 @@ public class FindUserByNameOutput {
     private java.util.Date lastModificationTime;
     </#if>
     private String authenticationSource;
-     private Long roleId;       
-    private String rolesName;
+    private Long roleId;       
+    private String roleName;
     
     public Long getRoleId() {
    		return roleId;
@@ -36,12 +36,12 @@ public class FindUserByNameOutput {
   	public void setRoleId(Long roleId){
   		 this.roleId = roleId;
     }
-    public String getRolesName() {
-    	return rolesName;
+    public String getRoleName() {
+    	return roleName;
     }
 
-  	public void setRolesName(String roleName){
-   		this.rolesName = rolesName;
+  	public void setRoleName(String roleName){
+   		this.roleName = roleName;
   	}
     
     public String getAuthenticationSource() {

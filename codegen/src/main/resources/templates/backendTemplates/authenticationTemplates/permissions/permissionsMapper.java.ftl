@@ -1,22 +1,22 @@
-package [=PackageName].application.Authorization.Permissions;
+package [=PackageName].application.Authorization.Permission;
 
-import [=PackageName].application.Authorization.Permissions.Dto.*;
-import [=PackageName].domain.model.PermissionsEntity;
+import [=PackageName].application.Authorization.Permission.Dto.*;
+import [=PackageName].domain.model.PermissionEntity;
 
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface PermissionMapper {
-    PermissionsEntity CreatePermissionInputToPermissionsEntity(CreatePermissionInput permissionDto);
+     PermissionEntity CreatePermissionInputToPermissionEntity(CreatePermissionInput permissionDto);
+   
+     CreatePermissionOutput PermissionEntityToCreatePermissionOutput(PermissionEntity entity);
 
-    CreatePermissionOutput PermissionsEntityToCreatePermissionOutput(PermissionsEntity entity);
+     PermissionEntity UpdatePermissionInputToPermissionEntity(UpdatePermissionInput permissionDto);
 
-    PermissionsEntity UpdatePermissionInputToPermissionsEntity(UpdatePermissionInput permissionDto);
+     UpdatePermissionOutput PermissionEntityToUpdatePermissionOutput(PermissionEntity entity);
 
-    UpdatePermissionOutput PermissionsEntityToUpdatePermissionOutput(PermissionsEntity entity);
+     FindPermissionByIdOutput PermissionEntityToFindPermissionByIdOutput(PermissionEntity entity);
 
-    FindPermissionByIdOutput PermissionsEntityToFindPermissionByIdOutput(PermissionsEntity entity);
-
-    FindPermissionByNameOutput PermissionsEntityToFindPermissionByNameOutput(PermissionsEntity entity);
+     FindPermissionByNameOutput PermissionEntityToFindPermissionByNameOutput(PermissionEntity entity);
    
 }

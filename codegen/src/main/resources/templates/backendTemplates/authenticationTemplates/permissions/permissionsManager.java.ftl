@@ -1,7 +1,7 @@
-package [=PackageName].domain.Authorization.Permissions;
+package [=PackageName].domain.Authorization.Permission;
 
-import [=PackageName].domain.IRepository.IPermissionsRepository;
-import [=PackageName].domain.model.PermissionsEntity;
+import [=PackageName].domain.IRepository.IPermissionRepository;
+import [=PackageName].domain.model.PermissionEntity;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,36 +9,52 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PermissionsManager implements IPermissionsManager {
+public class PermissionManager implements IPermissionManager {
 
+   @Autowired
+    IPermissionRepository  _permissionRepository;
+    
     @Autowired
-    private IPermissionsRepository _permissionsRepository;
+	IRolepermissionRepository  _rolepermissionRepository;
+    
+    @Autowired
+	IUserpermissionRepository  _userpermissionRepository;
+    
+	public PermissionEntity Create(PermissionEntity permission) {
 
+		return _permissionRepository.save(permission);
+	}
 
-    // CRUD Operations
+	public void Delete(PermissionEntity permission) {
 
-    public PermissionsEntity Create(PermissionsEntity permission) {
-        return _permissionsRepository.save(permission);
-    }
+		_permissionRepository.delete(permission);	
+	}
 
-    public void Delete(PermissionsEntity permission) {
-        _permissionsRepository.delete(permission);
-    }
+	public PermissionEntity Update(PermissionEntity permission) {
 
-    public PermissionsEntity Update(PermissionsEntity permission) {
-        return _permissionsRepository.save(permission);
-    }
+		return _permissionRepository.save(permission);
+	}
 
-    public PermissionsEntity FindById(Long permissionId) {
-        return _permissionsRepository.findById(permissionId.longValue());   
-    }
+	public PermissionEntity FindById(Long  permissionId)
+    {
+    Optional<PermissionEntity> dbPermission= _permissionRepository.findById(permissionId);
+		if(dbPermission.isPresent()) {
+			PermissionEntity existingPermission = dbPermission.get();
+		    return existingPermission;
+		} else {
+		    return null;
+		}
+     //  return _permissionRepository.findById(permissionId.longValue());
 
-    public Page<PermissionsEntity> FindAll(Predicate predicate, Pageable pageable) {
-        return _permissionsRepository.findAll(predicate, pageable);
-    }
+	}
 
-    public PermissionsEntity FindByPermissionName(String permissionName) {
-        return _permissionsRepository.findByPermissionName(permissionName);
+	public Page<PermissionEntity> FindAll(Predicate predicate, Pageable pageable) {
+
+		return _permissionRepository.findAll(predicate,pageable);
+	}
+
+    public PermissionEntity FindByPermissionName(String permissionName) {
+        return _permissionRepository.findByPermissionName(permissionName);
  
     }
 }

@@ -41,6 +41,7 @@ export interface [=IEntity] {
 <#list relationValue.joinDetails as joinDetails>
 <#if joinDetails.joinEntityName == relationValue.eName>
 <#if joinDetails.joinColumn??>
+<#if !Fields[joinDetails.joinColumn]??>
 <#if joinDetails.isJoinColumnOptional==false>
  <#if joinDetails.joinColumnType?lower_case == "long" ||  joinDetails.joinColumnType?lower_case == "int" ||  joinDetails.joinColumnType?lower_case == "short" ||  joinDetails.joinColumnType?lower_case == "double"> 
       [=joinDetails.joinColumn]: number;
@@ -57,6 +58,7 @@ export interface [=IEntity] {
   <#else>    
       [=joinDetails.joinColumn]?: string;
   </#if>
+</#if>
 </#if>
 </#if>
 </#if>

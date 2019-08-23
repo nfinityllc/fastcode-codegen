@@ -1,11 +1,11 @@
-package [=PackageName].application.Authorization.Permissions;
+package [=PackageName].application.Authorization.Permission;
 
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
-import [=PackageName].application.Authorization.Permissions.Dto.*;
+import [=PackageName].application.Authorization.Permission.Dto.*;
 import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.Authorization.Permissions.PermissionsManager;
-import [=PackageName].domain.model.QPermissionsEntity;
+import [=PackageName].domain.Authorization.Permission.PermissionManager;
+import [=PackageName].domain.model.QPermissionEntity;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,91 +23,83 @@ import java.util.*;
 @Validated
 public class PermissionAppService implements IPermissionAppService {
 
-
-	static final int case1=1;
-	static final int case2=2;
-	static final int case3=3;
+@Autowired
+	private IPermissionManager _permissionManager;
+  
 	@Autowired
-	private PermissionsManager _permissionsManager;
+	private LoggingHelper logHelper;
 
 	@Autowired
-	private PermissionMapper permissionMapper;
+	private PermissionMapper mapper;
 
-	// CRUD Operations
-	// ReST API Call => POST /permissions
-	@Transactional(propagation = Propagation.REQUIRED)
-	public CreatePermissionOutput Create(CreatePermissionInput permission) {
+    @Transactional(propagation = Propagation.REQUIRED)
+	public CreatePermissionOutput Create(CreatePermissionInput input) {
 
-		PermissionsEntity re = permissionMapper.CreatePermissionInputToPermissionsEntity(permission);
-		PermissionsEntity createdPermission = _permissionsManager.Create(re);
-		return permissionMapper.PermissionsEntityToCreatePermissionOutput(createdPermission);
+		PermissionEntity permission = mapper.CreatePermissionInputToPermissionEntity(input);
+		PermissionEntity createdPermission = _permissionManager.Create(permission);
+		return mapper.PermissionEntityToCreatePermissionOutput(createdPermission);
 	}
-
-	// ReST API Call => DELETE /permissions/1
+	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Permission", key = "#pid")
-	public void Delete(Long pid) {
+	@CacheEvict(value="Permission", key = "#permissionId")
+	public UpdatePermissionOutput Update(Long permissionId, UpdatePermissionInput input) {
 
-		PermissionsEntity existing = _permissionsManager.FindById(pid);
-
-		_permissionsManager.Delete(existing);
+		PermissionEntity permission = mapper.UpdatePermissionInputToPermissionEntity(input);
+		PermissionEntity updatedPermission = _permissionManager.Update(permission);
+		return mapper.PermissionEntityToUpdatePermissionOutput(updatedPermission);
 	}
-
-	// ReST API Call => PUT /permissions/1
+	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Permission", key = "#pid")
-	public UpdatePermissionOutput Update(Long pid, UpdatePermissionInput permission) {
+	@CacheEvict(value="Permission", key = "#permissionId")
 
-		PermissionsEntity re = permissionMapper.UpdatePermissionInputToPermissionsEntity(permission);
-		PermissionsEntity updatedPermission = _permissionsManager.Update(re);
-		return permissionMapper.PermissionsEntityToUpdatePermissionOutput(updatedPermission);
+	public void Delete(Long permissionId) {
+
+		PermissionEntity existing = _permissionManager.FindById(permissionId) ; 
+		_permissionManager.Delete(existing);
 	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "Permission", key = "#permissionId")
+	public FindPermissionByIdOutput FindById(Long permissionId) {
 
-	// ReST API Call => GET /permissions/1
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @Cacheable(value = "Permission", key = "#pid")
-	public FindPermissionByIdOutput FindById(Long pid) {
-
-		PermissionsEntity foundPermission = _permissionsManager.FindById(pid);
-
-		if (foundPermission == null) {
-			return null;
-		}
-		return permissionMapper.PermissionsEntityToFindPermissionByIdOutput(foundPermission);
+		PermissionEntity foundPermission = _permissionManager.FindById(permissionId);
+		if (foundPermission == null)  
+			return null ; 
+ 	   
+ 	   FindPermissionByIdOutput output=mapper.PermissionEntityToFindPermissionByIdOutput(foundPermission); 
+		return output;
 	}
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Cacheable(value = "Permission", key = "#permissionName")
 	public FindPermissionByNameOutput FindByPermissionName(String permissionName) {
 
-		PermissionsEntity foundPermission = _permissionsManager.FindByPermissionName(permissionName);
+		PermissionsEntity foundPermission = _permissionManager.FindByPermissionName(permissionName);
 		if (foundPermission == null) {
 			return null;
 		}
-		return permissionMapper.PermissionsEntityToFindPermissionByNameOutput(foundPermission);
+		return mapper.PermissionEntityToFindPermissionByNameOutput(foundPermission);
 
 	}
-
-	// ReST API Call => GET /permissions/?offset=2&limit=20&sort=id,asc
+	
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public List<FindPermissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception{
+	@Cacheable(value = "Permission")
+	public List<FindPermissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
-		Page<PermissionsEntity> foundPermissions = _permissionsManager.FindAll(Search(search), pageable);
-		List<PermissionsEntity> permissionList = foundPermissions.getContent();
-
-		Iterator<PermissionsEntity> permissionIterator = permissionList.iterator();
+		Page<PermissionEntity> foundPermission = _permissionManager.FindAll(Search(search), pageable);
+		List<PermissionEntity> permissionList = foundPermission.getContent();
+		Iterator<PermissionEntity> permissionIterator = permissionList.iterator(); 
 		List<FindPermissionByIdOutput> output = new ArrayList<>();
 
 		while (permissionIterator.hasNext()) {
-			output.add(permissionMapper.PermissionsEntityToFindPermissionByIdOutput(permissionIterator.next()));
+			output.add(mapper.PermissionEntityToFindPermissionByIdOutput(permissionIterator.next()));
 		}
-
 		return output;
 	}
-
+	
 	BooleanBuilder Search(SearchCriteria search) throws Exception {
 
-		QPermissionsEntity permission=QPermissionsEntity.permissionsEntity;
+		QPermissionEntity permission= QPermissionEntity.permissionEntity;
 		if(search != null) {
 			if(search.getType()==case1)
 			{
@@ -132,14 +124,14 @@ public class PermissionAppService implements IPermissionAppService {
 				}
 				List<String> keysList = new ArrayList<String>(map.keySet());
 				checkProperties(keysList);
-				return searchKeyValuePair(permission, map,search.getJoinColumn(),search.getJoinColumnValue());
+				return searchKeyValuePair(permission, map,search.getJoinColumns());
 			}
 
 		}
 		return null;
 	}
 	
-	BooleanBuilder searchAllProperties(QPermissionsEntity permission,String value,String operator) {
+	BooleanBuilder searchAllProperties(QPermissionEntity permission,String value,String operator) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
@@ -150,26 +142,34 @@ public class PermissionAppService implements IPermissionAppService {
 		{
         	builder.or(permission.displayName.eq(value));
         	builder.or(permission.name.eq(value));
+        	if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+       	 	}
+			else if(StringUtils.isNumeric(value)){
+        	}
+        	else if(SearchUtils.stringToDate(value)!=null) {
+			}
 		}
 
 		return builder;
 	}
 
-	public void checkProperties(List<String> list) throws Exception
-	{
+	public void checkProperties(List<String> list) throws Exception  {
 		for (int i = 0; i < list.size(); i++) {
-			if(!((list.get(i).replace("%20","").trim().equals("displayName"))
-					|| (list.get(i).replace("%20","").trim().equals("name")))) {
-
-
-				// Throw an exception
-				throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
-			}
+		if(!(
+		
+		 list.get(i).replace("%20","").trim().equals("displayName") ||
+		 list.get(i).replace("%20","").trim().equals("id") ||
+		 list.get(i).replace("%20","").trim().equals("name") ||
+		 list.get(i).replace("%20","").trim().equals("rolepermission") ||
+		 list.get(i).replace("%20","").trim().equals("userpermission")
+		)) 
+		{
+		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
 		}
-
+		}
 	}
 	
-	BooleanBuilder searchSpecificProperty(QPermissionsEntity permission,List<String> list,String value,String operator)  {
+	BooleanBuilder searchSpecificProperty(QPermissionEntity permission,List<String> list,String value,String operator)  {
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -190,7 +190,7 @@ public class PermissionAppService implements IPermissionAppService {
 		return builder;
 	}
 	
-	BooleanBuilder searchKeyValuePair(QPermissionsEntity permission, Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
+	BooleanBuilder searchKeyValuePair(QPermissionEntity permission, Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
@@ -210,10 +210,24 @@ public class PermissionAppService implements IPermissionAppService {
 				else if(details.getValue().getOperator().equals("notEqual"))
 					builder.and(permission.name.ne(details.getValue().getSearchValue()));
 			}
-           
 		}
-
 		return builder;
 	}
-
+	
+	public Map<String,String> parseRolepermissionJoinColumn(String keysString) {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("roleId", keysString);
+		return joinColumnMap;
+		
+	}
+	
+	
+	public Map<String,String> parseUserpermissionJoinColumn(String keysString) {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("userId", keysString);
+		return joinColumnMap;
+		
+	}
 }

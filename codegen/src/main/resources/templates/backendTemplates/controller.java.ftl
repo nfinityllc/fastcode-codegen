@@ -34,6 +34,7 @@ import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]A
 </#if>
 <#if relationValue.relation == "OneToMany">
 import java.util.List;
+import java.util.Map;
 import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#list>
@@ -262,7 +263,13 @@ public class [=ClassName]Controller {
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		searchCriteria.setJoinColumns(_[=ClassName?uncap_first]AppService.parse[=relationValue.eName]JoinColumn([=InstanceName]id));
+		Map<String,String> joinColDetails=_[=ClassName?uncap_first]AppService.parse[=relationValue.eName]JoinColumn([=InstanceName]id);
+		if(joinColDetails== null)
+		{
+			logHelper.getLogger().error("Invalid Join Column");
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		searchCriteria.setJoinColumns(joinColDetails);
 		
     	List<Find[=relationValue.eName]ByIdOutput> output = _[=relationValue.eName?uncap_first]AppService.Find(searchCriteria,pageable);
 		if (output == null) {

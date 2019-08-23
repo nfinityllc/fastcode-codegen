@@ -1,8 +1,8 @@
-package [=PackageName].application.Authorization.Permissions.Dto;
+package [=PackageName].application.Authorization.Permission.Dto;
 
 public class UpdatePermissionOutput {
 
-   private Long id;
+    private Long id;
     private String displayName;
     private String name;
 <#if Audit!false>

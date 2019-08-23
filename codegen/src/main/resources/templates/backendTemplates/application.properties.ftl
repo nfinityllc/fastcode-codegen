@@ -14,7 +14,21 @@ spring.application.name=[=appName]
 server.port=5555
 spring.main.banner-mode=off
 javers.mapping-style=BEAN
+spring.jackson.serialization.fail-on-empty-beans=false
 
+#applciation context path
+server.servlet.contextPath=/
+
+# SLF4J is a facade for logging frameworks
+# Spring Boot overrides the default logging level of Logback by setting the root logger to info
+logging.level.root=WARN
+logging.level.org.springframework.web=DEBUG
+logging.level.org.hibernate=ERROR
+logging.level.org.hibernate.type.descriptor.sql=TRACE
+
+logging.file=src/main/java/[=packageName]/logging/spring-boot-logging.txt
+logging.file.max-history=2
+logging.file.max-size=2000KB
 <#if EmailModule!false>
 spring.mail.default-encoding=UTF-8
 spring.mail.host=smtp.gmail.com
@@ -32,6 +46,16 @@ spring.mail.properties.mail.smtp.writetimeout=5000
 fastcode.emailconverter.xapikey=t7HdQfZjGp6R96fOV4P8v18ggf6LLTQZ1puUI2tz
 fastcode.emailconverter.url=http://localhost:3001/
 </#if>
+# Enable SSL
+
+# The format used for the keystore for openid testing
+server.ssl.key-store-type=PKCS12
+# The path to the keystore containing the certificate
+server.ssl.key-store=classpath:keystore.p12
+# The password used to generate the certificate
+server.ssl.key-store-password=Rfhh8ek2
+# The alias mapped to the certificate
+server.ssl.key-alias=tomcat
 
 fastCode.offset.default=0
 fastCode.limit.default=10

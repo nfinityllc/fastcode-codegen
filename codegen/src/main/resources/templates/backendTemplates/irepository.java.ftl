@@ -22,7 +22,7 @@ import [=PackageName].domain.model.[=EntityClassName];
 @JaversSpringDataAuditable
 </#if>
 @RepositoryRestResource(collectionResourceRel = "[=ApiPath]", path = "[=ApiPath]")
-public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName], <#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list></#if> >,QuerydslPredicateExecutor<[=EntityClassName]> {
+public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName], <#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list></#if>>,QuerydslPredicateExecutor<[=EntityClassName]> {
 
 <#if CompositeKeyClasses?seq_contains(ClassName)>
     <#assign count = 0>

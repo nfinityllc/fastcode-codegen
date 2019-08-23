@@ -80,11 +80,13 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
+            <#if !Fields[joinDetails.joinColumn]??>
 			<#if joinDetails.isJoinColumnOptional==false>          
 			[=joinDetails.joinColumn]: ['', Validators.required],
 			<#else>
 			[=joinDetails.joinColumn]: [''],
 			</#if>
+            </#if>
             </#if>
             </#if>
             </#list>
@@ -190,10 +192,12 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
+            <#if !Fields[joinDetails.joinColumn]??>
 			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
 			<#if DescriptiveField[relationValue.eName]??>
 			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first],
 			</#if>
+            </#if>
             </#if>
 			</#if>
 			</#list>

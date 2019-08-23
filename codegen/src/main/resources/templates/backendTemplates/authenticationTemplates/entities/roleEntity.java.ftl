@@ -66,31 +66,29 @@ public class RolesEntity <#if Audit!false>extends AuditedEntity<String></#if> im
         return 31;
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name = "RolesPermissions", schema = "[=Schema]",
-            joinColumns = {@JoinColumn(name = "RoleId", referencedColumnName = "Id")},
-            inverseJoinColumns = {@JoinColumn(name = "PermissionId", referencedColumnName = "Id")})
-    public Set<PermissionsEntity> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<PermissionsEntity> permissions) {
-        this.permissions = permissions;
-    }
-
-    private Set<PermissionsEntity> permissions = new HashSet<>();
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<RolepermissionEntity> getRolepermissionSet() { 
+      return rolepermissionSet; 
+    } 
+ 
+    public void setRolepermissionSet(Set<RolepermissionEntity> rolepermission) { 
+      this.rolepermissionSet = rolepermission; 
+    } 
+ 
+    private Set<RolepermissionEntity> rolepermissionSet = new HashSet<RolepermissionEntity>(); 
+  
     
 <#if AuthenticationType == "database">
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<UsersEntity> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<UsersEntity> users) {
-        this.users = users;
-    }
-
-    private Set<UsersEntity> users = new HashSet<UsersEntity>();
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<UserEntity> getUserSet() { 
+      return userSet; 
+    } 
+ 
+    public void setUserSet(Set<UserEntity> user) { 
+      this.userSet = user; 
+    } 
+ 
+    private Set<UserEntity> userSet = new HashSet<UserEntity>(); 
 </#if>
     public RolesEntity() {
 

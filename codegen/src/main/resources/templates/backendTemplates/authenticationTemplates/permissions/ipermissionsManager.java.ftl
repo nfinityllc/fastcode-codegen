@@ -1,24 +1,22 @@
-package [=PackageName].domain.Authorization.Permissions;
+package [=PackageName].domain.Authorization.Permission;
 
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import [=PackageName].domain.model.PermissionsEntity;
+import [=PackageName].domain.model.PermissionEntity;
 
-
-
-public interface IPermissionsManager {
+public interface IPermissionManager {
     // CRUD Operations
-    PermissionsEntity Create(PermissionsEntity user);
+    PermissionsEntity Create(PermissionEntity user);
 
-    void Delete(PermissionsEntity user);
+    void Delete(PermissionEntity user);
 
-    PermissionsEntity Update(PermissionsEntity user);
+    PermissionEntity Update(PermissionEntity user);
 
-    PermissionsEntity FindById(Long permissionId);
+    PermissionEntity FindById(Long permissionId);
 
-    Page<PermissionsEntity> FindAll(Predicate predicate, Pageable pageable);
+    Page<PermissionEntity> FindAll(Predicate predicate, Pageable pageable);
 
     //Internal operation
-    PermissionsEntity FindByPermissionName(String permissionName);
+    PermissionEntity FindByPermissionName(String permissionName);
 }

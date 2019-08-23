@@ -28,7 +28,7 @@ public class FindUserByIdOutput {
     </#if>
     private String authenticationSource;     
     private Long roleId;       
-    private String rolesName;
+     private String roleName;
     
     public Long getRoleId() {
    		return roleId;
@@ -37,12 +37,12 @@ public class FindUserByIdOutput {
   	public void setRoleId(Long roleId){
   		 this.roleId = roleId;
     }
-    public String getRolesName() {
-    	return rolesName;
+    public String getRoleName() {
+    	return roleName;
     }
 
-  	public void setRolesName(String rolesName){
-   		this.rolesName = rolesName;
+  	public void setRoleName(String roleName){
+   		this.roleName = roleName;
   	}
     
     public String getAuthenticationSource() {

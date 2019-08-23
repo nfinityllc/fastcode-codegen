@@ -35,6 +35,10 @@ public class PomFileModifier {
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
 		
+		Dependency springFoxSwagger = new Dependency("io.springfox","springfox-swagger2","2.7.0");
+		Dependency springFoxSwaggerUI = new Dependency("io.springfox","springfox-swagger-ui","2.7.0");
+		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
+	
 		if(scheduler)
 		{
 			Dependency hibernate_cp = new Dependency("org.hibernate","hibernate-c3p0","4.3.6.Final");
@@ -48,7 +52,6 @@ public class PomFileModifier {
 		if(authenticationType !="none")
 		{
 			Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
-
 			dependencies.add(json_web_token);
 		}
 		if(authenticationType =="ldap")
@@ -63,11 +66,14 @@ public class PomFileModifier {
 		dependencies.add(querydslapt);
 		dependencies.add(apache_commons);
 		dependencies.add(postgres);
+		dependencies.add(springFoxSwagger);
+		dependencies.add(springFoxSwaggerUI);
+		dependencies.add(springFoxDataRest);
 		
-
 		PomFileModifier.addDependenciesAndPluginsToPom(path,dependencies);
 
 	}
+	
 	public static void addDependenciesAndPluginsToPom(String path, List<Dependency> dependencies) {
 
 		try {

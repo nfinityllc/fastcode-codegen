@@ -1,7 +1,6 @@
 package [=PackageName].domain.model;
 
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.model.RolesEntity;
+import [=PackageName].domain.model.RoleEntity;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import [=PackageName].Audit.AuditedEntity;
@@ -17,12 +16,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "User")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
 
-public class  UsersEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class  UserEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
 
     private Long id;
     private String firstName;
@@ -268,21 +267,19 @@ public class  UsersEntity <#if Audit!false>extends AuditedEntity<String></#if> i
         return 31;
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name = "UsersPermissions", schema = "[=Schema]",
-            joinColumns = {@JoinColumn(name = "UserId", referencedColumnName = "Id")},
-            inverseJoinColumns = {@JoinColumn(name = "PermissionId", referencedColumnName = "Id")})
-    public Set<PermissionsEntity> getPermissions() {
-        return permissions;
-    }
-    public void setPermissions(Set<PermissionsEntity> permissions) {
-        this.permissions = permissions;
-    }
-
-    private Set<PermissionsEntity> permissions = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<UserpermissionEntity> getUserpermissionSet() { 
+       return userpermissionSet; 
+    } 
+ 
+    public void setUserpermissionSet(Set<UserpermissionEntity> userpermission) { 
+      this.userpermissionSet = userpermission; 
+    } 
+ 
+    private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>();
 
     @ManyToOne
-    @JoinColumn(name = "RoleId")
+    @JoinColumn(name = "roleId")
     public RolesEntity getRole() {
         return role;
     }
