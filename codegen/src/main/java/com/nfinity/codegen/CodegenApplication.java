@@ -5,6 +5,8 @@ import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
 import com.nfinity.entitycodegen.GetUserInput;
 import com.nfinity.entitycodegen.UserInput;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +83,7 @@ public class CodegenApplication implements ApplicationRunner {
 		return input;
 	}
 
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
