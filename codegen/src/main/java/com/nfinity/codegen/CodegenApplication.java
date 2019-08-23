@@ -5,6 +5,9 @@ import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
 import com.nfinity.entitycodegen.GetUserInput;
 import com.nfinity.entitycodegen.UserInput;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +84,7 @@ public class CodegenApplication implements ApplicationRunner {
 		return input;
 	}
 
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
@@ -103,6 +106,10 @@ public class CodegenApplication implements ApplicationRunner {
 			dependencies = dependencies.concat(",mail");
 		}
 		
+		File dir = new File(input.getDestinationPath());
+		if(!dir.exists()) {
+			dir.mkdirs();
+		};
 		
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");

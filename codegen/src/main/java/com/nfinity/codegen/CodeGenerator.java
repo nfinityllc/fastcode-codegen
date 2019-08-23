@@ -106,7 +106,7 @@ public class CodeGenerator {
 	/// appname= groupid + artifactid
 	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String appName,String sourcePackageName,Boolean audit,
 			Boolean history, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString,
-			String schema,String authenticationType,Boolean scheduler, Boolean email) {
+			String schema,String authenticationType,Boolean scheduler, Boolean email) throws IOException {
 
 		// generate all modules for each entity
 		List<String> entityNames=new ArrayList<String>();
@@ -118,6 +118,8 @@ public class CodeGenerator {
 					destPath, type, entry.getValue(), authenticationType, scheduler, email, schema);
 
 		}
+		
+		FileUtils.copyFile(new File(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/keystore.p12"), new File(destPath + "/" + backEndRootFolder + "/src/main/resources/keystore.p12"));
 
 	//	PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
 	//	modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
@@ -126,7 +128,7 @@ public class CodeGenerator {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 			generateEntityHistoryComponent(appFolderPath);
 			addhistoryComponentsToAppModule(appFolderPath);
-			addhistoryComponentsToAppRoutingModule(appFolderPath);
+			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType);
 			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
 			
 		}
@@ -340,13 +342,19 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void addhistoryComponentsToAppRoutingModule(String destPath)
+	public static void addhistoryComponentsToAppRoutingModule(String destPath, String authenticationType)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
 		
-		sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent ,canActivate: [ AuthGuard ]},");
-		sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+		if(authenticationType == "none") {
+			sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent");
+			sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent");
+		}
+		else {
+			sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+			sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent ,canActivate: [ AuthGuard ]},");
+		}
 
 		String data = " ";
 		try {

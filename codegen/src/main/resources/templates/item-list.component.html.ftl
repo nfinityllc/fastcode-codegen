@@ -32,25 +32,19 @@
 			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName]</mat-header-cell>
 			<mat-cell *matCellDef="let item">
 				<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
-				<#if value?index == 0>
-				<a routerLink="/[=ApiPath]/{{item.id}}">
-					{{ item.[=value.fieldName]}}
-				</a>
-				<#else>
 				{{ item.[=value.fieldName] }}
-				</#if>
 			</mat-cell>
 		</ng-container>
 		</#if> 
 		</#list>
 		<ng-container matColumnDef="actions">
 			<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
-			<mat-cell *matCellDef="let item"> 
+			<mat-cell *matCellDef="let item" (click)="$event.stopPropagation()"> 
 				<button mat-button color="accent"(click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany") ? ('GENERAL.ACTIONS.DE-LINK' | translate) : ('GENERAL.ACTIONS.DELETE' | translate) }}</button>
 			</mat-cell>
 		</ng-container>
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDetails(row)"></mat-row>
 		</mat-table>
 	</div>
 </div>

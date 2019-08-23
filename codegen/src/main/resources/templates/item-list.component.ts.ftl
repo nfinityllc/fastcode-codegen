@@ -113,7 +113,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
   	
 		this.associations = [
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.relation == "ManyToOne">
 			{
 				column: [
 				      <#list relationValue.joinDetails as joinDetails>
@@ -129,7 +129,6 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
                       </#list>
 					  
 				],
-				<#if relationValue.relation == "ManyToOne">
 				isParent: false,
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
@@ -137,18 +136,6 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				</#if>
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
-				</#if>
-                <#if relationValue.relation == "OneToOne">
-                <#if relationValue.isParent==false>
-                isParent: false,
-				<#if DescriptiveField[relationValue.eName]??>
-				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
-				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
-				</#if>
-				service: this.[=relationValue.eName?uncap_first]Service,
-				associatedObj: undefined,
-				</#if>
-                </#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]'
 			},
