@@ -104,11 +104,9 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			</#if>
 			
 			<#if relationValue.relation == "ManyToOne">
-			<#list DescriptiveField as dEntityName, dField>
-			<#if dEntityName == relationValue.eName>
-			[=relationValue.eName?uncap_first][=dField.fieldName?cap_first] : [{ value: '', disabled: true }],
+			<#if DescriptiveField[relationValue.eName]??>
+			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first] : [{ value: '', disabled: true }],
 			</#if>
-            </#list>
 			</#if>
 			
 			</#list>
@@ -193,8 +191,10 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
 			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
-			[=relationValue.eName?uncap_first][=dField.fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=dField.fieldName?cap_first],
+			<#if DescriptiveField[relationValue.eName]??>
+			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first],
 			</#if>
+            </#if>
 			</#if>
 			</#list>
 			</#if>
