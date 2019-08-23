@@ -32,13 +32,7 @@
 			<mat-header-cell mat-sort-header *matHeaderCellDef> [=value.fieldName]</mat-header-cell>
 			<mat-cell *matCellDef="let item">
 				<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
-				<#if value?index == 0>
-				<a routerLink="/[=ApiPath]/{{item.id}}">
-					{{ item.[=value.fieldName]}}
-				</a>
-				<#else>
 				{{ item.[=value.fieldName] }}
-				</#if>
 			</mat-cell>
 		</ng-container>
 		</#if> 

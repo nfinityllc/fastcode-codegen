@@ -45,7 +45,7 @@
 				</mat-form-field>
 				
 				<div *ngFor="let association of toMany">
-					<a [routerLink]="['/' + association.table]" [queryParams]="getQueryParams(association)" class="btn btn-link">{{association.table}}</a>
+					<a *ngIf="association.type == 'OneToMany'" [routerLink]="['/' + association.table]" [queryParams]="getQueryParams(association)" class="btn btn-link">{{association.table}}</a>
 				</div>
 			</form>
 		</mat-card-content>
