@@ -194,11 +194,11 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             <#if joinDetails.joinColumn??>
             <#if !Fields[joinDetails.joinColumn]??>
 			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
+            </#if>
+            </#if>
+			</#if>
 			<#if DescriptiveField[relationValue.eName]??>
 			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first],
-			</#if>
-            </#if>
-            </#if>
 			</#if>
 			</#list>
 			</#if>

@@ -7,7 +7,23 @@
 	<mat-card>
 		<h2>{{title}}</h2>
 		<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">
-		<#list Fields as key,value> 
+		<#list Fields as key,value>
+		<#-- to exclude the duplicate fields(join columns) -->
+		<#assign isJoinColumn = false>
+		<#if Relationship?has_content>
+		<#list Relationship as relationKey, relationValue>
+		<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        <#if joinDetails.joinColumn == key>
+        <#assign isJoinColumn = true>
+        </#if>
+        </#if>
+		</#if>
+		</#list>
+		</#list>
+		</#if>
+		<#if isJoinColumn == false>
 		<#if value.fieldType?lower_case == "boolean">    
 			<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>            
 		<#elseif value.fieldType == "Date">
@@ -34,7 +50,8 @@
 				</#if>
 			</mat-form-field>
 		</#if>
-    </#list>
+		</#if>
+    	</#list>
 			<mat-form-field *ngFor="let association of toOne">
 				<input formControlName="{{association.descriptiveField}}" matInput placeholder="{{association.table}}">
 				<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
