@@ -105,6 +105,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		<#if Relationship?has_content>
 		this.setAssociation();
 	    </#if>
+		this.primaryKeys = [ <#list PrimaryKeys as key,value>"[=key]", </#list> ]
 		super.ngOnInit();
 	}
   
