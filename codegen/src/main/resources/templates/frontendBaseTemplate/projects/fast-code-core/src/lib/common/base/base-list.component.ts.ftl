@@ -51,8 +51,8 @@ export class BaseListComponent<E> implements OnInit {
   // displayedColumns: IListColumn[] = ['firstName', 'email', 'lastName'];
   columns: IListColumn[] = [];
 
-  selectedColumns = this.columns;
-  displayedColumns: string[] = this.columns.map((obj) => { return obj.column });
+  selectedColumns: IListColumn[] = [];
+  displayedColumns: string[] = [];
   IsReadPermission: Boolean = false;
   IsCreatePermission: Boolean = false;
   IsUpdatePermission: Boolean = false;
@@ -271,7 +271,7 @@ export class BaseListComponent<E> implements OnInit {
       association.column.forEach(col => {
         const columnValue = params[col.key];
         if (columnValue) {
-          col.value = columnValue;
+          this.associations[associationIndex].column[columnIndex].value = columnValue;
           matchedColumns++;
         }
       });
@@ -371,6 +371,10 @@ export class BaseListComponent<E> implements OnInit {
 
   getMobileLabelForField(field: string) {
     return field.replace(/([a-z])([A-Z])/g, '$1 $2');
+  }
+  
+  isColumnSortable(columnDef: string) {
+    return this.columns.find(x => x.column == columnDef).sort;
   }
 
 }
