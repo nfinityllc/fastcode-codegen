@@ -41,9 +41,9 @@ public class CodegenApplication implements ApplicationRunner {
 				root.get("a") == null ? GetUserInput.getInput(scanner, "application name") : root.get("a"));
 		input.setGenerationType(
 				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
-		input.setAudit(root.get("audit") == null
-				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
-				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+//		input.setAudit(root.get("audit") == null
+//				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
+//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 		input.setEmail(root.get("email") == null
 				? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
 				: (root.get("email").toLowerCase().equals("true") ? true : false));
@@ -69,12 +69,23 @@ public class CodegenApplication implements ApplicationRunner {
 		}
 		if (value == 1) {
 			input.setAuthenticationType("none");
-		} else if (value == 2) {
+		} 
+		else {
+			System.out.print("\nDo you want to enable auditing ? (y/n)");
+			String str= scanner.nextLine();
+			if(str=="y" || str=="Y" || str =="yes" || str =="true")
+			{
+				input.setAudit(true);
+			}
+			
+			if (value == 2) {
+		
 			input.setAuthenticationType("database");
-		}
+		    }
 		else if (value == 3) {
 			input.setAuthenticationType("ldap");
 		}
+	    }
 		
 		
 //		input.setDatabaseAuthentication(root.get("db-autentication") == null

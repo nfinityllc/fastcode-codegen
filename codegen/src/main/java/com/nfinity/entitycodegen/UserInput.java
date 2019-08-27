@@ -10,7 +10,7 @@ public class UserInput {
 	String schemaName;
 	String connectionStr;
 	List<String> tablesList;
-	Boolean audit;
+	Boolean audit=false;
 	Boolean email;
 	Boolean scheduler;
 	Boolean history;
