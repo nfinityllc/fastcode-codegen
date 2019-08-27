@@ -1,26 +1,26 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.User.Dto;
 
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
-import java.sql.Date;
+import java.util.Date;
 
 
 public class UpdateUserInput {
 
-	@NotNull(message = "Id Should not be null")
-    private Long id;
+  @NotNull(message = "Id Should not be null")
+  private Long id;
     
-     private Integer accessFailedCount;
+  private Integer accessFailedCount;
   
   @Length(max = 64, message = "authenticationSource must be less than 64 characters")
   private String authenticationSource;
   
   @NotNull(message = "emailAddress Should not be null")
   @Length(max = 256, message = "emailAddress must be less than 256 characters")
+  @Email(message = "Email Address should be valid ")
   private String emailAddress;
   
   @Length(max = 328, message = "emailConfirmationCode must be less than 328 characters")

@@ -11,12 +11,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Roles")
+@Table(name = "Role")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
 
-public class RolesEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class RoleEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
 
     private Long id;
     private String displayName;
@@ -56,8 +56,8 @@ public class RolesEntity <#if Audit!false>extends AuditedEntity<String></#if> im
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof RolesEntity)) return false;
-        RolesEntity role = (RolesEntity) o;
+        if (!(o instanceof RoleEntity)) return false;
+        RoleEntity role = (RoleEntity) o;
         return id != null && id.equals(role.id);
     }
 
@@ -90,7 +90,7 @@ public class RolesEntity <#if Audit!false>extends AuditedEntity<String></#if> im
  
     private Set<UserEntity> userSet = new HashSet<UserEntity>(); 
 </#if>
-    public RolesEntity() {
+    public RoleEntity() {
 
     }
 

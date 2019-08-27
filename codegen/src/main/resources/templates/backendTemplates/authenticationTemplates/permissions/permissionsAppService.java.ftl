@@ -2,20 +2,21 @@ package [=PackageName].application.Authorization.Permission;
 
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
+import [=CommonModulePackage].Search.SearchUtils;
 import [=PackageName].application.Authorization.Permission.Dto.*;
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.Authorization.Permission.PermissionManager;
+import [=PackageName].domain.model.PermissionEntity;
+import [=PackageName].domain.Authorization.Permission.IPermissionManager;
 import [=PackageName].domain.model.QPermissionEntity;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -23,11 +24,12 @@ import java.util.*;
 @Validated
 public class PermissionAppService implements IPermissionAppService {
 
-@Autowired
+    static final int case1=1;
+	static final int case2=2;
+	static final int case3=3;
+    
+    @Autowired
 	private IPermissionManager _permissionManager;
-  
-	@Autowired
-	private LoggingHelper logHelper;
 
 	@Autowired
 	private PermissionMapper mapper;
@@ -74,7 +76,7 @@ public class PermissionAppService implements IPermissionAppService {
     @Cacheable(value = "Permission", key = "#permissionName")
 	public FindPermissionByNameOutput FindByPermissionName(String permissionName) {
 
-		PermissionsEntity foundPermission = _permissionManager.FindByPermissionName(permissionName);
+		PermissionEntity foundPermission = _permissionManager.FindByPermissionName(permissionName);
 		if (foundPermission == null) {
 			return null;
 		}

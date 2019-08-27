@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Roles.Dto;
+package [=PackageName].application.Authorization.Role.Dto;
 
 public class GetPermissionOutput {
 
@@ -11,7 +11,6 @@ public class GetPermissionOutput {
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
 </#if>
-
     private Long roleId;
     private String roleName;
 

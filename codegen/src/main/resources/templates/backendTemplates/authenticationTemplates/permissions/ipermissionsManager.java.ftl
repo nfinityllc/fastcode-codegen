@@ -7,7 +7,7 @@ import [=PackageName].domain.model.PermissionEntity;
 
 public interface IPermissionManager {
     // CRUD Operations
-    PermissionsEntity Create(PermissionEntity user);
+    PermissionEntity Create(PermissionEntity user);
 
     void Delete(PermissionEntity user);
 

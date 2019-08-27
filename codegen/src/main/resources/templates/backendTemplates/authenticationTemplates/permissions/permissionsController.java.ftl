@@ -1,7 +1,11 @@
 package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Permission.PermissionAppService;
+import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
+import [=PackageName].application.Authorization.Userpermission.UserpermissionAppService;
 import [=PackageName].application.Authorization.Permission.Dto.*;
+import [=PackageName].application.Authorization.Rolepermission.Dto.FindRolepermissionByIdOutput;
+import [=PackageName].application.Authorization.Userpermission.Dto.FindUserpermissionByIdOutput;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
@@ -14,6 +18,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;

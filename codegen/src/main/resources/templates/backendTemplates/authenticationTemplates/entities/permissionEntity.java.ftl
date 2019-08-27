@@ -17,12 +17,12 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 </#if>
 
-public class PermissionEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class PermissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
     private Long id;
     private String name;
     private String displayName;
 
-    public PermissionsEntity() {
+    public PermissionEntity() {
     }
 
     @Id
@@ -59,8 +59,8 @@ public class PermissionEntity <#if Audit!false>extends AuditedEntity<String></#i
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PermissionsEntity)) return false;
-        PermissionsEntity permission = (PermissionsEntity) o;
+        if (!(o instanceof PermissionEntity)) return false;
+        PermissionEntity permission = (PermissionEntity) o;
         return id != null && id.equals(permission.id);
     }
 

@@ -2,10 +2,11 @@ package [=PackageName].application.Authorization.User;
 
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
+import [=CommonModulePackage].Search.SearchUtils;
 import [=PackageName].application.Authorization.User.Dto.*;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.Role.RoleManager;
-import [=PackageName].domain.Authorization.User.UserManager;
+import [=PackageName].domain.Authorization.User.IUserManager;
 import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.model.QUserEntity;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -18,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.*;
-
+import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 @Service
@@ -206,7 +207,7 @@ public class UserAppService implements IUserAppService {
 		    	builder.or(user.isActive.eq(Boolean.parseBoolean(value)));
 		    	builder.or(user.isEmailConfirmed.eq(Boolean.parseBoolean(value)));
 		    	builder.or(user.isLockoutEnabled.eq(Boolean.parseBoolean(value)));
-		    	builder.or(user.twoFactorEnabled.eq(Boolean.parseBoolean(value)));
+		    	builder.or(user.isTwoFactorEnabled.eq(Boolean.parseBoolean(value)));
        	 	}
 			else if(StringUtils.isNumeric(value)){
                 builder.or(user.accessFailedCount.eq(Integer.valueOf(value)));
@@ -244,7 +245,7 @@ public class UserAppService implements IUserAppService {
 		 list.get(i).replace("%20","").trim().equals("phoneNumber") ||
 		 list.get(i).replace("%20","").trim().equals("profilePictureId") ||
 		 list.get(i).replace("%20","").trim().equals("role") ||
-		 list.get(i).replace("%20","").trim().equals("twoFactorEnabled") ||
+		 list.get(i).replace("%20","").trim().equals("isTwoFactorEnabled") ||
 		 list.get(i).replace("%20","").trim().equals("userName") ||
 		 list.get(i).replace("%20","").trim().equals("userpermission")
 		)) 
@@ -341,9 +342,9 @@ public class UserAppService implements IUserAppService {
 				if(operator.equals("equals") && StringUtils.isNumeric(value))
 					builder.or(user.profilePictureId.eq(Long.valueOf(value)));
 			}
-			if(list.get(i).replace("%20","").trim().equals("twoFactorEnabled")) {
+			if(list.get(i).replace("%20","").trim().equals("isTwoFactorEnabled")) {
 				if(operator.equals("equals") && (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")))
-					builder.or(user.twoFactorEnabled.eq(Boolean.parseBoolean(value)));
+					builder.or(user.isTwoFactorEnabled.eq(Boolean.parseBoolean(value)));
 			}
             if(list.get(i).replace("%20","").trim().equals("userName")) {
 				if(operator.equals("contains"))
@@ -518,11 +519,11 @@ public class UserAppService implements IUserAppService {
                 	   builder.and(user.profilePictureId.loe(Long.valueOf(details.getValue().getEndingValue())));
 				}
 			}
-			if(details.getKey().replace("%20","").trim().equals("twoFactorEnabled")) {
+			if(details.getKey().replace("%20","").trim().equals("isTwoFactorEnabled")) {
 				if(details.getValue().getOperator().equals("equals") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
-					builder.and(user.twoFactorEnabled.eq(Boolean.parseBoolean(details.getValue().getSearchValue())));
+					builder.and(user.isTwoFactorEnabled.eq(Boolean.parseBoolean(details.getValue().getSearchValue())));
 				else if(details.getValue().getOperator().equals("notEqual") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
-					builder.and(user.twoFactorEnabled.ne(Boolean.parseBoolean(details.getValue().getSearchValue())));
+					builder.and(user.isTwoFactorEnabled.ne(Boolean.parseBoolean(details.getValue().getSearchValue())));
 			}
             if(details.getKey().replace("%20","").trim().equals("userName")) {
 				if(details.getValue().getOperator().equals("contains"))

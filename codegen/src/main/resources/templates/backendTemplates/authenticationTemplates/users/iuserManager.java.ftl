@@ -18,6 +18,8 @@ public interface IUserManager {
     UserEntity Update(UserEntity user);
 
     UserEntity FindById(Long id);
+    
+    UserEntity FindByUserName(String userName);
 
     Page<UserEntity> FindAll(Predicate predicate, Pageable pageable);
    

@@ -172,6 +172,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   private [=relationValue.eName]Entity [=relationValue.fName];
   </#if>
   </#if>
+  <#break>
   </#list>
  
   <#else>

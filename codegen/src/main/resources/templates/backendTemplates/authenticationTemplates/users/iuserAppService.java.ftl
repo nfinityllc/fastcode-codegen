@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=PackageName].application.Authorization.User.Dto.*;
 
+import java.util.List;
+
 @Service
 public interface IUserAppService {
 
