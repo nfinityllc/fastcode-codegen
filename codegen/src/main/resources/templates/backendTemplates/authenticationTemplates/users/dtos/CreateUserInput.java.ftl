@@ -2,7 +2,7 @@ package [=PackageName].application.Authorization.User.Dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
+import java.util.Date;
 import org.hibernate.validator.constraints.Length;
 
 public class CreateUserInput {
@@ -14,6 +14,7 @@ public class CreateUserInput {
   
   @NotNull(message = "emailAddress Should not be null")
   @Length(max = 256, message = "emailAddress must be less than 256 characters")
+  @Email(message = "Email Address should be valid ")
   private String emailAddress;
   
   @Length(max = 328, message = "emailConfirmationCode must be less than 328 characters")

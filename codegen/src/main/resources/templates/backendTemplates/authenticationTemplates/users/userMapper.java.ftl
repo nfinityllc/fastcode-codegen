@@ -1,7 +1,6 @@
 package [=PackageName].application.Authorization.User;
 
 import [=PackageName].application.Authorization.User.Dto.*;
-import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.UserEntity;
 
@@ -25,7 +24,7 @@ public interface UserMapper {
     UserEntity CreateUserInputToUserEntity(CreateUserInput userDto);
     
     @Mappings({ 
-    @Mapping(source = "role.name", target = "rolesName"),                   
+    @Mapping(source = "role.name", target = "roleName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
      CreateUserOutput UserEntityToCreateUserOutput(UserEntity entity);
@@ -33,22 +32,22 @@ public interface UserMapper {
     UserEntity UpdateUserInputToUserEntity(UpdateUserInput userDto);
 
     @Mappings({ 
-    @Mapping(source = "role.name", target = "rolesName"),                   
+    @Mapping(source = "role.name", target = "roleName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     UpdateUserOutput UserEntityToUpdateUserOutput(UserEntity entity);
 
     @Mappings({ 
-    @Mapping(source = "role.name", target = "rolesName"),                   
+    @Mapping(source = "role.name", target = "roleName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     FindUserByIdOutput UserEntityToFindUserByIdOutput(UserEntity entity);
     
     @Mappings({ 
-    @Mapping(source = "role.name", target = "rolesName"),                   
+    @Mapping(source = "role.name", target = "roleName"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
-    FindUserByNameOutput UsersEntityToFindUserByNameOutput(UsersEntity entity);
+    FindUserByNameOutput UserEntityToFindUserByNameOutput(UserEntity entity);
 
     @Mappings({
             @Mapping(source = "role.id", target = "id"),

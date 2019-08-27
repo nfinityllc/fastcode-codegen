@@ -50,14 +50,27 @@ public class AuthenticationClassesTemplateGenerator {
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getUserApplicationLayerTemplates(), root, destFolderBackend);
 		
+		destFolderBackend = destPath + "/application/Authorization/Userpermission" ;
+		new File(destFolderBackend).mkdirs();
+		generateFiles(getUserPermissionApplicationLayerTemplates(), root, destFolderBackend);
+		
 		destFolderBackend = destPath + "/domain/Authorization/User" ;
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getUserManagerLayerTemplates(), root, destFolderBackend);
+		
+		destFolderBackend = destPath + "/domain/Authorization/Userpermission" ;
+		new File(destFolderBackend).mkdirs();
+		generateFiles(getUserPermissionManagerLayerTemplates(), root, destFolderBackend);
 
 		destFolderBackend = destPath + "/application/Authorization/User/Dto";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getUserDtoTemplates(), root, destFolderBackend);
+		destFolderBackend = destPath + "/application/Authorization/Userpermission/Dto";
+		new File(destFolderBackend).mkdirs();
+		generateFiles(getUserPermissionDtoTemplates(), root, destFolderBackend);
+        
         }
+        
         
         destFolderBackend = destPath;
 		new File(destFolderBackend).mkdirs();
@@ -78,6 +91,18 @@ public class AuthenticationClassesTemplateGenerator {
 		destFolderBackend = destPath + "/application/Authorization/Permission/Dto";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getPermissionDtoTemplates(), root, destFolderBackend);
+		
+		destFolderBackend = destPath + "/application/Authorization/Rolepermission";
+		new File(destFolderBackend).mkdirs();
+		generateFiles(getRolePermissionApplicationLayerTemplates(), root, destFolderBackend);
+
+		destFolderBackend = destPath + "/domain/Authorization/Rolepermission";
+		new File(destFolderBackend).mkdirs();
+		generateFiles(getRolePermissionManagerLayerTemplates(), root, destFolderBackend);
+		
+		destFolderBackend = destPath + "/application/Authorization/Rolepermission/Dto";
+		new File(destFolderBackend).mkdirs();
+		generateFiles(getRolePermissionDtoTemplates(), root, destFolderBackend);
 		
 		destFolderBackend = destPath + "/application/Authorization/Role";
 		new File(destFolderBackend).mkdirs();
@@ -144,6 +169,29 @@ public class AuthenticationClassesTemplateGenerator {
 		return backEndTemplate;
 	}
 	
+	private static Map<String, Object> getUserPermissionApplicationLayerTemplates() {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		backEndTemplate.put("userPermission/IUserpermissionAppService.java.ftl", "IUserpermissionAppService.java");
+		backEndTemplate.put("userPermission/UserpermissionAppService.java.ftl", "UserpermissionAppService.java");
+		backEndTemplate.put("userPermission/UserpermissionMapper.java.ftl", "UserpermissionMapper.java");
+	//	backEndTemplate.put("userPermission/UserPermissionAppServiceTest.java.ftl", "UserPermissionAppServiceTest.java");
+
+		return backEndTemplate;
+	}
+	
+	private static Map<String, Object> getUserPermissionManagerLayerTemplates() {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "IUserpermissionManager.java");
+		backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", "UserpermissionManager.java");
+	//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
+
+		return backEndTemplate;
+	}
+	
 	private static Map<String, Object> getPermissionApplicationLayerTemplates() {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -190,6 +238,29 @@ public class AuthenticationClassesTemplateGenerator {
 		return backEndTemplate;
 	}
 	
+	private static Map<String, Object> getRolePermissionApplicationLayerTemplates() {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		backEndTemplate.put("rolePermission/IRolepermissionAppService.java.ftl", "IRolepermissionAppService.java");
+		backEndTemplate.put("rolePermission/RolepermissionAppService.java.ftl", "RolepermissionAppService.java");
+		backEndTemplate.put("rolePermission/RolepermissionMapper.java.ftl", "RolepermissionMapper.java");
+//		backEndTemplate.put("rolePermission/RolepermissionAppServiceTest.java.ftl", "RolepermissionAppServiceTest.java");
+
+		return backEndTemplate;
+	}
+	
+	private static Map<String, Object> getRolePermissionManagerLayerTemplates() {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		backEndTemplate.put("rolePermission/IRolepermissionManager.java.ftl", "IRolepermissionManager.java");
+		backEndTemplate.put("rolePermission/RolepermissionManager.java.ftl", "RolepermissionManager.java");
+//		backEndTemplate.put("rolePermission/RolepermissionManagerTest.java.ftl", "RolepermissionManagerTest.java");
+
+		return backEndTemplate;
+	}
+	
 	private static Map<String, Object> getUserDtoTemplates() {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -203,6 +274,21 @@ public class AuthenticationClassesTemplateGenerator {
 //		backEndTemplate.put("users/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
 		backEndTemplate.put("users/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
 		backEndTemplate.put("users/dtos/LoginUserInput.java.ftl", "LoginUserInput.java");
+		return backEndTemplate;
+	}
+	
+	private static Map<String, Object> getUserPermissionDtoTemplates() {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		backEndTemplate.put("userPermission/dtos/CreateUserpermissionInput.java.ftl", "CreateUserpermissionInput.java");
+		backEndTemplate.put("userPermission/dtos/CreateUserpermissionOutput.java.ftl", "CreateUserpermissionOutput.java");
+		backEndTemplate.put("userPermission/dtos/UpdateUserpermissionInput.java.ftl", "UpdateUserpermissionInput.java");
+		backEndTemplate.put("userPermission/dtos/UpdateUserpermissionOutput.java.ftl", "UpdateUserpermissionOutput.java");
+		backEndTemplate.put("userPermission/dtos/FindUserpermissionByIdOutput.java.ftl", "FindUserpermissionByIdOutput.java");
+		backEndTemplate.put("userPermission/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
+		backEndTemplate.put("userPermission/dtos/GetUserOutput.java.ftl", "GetUserOutput.java");
+		
 		return backEndTemplate;
 	}
 	
@@ -220,6 +306,20 @@ public class AuthenticationClassesTemplateGenerator {
 		return backEndTemplate;
 	}
 	
+	private static Map<String, Object> getRolePermissionDtoTemplates() {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		backEndTemplate.put("rolePermission/dtos/CreateRolepermissionInput.java.ftl", "CreateRolepermissionInput.java");
+		backEndTemplate.put("rolePermission/dtos/CreateRolepermissionOutput.java.ftl", "CreateRolepermissionOutput.java");
+		backEndTemplate.put("rolePermission/dtos/UpdateRolepermissionInput.java.ftl", "UpdateRolepermissionInput.java");
+		backEndTemplate.put("rolePermission/dtos/UpdateRolepermissionOutput.java.ftl", "UpdateRolepermissionOutput.java");
+		backEndTemplate.put("rolePermission/dtos/FindRolepermissionByIdOutput.java.ftl", "FindRolepermissionByIdOutput.java");
+		backEndTemplate.put("rolePermission/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
+		backEndTemplate.put("rolePermission/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
+		return backEndTemplate;
+	}
+	
 	private static Map<String, Object> getRoleDtoTemplates() {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -230,7 +330,7 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("roles/dtos/UpdateRoleOutput.java.ftl", "UpdateRoleOutput.java");
 		backEndTemplate.put("roles/dtos/FindRoleByIdOutput.java.ftl", "FindRoleByIdOutput.java");
 		backEndTemplate.put("roles/dtos/FindRoleByNameOutput.java.ftl", "FindRoleByNameOutput.java");
-		backEndTemplate.put("roles/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
+	//	backEndTemplate.put("roles/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
 		return backEndTemplate;
 	}
 	
@@ -241,9 +341,11 @@ public class AuthenticationClassesTemplateGenerator {
 
 		if(authenticationType=="database") {
 		backEndTemplate.put("users/userController.java.ftl", "UserController.java");
+		backEndTemplate.put("userPermission/UserpermissionController.java.ftl", "UserpermissionController.java");
 		}
 		
 		backEndTemplate.put("permissions/permissionsController.java.ftl", "PermissionController.java");
+		backEndTemplate.put("rolePermission/RolepermissionController.java.ftl", "RolepermissionController.java");
 		backEndTemplate.put("roles/rolesController.java.ftl", "RoleController.java");
 
 		return backEndTemplate;
@@ -255,6 +357,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		if(authenticationType=="database") {
 		backEndTemplate.put("users/iuserRepository.java.ftl", "IUserRepository.java");
+		backEndTemplate.put("userPermission/IUserpermissionRepository.java.ftl", "IUserpermissionRepository.java");
 //		backEndTemplate.put("users/UsersCustomRepositoryImpl.java.ftl", "UsersCustomRepositoryImpl.java");
 //		backEndTemplate.put("users/UsersCustomRepository.java.ftl", "UsersCustomRepository.java");
 		
@@ -262,6 +365,8 @@ public class AuthenticationClassesTemplateGenerator {
 		
 		backEndTemplate.put("permissions/ipermissionsRepository.java.ftl", "IPermissionRepository.java");
 		backEndTemplate.put("roles/irolesRepository.java.ftl", "IRoleRepository.java");
+		backEndTemplate.put("rolePermission/IRolepermissionRepository.java.ftl", "IRolepermissionRepository.java");
+		
 //		backEndTemplate.put("roles/RolesCustomRepositoryImpl.java.ftl", "RolesCustomRepositoryImpl.java");
 //		backEndTemplate.put("roles/RolesCustomRepository.java.ftl", "RolesCustomRepository.java");
 		return backEndTemplate;
@@ -273,11 +378,15 @@ public class AuthenticationClassesTemplateGenerator {
 
 		if(authenticationType=="database") {
 		backEndTemplate.put("entities/userEntity.java.ftl", "UserEntity.java");
+		backEndTemplate.put("entities/UserpermissionEntity.java.ftl", "UserpermissionEntity.java");
+		backEndTemplate.put("entities/UserpermissionId.java.ftl", "UserpermissionId.java");
 		}
 		
 		backEndTemplate.put("entities/permissionEntity.java.ftl", "PermissionEntity.java");
 		backEndTemplate.put("entities/roleEntity.java.ftl", "RoleEntity.java");
-
+		backEndTemplate.put("entities/RolepermissionEntity.java.ftl", "RolepermissionEntity.java");
+		backEndTemplate.put("entities/RolepermissionId.java.ftl", "RolepermissionId.java");
+		
 		return backEndTemplate;
 	}
 	

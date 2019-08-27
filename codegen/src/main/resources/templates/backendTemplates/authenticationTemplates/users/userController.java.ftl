@@ -1,8 +1,7 @@
 package [=PackageName].RestControllers;
 
-import [=PackageName].application.Authorization.Permission.PermissionAppService;
-import [=PackageName].application.Authorization.Permission.Dto.FindPermissionByIdOutput;
-import [=PackageName].application.Authorization.Role.Dto.FindRoleByIdOutput;
+import [=PackageName].application.Authorization.Userpermission.UserpermissionAppService;
+import [=PackageName].application.Authorization.Userpermission.Dto.FindUserpermissionByIdOutput;
 import [=PackageName].application.Authorization.User.UserAppService;
 import [=PackageName].application.Authorization.User.Dto.*;
 import [=CommonModulePackage].Search.SearchCriteria;
@@ -21,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -52,7 +52,7 @@ public class UserController {
 	// ------------ Create a user ------------
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<CreateUserOutput> Create(@RequestBody @Valid CreateUserInput user) {
-		 FindUserByNameOutput foundUser = userAppService.FindByUserName(user.getUserName());
+		 FindUserByNameOutput foundUser = _userAppService.FindByUserName(user.getUserName());
 
 	        if (foundUser != null) {
 	            logHelper.getLogger().error("There already exists a user with a name=%s", user.getUserName());

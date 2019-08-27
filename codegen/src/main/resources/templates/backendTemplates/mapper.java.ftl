@@ -17,7 +17,7 @@ import [=PackageName].domain.model.[=ClassName]Entity;
 @Mapper(componentModel = "spring")
 public interface [=ClassName]Mapper {
 
-    [=ClassName]Entity Create[=ClassName]InputTo[=ClassName]Entity(Create[=ClassName]Input [=ClassName?lower_case]Dto);
+   [=ClassName]Entity Create[=ClassName]InputTo[=ClassName]Entity(Create[=ClassName]Input [=ClassName?lower_case]Dto);
    
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
@@ -29,20 +29,20 @@ public interface [=ClassName]Mapper {
    </#list> 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if DescriptiveField[relationValue.eName]??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
-   </#if> 
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
-   <#if joinDetails.joinColumn??> 
-   <#if DescriptiveField[relationValue.eName]??> 
-   <#if DescriptiveField[relationValue.eName].fieldName !=joinDetails.referenceColumn >
+   <#if joinDetails.joinColumn??>
+   <#if !Fields[joinDetails.joinColumn]??>
    @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
    </#if>
    </#if>
    </#if>
-   </#if>
    </#list>
+   <#if DescriptiveField[relationValue.eName]??>
+   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
+   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                    
+   </#if>
+   </#if>
    </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
@@ -55,9 +55,9 @@ public interface [=ClassName]Mapper {
    </#list> 
    Create[=ClassName]Output [=ClassName]EntityToCreate[=ClassName]Output([=ClassName]Entity entity);
 
-    [=ClassName]Entity Update[=ClassName]InputTo[=ClassName]Entity(Update[=ClassName]Input [=ClassName?lower_case]Dto);
+   [=ClassName]Entity Update[=ClassName]InputTo[=ClassName]Entity(Update[=ClassName]Input [=ClassName?lower_case]Dto);
 
-  <#list Relationship as relationKey, relationValue> 
+   <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
    <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
@@ -67,20 +67,20 @@ public interface [=ClassName]Mapper {
    </#list> 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if DescriptiveField[relationValue.eName]??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
-   </#if> 
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
-   <#if joinDetails.joinColumn??> 
-   <#if DescriptiveField[relationValue.eName]??> 
-   <#if DescriptiveField[relationValue.eName].fieldName !=joinDetails.referenceColumn >
+   <#if joinDetails.joinColumn??>
+   <#if !Fields[joinDetails.joinColumn]??>
    @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
    </#if>
    </#if>
    </#if>
-   </#if>
    </#list>
+   <#if DescriptiveField[relationValue.eName]??>
+   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
+   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
+   </#if>
+   </#if>
    </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
@@ -103,20 +103,20 @@ public interface [=ClassName]Mapper {
    </#list> 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
-   <#if DescriptiveField[relationValue.eName]??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
-   </#if> 
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
-   <#if joinDetails.joinColumn??> 
-   <#if DescriptiveField[relationValue.eName]??> 
-   <#if DescriptiveField[relationValue.eName].fieldName !=joinDetails.referenceColumn >
+   <#if joinDetails.joinColumn??>
+   <#if !Fields[joinDetails.joinColumn]??>
    @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
    </#if>
    </#if>
    </#if>
-   </#if>
    </#list>
+   <#if DescriptiveField[relationValue.eName]??>
+   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
+   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
+   </#if>
+   </#if>
    </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
@@ -136,7 +136,9 @@ public interface [=ClassName]Mapper {
    <#list relationValue.fDetails as fValue>
    <#list Fields as key,value> 
    <#if fValue.fieldName == value.fieldName>
+   <#if fValue.fieldType?lower_case == "long" || fValue.fieldType?lower_case == "integer" || fValue.fieldType?lower_case == "short" || fValue.fieldType?lower_case == "double" || fValue.fieldType?lower_case == "boolean" || fValue.fieldType?lower_case == "date" || fValue.fieldType?lower_case == "string">
    @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
+   </#if>
    </#if>
    </#list>
    </#list> 

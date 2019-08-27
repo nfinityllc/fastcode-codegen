@@ -4,11 +4,11 @@ package [=PackageName].RestControllers;
 import [=entityMap.importPkg];
 </#list>
 <#if AuthenticationType == "database">
-import [=PackageName].domain.model.UsersEntity;
+import [=PackageName].domain.model.UserEntity;
 </#if>
 <#if AuthenticationType != "none">
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.model.PermissionsEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.model.PermissionEntity;
 </#if>
  
 import org.javers.core.Javers;
@@ -34,7 +34,7 @@ public class AuditController {
     <#if AuthenticationType == "database">
     @RequestMapping("/user")
     public String getUserChanges() {
-        QueryBuilder jqlQuery = QueryBuilder.byClass(UsersEntity.class);
+        QueryBuilder jqlQuery = QueryBuilder.byClass(UserEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }
@@ -42,14 +42,14 @@ public class AuditController {
     <#if AuthenticationType != "none">
     @RequestMapping("/role")
     public String getRoleChanges() {
-        QueryBuilder jqlQuery = QueryBuilder.byClass(RolesEntity.class);
+        QueryBuilder jqlQuery = QueryBuilder.byClass(RoleEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }
 
     @RequestMapping("/permission")
     public String getPermissionChanges() {
-        QueryBuilder jqlQuery = QueryBuilder.byClass(PermissionsEntity.class);
+        QueryBuilder jqlQuery = QueryBuilder.byClass(PermissionEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }

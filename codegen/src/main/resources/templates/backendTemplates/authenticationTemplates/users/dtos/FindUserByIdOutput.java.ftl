@@ -1,7 +1,7 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.User.Dto;
 
 
-import java.sql.Date;
+import java.util.Date;
 
 public class FindUserByIdOutput {
 

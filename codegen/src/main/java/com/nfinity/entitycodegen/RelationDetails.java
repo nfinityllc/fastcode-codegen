@@ -82,7 +82,7 @@ public class RelationDetails {
 	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities) {
 		FieldDetails descriptiveField = null;
 		
-		if (this.getRelation() == "ManyToOne" || this.getRelation() == "ManyToMany") {
+		if (this.getRelation() == "ManyToOne" || this.getRelation() == "OneToOne") {
 
 //			if (this.getRelation() == "ManyToMany") {
 //				for (String str : manyToManyRshp) {

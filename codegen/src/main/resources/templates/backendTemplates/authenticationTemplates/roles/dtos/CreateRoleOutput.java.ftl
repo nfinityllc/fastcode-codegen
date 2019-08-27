@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Roles.Dto;
+package [=PackageName].application.Authorization.Role.Dto;
 
 public class CreateRoleOutput {
     private Long id;

@@ -21,7 +21,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 </#if>
 
-public class  UserEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class  UserEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
 
     private Long id;
     private String firstName;
@@ -257,8 +257,8 @@ public class  UserEntity <#if Audit!false>extends AuditedEntity<String></#if> im
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UsersEntity)) return false;
-        UsersEntity user = (UsersEntity) o;
+        if (!(o instanceof UserEntity)) return false;
+        UserEntity user = (UserEntity) o;
         return id != null && id.equals(user.id);
     }
 
@@ -280,12 +280,12 @@ public class  UserEntity <#if Audit!false>extends AuditedEntity<String></#if> im
 
     @ManyToOne
     @JoinColumn(name = "roleId")
-    public RolesEntity getRole() {
+    public RoleEntity getRole() {
         return role;
     }
-    public void setRole(RolesEntity role) {
+    public void setRole(RoleEntity role) {
         this.role = role;
     }
 
-    private RolesEntity role;
+    private RoleEntity role;
 }

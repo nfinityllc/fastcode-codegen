@@ -3,7 +3,7 @@ package [=PackageName].domain.Authorization.User;
 import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.UserEntity;
-import [=PackageName].domain.IRepository.IPermissionRepository;
+import [=PackageName].domain.IRepository.IUserpermissionRepository;
 import [=PackageName].domain.IRepository.IRoleRepository;
 import [=PackageName].domain.IRepository.IUserRepository;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -22,16 +22,6 @@ import java.util.Set;
 @Repository
 
 public class UserManager implements IUserManager {
-
-	@Autowired
-    IUserRepository  _userRepository;
-    
-    @Autowired
-	IUserpermissionRepository  _userpermissionRepository;
-    
-    @Autowired
-	IRoleRepository  _roleRepository;
-
 
 	@Autowired
     IUserRepository  _userRepository;

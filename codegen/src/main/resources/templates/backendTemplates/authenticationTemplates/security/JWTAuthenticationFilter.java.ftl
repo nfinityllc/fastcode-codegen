@@ -1,12 +1,12 @@
 package [=PackageName].security;
 
 <#if AuthenticationType == "database">
-import [=PackageName].application.Authorization.Users.Dto.LoginUserInput;
+import [=PackageName].application.Authorization.User.Dto.LoginUserInput;
 </#if>
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.Authorization.Roles.IRolesManager;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.Authorization.Roles.RolesManager;
+import [=PackageName].domain.model.RolepermissionEntity;
+import [=PackageName].domain.Authorization.Role.IRoleManager;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.Role.RoleManager;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    IRolesManager _roleManager;
+    IRoleManager _roleManager;
 
     private AuthenticationManager authenticationManager;
 
@@ -78,7 +78,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         if(_roleManager==null){
             ServletContext servletContext = req.getServletContext();
             WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-            _roleManager = webApplicationContext.getBean(RolesManager.class);
+            _roleManager = webApplicationContext.getBean(RoleManager.class);
         }
 
         Claims claims = Jwts.claims();
@@ -131,14 +131,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         for (GrantedAuthority ga : currentlistAuthorities) {
             if (ga.getAuthority().startsWith("ROLE_")) {
 
-                RolesEntity re = _roleManager.FindByRoleName(ga.getAuthority());
-                Set<PermissionsEntity> spe = re.getPermissions();
+                RoleEntity re = _roleManager.FindByRoleName(ga.getAuthority());
+                Set<RolepermissionEntity> spe= re.getRolepermissionSet();
                 if(spe.size() != 0) {
-                    for (PermissionsEntity pe : spe) {
-                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
+                    for (RolepermissionEntity pe : spe) {
+                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getPermission().getName());
                         newlistAuthorities.add(authority);
                     }
                 }
+//                Set<PermissionEntity> spe = re.getPermissions();
+//                if(spe.size() != 0) {
+//                    for (PermissionEntity pe : spe) {
+//                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
+//                        newlistAuthorities.add(authority);
+//                    }
+//                }
             }
 
             else {

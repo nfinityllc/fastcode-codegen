@@ -1,39 +1,28 @@
-package [=PackageName].domain.Authorization.Roles;
+package [=PackageName].domain.Authorization.Role;
 
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.model.RolesEntity;
+import [=PackageName].domain.model.RoleEntity;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import [=CommonModulePackage].Search.SearchFields;
 
-import java.util.List;
-
 import javax.validation.constraints.Positive;
 
-public interface IRolesManager {
+public interface IRoleManager {
 
     // CRUD Operations
-    RolesEntity Create(RolesEntity role);
+    RoleEntity Create(RoleEntity role);
 
-    void Delete(RolesEntity role);
+    void Delete(RoleEntity role);
 
-    RolesEntity Update(RolesEntity role);
+    RoleEntity Update(RoleEntity role);
 
-    RolesEntity FindById(@Positive(message ="Id should be a positive value") Long roleId);
+    RoleEntity FindById(@Positive(message ="Id should be a positive value") Long roleId);
 
-    Page<RolesEntity> FindAll(Predicate predicate, Pageable pageable);
+    //Internal operation
+    RoleEntity FindByRoleName(String roleName);
+    
+    Page<RoleEntity> FindAll(Predicate predicate, Pageable pageable);
 
-    // Internal Operation
-    RolesEntity FindByRoleName(String roleName);
-
-    // Permissions Operations
-    Boolean AddPermission(RolesEntity role, PermissionsEntity permission);
-
-    void RemovePermission(RolesEntity role, PermissionsEntity permission);
-
-   public PermissionsEntity GetPermissions(@Positive(message ="rolesId should be a positive value") Long rolesId,@Positive(message ="PermissionsId should be a positive value") Long permissionsId);
-
-    public Page<PermissionsEntity> FindPermissions(@Positive(message ="rolesId should be a positive value") Long rolesId,List<SearchFields> fields,String operator,Pageable pageable);
 }
 

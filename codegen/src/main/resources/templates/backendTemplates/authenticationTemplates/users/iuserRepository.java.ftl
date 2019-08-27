@@ -10,9 +10,8 @@ import [=PackageName].domain.model.UserEntity;
 
 @JaversSpringDataAuditable
 @RepositoryRestResource(collectionResourceRel = "user", path = "user")
-public interface IUserRepository extends JpaRepository<UserEntity, Long>,     
-	 UserCustomRepository,QuerydslPredicateExecutor<UserEntity> {
+public interface IUserRepository extends JpaRepository<UserEntity, Long>,QuerydslPredicateExecutor<UserEntity> {
 
-    @Query("select u from UsersEntity u where u.userName = ?1")
-    UsersEntity findByUserName(String value);
+    @Query("select u from UserEntity u where u.userName = ?1")
+    UserEntity findByUserName(String value);
 }

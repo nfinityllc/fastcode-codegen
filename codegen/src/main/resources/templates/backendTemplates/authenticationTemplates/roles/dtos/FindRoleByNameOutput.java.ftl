@@ -1,10 +1,8 @@
-package [=PackageName].application.Authorization.Roles.Dto;
-
-import java.util.Date;
+package [=PackageName].application.Authorization.Role.Dto;
 
 public class FindRoleByNameOutput {
 
-	 private Long id;
+	private Long id;
     private String displayName;
     private String name;
    <#if Audit!false>
