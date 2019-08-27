@@ -1,7 +1,6 @@
 <mat-toolbar class="action-tool-bar" color="primary">
-	<span *ngIf="!selectedAssociation"></span>
-	<span *ngIf="selectedAssociation">
-		<span routerLink="/{{selectedAssociation.table}}/{{selectedAssociation.column.value}}">
+	<span>
+		<span *ngIf="selectedAssociation" (click)="back()">
 			<i class="material-icons">arrow_back</i>
 			<span *ngIf="selectedAssociation.associatedObj">
 				/{{selectedAssociation.associatedObj[selectedAssociation.referencedDescriptiveField]}}

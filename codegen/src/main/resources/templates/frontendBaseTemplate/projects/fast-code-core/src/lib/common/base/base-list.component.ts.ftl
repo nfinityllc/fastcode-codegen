@@ -301,7 +301,13 @@ export class BaseListComponent<E> implements OnInit {
   openDetails(item: E){
     this.router.navigate([`/${this.dataService.suffix}/${ServiceUtils.encodeIdByObject(item, this.primaryKeys)}`]);
   }
-
+  
+  back(){
+    let parentPrimaryKeys = this.selectedAssociation.column.map(c => c.referencedkey);
+    let paramString = ServiceUtils.encodeIdByObject(this.selectedAssociation.associatedObj, parentPrimaryKeys);
+    this.router.navigate([`/${this.selectedAssociation.table}/${paramString}`]);
+  }
+  
   isLoadingResults = true;
 
   currentPage: number;
