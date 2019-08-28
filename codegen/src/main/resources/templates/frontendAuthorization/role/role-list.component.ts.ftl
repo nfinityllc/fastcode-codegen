@@ -1,0 +1,86 @@
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+
+import { IRole } from './irole';
+import { RoleService } from './role.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import {RoleNewComponent} from './role-new.component';
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
+
+
+
+@Component({
+  selector: 'app-role-list',
+  templateUrl: './role-list.component.html',
+  styleUrls: ['./role-list.component.scss']
+})
+export class RoleListComponent extends BaseListComponent<IRole> implements OnInit {
+
+	title:string = "Role";
+	
+	constructor(
+		public router: Router,
+		public route: ActivatedRoute,
+		public global: Globals,
+		public dialog: MatDialog,
+		public changeDetectorRefs: ChangeDetectorRef,
+		public pickerDialogService: PickerDialogService,
+		public dataService: RoleService,
+		public errorService: ErrorService,
+	) { 
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
+  }
+
+	ngOnInit() {
+		this.setAssociation();
+		this.setColumns();
+		this.primaryKeys = [ "id",  ]
+		super.ngOnInit();
+	}
+  
+	setAssociation(){
+  	
+		this.associations = [
+		];
+	}
+  
+  	setColumns(){
+  		this.columns = [
+			{
+				column: 'displayName',
+				label: 'displayName',
+				sort: true,
+				filter: true,
+				type: listColumnType.String
+			},
+			{
+				column: 'id',
+				label: 'id',
+				sort: true,
+				filter: true,
+				type: listColumnType.Number
+			},
+			{
+				column: 'name',
+				label: 'name',
+				sort: true,
+				filter: true,
+				type: listColumnType.String
+			},
+		  	{
+				column: 'actions',
+				label: 'Actions',
+				sort: false,
+				filter: false,
+				type: listColumnType.String
+			}
+		];
+		this.selectedColumns = this.columns;
+		this.displayedColumns = this.columns.map((obj) => { return obj.column });
+  	}
+  
+	addNew() {
+		super.addNew(RoleNewComponent);
+	}
+  
+}

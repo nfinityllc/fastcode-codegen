@@ -189,16 +189,21 @@ public class CodeGenerator {
 		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 		List<String> authorizationEntities = new ArrayList<String>();
 		String authorizationPath = TEMPLATE_FOLDER + "/frontendAuthorization/";
-		authorizationEntities.add("roles");
-		authorizationEntities.add("permissions");
+		authorizationEntities.add("role");
+		authorizationEntities.add("permission");
+		authorizationEntities.add("rolepermission");
 		
 		List<String> entityList = new ArrayList<String>();
-		entityList.add("Roles");
-		entityList.add("Permissions");
+		entityList.add("Role");
+		entityList.add("Permission");
+		entityList.add("Rolepermission");
 		
 		if(authenticationType == "database") {
-			authorizationEntities.add("users");
-			entityList.add("Users");
+			authorizationEntities.add("user");
+			authorizationEntities.add("userpermission");
+
+			entityList.add("User");
+			entityList.add("Userpermission");
 		}
 		
 		updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
