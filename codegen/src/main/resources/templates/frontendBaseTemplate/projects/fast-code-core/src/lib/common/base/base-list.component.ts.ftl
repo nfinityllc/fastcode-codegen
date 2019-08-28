@@ -265,10 +265,10 @@ export class BaseListComponent<E> implements OnInit {
 
   checkForAssociations(params) {
     this.selectedAssociation = undefined;
-    this.associations.forEach((association) => {
+    this.associations.forEach((association, associationIndex) => {
       let matchedColumns = 0;
       let totalCount = association.column.length;
-      association.column.forEach(col => {
+      association.column.forEach((col, columnIndex) => {
         const columnValue = params[col.key];
         if (columnValue) {
           this.associations[associationIndex].column[columnIndex].value = columnValue;

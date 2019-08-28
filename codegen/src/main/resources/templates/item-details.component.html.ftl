@@ -1,4 +1,4 @@
-<div *ngIf="item">
+<div *ngIf="item" class="container">
 	<mat-toolbar class="action-tool-bar" color="primary">
 		<button mat-flat-button (click)="onBack()">
 	    {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>
@@ -7,7 +7,7 @@
 		<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()">
 	    {{'GENERAL.ACTIONS.SAVE' | translate}} </button>
 	</mat-toolbar>
-	<mat-card>
+	<mat-card class="card">
 		<mat-card-content>
 			<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">
 			<#list Fields as key,value>
@@ -27,9 +27,9 @@
 			</#list>
 			</#if>
 			<#if isJoinColumn == false>
-			<#if value.fieldType?lower_case == "boolean">    
+			<#if value.fieldType?lower_case == "boolean">
 				<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>            
-			<#elseif value.fieldType == "Date">
+			<#elseif value.fieldType?lower_case == "date">
 				<mat-form-field>
 					<input formControlName="[=value.fieldName]" matInput [matDatepicker]="[=value.fieldName]Picker" placeholder="Enter [=value.fieldName]">
 					<mat-datepicker-toggle matSuffix [for]="[=value.fieldName]Picker"></mat-datepicker-toggle>
