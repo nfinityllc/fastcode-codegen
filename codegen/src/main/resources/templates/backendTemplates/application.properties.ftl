@@ -1,3 +1,5 @@
+spring.profiles.active=local
+
 spring.datasource.url=[=connectionStringInfo.url]
 spring.datasource.username=[=connectionStringInfo.username]
 spring.datasource.password=[=connectionStringInfo.password]

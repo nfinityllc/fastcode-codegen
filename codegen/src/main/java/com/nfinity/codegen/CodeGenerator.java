@@ -124,6 +124,8 @@ public class CodeGenerator {
 	//	PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
 	//	modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
 		
+		generateAppStartupRunner(details, appName, sourcePackageName,backEndRootFolder,destPath);
+		
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 			generateEntityHistoryComponent(appFolderPath);
@@ -146,6 +148,42 @@ public class CodeGenerator {
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 		generateBeanConfigAndAuditAwareImpl(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
 		
+	}
+	
+	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath){
+		String backendAppFolder = backEndRootFolder + "/src/main/java";
+		Map<String, Object> entitiesMap = new HashMap<String,Object>();
+		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
+		{
+
+			Map<String, String> entityMap = new HashMap<String,String>();
+			String key = entry.getKey();
+			String name = key.substring(key.lastIndexOf(".") + 1);
+
+			entityMap.put("entity" , name + "Entity");
+			entityMap.put("importPkg" , appName + ".domain.model." + name + "Entity");
+			entityMap.put("requestMapping" , "/" + name.toLowerCase());
+			entityMap.put("method" , "get" + name + "Changes");
+
+			entitiesMap.put(name, entityMap);
+
+		}
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/"); 
+        MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
+ 
+        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 
+        cfg.setDefaultEncoding("UTF-8"); 
+        cfg.setTemplateLoader(mtl); 
+		
+		Map<String, Object> root = new HashMap<>();
+		root.put("entitiesMap", entitiesMap);
+		root.put("PackageName", packageName);
+		Map<String, Object> template = new HashMap<>();
+		template.put("AppStartupRunner.java.ftl", "AppStartupRunner.java");
+
+		String destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
+		new File(destFolder).mkdirs();
+		generateFiles(template, root, destFolder);
 	}
 	
 	private static void generateBeanConfigAndAuditAwareImpl(String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType){
