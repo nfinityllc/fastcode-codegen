@@ -1,7 +1,7 @@
 package [=PackageName].security;
 
 <#if AuthenticationType == "database">
-import [=PackageName].application.Authorization.User.Dto.LoginUserInput;
+import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.LoginUserInput;
 </#if>
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.Authorization.Role.IRoleManager;

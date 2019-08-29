@@ -2,10 +2,10 @@ package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Permission.PermissionAppService;
 import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
-import [=PackageName].application.Authorization.Userpermission.UserpermissionAppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
 import [=PackageName].application.Authorization.Permission.Dto.*;
 import [=PackageName].application.Authorization.Rolepermission.Dto.FindRolepermissionByIdOutput;
-import [=PackageName].application.Authorization.Userpermission.Dto.FindUserpermissionByIdOutput;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
@@ -37,7 +37,7 @@ public class PermissionController {
 	private RolepermissionAppService  _rolepermissionAppService;
     
     @Autowired
-	private UserpermissionAppService  _userpermissionAppService;
+	private [=AuthenticationTable]permissionAppService  _[=AuthenticationTable?uncap_first]permissionAppService;
 
 	@Autowired
 	private LoggingHelper logHelper;
@@ -139,8 +139,8 @@ public class PermissionController {
  
   
     
-	@RequestMapping(value = "/{permissionid}/userpermission", method = RequestMethod.GET)
-	public ResponseEntity GetUserpermission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	@RequestMapping(value = "/{permissionid}/[=AuthenticationTable?uncap_first]permission", method = RequestMethod.GET)
+	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 //		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
@@ -148,7 +148,7 @@ public class PermissionController {
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		Map<String,String> joinColDetails=_permissionAppService.parseUserpermissionJoinColumn(permissionid);
+		Map<String,String> joinColDetails=_permissionAppService.parse[=AuthenticationTable]permissionJoinColumn(permissionid);
 		if(joinColDetails== null)
 		{
 			logHelper.getLogger().error("Invalid Join Column");
@@ -156,7 +156,7 @@ public class PermissionController {
 		}
 		searchCriteria.setJoinColumns(joinColDetails);
 		
-    	List<FindUserpermissionByIdOutput> output = _userpermissionAppService.Find(searchCriteria,pageable);
+    	List<Find[=AuthenticationTable]permissionByIdOutput> output = _[=AuthenticationTable?uncap_first]permissionAppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

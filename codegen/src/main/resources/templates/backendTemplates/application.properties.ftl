@@ -57,6 +57,9 @@ server.ssl.key-store-password=Rfhh8ek2
 # The alias mapped to the certificate
 server.ssl.key-alias=tomcat
 
+<#if AuthenticationType != "none">
+fastCode.auth.method=[=AuthenticationType]
+</#if>
 fastCode.offset.default=0
 fastCode.limit.default=10
 fastCode.sort.direction.default=ASC

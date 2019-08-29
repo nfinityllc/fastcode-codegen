@@ -8,17 +8,17 @@ import java.util.Set;
 import java.util.Date;
 
 @Entity
-@Table(name = "Userpermission", schema = "sample")
+@Table(name = "[=AuthenticationTable]permission", schema = "[=SchemaName]")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
-@IdClass(UserpermissionId.class)
-public class UserpermissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
+@IdClass([=AuthenticationTable]permissionId.class)
+public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
 
   private Long permissionId;
-  private Long userId;
+  private Long userid;
  
-  public UserpermissionEntity() {
+  public [=AuthenticationTable]permissionEntity() {
 	}
 
   @ManyToOne
@@ -43,24 +43,24 @@ public class UserpermissionEntity<#if Audit!false> extends AuditedEntity<String>
   }
   
   @ManyToOne
-  @JoinColumn(name = "userId", insertable=false, updatable=false)
-  public UserEntity getUser() {
-    return user;
+  @JoinColumn(name = "[=AuthenticationTable?uncap_first]id", insertable=false, updatable=false)
+  public [=AuthenticationTable]Entity get[=AuthenticationTable]() {
+    return [=AuthenticationTable?uncap_first];
   }
-  public void setUser(UserEntity user) {
-    this.user = user;
+  public void set[=AuthenticationTable]([=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]) {
+    this.[=AuthenticationTable?uncap_first] = [=AuthenticationTable?uncap_first];
   }
   
-  private UserEntity user;
+  private [=AuthenticationTable]Entity [=AuthenticationTable?uncap_first];
  
   @Id
-  @Column(name = "userId", nullable = false)
-  public Long getUserId() {
-  return userId;
+  @Column(name = "userid", nullable = false)
+  public Long getUserid() {
+  return userid;
   }
 
-  public void setUserId(Long userId){
-  this.userId = userId;
+  public void setUserid(Long userid){
+  this.userid = userid;
   }
   
 //  @Override

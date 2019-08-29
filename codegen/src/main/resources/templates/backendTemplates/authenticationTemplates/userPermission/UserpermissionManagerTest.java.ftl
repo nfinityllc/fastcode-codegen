@@ -1,4 +1,4 @@
-package [=PackageName].domain.Authorization.Userpermission;
+package [=PackageName].domain.Authorization.[=AuthenticationTable]permission;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -22,17 +22,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import [=PackageName].domain.model.UserpermissionEntity;
-import [=PackageName].domain.IRepository.IUserRepository;
-import [=PackageName].domain.model.UserEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.IRepository.I[=AuthenticationTable]Repository;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.IRepository.IPermissionRepository;
 import [=PackageName].domain.model.PermissionEntity;
-import [=PackageName].domain.IRepository.IUserpermissionRepository;
+import [=PackageName].domain.IRepository.I[=AuthenticationTable]permissionRepository;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class UserpermissionManagerTest {
+public class [=AuthenticationTable]permissionManagerTest {
 
 	@InjectMocks
 	UserpermissionManager _userpermissionManager;

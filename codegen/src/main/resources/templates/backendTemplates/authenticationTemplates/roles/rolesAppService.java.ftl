@@ -172,7 +172,7 @@ public class RoleAppService implements IRoleAppService{
 		 list.get(i).replace("%20","").trim().equals("id") ||
 		 list.get(i).replace("%20","").trim().equals("name") ||
 		 list.get(i).replace("%20","").trim().equals("rolepermission") ||
-		 list.get(i).replace("%20","").trim().equals("user")
+		 list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]")
 		)) 
 		{
 		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
@@ -232,7 +232,7 @@ public class RoleAppService implements IRoleAppService{
 		return joinColumnMap;
 	}
 
-	public Map<String,String> parseUserJoinColumn(String keysString) {
+	public Map<String,String> parse[=AuthenticationTable]JoinColumn(String keysString) {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
 		joinColumnMap.put("roleId", keysString);

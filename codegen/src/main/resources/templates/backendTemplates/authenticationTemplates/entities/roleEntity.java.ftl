@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Role")
+@Table(name = "Role", schema = "[=SchemaName]")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
@@ -80,15 +80,15 @@ public class RoleEntity<#if Audit!false> extends AuditedEntity<String></#if> imp
     
 <#if AuthenticationType == "database">
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
-    public Set<UserEntity> getUserSet() { 
-      return userSet; 
+    public Set<[=AuthenticationTable]Entity> get[=AuthenticationTable]Set() { 
+      return [=AuthenticationTable?uncap_first]Set; 
     } 
  
-    public void setUserSet(Set<UserEntity> user) { 
-      this.userSet = user; 
+    public void set[=AuthenticationTable]Set(Set<[=AuthenticationTable]Entity> [=AuthenticationTable?uncap_first]) { 
+      this.[=AuthenticationTable?uncap_first]Set = [=AuthenticationTable?uncap_first]; 
     } 
  
-    private Set<UserEntity> userSet = new HashSet<UserEntity>(); 
+    private Set<[=AuthenticationTable]Entity> [=AuthenticationTable?uncap_first]Set = new HashSet<[=AuthenticationTable]Entity>(); 
 </#if>
     public RoleEntity() {
 

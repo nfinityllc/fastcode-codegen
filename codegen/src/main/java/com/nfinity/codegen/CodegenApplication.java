@@ -71,22 +71,29 @@ public class CodegenApplication implements ApplicationRunner {
 			input.setAuthenticationType("none");
 		} 
 		else {
+			scanner.nextLine();
 			System.out.print("\nDo you want to enable auditing ? (y/n)");
 			String str= scanner.nextLine();
-			if(str=="y" || str=="Y" || str =="yes" || str =="true")
+			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes") )
 			{
 				input.setAudit(true);
 			}
-			
+			System.out.print("\nDo you have your own Authorization Table? (y/n)");
+			str= scanner.nextLine();
+			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes"))
+			{
+				System.out.print("\nEnter table name :");
+				str= scanner.nextLine();
+				input.setAuthenticationSchema(str.substring(0, 1).toUpperCase() + str.substring(1));
+				
+			}
 			if (value == 2) {
-		
 			input.setAuthenticationType("database");
 		    }
-		else if (value == 3) {
+		    else if (value == 3) {
 			input.setAuthenticationType("ldap");
 		}
 	    }
-		
 		
 //		input.setDatabaseAuthentication(root.get("db-autentication") == null
 //				? (GetUserInput.getInput(scanner, "database authentication").toLowerCase().equals("true") ? true : false)
@@ -126,7 +133,7 @@ public class CodegenApplication implements ApplicationRunner {
 				true, "-n=" + artifactId + "  -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
-				input.getAudit());
+				input.getAudit(),input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
 		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
 		
@@ -137,7 +144,7 @@ public class CodegenApplication implements ApplicationRunner {
 		if(!input.getAuthenticationType().equals("none"))
 		{
         AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAudit(),
-				input.getHistory(),input.getFlowable(),input.getAuthenticationType(),input.getSchemaName());
+				input.getHistory(),input.getFlowable(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema());
 		}
 		
 		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),
@@ -145,7 +152,7 @@ public class CodegenApplication implements ApplicationRunner {
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
 				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
-				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail());
+				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail(),input.getFlowable(),input.getAuthenticationSchema());
 		
 		if(input.getEmail())
         {

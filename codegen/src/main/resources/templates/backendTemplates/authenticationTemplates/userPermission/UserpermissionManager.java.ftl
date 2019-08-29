@@ -1,97 +1,87 @@
-package [=PackageName].domain.Authorization.Userpermission;
+package [=PackageName].domain.Authorization.[=AuthenticationTable]permission;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import [=PackageName].domain.model.UserpermissionEntity;
-import [=PackageName].domain.model.UserpermissionId;
-import [=PackageName].domain.IRepository.IUserRepository;
-import [=PackageName].domain.model.UserEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionId;
+import [=PackageName].domain.IRepository.I[=AuthenticationTable]Repository;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.IRepository.IPermissionRepository;
 import [=PackageName].domain.model.PermissionEntity;
 
-import [=PackageName].domain.IRepository.IUserpermissionRepository;
+import [=PackageName].domain.IRepository.I[=AuthenticationTable]permissionRepository;
 import com.querydsl.core.types.Predicate;
 
 @Repository
-public class UserpermissionManager implements IUserpermissionManager {
+public class [=AuthenticationTable]permissionManager implements I[=AuthenticationTable]permissionManager {
 
     @Autowired
-    IUserpermissionRepository  _userpermissionRepository;
+    I[=AuthenticationTable]permissionRepository  _[=AuthenticationTable?uncap_first]permissionRepository;
     
     @Autowired
-	IUserRepository  _userRepository;
+	I[=AuthenticationTable]Repository  _[=AuthenticationTable?uncap_first]Repository;
     
     @Autowired
 	IPermissionRepository  _permissionRepository;
     
-	public UserpermissionEntity Create(UserpermissionEntity userpermission) {
+	public [=AuthenticationTable]permissionEntity Create([=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission) {
 
-		return _userpermissionRepository.save(userpermission);
+		return _[=AuthenticationTable?uncap_first]permissionRepository.save([=AuthenticationTable?uncap_first]permission);
 	}
 
-	public void Delete(UserpermissionEntity userpermission) {
+	public void Delete([=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission) {
 
-		_userpermissionRepository.delete(userpermission);	
+		_[=AuthenticationTable?uncap_first]permissionRepository.delete([=AuthenticationTable?uncap_first]permission);	
 	}
 
-	public UserpermissionEntity Update(UserpermissionEntity userpermission) {
+	public [=AuthenticationTable]permissionEntity Update([=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission) {
 
-		return _userpermissionRepository.save(userpermission);
+		return _[=AuthenticationTable?uncap_first]permissionRepository.save([=AuthenticationTable?uncap_first]permission);
 	}
 
-	public UserpermissionEntity FindById(UserpermissionId userpermissionId )
+	public [=AuthenticationTable]permissionEntity FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId )
     {
-    Optional<UserpermissionEntity> dbUserpermission= _userpermissionRepository.findById(userpermissionId);
-		if(dbUserpermission.isPresent()) {
-			UserpermissionEntity existingUserpermission = dbUserpermission.get();
-		    return existingUserpermission;
+    Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission= _[=AuthenticationTable?uncap_first]permissionRepository.findById([=AuthenticationTable?uncap_first]permissionId);
+		if(db[=AuthenticationTable]permission.isPresent()) {
+			[=AuthenticationTable]permissionEntity existing[=AuthenticationTable]permission = db[=AuthenticationTable]permission.get();
+		    return existing[=AuthenticationTable]permission;
 		} else {
 		    return null;
 		}
-     //   return _userpermissionRepository.findById(
-     //   userpermissionId.getPermissionId(),userpermissionId.getUserId());
-
-
+    
 	}
 
-	public Page<UserpermissionEntity> FindAll(Predicate predicate, Pageable pageable) {
+	public Page<[=AuthenticationTable]permissionEntity> FindAll(Predicate predicate, Pageable pageable) {
 
-		return _userpermissionRepository.findAll(predicate,pageable);
+		return _[=AuthenticationTable?uncap_first]permissionRepository.findAll(predicate,pageable);
 	}
 
-   //User
-	public UserEntity GetUser(UserpermissionId userpermissionId) {
+   //[=AuthenticationTable]
+	public [=AuthenticationTable]Entity Get[=AuthenticationTable]([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId) {
 		
-		Optional<UserpermissionEntity> dbUserpermission= _userpermissionRepository.findById(userpermissionId);
-		if(dbUserpermission.isPresent()) {
-			UserpermissionEntity existingUserpermission = dbUserpermission.get();
-		    return existingUserpermission.getUser();
+		Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission= _[=AuthenticationTable?uncap_first]permissionRepository.findById([=AuthenticationTable?uncap_first]permissionId);
+		if(db[=AuthenticationTable]permission.isPresent()) {
+			[=AuthenticationTable]permissionEntity existing[=AuthenticationTable]permission = db[=AuthenticationTable]permission.get();
+		    return existing[=AuthenticationTable]permission.get[=AuthenticationTable]();
 		} else {
 		    return null;
 		}
 
-	//	UserpermissionEntity entity = _userpermissionRepository.findById(userpermissionId.getPermissionId(),userpermissionId.getUserId());
-
-    //  return entity.getUser();
 	}
 	
    //Permission
-	public PermissionEntity GetPermission(UserpermissionId userpermissionId) {
+	public PermissionEntity GetPermission([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId) {
 		
-		Optional<UserpermissionEntity> dbUserpermission= _userpermissionRepository.findById(userpermissionId);
-		if(dbUserpermission.isPresent()) {
-			UserpermissionEntity existingUserpermission = dbUserpermission.get();
-		    return existingUserpermission.getPermission();
+		Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission= _[=AuthenticationTable?uncap_first]permissionRepository.findById([=AuthenticationTable?uncap_first]permissionId);
+		if(db[=AuthenticationTable]permission.isPresent()) {
+			[=AuthenticationTable]permissionEntity existing[=AuthenticationTable]permission = db[=AuthenticationTable]permission.get();
+		    return existing[=AuthenticationTable]permission.getPermission();
 		} else {
 		    return null;
 		}
-
-	//	UserpermissionEntity entity = _userpermissionRepository.findById(userpermissionId.getPermissionId(),userpermissionId.getUserId());
-
-    //  return entity.getPermission();
 	}
 	
 }

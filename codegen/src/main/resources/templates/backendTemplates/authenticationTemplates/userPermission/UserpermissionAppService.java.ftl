@@ -1,12 +1,12 @@
-package [=PackageName].application.Authorization.Userpermission;
+package [=PackageName].application.Authorization.[=AuthenticationTable]permission;
 
-import [=PackageName].application.Authorization.Userpermission.Dto.*;
-import [=PackageName].domain.Authorization.Userpermission.IUserpermissionManager;
-import [=PackageName].domain.model.QUserpermissionEntity;
-import [=PackageName].domain.model.UserpermissionEntity;
-import [=PackageName].domain.model.UserpermissionId;
-import [=PackageName].domain.Authorization.User.UserManager;
-import [=PackageName].domain.model.UserEntity;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.*;
+import [=PackageName].domain.Authorization.[=AuthenticationTable]permission.I[=AuthenticationTable]permissionManager;
+import [=PackageName].domain.model.Q[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionId;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].[=AuthenticationTable]Manager;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.Authorization.Permission.PermissionManager;
 import [=PackageName].domain.model.PermissionEntity;
 import [=CommonModulePackage].Search.*;
@@ -32,17 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Validated
-public class UserpermissionAppService implements IUserpermissionAppService {
+public class [=AuthenticationTable]permissionAppService implements I[=AuthenticationTable]permissionAppService {
 
     static final int case1=1;
 	static final int case2=2;
 	static final int case3=3;
 	
 	@Autowired
-	private IUserpermissionManager _userpermissionManager;
+	private I[=AuthenticationTable]permissionManager _[=AuthenticationTable?uncap_first]permissionManager;
   
     @Autowired
-	private UserManager _userManager;
+	private [=AuthenticationTable]Manager _[=AuthenticationTable?uncap_first]Manager;
     
     @Autowired
 	private PermissionManager _permissionManager;
@@ -51,122 +51,121 @@ public class UserpermissionAppService implements IUserpermissionAppService {
 	private LoggingHelper logHelper;
 
 	@Autowired
-	private UserpermissionMapper mapper;
+	private [=AuthenticationTable]permissionMapper mapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
-	public CreateUserpermissionOutput Create(CreateUserpermissionInput input) {
+	public Create[=AuthenticationTable]permissionOutput Create(Create[=AuthenticationTable]permissionInput input) {
 
-		UserpermissionEntity userpermission = mapper.CreateUserpermissionInputToUserpermissionEntity(input);
-	  	if(input.getUserId()!=null)
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Create[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
+	  	if(input.getUserid()!=null)
 		{
-		UserEntity foundUser = _userManager.FindById(input.getUserId());
-		if(foundUser!=null)
-		userpermission.setUser(foundUser);
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(input.getUserid());
+		if(found[=AuthenticationTable]!=null)
+		[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
 		}
 	  	if(input.getPermissionId()!=null)
 		{
 		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
 		if(foundPermission!=null)
-		userpermission.setPermission(foundPermission);
+		[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
 		}
-		UserpermissionEntity createdUserpermission = _userpermissionManager.Create(userpermission);
-		return mapper.UserpermissionEntityToCreateUserpermissionOutput(createdUserpermission);
+		[=AuthenticationTable]permissionEntity created[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Create([=AuthenticationTable?uncap_first]permission);
+		return mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput(created[=AuthenticationTable]permission);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Userpermission", key = "#userpermissionId")
-	public UpdateUserpermissionOutput Update(UserpermissionId userpermissionId , UpdateUserpermissionInput input) {
+	@CacheEvict(value="[=AuthenticationTable]permission", key = "#[=AuthenticationTable?uncap_first]permissionId")
+	public Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input) {
 
-		UserpermissionEntity userpermission = mapper.UpdateUserpermissionInputToUserpermissionEntity(input);
-	  	if(input.getUserId()!=null)
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
+	  	if(input.getUserid()!=null)
 		{
-		UserEntity foundUser = _userManager.FindById(input.getUserId());
-		if(foundUser!=null)
-		userpermission.setUser(foundUser);
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(input.getUserid());
+		if(found[=AuthenticationTable]!=null)
+		[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
 		}
 	  	if(input.getPermissionId()!=null)
 		{
 		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
 		if(foundPermission!=null)
-		userpermission.setPermission(foundPermission);
+		[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
 		}
-		UserpermissionEntity updatedUserpermission = _userpermissionManager.Update(userpermission);
-		return mapper.UserpermissionEntityToUpdateUserpermissionOutput(updatedUserpermission);
+		[=AuthenticationTable]permissionEntity updated[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Update([=AuthenticationTable?uncap_first]permission);
+		return mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput(updated[=AuthenticationTable]permission);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Userpermission", key = "#id")
+	@CacheEvict(value="[=AuthenticationTable]permission", key = "#id")
+	public void Delete([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
-	public void Delete(UserpermissionId userpermissionId ) {
-
-		UserpermissionEntity existing = _userpermissionManager.FindById(userpermissionId) ; 
-		_userpermissionManager.Delete(existing);
+		[=AuthenticationTable]permissionEntity existing = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId) ; 
+		_[=AuthenticationTable?uncap_first]permissionManager.Delete(existing);
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Userpermission", key = "#id")
-	public FindUserpermissionByIdOutput FindById(UserpermissionId userpermissionId ) {
+	@Cacheable(value = "[=AuthenticationTable]permission", key = "#id")
+	public Find[=AuthenticationTable]permissionByIdOutput FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
-		UserpermissionEntity foundUserpermission = _userpermissionManager.FindById(userpermissionId);
-		if (foundUserpermission == null)  
+		[=AuthenticationTable]permissionEntity found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId);
+		if (found[=AuthenticationTable]permission == null)  
 			return null ; 
  	   
- 	   FindUserpermissionByIdOutput output=mapper.UserpermissionEntityToFindUserpermissionByIdOutput(foundUserpermission); 
+ 	   Find[=AuthenticationTable]permissionByIdOutput output=mapper.[=AuthenticationTable]permissionEntityToFind[=AuthenticationTable]permissionByIdOutput(found[=AuthenticationTable]permission); 
 		return output;
 	}
-    //User
-	// ReST API Call - GET /userpermission/1/user
+    //[=AuthenticationTable]
+	// ReST API Call - GET /[=AuthenticationTable?uncap_first]permission/1/[=AuthenticationTable?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @Cacheable (value = "Userpermission", key="#userpermissionId")
-	public GetUserOutput GetUser(UserpermissionId userpermissionId ) {
+    @Cacheable (value = "[=AuthenticationTable]permission", key="#[=AuthenticationTable?uncap_first]permissionId")
+	public Get[=AuthenticationTable]Output Get[=AuthenticationTable]([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
-		UserpermissionEntity foundUserpermission = _userpermissionManager.FindById(userpermissionId);
-		if (foundUserpermission == null) {
-			logHelper.getLogger().error("There does not exist a userpermission wth a id=%s", userpermissionId);
+		[=AuthenticationTable]permissionEntity found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId);
+		if (found[=AuthenticationTable]permission == null) {
+			logHelper.getLogger().error("There does not exist a [=AuthenticationTable?uncap_first]permission wth a id=%s", [=AuthenticationTable?uncap_first]permissionId);
 			return null;
 		}
-		UserEntity re = _userpermissionManager.GetUser(userpermissionId);
-		return mapper.UserEntityToGetUserOutput(re, foundUserpermission);
+		[=AuthenticationTable]Entity re = _[=AuthenticationTable?uncap_first]permissionManager.Get[=AuthenticationTable]([=AuthenticationTable?uncap_first]permissionId);
+		return mapper.[=AuthenticationTable]EntityToGet[=AuthenticationTable]Output(re, found[=AuthenticationTable]permission);
 	}
     
     //Permission
-	// ReST API Call - GET /userpermission/1/permission
+	// ReST API Call - GET /[=AuthenticationTable?uncap_first]permission/1/permission
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @Cacheable (value = "Userpermission", key="#userpermissionId")
-	public GetPermissionOutput GetPermission(UserpermissionId userpermissionId ) {
+    @Cacheable (value = "[=AuthenticationTable]permission", key="#[=AuthenticationTable?uncap_first]permissionId")
+	public GetPermissionOutput GetPermission([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
-		UserpermissionEntity foundUserpermission = _userpermissionManager.FindById(userpermissionId);
-		if (foundUserpermission == null) {
-			logHelper.getLogger().error("There does not exist a userpermission wth a id=%s", userpermissionId);
+		[=AuthenticationTable]permissionEntity found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId);
+		if (found[=AuthenticationTable]permission == null) {
+			logHelper.getLogger().error("There does not exist a [=AuthenticationTable?uncap_first]permission wth a id=%s", [=AuthenticationTable?uncap_first]permissionId);
 			return null;
 		}
-		PermissionEntity re = _userpermissionManager.GetPermission(userpermissionId);
-		return mapper.PermissionEntityToGetPermissionOutput(re, foundUserpermission);
+		PermissionEntity re = _[=AuthenticationTable?uncap_first]permissionManager.GetPermission([=AuthenticationTable?uncap_first]permissionId);
+		return mapper.PermissionEntityToGetPermissionOutput(re, found[=AuthenticationTable]permission);
 	}
     
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Userpermission")
-	public List<FindUserpermissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
+	@Cacheable(value = "[=AuthenticationTable]permission")
+	public List<Find[=AuthenticationTable]permissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
-		Page<UserpermissionEntity> foundUserpermission = _userpermissionManager.FindAll(Search(search), pageable);
-		List<UserpermissionEntity> userpermissionList = foundUserpermission.getContent();
-		Iterator<UserpermissionEntity> userpermissionIterator = userpermissionList.iterator(); 
-		List<FindUserpermissionByIdOutput> output = new ArrayList<>();
+		Page<[=AuthenticationTable]permissionEntity> found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindAll(Search(search), pageable);
+		List<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionList = found[=AuthenticationTable]permission.getContent();
+		Iterator<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionIterator = [=AuthenticationTable?uncap_first]permissionList.iterator(); 
+		List<Find[=AuthenticationTable]permissionByIdOutput> output = new ArrayList<>();
 
-		while (userpermissionIterator.hasNext()) {
-			output.add(mapper.UserpermissionEntityToFindUserpermissionByIdOutput(userpermissionIterator.next()));
+		while ([=AuthenticationTable?uncap_first]permissionIterator.hasNext()) {
+			output.add(mapper.[=AuthenticationTable]permissionEntityToFind[=AuthenticationTable]permissionByIdOutput([=AuthenticationTable?uncap_first]permissionIterator.next()));
 		}
 		return output;
 	}
 	
 	BooleanBuilder Search(SearchCriteria search) throws Exception {
 
-		QUserpermissionEntity userpermission= QUserpermissionEntity.userpermissionEntity;
+		Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission= Q[=AuthenticationTable]permissionEntity.[=AuthenticationTable?uncap_first]permissionEntity;
 		if(search != null) {
 			if(search.getType()==case1)
 			{
-				return searchAllProperties(userpermission, search.getValue(),search.getOperator());
+				return searchAllProperties([=AuthenticationTable?uncap_first]permission, search.getValue(),search.getOperator());
 			}
 			else if(search.getType()==case2)
 			{
@@ -176,7 +175,7 @@ public class UserpermissionAppService implements IUserpermissionAppService {
 					keysList.add(f.getFieldName());
 				}
 				checkProperties(keysList);
-				return searchSpecificProperty(userpermission,keysList,search.getValue(),search.getOperator());
+				return searchSpecificProperty([=AuthenticationTable?uncap_first]permission,keysList,search.getValue(),search.getOperator());
 			}
 			else if(search.getType()==case3)
 			{
@@ -187,14 +186,14 @@ public class UserpermissionAppService implements IUserpermissionAppService {
 				}
 				List<String> keysList = new ArrayList<String>(map.keySet());
 				checkProperties(keysList);
-				return searchKeyValuePair(userpermission, map,search.getJoinColumns());
+				return searchKeyValuePair([=AuthenticationTable?uncap_first]permission, map,search.getJoinColumns());
 			}
 
 		}
 		return null;
 	}
 	
-	BooleanBuilder searchAllProperties(QUserpermissionEntity userpermission,String value,String operator) {
+	BooleanBuilder searchAllProperties(Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission,String value,String operator) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
@@ -218,8 +217,8 @@ public class UserpermissionAppService implements IUserpermissionAppService {
 		
 		 list.get(i).replace("%20","").trim().equals("permission") ||
 		 list.get(i).replace("%20","").trim().equals("permissionId") ||
-		 list.get(i).replace("%20","").trim().equals("user") ||
-		 list.get(i).replace("%20","").trim().equals("userId")
+		 list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]") ||
+		 list.get(i).replace("%20","").trim().equals("userid")
 		)) 
 		{
 		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
@@ -227,43 +226,43 @@ public class UserpermissionAppService implements IUserpermissionAppService {
 		}
 	}
 	
-	BooleanBuilder searchSpecificProperty(QUserpermissionEntity userpermission,List<String> list,String value,String operator)  {
+	BooleanBuilder searchSpecificProperty(Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission,List<String> list,String value,String operator)  {
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
 		
-		  if(list.get(i).replace("%20","").trim().equals("userId")) {
-			builder.or(userpermission.user.id.eq(Long.parseLong(value)));
+		  if(list.get(i).replace("%20","").trim().equals("userid")) {
+			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].userid.eq(Long.parseLong(value)));
 			}
 		  if(list.get(i).replace("%20","").trim().equals("permissionId")) {
-			builder.or(userpermission.permission.id.eq(Long.parseLong(value)));
+			builder.or([=AuthenticationTable?uncap_first]permission.permission.id.eq(Long.parseLong(value)));
 			}
 		}
 		return builder;
 	}
 	
-	BooleanBuilder searchKeyValuePair(QUserpermissionEntity userpermission, Map<String,SearchFields> map,Map<String,String> joinColumns) {
+	BooleanBuilder searchKeyValuePair(Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission, Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
 		}
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
-        if(joinCol != null && joinCol.getKey().equals("userId")) {
-		    builder.and(userpermission.user.id.eq(Long.parseLong(joinCol.getValue())));
+        if(joinCol != null && joinCol.getKey().equals("userid")) {
+		    builder.and([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].userid.eq(Long.parseLong(joinCol.getValue())));
 		}
         }
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
         if(joinCol != null && joinCol.getKey().equals("permissionId")) {
-		    builder.and(userpermission.permission.id.eq(Long.parseLong(joinCol.getValue())));
+		    builder.and([=AuthenticationTable?uncap_first]permission.permission.id.eq(Long.parseLong(joinCol.getValue())));
 		}
         }
 		return builder;
 	}
 	
-	public UserpermissionId parseUserpermissionKey(String keysString) {
+	public [=AuthenticationTable]permissionId parse[=AuthenticationTable]permissionKey(String keysString) {
 		
 		String[] keyEntries = keysString.split(",");
-		UserpermissionId userpermissionId = new UserpermissionId();
+		[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId = new [=AuthenticationTable]permissionId();
 		
 		Map<String,String> keyMap = new HashMap<String,String>();
 		if(keyEntries.length > 1) {
@@ -282,9 +281,9 @@ public class UserpermissionAppService implements IUserpermissionAppService {
 			//error
 		}
 		
-		userpermissionId.setPermissionId(Long.valueOf(keyMap.get("permissionId")));
-		userpermissionId.setUserId(Long.valueOf(keyMap.get("userId")));
-		return userpermissionId;
+		[=AuthenticationTable?uncap_first]permissionId.setPermissionId(Long.valueOf(keyMap.get("permissionId")));
+		[=AuthenticationTable?uncap_first]permissionId.setUserid(Long.valueOf(keyMap.get("userid")));
+		return [=AuthenticationTable?uncap_first]permissionId;
 		
 	}	
 	

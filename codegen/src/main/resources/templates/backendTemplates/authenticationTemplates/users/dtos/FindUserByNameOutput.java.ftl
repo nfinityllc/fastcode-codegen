@@ -1,8 +1,8 @@
-package [=PackageName].application.Authorization.User.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable].Dto;
 
 import java.util.Date;
 
-public class FindUserByNameOutput {
+public class Find[=AuthenticationTable]ByNameOutput {
 
 	private Long id;
 	private int accessFailedCount;

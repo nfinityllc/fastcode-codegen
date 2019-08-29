@@ -1,4 +1,4 @@
-package [=PackageName].domain.[=ClassName];
+package [=PackageName].domain<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;

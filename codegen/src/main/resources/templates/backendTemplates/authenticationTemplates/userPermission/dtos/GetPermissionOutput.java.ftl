@@ -1,27 +1,27 @@
-package [=PackageName].application.Authorization.Userpermission.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto;
 
 public class GetPermissionOutput {
   private String displayName;
   private Long id;
   private String name;
 
-  private Long userpermissionPermissionId;
+  private Long [=AuthenticationTable?uncap_first]permissionPermissionId;
   
-  public Long getuserpermissionPermissionId() {
-  return userpermissionPermissionId;
+  public Long get[=AuthenticationTable]permissionPermissionId() {
+  return [=AuthenticationTable?uncap_first]permissionPermissionId;
   }
 
-  public void setuserpermissionPermissionId(Long userpermissionPermissionId){
-  this.userpermissionPermissionId = userpermissionPermissionId;
+  public void set[=AuthenticationTable]permissionPermissionId(Long [=AuthenticationTable?uncap_first]permissionPermissionId){
+  this.[=AuthenticationTable?uncap_first]permissionPermissionId = [=AuthenticationTable?uncap_first]permissionPermissionId;
   }
-  private Long userpermissionUserId;
+  private Long [=AuthenticationTable?uncap_first]permissionUserid;
   
-  public Long getuserpermissionUserId() {
-  return userpermissionUserId;
+  public Long get[=AuthenticationTable]permissionUserid() {
+  return [=AuthenticationTable?uncap_first]permissionUserid;
   }
 
-  public void setuserpermissionUserId(Long userpermissionUserId){
-  this.userpermissionUserId = userpermissionUserId;
+  public void set[=AuthenticationTable]permissionUserid(Long [=AuthenticationTable?uncap_first]permissionUserid){
+  this.[=AuthenticationTable?uncap_first]permissionUserid = [=AuthenticationTable?uncap_first]permissionUserid;
   }
   public String getDisplayName() {
   return displayName;

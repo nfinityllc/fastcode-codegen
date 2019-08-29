@@ -1,23 +1,16 @@
 package [=PackageName].domain.Authorization.Role;
 
+import java.util.Optional;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.IRepository.IRolepermissionRepository;
-import [=PackageName].domain.IRepository.IUserRepository;
 import [=PackageName].domain.IRepository.IRoleRepository;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import [=CommonModulePackage].Search.SearchFields;
-
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
-import java.util.List;
 
 @Repository
-
 public class RoleManager implements IRoleManager {
 
     @Autowired
@@ -25,9 +18,6 @@ public class RoleManager implements IRoleManager {
     
     @Autowired
 	IRolepermissionRepository  _rolepermissionRepository;
-    
-    @Autowired
-	IUserRepository  _userRepository;
     
 	public RoleEntity Create(RoleEntity role) {
 

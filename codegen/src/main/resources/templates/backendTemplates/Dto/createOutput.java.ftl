@@ -1,4 +1,4 @@
-package [=PackageName].application.[=ClassName].Dto;
+package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
 
 import java.util.Date;
 public class Create[=ClassName]Output {

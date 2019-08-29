@@ -1,7 +1,7 @@
-package [=PackageName].application.[=ClassName];
+package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
-import [=PackageName].application.[=ClassName].Dto.*;
-import [=PackageName].domain.[=ClassName].I[=ClassName]Manager;
+import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].domain<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].I[=ClassName]Manager;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
 <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -9,7 +9,7 @@ import [=PackageName].domain.model.[=ClassName]Id;
 </#if>
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
-import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
+import [=PackageName].domain<#if relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 <#assign i=relationValue.joinDetails?size>
@@ -159,7 +159,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
-
 	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id) ; 
@@ -177,6 +176,20 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
  	   Find[=ClassName]ByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]); 
 		return output;
 	}
+	<#if ClassName == AuthenticationTable>
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=ClassName?uncap_first]Name")
+	public Find[=ClassName]ByNameOutput FindBy[=ClassName]Name(String [=ClassName?uncap_first]Name) {
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindBy[=ClassName]Name([=ClassName?uncap_first]Name);
+		if (found[=ClassName] == null) {
+			return null;
+		}
+		return  mapper.[=ClassName]EntityToFind[=ClassName]ByNameOutput(found[=ClassName]);
+
+	}
+	</#if>
+
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
     //[=relationValue.eName]

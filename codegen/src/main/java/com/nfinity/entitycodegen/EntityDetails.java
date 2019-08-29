@@ -517,7 +517,7 @@ public class EntityDetails {
 				for (Class<?> currentClass : classList) { 
 					String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1); 
 					if (entityName.equals(entry.getValue().geteName())) {
-						System.out.println("\n here");
+						
 						try { 
 							Class<?> myClass = currentClass; 
 							Object classObj = (Object) myClass.newInstance(); 

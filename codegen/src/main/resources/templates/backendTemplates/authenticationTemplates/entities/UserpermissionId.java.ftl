@@ -2,17 +2,17 @@ package [=PackageName].domain.model;
 
 import java.io.Serializable;
 
-public class UserpermissionId implements Serializable {
+public class [=AuthenticationTable]permissionId implements Serializable {
 
     private Long permissionId;
-    private Long userId;
+    private Long userid;
     
-    public UserpermissionId() {
+    public [=AuthenticationTable]permissionId() {
 
     }
-    public UserpermissionId(Long permissionId,Long userId) {
+    public [=AuthenticationTable]permissionId(Long permissionId,Long userid) {
   		this.permissionId =permissionId;
-  		this.userId =userId;
+  		this.userid =userid;
     }
     
     public Long getPermissionId() {
@@ -21,11 +21,11 @@ public class UserpermissionId implements Serializable {
     public void setPermissionId(Long permissionId){
         this.permissionId = permissionId;
     }
-    public Long getUserId() {
-        return userId;
+    public Long getUserid() {
+        return userid;
     }
-    public void setUserId(Long userId){
-        this.userId = userId;
+    public void setUserid(Long userid){
+        this.userid = userid;
     }
     
 }

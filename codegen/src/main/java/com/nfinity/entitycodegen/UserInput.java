@@ -15,9 +15,16 @@ public class UserInput {
 	Boolean scheduler;
 	Boolean history;
 	Boolean flowable;
-	String authenticationType;
+	String authenticationType=null;
+	String authenticationSchema;
 	
 	
+	public String getAuthenticationSchema() {
+		return authenticationSchema;
+	}
+	public void setAuthenticationSchema(String authenticationSchema) {
+		this.authenticationSchema = authenticationSchema;
+	}
 	public String getGroupArtifactId() {
 		return groupArtifactId;
 	}

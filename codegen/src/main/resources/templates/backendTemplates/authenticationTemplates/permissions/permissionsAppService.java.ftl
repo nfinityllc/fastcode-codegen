@@ -163,7 +163,7 @@ public class PermissionAppService implements IPermissionAppService {
 		 list.get(i).replace("%20","").trim().equals("id") ||
 		 list.get(i).replace("%20","").trim().equals("name") ||
 		 list.get(i).replace("%20","").trim().equals("rolepermission") ||
-		 list.get(i).replace("%20","").trim().equals("userpermission")
+		 list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]permission")
 		)) 
 		{
 		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
@@ -225,10 +225,10 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 	
 	
-	public Map<String,String> parseUserpermissionJoinColumn(String keysString) {
+	public Map<String,String> parse[=AuthenticationTable]permissionJoinColumn(String keysString) {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
-		joinColumnMap.put("userId", keysString);
+		joinColumnMap.put("userid", keysString);
 		return joinColumnMap;
 		
 	}

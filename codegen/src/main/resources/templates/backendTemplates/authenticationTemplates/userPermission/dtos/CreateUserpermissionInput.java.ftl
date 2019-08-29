@@ -1,15 +1,15 @@
-package [=PackageName].application.Authorization.Userpermission.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto;
 
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
-public class CreateUserpermissionInput {
+public class Create[=AuthenticationTable]permissionInput {
 
   @NotNull(message = "permissionId Should not be null")
   private Long permissionId;
   
-  @NotNull(message = "userId Should not be null")
-  private Long userId;
+  @NotNull(message = "user Id Should not be null")
+  private Long userid;
   
   public Long getPermissionId() {
   return permissionId;
@@ -19,12 +19,12 @@ public class CreateUserpermissionInput {
   this.permissionId = permissionId;
   }
   
-  public Long getUserId() {
-  return userId;
+  public Long getUserid() {
+  return userid;
   }
 
-  public void setUserId(Long userId){
-  this.userId = userId;
+  public void setUserid(Long userid){
+  this.userid = userid;
   }
  
 }

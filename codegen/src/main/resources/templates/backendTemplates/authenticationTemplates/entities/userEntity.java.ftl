@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "User")
+@Table(name = "User", schema = "[=SchemaName]")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
