@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Permission")
+@Table(name = "Permission", schema = "[=SchemaName]")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
@@ -83,15 +83,15 @@ public class PermissionEntity<#if Audit!false> extends AuditedEntity<String></#i
    
     <#if AuthenticationType == "database">
     @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
-    public Set<UserpermissionEntity> getUserpermissionSet() { 
-      return userpermissionSet; 
+    public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 
+      return [=AuthenticationTable?uncap_first]permissionSet; 
     } 
  
-    public void setUserpermissionSet(Set<UserpermissionEntity> userpermission) { 
-      this.userpermissionSet = userpermission; 
+    public void set[=AuthenticationTable]permissionSet(Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permission) { 
+      this.[=AuthenticationTable?uncap_first]permissionSet = [=AuthenticationTable?uncap_first]permission; 
     } 
  
-    private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>(); 
+    private Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionSet = new HashSet<[=AuthenticationTable]permissionEntity>(); 
 
     </#if>
 }

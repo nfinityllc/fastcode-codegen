@@ -1,10 +1,10 @@
 package [=PackageName];
 
-import [=PackageName].application.Authorization.User.IUserAppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable].I[=AuthenticationTable]AppService;
 import [=PackageName].domain.model.RolepermissionEntity;
-import [=PackageName].domain.model.UserpermissionEntity;
-import [=PackageName].domain.model.UserEntity;
-import [=PackageName].domain.IRepository.IUserRepository;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
+import [=PackageName].domain.IRepository.I[=AuthenticationTable]Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,30 +22,30 @@ import java.util.stream.Collectors;
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-	public UserDetailsServiceImpl(IUserAppService userAppService) {
+	public UserDetailsServiceImpl(I[=AuthenticationTable]AppService userAppService) {
 	}
 
 	@Autowired
-	private IUserRepository usersRepository;
+	private I[=AuthenticationTable]Repository usersRepository;
 
 
 	@Override
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		UserEntity applicationUser = usersRepository.findByUserName(userName);
+		[=AuthenticationTable]Entity applicationUser = usersRepository.findBy[=AuthenticationTable]Name(username);
 
 		if (applicationUser == null) {
-			throw new UsernameNotFoundException(userName);
+			throw new UsernameNotFoundException(username);
 		}
 
 		List<String> permissions = getAllPermissions(applicationUser);
 		List<GrantedAuthority> authorities = getGrantedAuthorities(permissions);
 
-		return new User(applicationUser.getUserName(), applicationUser.getPassword(), authorities); // User class implements UserDetails Interface
+		return new User(applicationUser.getUsername(), applicationUser.getPassword(), authorities); // User class implements UserDetails Interface
 	}
 
 
-	private List<String> getAllPermissions(UserEntity user) {
+	private List<String> getAllPermissions([=AuthenticationTable]Entity user) {
 
 
 		List<String> permissions = new ArrayList<>();
@@ -69,9 +69,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			}
       }
 
-      if (user.getUserpermissionSet() != null) {
-    	  Set<UserpermissionEntity> upe=user.getUserpermissionSet();
-          for (UserpermissionEntity item : upe) {
+      if (user.get[=AuthenticationTable]permissionSet() != null) {
+    	  Set<[=AuthenticationTable]permissionEntity> upe=user.get[=AuthenticationTable]permissionSet();
+          for ([=AuthenticationTable]permissionEntity item : upe) {
               permissions.add(item.getPermission().getName());
           }
       }

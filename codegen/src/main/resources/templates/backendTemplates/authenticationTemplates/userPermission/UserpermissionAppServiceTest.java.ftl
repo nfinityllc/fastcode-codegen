@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Userpermission;
+package [=PackageName].application.Authorization.[=AuthenticationTable]permission;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -42,7 +42,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class UserpermissionAppServiceTest {
+public class [=AuthenticationTable]permissionAppServiceTest {
 
 	@InjectMocks
 	UserpermissionAppService _appService;

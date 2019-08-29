@@ -1,4 +1,4 @@
-package [=PackageName].application.[=ClassName];
+package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;

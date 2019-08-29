@@ -1,30 +1,30 @@
-package [=PackageName].domain.Authorization.Userpermission;
+package [=PackageName].domain.Authorization.[=AuthenticationTable]permission;
 
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import javax.validation.constraints.Positive;
-import [=PackageName].domain.model.UserpermissionEntity;
-import [=PackageName].domain.model.UserpermissionId;
-import [=PackageName].domain.model.UserEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionId;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.model.PermissionEntity;
 
-public interface IUserpermissionManager {
+public interface I[=AuthenticationTable]permissionManager {
     // CRUD Operations
-    UserpermissionEntity Create(UserpermissionEntity userpermission);
+    [=AuthenticationTable]permissionEntity Create([=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission);
 
-    void Delete(UserpermissionEntity userpermission);
+    void Delete([=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission);
 
-    UserpermissionEntity Update(UserpermissionEntity userpermission);
+    [=AuthenticationTable]permissionEntity Update([=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission);
 
-    UserpermissionEntity FindById(UserpermissionId userpermissionId );
+    [=AuthenticationTable]permissionEntity FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
 
-    Page<UserpermissionEntity> FindAll(Predicate predicate, Pageable pageable);
+    Page<[=AuthenticationTable]permissionEntity> FindAll(Predicate predicate, Pageable pageable);
    
-    //User
-    public UserEntity GetUser(UserpermissionId userpermissionId );
+    //[=AuthenticationTable]
+    public [=AuthenticationTable]Entity Get[=AuthenticationTable]([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
   
     //Permission
-    public PermissionEntity GetPermission(UserpermissionId userpermissionId );
+    public PermissionEntity GetPermission([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
   
 }

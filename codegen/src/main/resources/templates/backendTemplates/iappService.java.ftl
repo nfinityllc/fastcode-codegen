@@ -1,7 +1,6 @@
-package [=PackageName].application.[=ClassName];
+package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import java.util.List;
-
 import javax.validation.constraints.Positive;
 <#if CompositeKeyClasses?seq_contains(ClassName)>
 import [=PackageName].domain.model.[=ClassName]Id;
@@ -9,7 +8,7 @@ import [=PackageName].domain.model.[=ClassName]Id;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import [=CommonModulePackage].Search.SearchCriteria;
-import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 
 @Service
 public interface I[=ClassName]AppService {

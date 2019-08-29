@@ -1,18 +1,24 @@
-package [=PackageName].application.[=ClassName];
+package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import org.mapstruct.Mapper;
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation =="OneToOne">
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+<#break>
+</#if>
+</#list>
+<#if ClassName == AuthenticationTable>
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+</#if>
+<#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
-</#if>
 </#list>
-import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
-
 
 @Mapper(componentModel = "spring")
 public interface [=ClassName]Mapper {
@@ -129,6 +135,13 @@ public interface [=ClassName]Mapper {
    </#list> 
    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
+<#if ClassName == AuthenticationTable>
+   @Mappings({ 
+   @Mapping(source = "role.name", target = "roleName"),                   
+   @Mapping(source = "role.id", target = "roleId"),                   
+   }) 
+   Find[=ClassName]ByNameOutput [=ClassName]EntityToFind[=ClassName]ByNameOutput([=ClassName]Entity entity);
+</#if>
    <#list Relationship as relationKey, relationValue>
 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">

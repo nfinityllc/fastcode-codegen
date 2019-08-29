@@ -1,5 +1,8 @@
 package [=PackageName].RestControllers;
 
+<#if ClassName == AuthenticationTable>
+import javax.persistence.EntityExistsException;
+</#if>
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
@@ -19,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 <#if AuthenticationType != "none">
 import org.springframework.security.access.prepost.PreAuthorize;
 </#if>
+<#if ClassName == AuthenticationTable>
+import org.springframework.security.crypto.password.PasswordEncoder;
+</#if>
 <#if CompositeKeyClasses?seq_contains(ClassName)>
 import [=PackageName].domain.model.[=ClassName]Id;
 </#if>
@@ -26,18 +32,18 @@ import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=CommonModulePackage].domain.EmptyJsonResponse;
-import [=PackageName].application.[=ClassName].[=ClassName]AppService;
-import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].[=ClassName]AppService;
+import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
+import [=PackageName].application<#if relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
 <#if relationValue.relation == "OneToMany">
-import java.util.List;
-import java.util.Map;
-import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+import [=PackageName].application<#if relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#list>
+import java.util.List;
+import java.util.Map;
 import [=CommonModulePackage].logging.LoggingHelper;
 
 @RestController
@@ -59,12 +65,29 @@ public class [=ClassName]Controller {
 
 	@Autowired
 	private Environment env;
-    
+	<#if ClassName == AuthenticationTable>
+	
+	@Autowired
+    private PasswordEncoder pEncoder;
+    </#if>
+
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_CREATE')")
     </#if>
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?uncap_first]) {
+		<#if ClassName == AuthenticationTable>
+		Find[=ClassName]ByNameOutput found[=ClassName] = _[=ClassName?uncap_first]AppService.FindBy[=ClassName]Name([=ClassName?uncap_first].getUsername());
+
+	        if (found[=ClassName] != null) {
+	            logHelper.getLogger().error("There already exists a [=ClassName] with a name=%s", [=ClassName?uncap_first].getUsername());
+	            throw new EntityExistsException(
+	                    String.format("There already exists a [=ClassName] with name =%s", [=ClassName?uncap_first].getUsername()));
+	        }
+	        
+	    [=ClassName?uncap_first].setPassword(pEncoder.encode([=ClassName?uncap_first].getPassword()));
+	    
+		</#if>
 		Create[=ClassName]Output output=_[=ClassName?uncap_first]AppService.Create([=ClassName?uncap_first]);
 		if(output==null)
 		{

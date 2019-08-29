@@ -1,8 +1,8 @@
-package [=PackageName].application.Authorization.Userpermission.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto;
 
 import java.util.Date;
 
-public class GetUserOutput {
+public class Get[=AuthenticationTable]Output {
   private Integer accessFailedCount;
   private String authenticationSource;
   private String emailAddress;
@@ -21,25 +21,25 @@ public class GetUserOutput {
   private String phoneNumber;
   private Long profilePictureId;
   private Boolean twoFactorEnabled;
-  private String userName;
+  private String username;
 
-  private Long userpermissionPermissionId;
+  private Long [=AuthenticationTable]permissionPermissionId;
   
-  public Long getuserpermissionPermissionId() {
-  return userpermissionPermissionId;
+  public Long get[=AuthenticationTable]permissionPermissionId() {
+  return [=AuthenticationTable]permissionPermissionId;
   }
 
-  public void setuserpermissionPermissionId(Long userpermissionPermissionId){
-  this.userpermissionPermissionId = userpermissionPermissionId;
+  public void set[=AuthenticationTable]permissionPermissionId(Long [=AuthenticationTable]permissionPermissionId){
+  this.[=AuthenticationTable]permissionPermissionId = [=AuthenticationTable]permissionPermissionId;
   }
-  private Long userpermissionUserId;
+  private Long [=AuthenticationTable]permissionUserid;
   
-  public Long getuserpermissionUserId() {
-  return userpermissionUserId;
+  public Long get[=AuthenticationTable]permissionUserid() {
+  return [=AuthenticationTable]permissionUserid;
   }
 
-  public void setuserpermissionUserId(Long userpermissionUserId){
-  this.userpermissionUserId = userpermissionUserId;
+  public void set[=AuthenticationTable]permissionUserid(Long [=AuthenticationTable]permissionUserid){
+  this.[=AuthenticationTable]permissionUserid = [=AuthenticationTable]permissionUserid;
   }
   public Integer getAccessFailedCount() {
   return accessFailedCount;
@@ -167,12 +167,12 @@ public class GetUserOutput {
   public void setTwoFactorEnabled(Boolean twoFactorEnabled){
   this.twoFactorEnabled = twoFactorEnabled;
   }
-  public String getUserName() {
-  return userName;
+  public String getUsername() {
+  return username;
   }
 
-  public void setUserName(String userName){
-  this.userName = userName;
+  public void setUsername(String username){
+  this.username = username;
   }
 
 }

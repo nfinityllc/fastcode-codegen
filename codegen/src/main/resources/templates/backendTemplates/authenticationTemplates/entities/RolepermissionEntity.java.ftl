@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.Date;
 
 @Entity
-@Table(name = "Rolepermission", schema = "sample")
+@Table(name = "Rolepermission", schema = "[=SchemaName]")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>

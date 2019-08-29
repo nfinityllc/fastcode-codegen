@@ -10,7 +10,10 @@ import java.util.Date;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import [=CommonModulePackage].domain.BaseClasses.AuditedEntity;
 </#if>
-
+<#if ClassName == AuthenticationTable>
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+</#if>
 @Entity
 @Table(name = "[=ClassName]", schema = "[=SchemaName]")
 <#if Audit!false>
@@ -240,6 +243,30 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   </#list>
  </#if> 
 </#list>
+
+<#if ClassName == AuthenticationTable>
+@OneToMany(mappedBy = "[=AuthenticationTable?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 
+       return [=AuthenticationTable?uncap_first]permissionSet; 
+    } 
+ 
+    public void set[=AuthenticationTable]permissionSet(Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permission) { 
+      this.[=AuthenticationTable?uncap_first]permissionSet = [=AuthenticationTable?uncap_first]permission; 
+    } 
+ 
+    private Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionSet = new HashSet<[=AuthenticationTable]permissionEntity>();
+
+    @ManyToOne
+    @JoinColumn(name = "roleId")
+    public RoleEntity getRole() {
+        return role;
+    }
+    public void setRole(RoleEntity role) {
+        this.role = role;
+    }
+
+    private RoleEntity role;
+</#if>
 //  @Override
 //  public boolean equals(Object o) {
 //    if (this == o) return true;

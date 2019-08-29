@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.User.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable].Dto;
 
 import java.util.Date;
 

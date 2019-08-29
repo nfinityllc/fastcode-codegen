@@ -13,9 +13,9 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "OneToMany">
 import [=PackageName].domain.model.[=relationValue.eName]Entity; 
-import java.util.List;
 </#if>
 </#list>
+import java.util.List;
 import [=PackageName].domain.model.[=EntityClassName];
 
 <#if History!false>
@@ -23,7 +23,6 @@ import [=PackageName].domain.model.[=EntityClassName];
 </#if>
 @RepositoryRestResource(collectionResourceRel = "[=ApiPath]", path = "[=ApiPath]")
 public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName], <#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list></#if>>,QuerydslPredicateExecutor<[=EntityClassName]> {
-
 <#if CompositeKeyClasses?seq_contains(ClassName)>
     <#assign count = 0>
 //    @Query("select e from [=EntityClassName] e where <#list PrimaryKeys?keys as key><#assign count = count+1><#if key_has_next>e.[=key] = ?[=count] and <#else>e.[=key] = ?[=count]"</#if></#list>)
@@ -37,11 +36,13 @@ public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName
   <#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "string">
 //      @Query("select e from [=EntityClassName] e where e.[=value.fieldName] = ?1")
 //	  [=EntityClassName] findById([=value.fieldType] [=value.fieldName]);
-	  
   </#if>
 
   </#if>
 </#list>
 </#if>
-	   
+<#if ClassName == AuthenticationTable>
+    @Query("select u from [=EntityClassName] u where u.username = ?1")
+    [=EntityClassName] findBy[=ClassName]Name(String value);   
+</#if>
 }

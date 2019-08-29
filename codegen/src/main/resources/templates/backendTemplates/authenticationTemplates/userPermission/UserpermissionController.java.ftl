@@ -16,26 +16,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import [=PackageName].domain.model.UserpermissionId;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionId;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=CommonModulePackage].domain.EmptyJsonResponse;
-import [=PackageName].application.Authorization.Userpermission.UserpermissionAppService;
-import [=PackageName].application.Authorization.Userpermission.Dto.*;
-import [=PackageName].application.Authorization.User.UserAppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.*;
+import [=PackageName].application.Authorization.[=AuthenticationTable].[=AuthenticationTable]AppService;
 import [=PackageName].application.Authorization.Permission.PermissionAppService;
 import [=CommonModulePackage].logging.LoggingHelper;
 
 @RestController
-@RequestMapping("/userpermission")
-public class UserpermissionController {
+@RequestMapping("/[=AuthenticationTable?uncap_first]permission")
+public class [=AuthenticationTable]permissionController {
 
 	@Autowired
-	private UserpermissionAppService _userpermissionAppService;
+	private [=AuthenticationTable]permissionAppService _[=AuthenticationTable?uncap_first]permissionAppService;
     
     @Autowired
-	private UserAppService  _userAppService;
+	private [=AuthenticationTable]AppService  _[=AuthenticationTable?uncap_first]AppService;
     
     @Autowired
 	private PermissionAppService  _permissionAppService;
@@ -47,8 +47,8 @@ public class UserpermissionController {
 	private Environment env;
     
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<CreateUserpermissionOutput> Create(@RequestBody @Valid CreateUserpermissionInput userpermission) {
-		CreateUserpermissionOutput output=_userpermissionAppService.Create(userpermission);
+	public ResponseEntity<Create[=AuthenticationTable]permissionOutput> Create(@RequestBody @Valid Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission) {
+		Create[=AuthenticationTable]permissionOutput output=_[=AuthenticationTable?uncap_first]permissionAppService.Create([=AuthenticationTable?uncap_first]permission);
 		if(output==null)
 		{
 			logHelper.getLogger().error("No record found");
@@ -59,56 +59,56 @@ public class UserpermissionController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
-	// ------------ Delete userpermission ------------
+	// ------------ Delete [=AuthenticationTable?uncap_first]rpermission ------------
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
-	UserpermissionId userpermissionId =_userpermissionAppService.parseUserpermissionKey(id);
-	if(userpermissionId == null)
+	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId =_[=AuthenticationTable?uncap_first]permissionAppService.parse[=AuthenticationTable]permissionKey(id);
+	if([=AuthenticationTable?uncap_first]permissionId == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	FindUserpermissionByIdOutput output = _userpermissionAppService.FindById(userpermissionId);
+	Find[=AuthenticationTable]permissionByIdOutput output = _[=AuthenticationTable?uncap_first]permissionAppService.FindById([=AuthenticationTable?uncap_first]permissionId);
 	if (output == null) {
-		logHelper.getLogger().error("There does not exist a userpermission with a id=%s", id);
+		logHelper.getLogger().error("There does not exist a [=AuthenticationTable?uncap_first]permission with a id=%s", id);
 		throw new EntityNotFoundException(
-			String.format("There does not exist a userpermission with a id=%s", id));
+			String.format("There does not exist a [=AuthenticationTable?uncap_first]permission with a id=%s", id));
 	}
-	 _userpermissionAppService.Delete(userpermissionId);
+	 _[=AuthenticationTable?uncap_first]permissionAppService.Delete([=AuthenticationTable?uncap_first]permissionId);
     }
 	
-	// ------------ Update userpermission ------------
+	// ------------ Update [=AuthenticationTable?uncap_first]permission ------------
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<UpdateUserpermissionOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateUserpermissionInput userpermission) {
-	UserpermissionId userpermissionId =_userpermissionAppService.parseUserpermissionKey(id);
-	if(userpermissionId == null)
+	public ResponseEntity<Update[=AuthenticationTable]permissionOutput> Update(@PathVariable String id, @RequestBody @Valid Update[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission) {
+	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId =_[=AuthenticationTable?uncap_first]permissionAppService.parse[=AuthenticationTable]permissionKey(id);
+	if([=AuthenticationTable?uncap_first]permissionId == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	FindUserpermissionByIdOutput currentUserpermission = _userpermissionAppService.FindById(userpermissionId);
+	Find[=AuthenticationTable]permissionByIdOutput current[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionAppService.FindById([=AuthenticationTable?uncap_first]permissionId);
 		
-		if (currentUserpermission == null) {
-			logHelper.getLogger().error("Unable to update. Userpermission with id {} not found.", id);
+		if (current[=AuthenticationTable]permission == null) {
+			logHelper.getLogger().error("Unable to update. [=AuthenticationTable]permission with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
-	return new ResponseEntity(_userpermissionAppService.Update(userpermissionId,userpermission), HttpStatus.OK);
+	return new ResponseEntity(_[=AuthenticationTable?uncap_first]permissionAppService.Update([=AuthenticationTable?uncap_first]permissionId,[=AuthenticationTable?uncap_first]permission), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<FindUserpermissionByIdOutput> FindById(@PathVariable String id) {
-	UserpermissionId userpermissionId =_userpermissionAppService.parseUserpermissionKey(id);
-	if(userpermissionId == null)
+	public ResponseEntity<Find[=AuthenticationTable]permissionByIdOutput> FindById(@PathVariable String id) {
+	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId =_[=AuthenticationTable?uncap_first]permissionAppService.parse[=AuthenticationTable]permissionKey(id);
+	if([=AuthenticationTable?uncap_first]permissionId == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	FindUserpermissionByIdOutput output = _userpermissionAppService.FindById(userpermissionId);
+	Find[=AuthenticationTable]permissionByIdOutput output = _[=AuthenticationTable?uncap_first]permissionAppService.FindById([=AuthenticationTable?uncap_first]permissionId);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
@@ -125,36 +125,35 @@ public class UserpermissionController {
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		
-		return ResponseEntity.ok(_userpermissionAppService.Find(searchCriteria,Pageable));
+		return ResponseEntity.ok(_[=AuthenticationTable?uncap_first]permissionAppService.Find(searchCriteria,Pageable));
 	}
 
-	@RequestMapping(value = "/{userpermissionid}/user", method = RequestMethod.GET)
-	public ResponseEntity<GetUserOutput> GetUser(@PathVariable String id) {
-	UserpermissionId userpermissionId =_userpermissionAppService.parseUserpermissionKey(id);
-	if(userpermissionId == null)
+	@RequestMapping(value = "/{[=AuthenticationTable?uncap_first]permissionid}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
+	public ResponseEntity<Get[=AuthenticationTable]Output> Get[=AuthenticationTable](@PathVariable String id) {
+	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId =_[=AuthenticationTable?uncap_first]permissionAppService.parse[=AuthenticationTable]permissionKey(id);
+	if([=AuthenticationTable?uncap_first]permissionId == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	GetUserOutput output= _userpermissionAppService.GetUser(userpermissionId);
+	Get[=AuthenticationTable]Output output= _[=AuthenticationTable?uncap_first]permissionAppService.Get[=AuthenticationTable]([=AuthenticationTable?uncap_first]permissionId);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
   
-
-	@RequestMapping(value = "/{userpermissionid}/permission", method = RequestMethod.GET)
+	@RequestMapping(value = "/{[=AuthenticationTable?uncap_first]permissionid}/permission", method = RequestMethod.GET)
 	public ResponseEntity<GetPermissionOutput> GetPermission(@PathVariable String id) {
-	UserpermissionId userpermissionId =_userpermissionAppService.parseUserpermissionKey(id);
-	if(userpermissionId == null)
+	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId =_[=AuthenticationTable?uncap_first]permissionAppService.parse[=AuthenticationTable]permissionKey(id);
+	if([=AuthenticationTable?uncap_first]permissionId == null)
 	{
 		logHelper.getLogger().error("Invalid id=%s", id);
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
-	GetPermissionOutput output= _userpermissionAppService.GetPermission(userpermissionId);
+	GetPermissionOutput output= _[=AuthenticationTable?uncap_first]permissionAppService.GetPermission([=AuthenticationTable?uncap_first]permissionId);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

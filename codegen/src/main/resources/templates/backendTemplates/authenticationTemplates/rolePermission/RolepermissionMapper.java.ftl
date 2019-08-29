@@ -3,7 +3,7 @@ package [=PackageName].application.Authorization.Rolepermission;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.testing.demoTemp.domain.model.PermissionEntity;
+import [=PackageName].domain.model.PermissionEntity;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import [=PackageName].domain.model.RoleEntity;

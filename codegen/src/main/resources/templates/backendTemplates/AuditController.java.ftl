@@ -4,7 +4,9 @@ package [=PackageName].RestControllers;
 import [=entityMap.importPkg];
 </#list>
 <#if AuthenticationType == "database">
+<#if AuthenticationTable == "User">
 import [=PackageName].domain.model.UserEntity;
+</#if>
 </#if>
 <#if AuthenticationType != "none">
 import [=PackageName].domain.model.RoleEntity;
@@ -31,13 +33,15 @@ public class AuditController {
     public AuditController(Javers javers) {
         this.javers = javers;
     }
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "database">
+    <#if AuthenticationTable == "User">
     @RequestMapping("/user")
     public String getUserChanges() {
         QueryBuilder jqlQuery = QueryBuilder.byClass(UserEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }
+    </#if>
     </#if>
     <#if AuthenticationType != "none">
     @RequestMapping("/role")

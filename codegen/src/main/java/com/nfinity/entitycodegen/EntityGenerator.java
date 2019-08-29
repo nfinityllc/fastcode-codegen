@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.nfinity.codegen.AuthenticationClassesTemplateGenerator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -15,15 +16,15 @@ public class EntityGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 
 	public static void setTemplateLoader() {
-		ClassTemplateLoader ctl = new ClassTemplateLoader(new EntityGenerator().getClass(), "/templates/entityTemplate");
+		ClassTemplateLoader ctl = new ClassTemplateLoader(new EntityGenerator().getClass(), "/templates");
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setTemplateLoader(ctl);
 	}
 
 	public static Map<String, EntityDetails> generateEntities(String connectionString, String schema,
-			List<String> tableList, String packageName, String destination, Boolean audit) {
-
+			List<String> tableList, String packageName, String destination, Boolean audit,Boolean history,Boolean flowable,String authenticationSchema,String authenticationType) {
+        String authDest=destination; 
 		Map<String, String> connectionProps = parseConnectionString(connectionString);
 		String entityPackage = packageName + ".domain.model";
 		final String tempPackageName = entityPackage.concat(".Temp");
@@ -97,22 +98,71 @@ public class EntityGenerator {
 					details.setEntitiesDescriptiveFieldMap(descriptiveFieldEntities);
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 					// Generate Entity based on template
-					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit,compositePrimaryKeyEntities);
+					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit,compositePrimaryKeyEntities,authenticationSchema,authenticationType);
 
 				}
 			}
+			System.out.println(" authn" + authenticationSchema);
+			if(authenticationSchema !=null )
+			{
+				Boolean isTableExits=false;
+				if(entityDetailsMap.containsKey(authenticationSchema)) {
+					System.out.println(" Contains " );
+				       isTableExits=true;
+				}
+//				for(Map.Entry<String, EntityDetails> entry : entityDetailsMap.entrySet())
+//				{
+//					System.out.println("KK " + entry.getKey());
+//					if(entry.getKey().equalsIgnoreCase(authenticationShema)) {
+//				       System.out.println(" Contains " );
+//				       isTableExits=true;
+//					}	
+//				}
+				Scanner scanner=new Scanner(System.in);
+				UserInput input=new UserInput();
+				while(!isTableExits)
+				{
+					System.out.println("Enter Valid Authorization Table : ");
+					String str=scanner.nextLine();
+					str=str.substring(0, 1).toUpperCase() + str.substring(1);
+					System.out.println("  j" + str);
+					if(entityDetailsMap.containsKey(str))
+					{
+						isTableExits=true;
+				       input.setAuthenticationSchema(str);
+					}
+//					for(Map.Entry<String, EntityDetails> entry : entityDetailsMap.entrySet())
+//					{
+//						System.out.println("K  " + entry.getKey());
+//						if(entry.getKey().equalsIgnoreCase(str)) {
+//					       System.out.println(" Contains  n " );
+//					       isTableExits=true;
+//					       input.setAuthenticationSchema(str.substring(0, 1).toLowerCase() + str.substring(1));
+//						}	
+//					}
+				}
+				
+			}
+//			
+//			if(!authenticationType.equals("none"))
+//			{
+//				 AuthenticationClassesTemplateGenerator.generateAutheticationClasses(authDest, packageName, audit,
+//					history,flowable,authenticationType,schema,authenticationSchema);
+//			}
+
+			
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
 
-	//	deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
 		return entityDetailsMap;
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
-			String destPath, Boolean audit,List<String> compositePrimaryKeyEntities) {
+			String destPath, Boolean audit,List<String> compositePrimaryKeyEntities,String authenticationTable,String authenticationType) {
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -124,6 +174,11 @@ public class EntityGenerator {
 		root.put("CommonModulePackage", packageName.concat(".CommonModule"));
 		root.put("CompositeKeyClasses", entityDetails.getCompositeKeyClasses());
 		root.put("SchemaName", schemaName);
+		root.put("AuthenticationType",authenticationType);
+		if(authenticationTable !=null)
+	        root.put("AuthenticationTable", authenticationTable);
+	        else
+	        	root.put("AuthenticationTable", "User");
 		root.put("Audit", audit);
 
 		setTemplateLoader();
@@ -152,6 +207,8 @@ public class EntityGenerator {
 		if (compositePrimaryKeyEntities.contains(className)) {
 			generateIdClass(root, destinationFolder);
 		}
+		generateFiles(AuthenticationClassesTemplateGenerator.getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destinationFolder);
+	       
 	
 	}
 
@@ -184,14 +241,14 @@ public class EntityGenerator {
 	private static Map<String, Object> getEntityTemplate(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
-		backEndTemplate.put("entity.java.ftl", className + "Entity.java");
+		backEndTemplate.put("entityTemplate/entity.java.ftl", className + "Entity.java");
 		return backEndTemplate;
 	}
 	
 	private static Map<String, Object> getIdClassTemplate(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
-		backEndTemplate.put("idClass.java.ftl", className + "Id.java");
+		backEndTemplate.put("entityTemplate/idClass.java.ftl", className + "Id.java");
 		return backEndTemplate;
 	}
 
@@ -200,7 +257,7 @@ public class EntityGenerator {
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
-		backEndTemplate.put("audit.java.ftl", "AuditedEntity.java");
+		backEndTemplate.put("backendTemplates/commonModuleTemplates/CommonModule/domain/BaseClasses/audit.java.ftl", "AuditedEntity.java");
 		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/Audit";
 		new File(destinationFolder).mkdirs();
 		generateFiles(backEndTemplate, root, destinationFolder);

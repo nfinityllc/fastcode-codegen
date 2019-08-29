@@ -3,8 +3,8 @@ package [=PackageName].RestControllers;
 import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
 import [=PackageName].application.Authorization.Rolepermission.Dto.FindRolepermissionByIdOutput;
 <#if AuthenticationType == "database">
-import [=PackageName].application.Authorization.User.Dto.FindUserByIdOutput;
-import [=PackageName].application.Authorization.User.UserAppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.Find[=AuthenticationTable]ByIdOutput;
+import [=PackageName].application.Authorization.[=AuthenticationTable].[=AuthenticationTable]AppService;
 </#if>
 import [=PackageName].application.Authorization.Role.RoleAppService;
 import [=PackageName].application.Authorization.Role.Dto.*;
@@ -36,7 +36,7 @@ public class RoleController {
     
     <#if AuthenticationType == "database">
     @Autowired
-	private UserAppService  _userAppService;
+	private [=AuthenticationTable]AppService  _[=AuthenticationTable?uncap_first]AppService;
 	</#if>
 	@Autowired
 	private RoleAppService _roleAppService;
@@ -124,8 +124,8 @@ public class RoleController {
 	}
     <#if AuthenticationType == "database">
   
-	@RequestMapping(value = "/{roleid}/user", method = RequestMethod.GET)
-	public ResponseEntity GetUser(@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	@RequestMapping(value = "/{roleid}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
+	public ResponseEntity Get[=AuthenticationTable](@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
@@ -133,7 +133,7 @@ public class RoleController {
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		Map<String,String> joinColDetails=_roleAppService.parseUserJoinColumn(roleid);
+		Map<String,String> joinColDetails=_roleAppService.parse[=AuthenticationTable]JoinColumn(roleid);
 		if(joinColDetails== null)
 		{
 			logHelper.getLogger().error("Invalid Join Column");
@@ -141,7 +141,7 @@ public class RoleController {
 		}
 		searchCriteria.setJoinColumns(joinColDetails);
 		
-    	List<FindUserByIdOutput> output = _userAppService.Find(searchCriteria,pageable);
+    	List<Find[=AuthenticationTable]ByIdOutput> output = _[=AuthenticationTable?uncap_first]AppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

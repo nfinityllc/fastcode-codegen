@@ -1,23 +1,19 @@
-package [=PackageName].application.Authorization.Userpermission.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto;
 
-public class FindUserpermissionByIdOutput {
+public class Find[=AuthenticationTable]permissionByIdOutput {
 
   private Long permissionId;
-  private Long userId;
+  private Long userid;
 
-  private String userUserName;
+  private String [=AuthenticationTable?uncap_first]Username;
   private String permissionName;
-
-  public String getUserUserName() {
-   return userUserName;
+  
+  public String get[=AuthenticationTable]Username() {
+   return [=AuthenticationTable?uncap_first]Username;
   }
 
-  public void setUserUserName(String userUserName){
-   this.userUserName = userUserName;
-  }
-
-  public String getPermissionName() {
-   return permissionName;
+  public void set[=AuthenticationTable]Username(String [=AuthenticationTable?uncap_first]Username){
+   this.[=AuthenticationTable?uncap_first]Username = [=AuthenticationTable?uncap_first]Username;
   }
 
   public void setPermissionName(String permissionName){
@@ -30,12 +26,12 @@ public class FindUserpermissionByIdOutput {
   public void setPermissionId(Long permissionId){
   this.permissionId = permissionId;
   }
-  public Long getUserId() {
-  return userId;
+  public Long getUserid() {
+  return userid;
   }
 
-  public void setUserId(Long userId){
-  this.userId = userId;
+  public void setUserid(Long userid){
+  this.userid = userid;
   }
 
 }

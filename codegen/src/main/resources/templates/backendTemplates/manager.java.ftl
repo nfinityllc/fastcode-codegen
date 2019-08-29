@@ -1,4 +1,4 @@
-package [=PackageName].domain.[=ClassName];
+package [=PackageName].domain<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,13 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
      //  return _[=InstanceName]Repository.findById(<#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">[=ClassName?uncap_first]Id.longValue());<#elseif value.fieldType?lower_case == "integer">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "short">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "double">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "string">[=ClassName?uncap_first]Id);</#if></#if></#list></#if>
 
 	}
-
+	
+	<#if ClassName == AuthenticationTable>
+	public [=EntityClassName] FindBy[=ClassName]Name(String [=ClassName?uncap_first]Name) {
+		return  _[=InstanceName]Repository.findBy[=ClassName]Name([=ClassName?uncap_first]Name);
+	}
+	
+    </#if>
 	public Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable) {
 
 		return _[=InstanceName]Repository.findAll(predicate,pageable);
@@ -83,12 +89,6 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		} else {
 		    return null;
 		}
-
-        <#if CompositeKeyClasses?seq_contains(ClassName)>
-	//	[=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list PrimaryKeys?keys as key><#if key_has_next>[=ClassName?uncap_first]Id.get[=key?cap_first](),<#else>[=ClassName?uncap_first]Id.get[=key?cap_first]()</#if></#list>);
-        <#else>
-    //  [=EntityClassName] entity = _[=InstanceName]Repository.findById(<#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">[=ClassName?uncap_first]Id.longValue());<#elseif value.fieldType?lower_case == "integer">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "short">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "double">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "string">[=ClassName?uncap_first]Id );</#if></#if></#list></#if>
-    //  return entity.get[=relationValue.eName]();
 	}
 	
    </#if>

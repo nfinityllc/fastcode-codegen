@@ -14,4 +14,3 @@ public interface IUserRepository extends JpaRepository<UserEntity, Long>,Queryds
 
     @Query("select u from UserEntity u where u.userName = ?1")
     UserEntity findByUserName(String value);
-}

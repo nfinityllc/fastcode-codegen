@@ -1,30 +1,30 @@
-package [=PackageName].application.Authorization.Userpermission;
+package [=PackageName].application.Authorization.[=AuthenticationTable]permission;
 
 import java.util.List;
 
 import javax.validation.constraints.Positive;
-import org.testing.demoTemp.domain.model.UserpermissionId;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import [=CommonModulePackage].Search.SearchCriteria;
-import [=PackageName].application.Authorization.Userpermission.Dto.*;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.*;
 
 @Service
-public interface IUserpermissionAppService {
+public interface I[=AuthenticationTable]permissionAppService {
 
-	CreateUserpermissionOutput Create(CreateUserpermissionInput userpermission);
+	Create[=AuthenticationTable]permissionOutput Create(Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission);
 
-    void Delete(UserpermissionId userpermissionId );
+    void Delete([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
 
-    UpdateUserpermissionOutput Update(UserpermissionId userpermissionId , UpdateUserpermissionInput input);
+    Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input);
 
-    FindUserpermissionByIdOutput FindById(UserpermissionId userpermissionId );
+    Find[=AuthenticationTable]permissionByIdOutput FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
 
-    List<FindUserpermissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception;
+    List<Find[=AuthenticationTable]permissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception;
 	
-	public UserpermissionId parseUserpermissionKey(String keysString);
-    //User
-    GetUserOutput GetUser(UserpermissionId userpermissionId );
+	public [=AuthenticationTable]permissionId parse[=AuthenticationTable]permissionKey(String keysString);
+    //[=AuthenticationTable?uncap_first]
+    Get[=AuthenticationTable]Output Get[=AuthenticationTable]([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
     //Permission
-    GetPermissionOutput GetPermission(UserpermissionId userpermissionId );
+    GetPermissionOutput GetPermission([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
 }
