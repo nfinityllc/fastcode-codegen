@@ -53,7 +53,7 @@ export class ServiceUtils {
         
         if (ids.length > 1) {
             ids.forEach(id => {
-                idString += `${id.referencedkey}=${id.value};`
+                idString += `${id.referencedkey}:${id.value},`
             });
             if (idString.length > 0) {
                 idString = idString.slice(0, -1);
@@ -71,7 +71,7 @@ export class ServiceUtils {
         
         if (ids.length > 1) {
             ids.forEach(id => {
-                idString += `${id}=${obj[id]};`
+                idString += `${id}:${obj[id]},`
             });
             if (idString.length > 0) {
                 idString = idString.slice(0, -1);
