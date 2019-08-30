@@ -11,7 +11,7 @@ public class RelationDetails {
 	String joinTable;
 	String eName;
 	String fName;
-	Boolean isParent;
+	Boolean isParent=false;
 	List<JoinDetails> joinDetails = new ArrayList<JoinDetails>();
 	List<FieldDetails> fDetails = new ArrayList<>();
 
@@ -83,37 +83,8 @@ public class RelationDetails {
 		FieldDetails descriptiveField = null;
 		
 		if (this.getRelation() == "ManyToOne" || this.getRelation() == "OneToOne") {
-
-//			if (this.getRelation() == "ManyToMany") {
-//				for (String str : manyToManyRshp) {
-//					int indexOfDash = str.indexOf('-');
-//					String before = str.substring(0, indexOfDash);
-//					String after = str.substring(indexOfDash+1);
-//					if (before.equals(this.geteName())) {
-//						if(!descriptiveFieldEntities.containsKey(this.geteName()))
-//						{
-//						descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
-//						descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-//						}
-//					}
-//					if(after.equals(this.getcName()))
-//					{
-//						if(!descriptiveFieldEntities.containsKey(this.getcName()))
-//						{
-//						descriptiveField = GetUserInput.getEntityDescriptionField(this.getcName(), this.getfDetails());
-//						descriptiveFieldEntities.put(this.getcName(),descriptiveField);
-//						}
-//					}
-//				}
-//			} else {
 				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
 				descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-//			}
-//			if (descriptiveField != null) {
-//				this.setEntityDescriptionField(descriptiveField);
-//				// descriptiveMap.put(entry.getKey(),
-//				// entry.getValue().getEntityDescriptionField());
-//			}
 		}
 		return descriptiveFieldEntities;
 	}

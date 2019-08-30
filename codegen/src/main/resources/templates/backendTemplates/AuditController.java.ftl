@@ -33,7 +33,7 @@ public class AuditController {
     public AuditController(Javers javers) {
         this.javers = javers;
     }
-    <#if AuthenticationType != "database">
+    <#if AuthenticationType == "database">
     <#if AuthenticationTable == "User">
     @RequestMapping("/user")
     public String getUserChanges() {

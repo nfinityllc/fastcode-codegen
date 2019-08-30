@@ -1,4 +1,4 @@
-package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import java.util.List;
 import javax.validation.constraints.Positive;
@@ -8,7 +8,7 @@ import [=PackageName].domain.model.[=ClassName]Id;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import [=CommonModulePackage].Search.SearchCriteria;
-import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 
 @Service
 public interface I[=ClassName]AppService {
@@ -28,8 +28,10 @@ public interface I[=ClassName]AppService {
 	</#if>
     <#list Relationship as relationKey, relationValue>
     <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+    <#if relationValue.isParent==false>
     //[=relationValue.eName]
     Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=InstanceName]id</#if>);
+   </#if>
    </#if>
    </#list>
 }

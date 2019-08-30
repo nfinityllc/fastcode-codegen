@@ -41,7 +41,7 @@ public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName
   </#if>
 </#list>
 </#if>
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
     @Query("select u from [=EntityClassName] u where u.username = ?1")
     [=EntityClassName] findBy[=ClassName]Name(String value);   
 </#if>

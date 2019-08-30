@@ -127,7 +127,7 @@ public class CodeGenerator {
 	//	PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
 	//	modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
 		
-		generateAppStartupRunner(details, appName, sourcePackageName,backEndRootFolder,destPath);
+		
 
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
@@ -144,6 +144,7 @@ public class CodeGenerator {
 			//						history,flowable,authenticationType,schema,authenticationSchema);
 			//				
 			generateFrontendAuthorization(destPath, appName, authenticationType, authenticationTable);
+			generateAppStartupRunner(details, appName, sourcePackageName, backEndRootFolder, destPath, authenticationTable);
 		}
 
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType);
@@ -156,7 +157,7 @@ public class CodeGenerator {
 		generateBeanConfig(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
 
 	}
-	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath){
+	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath, String authenticationTable){
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
@@ -170,6 +171,7 @@ public class CodeGenerator {
 			entityMap.put("importPkg" , appName + ".domain.model." + name + "Entity");
 			entityMap.put("requestMapping" , "/" + name.toLowerCase());
 			entityMap.put("method" , "get" + name + "Changes");
+			entityMap.put("authenticationTable" , authenticationTable);
 
 			entitiesMap.put(name, entityMap);
 
