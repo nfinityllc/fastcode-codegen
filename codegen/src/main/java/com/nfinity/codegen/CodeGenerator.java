@@ -127,7 +127,7 @@ public class CodeGenerator {
 	//	PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
 	//	modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
 		
-		generateAppStartupRunner(details, appName, sourcePackageName,backEndRootFolder,destPath);
+		
 
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
@@ -142,7 +142,8 @@ public class CodeGenerator {
 			//			if(authenticationSchema!=null && entityNames.contains(authenticationSchema))
 			//			 AuthenticationClassesTemplateGenerator.generateAutheticationClasses(destPath + "/" + backEndRootFolder, appName, audit,
 			//						history,flowable,authenticationType,schema,authenticationSchema);
-			//				
+			//
+			generateAppStartupRunner(details, appName, sourcePackageName,backEndRootFolder,destPath);
 			generateFrontendAuthorization(destPath, appName, authenticationType);
 		}
 

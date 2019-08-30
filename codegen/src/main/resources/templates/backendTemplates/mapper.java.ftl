@@ -1,23 +1,27 @@
-package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import org.mapstruct.Mapper;
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation =="OneToOne">
+<#if relationValue.isParent==false>
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 <#break>
 </#if>
+</#if>
 </#list>
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 </#if>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+<#if relationValue.isParent==false>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
+</#if>
 </#list>
-import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
 
 @Mapper(componentModel = "spring")
@@ -27,14 +31,17 @@ public interface [=ClassName]Mapper {
    
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??>
@@ -50,13 +57,16 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#if>
+   </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    }) 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
    Create[=ClassName]Output [=ClassName]EntityToCreate[=ClassName]Output([=ClassName]Entity entity);
@@ -65,14 +75,17 @@ public interface [=ClassName]Mapper {
 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??>
@@ -88,27 +101,33 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#if>
+   </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    }) 
    <#break> 
    </#if> 
    </#if> 
+   </#if>
    </#list> 
    Update[=ClassName]Output [=ClassName]EntityToUpdate[=ClassName]Output([=ClassName]Entity entity);
 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??>
@@ -124,18 +143,21 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#if>
+   </#if>
    </#list>
    <#list Relationship as relationKey, relationValue> 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
    <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content>  
    }) 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
    @Mappings({ 
    @Mapping(source = "role.name", target = "roleName"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
@@ -145,6 +167,7 @@ public interface [=ClassName]Mapper {
    <#list Relationship as relationKey, relationValue>
 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+   <#if relationValue.isParent == false>
    @Mappings({
    <#list relationValue.fDetails as fValue>
    <#list Fields as key,value> 
@@ -166,6 +189,6 @@ public interface [=ClassName]Mapper {
    Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
  
    </#if>
+   </#if>
    </#list>
-
 }

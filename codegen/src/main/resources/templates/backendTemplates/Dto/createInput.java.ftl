@@ -1,4 +1,4 @@
-package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
+package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
 
 import java.util.Date;
 import javax.validation.constraints.NotNull;

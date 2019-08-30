@@ -1,7 +1,7 @@
-package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
-import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
-import [=PackageName].domain<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].I[=ClassName]Manager;
+import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].domain<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].I[=ClassName]Manager;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
 <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -9,14 +9,16 @@ import [=PackageName].domain.model.[=ClassName]Id;
 </#if>
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
-import [=PackageName].domain<#if relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
+import [=PackageName].domain<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+<#if relationValue.isParent==false>
 <#assign i=relationValue.joinDetails?size>
 <#if i!=0 && i!=1>
 import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
+</#if>
 </#if>
 </#list>
 import [=CommonModulePackage].Search.*;
@@ -70,7 +72,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-		<#assign i=relationValue.joinDetails?size>
+		<#if relationValue.isParent==false>
+        <#assign i=relationValue.joinDetails?size>
         <#if i==1>
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
@@ -89,7 +92,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
-		</#if>
+        </#if>
         </#if>
         </#list>
         <#else>
@@ -105,6 +108,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return null;
 		</#if>
 		</#if>
+        </#if>
 		</#list>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
@@ -117,6 +121,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.isParent==false>
 	  	<#assign i=relationValue.joinDetails?size>
         <#if i==1>
 	  	<#list relationValue.joinDetails as joinDetails>
@@ -151,6 +156,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		else
 		return null;
 		</#if>
+        </#if>
 		</#if>
 		</#list>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
@@ -176,7 +182,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
  	   Find[=ClassName]ByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]); 
 		return output;
 	}
-	<#if ClassName == AuthenticationTable>
+	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=ClassName?uncap_first]Name")
 	public Find[=ClassName]ByNameOutput FindBy[=ClassName]Name(String [=ClassName?uncap_first]Name) {
@@ -192,6 +198,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+	<#if relationValue.isParent==false>
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -206,7 +213,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=relationValue.eName]Entity re = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id);
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(re, found[=ClassName]);
 	}
-    
+	
+   </#if>
    </#if>
    </#list>
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -314,6 +322,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		if(!(
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.isParent==false>
 		<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
@@ -323,6 +332,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#if>
 		</#list>
+        </#if>
         </#if>
 		</#list>
 		
@@ -531,6 +541,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne" >
+		<#if relationValue.isParent==false>
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
 		<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
@@ -551,6 +562,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#list>
         }
 		</#if>
+        </#if> 
 		</#list>
 		return builder;
 	}

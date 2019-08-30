@@ -210,6 +210,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#if relationValue.relation == "OneToOne">
   <#list relationValue.joinDetails as joinDetails>
   <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if relationValue.isParent== false>
   <#if joinDetails.joinColumn??>
   @OneToOne
   @JoinColumn(name = "[=joinDetails.joinColumn]")
@@ -221,10 +222,10 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
-  
   </#if>
-  <#if joinDetails.mappedBy??>
-  @OneToOne(mappedBy = "[=joinDetails.mappedBy]")
+  </#if>
+  <#if relationValue.isParent== true>
+  @OneToOne(mappedBy = "[=ClassName?uncap_first]")
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }
@@ -233,7 +234,6 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   }
   
   private [=relationValue.eName]Entity [=relationValue.fName];
-  
   </#if>
   </#if>
   </#list>
@@ -244,6 +244,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
  </#if> 
 </#list>
 
+<#if AuthenticationType=="database">
 <#if ClassName == AuthenticationTable>
 @OneToMany(mappedBy = "[=AuthenticationTable?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 
@@ -266,6 +267,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
     }
 
     private RoleEntity role;
+</#if>
 </#if>
 //  @Override
 //  public boolean equals(Object o) {

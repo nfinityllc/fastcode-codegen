@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 <#if AuthenticationType != "none">
 import org.springframework.security.access.prepost.PreAuthorize;
 </#if>
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
 import org.springframework.security.crypto.password.PasswordEncoder;
 </#if>
 <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -32,14 +32,14 @@ import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=CommonModulePackage].domain.EmptyJsonResponse;
-import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].[=ClassName]AppService;
-import [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].[=ClassName]AppService;
+import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].application<#if relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]AppService;
+import [=PackageName].application<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
 <#if relationValue.relation == "OneToMany">
-import [=PackageName].application<#if relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+import [=PackageName].application<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#list>
 import java.util.List;
@@ -65,7 +65,7 @@ public class [=ClassName]Controller {
 
 	@Autowired
 	private Environment env;
-	<#if ClassName == AuthenticationTable>
+	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
 	
 	@Autowired
     private PasswordEncoder pEncoder;
@@ -76,7 +76,7 @@ public class [=ClassName]Controller {
     </#if>
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?uncap_first]) {
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
 		Find[=ClassName]ByNameOutput found[=ClassName] = _[=ClassName?uncap_first]AppService.FindBy[=ClassName]Name([=ClassName?uncap_first].getUsername());
 
 	        if (found[=ClassName] != null) {
@@ -241,7 +241,7 @@ public class [=ClassName]Controller {
 	}
    <#list Relationship as relationKey, relationValue>
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-
+    <#if relationValue.isParent==false>
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
@@ -272,6 +272,7 @@ public class [=ClassName]Controller {
 		}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
+	</#if>
     <#elseif relationValue.relation == "OneToMany">
     
     <#if AuthenticationType != "none">
