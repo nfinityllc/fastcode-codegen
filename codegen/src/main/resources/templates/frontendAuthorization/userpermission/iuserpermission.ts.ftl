@@ -1,7 +1,7 @@
-export interface IUserpermission {  
+export interface I[=authenticationTable]permission {  
 
       permissionId: number;
-      userId: number;
-      userUserName?: string;
+      userid: number;
+      [=authenticationTable?uncap_first]Username?: string;
       permissionName?: string;
   }

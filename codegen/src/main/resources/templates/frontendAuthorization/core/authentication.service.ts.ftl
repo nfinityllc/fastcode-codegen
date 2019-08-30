@@ -3,7 +3,7 @@ import { HttpClient,HttpHeaders, HttpErrorResponse } from '@angular/common/http'
 import { Observable, of,throwError, observable } from 'rxjs';
 import { catchError, tap, map,filter } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IPermissions } from '../permissions';
+import { IPermission } from '../permission';
 //import { IUser } from '../users/iuser';
 import { JwtHelperService } from "@auth0/angular-jwt";
 //import {ITokenDetail} from "./itoken-detail";
@@ -19,7 +19,7 @@ export class AuthenticationService  {
   private apiUrl = API_URL;// 'http://localhost:5555';
   public loginType = environment.loginType;
   public authUrl = environment.authUrl;
-  private userPermissions:IPermissions[];
+  private userPermissions:IPermission[];
   private decodedToken:ITokenDetail;
   constructor(private http: HttpClient) { 
     //this.configure();
@@ -136,7 +136,7 @@ private handleError(err: HttpErrorResponse) {
         this.userPermissions= permissions;
         return of( this.userPermissions);
       })*/
-    return this.http.get<IPermissions[]>(this.apiUrl + '/users/1/permissions' ).pipe(map(permissions => {
+    return this.http.get<IPermission[]>(this.apiUrl + '/users/1/permissions' ).pipe(map(permissions => {
         let x = permissions;
         this.userPermissions = permissions;
        

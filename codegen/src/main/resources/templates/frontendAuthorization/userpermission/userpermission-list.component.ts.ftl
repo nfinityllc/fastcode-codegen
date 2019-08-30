@@ -1,24 +1,24 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
-import { IUserpermission } from './iuserpermission';
-import { UserpermissionService } from './userpermission.service';
+import { I[=authenticationTable]permission } from './i[=moduleName]permission';
+import { [=authenticationTable]permissionService } from './[=moduleName]permission.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import {UserpermissionNewComponent} from './userpermission-new.component';
+import { [=authenticationTable]permissionNewComponent} from './[=moduleName]permission-new.component';
 import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 
-import { UserService } from '../user/user.service';
+import { [=authenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
 
 @Component({
-  selector: 'app-userpermission-list',
-  templateUrl: './userpermission-list.component.html',
-  styleUrls: ['./userpermission-list.component.scss']
+  selector: 'app-[=moduleName]permission-list',
+  templateUrl: './[=moduleName]permission-list.component.html',
+  styleUrls: ['./[=moduleName]permission-list.component.scss']
 })
-export class UserpermissionListComponent extends BaseListComponent<IUserpermission> implements OnInit {
+export class [=authenticationTable]permissionListComponent extends BaseListComponent<I[=authenticationTable]permission> implements OnInit {
 
-	title:string = "Userpermission";
+	title:string = "[=authenticationTable]permission";
 	
 	constructor(
 		public router: Router,
@@ -27,9 +27,9 @@ export class UserpermissionListComponent extends BaseListComponent<IUserpermissi
 		public dialog: MatDialog,
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
-		public dataService: UserpermissionService,
+		public dataService: [=authenticationTable]permissionService,
 		public errorService: ErrorService,
-		public userService: UserService,
+		public [=authenticationTable?uncap_first]Service: [=authenticationTable]Service,
 		public permissionService: PermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
@@ -38,7 +38,7 @@ export class UserpermissionListComponent extends BaseListComponent<IUserpermissi
 	ngOnInit() {
 		this.setAssociation();
 		this.setColumns();
-		this.primaryKeys = [ "permissionId", "userId",  ]
+		this.primaryKeys = [ "permissionId", "userid",  ]
 		super.ngOnInit();
 	}
   
@@ -47,29 +47,27 @@ export class UserpermissionListComponent extends BaseListComponent<IUserpermissi
 		this.associations = [
 			{
 				column: [
-                      {
-					  key: 'userId',
-					  value: undefined,
-					  referencedkey: 'id'
-					  },
-					  
+					{
+						key: 'userid',
+						value: undefined,
+						referencedkey: 'userid'
+					},					  
 				],
 				isParent: false,
-				descriptiveField: 'userUserName',
-				referencedDescriptiveField: 'userName',
-				service: this.userService,
+				descriptiveField: '[=authenticationTable?uncap_first]Username',
+				referencedDescriptiveField: 'username',
+				service: this.[=authenticationTable?uncap_first]Service,
 				associatedObj: undefined,
-				table: 'user',
+				table: '[=authenticationTable?uncap_first]',
 				type: 'ManyToOne'
 			},
 			{
 				column: [
-                      {
-					  key: 'permissionId',
-					  value: undefined,
-					  referencedkey: 'id'
-					  },
-					  
+                	{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+					},  
 				],
 				isParent: false,
 				descriptiveField: 'permissionName',
@@ -85,8 +83,8 @@ export class UserpermissionListComponent extends BaseListComponent<IUserpermissi
   	setColumns(){
   		this.columns = [
 			{
-	  			column: 'User',
-				label: 'User',
+	  			column: '[=authenticationTable]',
+				label: '[=authenticationTable]',
 				sort: false,
 				filter: false,
 				type: listColumnType.Boolean
@@ -111,7 +109,7 @@ export class UserpermissionListComponent extends BaseListComponent<IUserpermissi
   	}
   
 	addNew() {
-		super.addNew(UserpermissionNewComponent);
+		super.addNew([=authenticationTable]permissionNewComponent);
 	}
   
 }

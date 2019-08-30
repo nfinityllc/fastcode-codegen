@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { UserpermissionService } from './userpermission.service';
-import { IUserpermission } from './iuserpermission';
+import { [=authenticationTable]permissionService } from './[=moduleName]permission.service';
+import { I[=authenticationTable]permission } from './i[=moduleName]permission';
 
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -8,29 +8,29 @@ import { first } from 'rxjs/operators';
 import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { UserService } from '../user/user.service';
+import { [=authenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
 
 @Component({
-  selector: 'app-userpermission-new',
-  templateUrl: './userpermission-new.component.html',
-  styleUrls: ['./userpermission-new.component.scss']
+  selector: 'app-[=moduleName]permission-new',
+  templateUrl: './[=moduleName]permission-new.component.html',
+  styleUrls: ['./[=moduleName]permission-new.component.scss']
 })
-export class UserpermissionNewComponent extends BaseNewComponent<IUserpermission> implements OnInit {
+export class [=authenticationTable]permissionNewComponent extends BaseNewComponent<I[=authenticationTable]permission> implements OnInit {
   
-    title:string = "New Userpermission";
+    title:string = "New [=authenticationTable]permission";
 		constructor(
 			public formBuilder: FormBuilder,
 			public router: Router,
 			public route: ActivatedRoute,
 			public dialog: MatDialog,
-			public dialogRef: MatDialogRef<UserpermissionNewComponent>,
+			public dialogRef: MatDialogRef<[=authenticationTable]permissionNewComponent>,
 			@Inject(MAT_DIALOG_DATA) public data: any,
 			public global: Globals,
 			public pickerDialogService: PickerDialogService,
-			public dataService: UserpermissionService,
+			public dataService: [=authenticationTable]permissionService,
 			public errorService: ErrorService,
-			public userService: UserService,
+			public [=authenticationTable?uncap_first]Service: [=authenticationTable]Service,
 			public permissionService: PermissionService,
 		) {
 			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
@@ -41,8 +41,8 @@ export class UserpermissionNewComponent extends BaseNewComponent<IUserpermission
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({
 			permissionId: ['', Validators.required],
-			userId: ['', Validators.required],
-			userUserName : [{ value: '', disabled: true }],
+			userid: ['', Validators.required],
+			[=authenticationTable?uncap_first]Username : [{ value: '', disabled: true }],
 			permissionName : [{ value: '', disabled: true }],
 		});
 		this.checkPassedData();
@@ -54,19 +54,19 @@ export class UserpermissionNewComponent extends BaseNewComponent<IUserpermission
 			{
 				column: [
                       {
-					  key: 'userId',
+					  key: 'userid',
 					  value: undefined,
-					  referencedkey: 'id'
+					  referencedkey: 'userid'
 					  },
 					  
 				],
 				
 				isParent: false,
-				table: 'user',
+				table: '[=authenticationTable?uncap_first]',
 				type: 'ManyToOne',
-				service: this.userService,
+				service: this.[=authenticationTable?uncap_first]Service,
                 
-				descriptiveField: 'userUserName',
+				descriptiveField: '[=authenticationTable?uncap_first]Username',
 			    
 				},
 			{

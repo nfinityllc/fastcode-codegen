@@ -3,7 +3,7 @@ import { HttpClient,HttpHeaders, HttpErrorResponse } from '@angular/common/http'
 import { Observable, of,throwError, observable } from 'rxjs';
 import { catchError, tap, map,filter } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IPermissions } from '../permissions';
+import { IPermission } from '../permission';
 //import { IUser } from '../users/iuser';
 import { IGlobalPermissionService,ITokenDetail } from 'fastCodeCore';
 import { AuthenticationService } from './authentication.service';
@@ -17,7 +17,7 @@ export class GlobalPermissionService implements IGlobalPermissionService {
   private apiUrl = API_URL;// 'http://localhost:5555';
   public loginType = environment.loginType;
   public authUrl = environment.authUrl;
-  private userPermissions:IPermissions[];
+  private userPermissions:IPermission[];
   constructor(private http: HttpClient, private authService:AuthenticationService ) { 
   }
  /*
@@ -27,7 +27,7 @@ export class GlobalPermissionService implements IGlobalPermissionService {
         return of( this.userPermissions);
     else {
     
-    return this.http.get<IPermissions[]>(this.apiUrl + '/users/1/permissions' ).pipe(map(permissions => {
+    return this.http.get<IPermission[]>(this.apiUrl + '/users/1/permissions' ).pipe(map(permissions => {
         let x = permissions;
         this.userPermissions = permissions;
        

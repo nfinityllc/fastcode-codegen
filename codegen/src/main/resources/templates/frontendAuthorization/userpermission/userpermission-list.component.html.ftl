@@ -16,11 +16,11 @@
 	<app-list-filters [columnsList]="selectedColumns" (onSearch)="applyFilter($event)"></app-list-filters>
 	<div class="table-container" (onScroll)="onTableScroll()" appVirtualScroll>
 		<mat-table matSort [dataSource]="items" class="mat-elevation-z8">
-						<ng-container matColumnDef="User">
-				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('User')">User </mat-header-cell>
+			<ng-container matColumnDef="[=authenticationTable?cap_first]">
+				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=authenticationTable?cap_first]')">[=authenticationTable?cap_first]</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("User")}}:</span>
-					{{ item.userUserName }}
+					<span class="mobile-label">{{getMobileLabelForField("[=authenticationTable?cap_first]")}}:</span>
+					{{ item.[=authenticationTable]Username }}
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="Permission">
