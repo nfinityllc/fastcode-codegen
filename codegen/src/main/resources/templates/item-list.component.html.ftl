@@ -53,7 +53,7 @@
 			</#if>
 			</#list>
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne">
+			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			<#if DescriptiveField[relationValue.eName]??>
 			<ng-container matColumnDef="[=relationValue.eName]">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=relationValue.eName]')">[=relationValue.eName] </mat-header-cell>

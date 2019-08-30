@@ -10,8 +10,8 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dial
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
-<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+import { [=relationValue.eName]Service } from '../[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case]/[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case].service';
 </#if>
 </#list>
 </#if>
@@ -37,8 +37,8 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			public errorService: ErrorService,
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-			public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
+			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+			public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
 			</#if>
 			</#list>
 			</#if>
@@ -69,7 +69,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#list>
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne">
+			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
@@ -83,27 +83,12 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
             </#if>
             </#if>
             </#list>
-			</#if>
-            <#if relationValue.relation == "OneToOne">
-            <#list relationValue.joinDetails as joinDetails>
-            <#if joinDetails.joinEntityName == relationValue.eName>
-            <#if joinDetails.joinColumn??>
-			<#if joinDetails.isJoinColumnOptional==false>          
-			[=joinDetails.joinColumn]: ['', Validators.required],
-			<#else>
-			[=joinDetails.joinColumn]: [''],
-			</#if>
-            </#if>
-            </#if>
-            </#list>
-			</#if>
-			<#if relationValue.relation == "ManyToOne">
-			<#list DescriptiveField as dEntityName, dField>
+            <#list DescriptiveField as dEntityName, dField>
 			<#if dEntityName == relationValue.eName>
 			[=relationValue.eName?uncap_first][=dField.fieldName?cap_first] : [{ value: '', disabled: true }],
 			</#if>
             </#list>
-		    </#if>
+			</#if>
 			</#list>
 			</#if>
 		});
@@ -115,7 +100,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 	  	
 			this.associations = [
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
+			<#if (relationValue.relation == "OneToOne" && relationValue.isParent == false) || relationValue.relation == "ManyToOne">
 			{
 				column: [
 				      <#list relationValue.joinDetails as joinDetails>
@@ -131,21 +116,13 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
                       </#list>
 					  
 				],
-				
-				<#if relationValue.relation == "OneToOne" && relationValue.isParent!false>
-				isParent: true,
-				<#else>
 				isParent: false,
-				</#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]',
-				service: this.[=relationValue.eName?lower_case]Service,
-                
-                <#if relationValue.relation == "ManyToOne">
+				service: this.[=relationValue.eName?uncap_first]Service,
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
 				</#if>
-			    </#if>
 			    
 				},
 			</#if>
