@@ -213,7 +213,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#if relationValue.isParent== false>
   <#if joinDetails.joinColumn??>
   @OneToOne
-  @JoinColumn(name = "[=joinDetails.joinColumn]")
+  @JoinColumn(name = "[=joinDetails.joinColumn]"<#if CompositeKeyClasses?seq_contains(ClassName)>, insertable=false, updatable=false</#if>)
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }

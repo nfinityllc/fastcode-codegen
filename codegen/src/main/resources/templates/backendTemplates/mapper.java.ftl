@@ -158,11 +158,17 @@ public interface [=ClassName]Mapper {
    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
 <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+<#if AuthenticationFields??>
+<#list AuthenticationFields as authKey,authValue>
+<#if authKey== "User Name">
    @Mappings({ 
    @Mapping(source = "role.name", target = "roleName"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
    }) 
-   Find[=ClassName]ByNameOutput [=ClassName]EntityToFind[=ClassName]ByNameOutput([=ClassName]Entity entity);
+   Find[=ClassName]By[=authValue.fieldName?cap_first]Output [=ClassName]EntityToFind[=ClassName]By[=authValue.fieldName?cap_first]Output([=ClassName]Entity entity);
+</#if>
+</#list>
+</#if>
 </#if>
    <#list Relationship as relationKey, relationValue>
 

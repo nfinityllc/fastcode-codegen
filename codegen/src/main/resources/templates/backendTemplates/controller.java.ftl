@@ -77,16 +77,22 @@ public class [=ClassName]Controller {
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?uncap_first]) {
 		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-		Find[=ClassName]ByNameOutput found[=ClassName] = _[=ClassName?uncap_first]AppService.FindBy[=ClassName]Name([=ClassName?uncap_first].getUsername());
+		<#if AuthenticationFields??>
+		<#list AuthenticationFields as authKey,authValue>
+        <#if authKey== "User Name">
+		Find[=ClassName]By[=authValue.fieldName?cap_first]Output found[=ClassName] = _[=ClassName?uncap_first]AppService.FindBy[=authValue.fieldName?cap_first]([=ClassName?uncap_first].get[=authValue.fieldName?cap_first]());
 
 	        if (found[=ClassName] != null) {
-	            logHelper.getLogger().error("There already exists a [=ClassName] with a name=%s", [=ClassName?uncap_first].getUsername());
+	            logHelper.getLogger().error("There already exists a [=ClassName] with a [=authValue.fieldName?cap_first]=%s", [=ClassName?uncap_first].get[=authValue.fieldName?cap_first]());
 	            throw new EntityExistsException(
-	                    String.format("There already exists a [=ClassName] with name =%s", [=ClassName?uncap_first].getUsername()));
+	                    String.format("There already exists a [=ClassName] with [=authValue.fieldName?cap_first] =%s", [=ClassName?uncap_first].get[=authValue.fieldName?cap_first]()));
 	        }
-	        
-	    [=ClassName?uncap_first].setPassword(pEncoder.encode([=ClassName?uncap_first].getPassword()));
-	    
+	    </#if> 
+        <#if authKey== "Password">
+	    [=ClassName?uncap_first].set[=authValue.fieldName?cap_first](pEncoder.encode([=ClassName?uncap_first].get[=authValue.fieldName?cap_first]()));
+	    </#if>
+	    </#list>
+        </#if>
 		</#if>
 		Create[=ClassName]Output output=_[=ClassName?uncap_first]AppService.Create([=ClassName?uncap_first]);
 		if(output==null)

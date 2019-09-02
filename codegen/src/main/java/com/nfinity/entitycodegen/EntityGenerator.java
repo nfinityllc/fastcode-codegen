@@ -2,6 +2,7 @@ package com.nfinity.entitycodegen;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class EntityGenerator {
 	}
 
 	public static Map<String, EntityDetails> generateEntities(String connectionString, String schema,
-			List<String> tableList, String packageName, String destination, Boolean audit,Boolean history,Boolean flowable,String authenticationSchema,String authenticationType) { 
+			List<String> tableList, String packageName, String destination, Boolean audit,Boolean history,Boolean flowable,String authenticationTable,String authenticationType) { 
 		Map<String, String> connectionProps = parseConnectionString(connectionString);
 		String entityPackage = packageName + ".domain.model";
 		final String tempPackageName = entityPackage.concat(".Temp");
@@ -73,7 +74,7 @@ public class EntityGenerator {
 
 			for (Class<?> currentClass : classList) {
 				String entityName = currentClass.getName();
-
+             
 				// process each entities except many to many association entities
 				if (!entityName.endsWith("Id")) {
 
@@ -85,13 +86,22 @@ public class EntityGenerator {
 					relationMap = EntityDetails.FindOneToOneJoinColFromChildEntity(relationMap, classList);
 					// Get parent descrptive fields from user
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-                     if(entry.getValue().getRelation()=="OneToOne")
-                     {
-                    	 System.out.println(" ENtity name " + entry.getValue().getcName() + " paret " + entry.getValue().getIsParent());
-                     }
+						if(entry.getValue().getRelation().equals("OneToOne")) {
+						System.out.println(" e parent " + entry.getValue().geteName() +" "+ entry.getValue().getIsParent() + "");
+						}
+						if(entry.getValue().getRelation().equals("OneToOne") && !entry.getValue().getIsParent())
+						{
+							if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName())))
+							{
+								descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(descriptiveFieldEntities);
+							}
+						}
+						else if(entry.getValue().getRelation().equals("ManyToOne"))
+						{
 						if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
 						{
 							descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(descriptiveFieldEntities);
+						}
 						}
 					}
 
@@ -99,17 +109,17 @@ public class EntityGenerator {
 					details.setEntitiesDescriptiveFieldMap(descriptiveFieldEntities);
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 					// Generate Entity based on template
-					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit,compositePrimaryKeyEntities,authenticationSchema,authenticationType);
+					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit,compositePrimaryKeyEntities,authenticationTable,authenticationType);
 
 				}
 			}
-			if(authenticationSchema !=null )
+			if(authenticationTable !=null )
 			{
 				Boolean isTableExits=false;
-				if(entityDetailsMap.containsKey(authenticationSchema)) {
+				if(entityDetailsMap.containsKey(authenticationTable)) {
 					isTableExits=true;
 				}
-				Scanner scanner=new Scanner(System.in);
+				Scanner scanner = new Scanner(System.in);
 				UserInput input=new UserInput();
 				while(!isTableExits)
 				{
@@ -123,17 +133,107 @@ public class EntityGenerator {
 						input.setAuthenticationSchema(str);
 					}
 				}
-
+				if(entityDetailsMap!=null)
+				{
+					entityDetailsMap=getAuthenticationTableFieldsMapping(entityDetailsMap,authenticationTable,scanner);
+				}
+				
+				for(Map.Entry<String,EntityDetails> entry: entityDetailsMap.entrySet())
+				{
+					if(entry.getKey().equals(authenticationTable))
+					{
+						
+						for(Map.Entry<String,FieldDetails> fieldsEntry: entry.getValue().getAuthenticationFieldsMap().entrySet())
+						{
+							System.out.println("aa s " +fieldsEntry.getKey() + " vas " +fieldsEntry.getValue().getFieldName());
+						}
+						}
+				
+				}
+			
 			}
 
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
 
-		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+	//	deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
 		return entityDetailsMap;
+	}
+	
+	public static Map<String,EntityDetails> getAuthenticationTableFieldsMapping(Map<String,EntityDetails> entityDetails,String authenticationTable,Scanner scanner)
+	{
+		Map<String,FieldDetails> authFields=new HashMap<String, FieldDetails>();
+		authFields.put("User Name", null);
+		authFields.put("Password", null);
+		
+		for(Map.Entry<String,EntityDetails> entry: entityDetails.entrySet())
+		{
+			if(entry.getKey().equals(authenticationTable))
+			{
+				
+				List<FieldDetails> fieldsList = new ArrayList<>();
+				for(Map.Entry<String,FieldDetails> fieldsEntry: entry.getValue().getFieldsMap().entrySet())
+				{
+                  if (fieldsEntry.getValue().fieldType.equalsIgnoreCase("long") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("integer") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("double")
+								|| fieldsEntry.getValue().fieldType.equalsIgnoreCase("short") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("string") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("boolean")
+								|| fieldsEntry.getValue().fieldType.equalsIgnoreCase("timestamp") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("date"))
+							fieldsList.add(fieldsEntry.getValue());
+				}
+				for(Map.Entry<String,FieldDetails> authFieldsEntry: authFields.entrySet())
+				{
+				int i = 1;
+				StringBuilder b = new StringBuilder();
+				for (FieldDetails f : fieldsList) {
+						b.append(MessageFormat.format("{0}.{1} ", i, f.getFieldName()));
+						i++;
+				}
+				System.out.println("\n Select field you want to map on "+ authFieldsEntry.getKey()+" by typing its corresponding number : ");
+				System.out.println(b.toString());
+				i = scanner.nextInt();
+				while (i < 1 || i > fieldsList.size()) {
+				System.out.println("\nInvalid Input \nEnter again :");
+				i = scanner.nextInt();
+				}
+				FieldDetails selected=fieldsList.get(i - 1);
+				while(!selected.getFieldType().equalsIgnoreCase("String"))
+				{
+					System.out.println("Please choose valid string field : ");
+					i = scanner.nextInt();
+					while (i < 1 || i > fieldsList.size()) {
+						System.out.println("\nInvalid Input \nEnter again :");
+						i = scanner.nextInt();
+						}
+					selected=fieldsList.get(i - 1);
+				}
+				authFields.replace(authFieldsEntry.getKey(), selected);
+					
+				}
+			
+//				for(Map.Entry<String,FieldDetails> fields: authFields.entrySet())
+//				{
+//					System.out.println("aa " +fields.getKey() + " va " +fields.getValue().getFieldName());
+//				}
+				entry.getValue().setAuthenticationFieldsMap(authFields);
+			}
+		}
+		
+//		for(Map.Entry<String,EntityDetails> entry: entityDetails.entrySet())
+//		{
+//			if(entry.getKey().equals(authenticationTable))
+//			{
+//				
+//				for(Map.Entry<String,FieldDetails> fieldsEntry: entry.getValue().getAuthenticationFieldsMap().entrySet())
+//				{
+//					System.out.println("aa " +fieldsEntry.getKey() + " va " +fieldsEntry.getValue().getFieldName());
+//				}
+//				}
+//		
+//		}
+	
+		return entityDetails;
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,

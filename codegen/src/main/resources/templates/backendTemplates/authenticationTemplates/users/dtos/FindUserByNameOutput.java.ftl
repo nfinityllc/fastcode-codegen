@@ -2,7 +2,7 @@ package [=PackageName].application.Authorization.[=AuthenticationTable].Dto;
 
 import java.util.Date;
 
-public class Find[=AuthenticationTable]ByNameOutput {
+public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "User Name">[=authValue.fieldName?cap_first]</#if></#list><#else>Name</#if>Output {
 
 	private Long id;
 	private int accessFailedCount;

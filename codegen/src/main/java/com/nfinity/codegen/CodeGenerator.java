@@ -64,6 +64,7 @@ public class CodeGenerator {
 		root.put("InstanceName", instanceName);
 		root.put("CompositeKeyClasses",details.getCompositeKeyClasses());
 		root.put("DescriptiveField",details.getEntitiesDescriptiveFieldMap());
+		root.put("AuthenticationFields",details.getAuthenticationFieldsMap());
 		root.put("Audit", audit);
 		root.put("History", history);
 		root.put("IEntity", "I" + className);
@@ -119,7 +120,6 @@ public class CodeGenerator {
 			entityNames.add(className);
 			Generate(entry.getKey(), appName, backEndRootFolder, clientRootFolder, sourcePackageName, audit, history, sourcePath, 
 					destPath, type, entry.getValue(), authenticationType, scheduler, email, schema,authenticationTable);
-
 		}
 
 		FileUtils.copyFile(new File(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/keystore.p12"), new File(destPath + "/" + backEndRootFolder + "/src/main/resources/keystore.p12"));
@@ -514,7 +514,8 @@ public class CodeGenerator {
 			destFolderBackend = destPath + "/application/Authorization/" + className + "/Dto";
 		}
 		new File(destFolderBackend).mkdirs();
-		generateFiles(getDtos(className,authenticationTable), root, destFolderBackend);
+		Map<String,FieldDetails> authFields = (Map<String,FieldDetails>)root.get("AuthenticationFields");
+		generateFiles(getDtos(className,authenticationTable,authFields), root, destFolderBackend);
 
 		destFolderBackend = destPath + "/domain/" + className;
 		if(authenticationTable !=null && className.equalsIgnoreCase(authenticationTable))
@@ -664,7 +665,7 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
-	private static Map<String, Object> getDtos(String className,String authenticationTable) {
+	private static Map<String, Object> getDtos(String className,String authenticationTable,Map<String,FieldDetails> authFields) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
@@ -675,7 +676,17 @@ public class CodeGenerator {
 		backEndTemplate.put("findByIdOutput.java.ftl", "Find" + className + "ByIdOutput.java");
 		if(authenticationTable !=null && className.equalsIgnoreCase(authenticationTable))
 		{
-			backEndTemplate.put("authenticationTemplates/users/dtos/FindUserByNameOutput.java.ftl", "Find"+authenticationTable+"ByNameOutput.java");
+			if(authFields !=null)
+			{
+			for(Map.Entry<String, FieldDetails> map : authFields.entrySet())
+			{
+				if(map.getKey()=="User Name")
+					backEndTemplate.put("authenticationTemplates/users/dtos/FindUserByNameOutput.java.ftl", "Find"+authenticationTable+"By"+map.getValue().getFieldName().substring(0, 1).toUpperCase() + map.getValue().getFieldName().substring(1)+"Output.java");
+			}
+			}
+			else
+				backEndTemplate.put("authenticationTemplates/users/dtos/FindUserByNameOutput.java.ftl", "Find"+authenticationTable+"ByNameOutput.java");
+			
 			backEndTemplate.put("authenticationTemplates/users/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
 			backEndTemplate.put("authenticationTemplates/users/dtos/LoginUserInput.java.ftl", "LoginUserInput.java");
 		}

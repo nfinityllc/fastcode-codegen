@@ -5,6 +5,9 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.nfinity.entitycodegen.EntityDetails;
+import com.nfinity.entitycodegen.FieldDetails;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -16,7 +19,7 @@ public class AuthenticationClassesTemplateGenerator {
 	static final String SECURITY_CLASSES_TEMPLATE_FOLDER = "/templates/backendTemplates/authenticationTemplates";
 
 	public static void generateAutheticationClasses(String destination, String packageName,Boolean audit,Boolean history,Boolean flowable,String authenticationType
-			,String schemaName,String authenticationTable) {
+			,String schemaName,String authenticationTable,Map<String,EntityDetails> details) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, SECURITY_CLASSES_TEMPLATE_FOLDER + "/");
 		TemplateLoader[] templateLoadersArray = new TemplateLoader[] {ctl};
@@ -39,6 +42,34 @@ public class AuthenticationClassesTemplateGenerator {
 			root.put("AuthenticationTable", authenticationTable);
 		else
 			root.put("AuthenticationTable", "User");	
+		
+		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
+		{
+			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
+			if(authenticationTable!=null)
+			{
+			if(className.equalsIgnoreCase(authenticationTable))
+			{
+			System.out.println(" an  ");
+			root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
+			}
+//			else 
+//			{
+//				System.out.println(" an else ");
+//				Map<String,FieldDetails> fieldDetails=new HashMap<String, FieldDetails>();
+//				FieldDetails fd=new FieldDetails();
+//				fd.setFieldName("userName");
+//				fd.setFieldType("String");
+//				fieldDetails.put("User Name", fd);
+//				
+//				fd=new FieldDetails();
+//				fd.setFieldName("password");
+//				fd.setFieldType("String");
+//				fieldDetails.put("Password",fd);
+//				root.put("AuthenticationFields", fieldDetails);
+//			}
+			}
+		}
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
 	}
 

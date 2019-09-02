@@ -32,7 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		[=AuthenticationTable]Entity applicationUser = usersRepository.findBy[=AuthenticationTable]Name(username);
+     
+		[=AuthenticationTable]Entity applicationUser = usersRepository.findBy<#if AuthenticationType== "database"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "User Name">[=authValue.fieldName?cap_first]</#if></#list><#else>UserName</#if></#if>(username);
 
 		if (applicationUser == null) {
 			throw new UsernameNotFoundException(username);
@@ -41,7 +42,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		List<String> permissions = getAllPermissions(applicationUser);
 		List<GrantedAuthority> authorities = getGrantedAuthorities(permissions);
 
-		return new User(applicationUser.getUsername(), applicationUser.getPassword(), authorities); // User class implements UserDetails Interface
+		return new User(applicationUser.get<#if AuthenticationType== "database"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "User Name">[=authValue.fieldName?cap_first]</#if></#list><#else>UserName</#if></#if>(), applicationUser.get<#if AuthenticationType== "database"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "Password">[=authValue.fieldName?cap_first]</#if></#list><#else>Password</#if></#if>(), authorities); // User class implements UserDetails Interface
+	
 	}
 
 

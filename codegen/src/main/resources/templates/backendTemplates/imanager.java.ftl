@@ -25,7 +25,13 @@ public interface I[=ClassName]Manager {
     [=EntityClassName] FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> id</#if>);
 
     <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-	[=EntityClassName] FindBy[=ClassName]Name(String [=ClassName]Name);
+    <#if AuthenticationFields??>
+    <#list AuthenticationFields as authKey,authValue>
+	<#if authKey== "User Name">
+	[=EntityClassName] FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]);
+	</#if>
+    </#list>
+    </#if>
 	</#if>
     Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable);
    <#list Relationship as relationKey, relationValue>

@@ -183,19 +183,24 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	<#if AuthenticationFields??>
+	<#list AuthenticationFields as authKey,authValue>
+	<#if authKey== "User Name">
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=ClassName?uncap_first]Name")
-	public Find[=ClassName]ByNameOutput FindBy[=ClassName]Name(String [=ClassName?uncap_first]Name) {
+	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=authValue.fieldName?uncap_first]")
+	public Find[=ClassName]By[=authValue.fieldName?cap_first]Output FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindBy[=ClassName]Name([=ClassName?uncap_first]Name);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindBy[=authValue.fieldName?cap_first]([=authValue.fieldName?uncap_first]);
 		if (found[=ClassName] == null) {
 			return null;
 		}
-		return  mapper.[=ClassName]EntityToFind[=ClassName]ByNameOutput(found[=ClassName]);
+		return  mapper.[=ClassName]EntityToFind[=ClassName]By[=authValue.fieldName?cap_first]Output(found[=ClassName]);
 
 	}
 	</#if>
-
+    </#list>
+    </#if>
+	</#if>
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 	<#if relationValue.isParent==false>

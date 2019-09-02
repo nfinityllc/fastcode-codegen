@@ -82,10 +82,10 @@ public class RelationDetails {
 	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities) {
 		FieldDetails descriptiveField = null;
 		
-		if (this.getRelation() == "ManyToOne" || this.getRelation() == "OneToOne") {
+		//if (this.getRelation() == "ManyToOne" || this.getRelation() == "OneToOne") {
 				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
 				descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-		}
+	//	}
 		return descriptiveFieldEntities;
 	}
 }

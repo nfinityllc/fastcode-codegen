@@ -66,10 +66,15 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 
 	}
 	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-	
-	public [=EntityClassName] FindBy[=ClassName]Name(String [=ClassName?uncap_first]Name) {
-		return  _[=InstanceName]Repository.findBy[=ClassName]Name([=ClassName?uncap_first]Name);
+	<#if AuthenticationFields??>
+	<#list AuthenticationFields as authKey,authValue>
+	<#if authKey== "User Name">
+	public [=EntityClassName] FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
+		return  _[=InstanceName]Repository.findBy[=authValue.fieldName?cap_first]([=authValue.fieldName?uncap_first]);
 	}
+	</#if>
+    </#list>
+    </#if>
     </#if>
 
 	public Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable) {
