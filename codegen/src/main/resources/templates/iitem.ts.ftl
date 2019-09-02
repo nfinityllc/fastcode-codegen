@@ -28,7 +28,7 @@ export interface [=IEntity] {
  </#if> 
 </#list>
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 <#if DescriptiveField[relationValue.eName]??>
   <#if DescriptiveField[relationValue.eName].fieldType?lower_case == "long" || DescriptiveField[relationValue.eName].fieldType?lower_case == "int" || DescriptiveField[relationValue.eName].fieldType?lower_case == "short" || DescriptiveField[relationValue.eName].fieldType?lower_case == "double">
       [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]?: number;
