@@ -10,15 +10,8 @@ import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogSe
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
-<#if relationValue.relation == "ManyToMany">
-<#list CompositeKeyClasses as relationInput>
-<#assign parent = relationInput>
-<#if parent?keep_before("-") == relationValue.eName>
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
-</#if>
-</#list>
-<#elseif relationValue.relation == "ManyToOne">
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+import { [=relationValue.eName]Service } from '../[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case]/[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case].service';
 </#if>
 </#list>
 </#if>
@@ -43,7 +36,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		public errorService: ErrorService,
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
 		</#if>
 		</#list>
@@ -66,7 +59,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
   	
 		this.associations = [
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			{
 				column: [
 				      <#list relationValue.joinDetails as joinDetails>
@@ -153,7 +146,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		</#if>
 		</#list>
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToOne">
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			<#if DescriptiveField[relationValue.eName]??>
 			{
 	  			column: '[=relationValue.eName]',

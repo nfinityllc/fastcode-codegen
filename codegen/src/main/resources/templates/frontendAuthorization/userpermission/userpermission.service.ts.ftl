@@ -1,16 +1,16 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IUserpermission } from './iuserpermission';
-import {GenericApiService} from 'fastCodeCore';
+import { I[=authenticationTable]permission } from './i[=moduleName]permission';
+import { GenericApiService } from 'fastCodeCore';
 import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserpermissionService extends GenericApiService<IUserpermission> { 
+export class [=authenticationTable]permissionService extends GenericApiService<I[=authenticationTable]permission> { 
   constructor(private httpclient: HttpClient) { 
-    super(httpclient, { apiUrl: environment.apiUrl }, "userpermission");
+    super(httpclient, { apiUrl: environment.apiUrl }, "[=authenticationTable?uncap_first]permission");
   }
   
   

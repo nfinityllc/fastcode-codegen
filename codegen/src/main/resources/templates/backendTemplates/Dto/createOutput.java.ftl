@@ -39,6 +39,7 @@ public class Create[=ClassName]Output {
   <#if CompositeKeyClasses?seq_contains(ClassName)>
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if joinDetails.joinColumn??>
   <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   
@@ -49,6 +50,7 @@ public class Create[=ClassName]Output {
   public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
   this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
+  </#if>
   </#if>
   </#if>
 </#if>

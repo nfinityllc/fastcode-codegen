@@ -10,10 +10,6 @@
 	<mat-card class="card">
 		<mat-card-content>
 			<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">
-						
-			
-			
-			
 			
 				<mat-form-field *ngFor="let association of toOne">
 					<input matInput disabled placeholder="{{association.table}}" formControlName="{{association.descriptiveField}}">

@@ -1,9 +1,9 @@
 export { ListFiltersComponent } from 'fastCodeCore';
 export { AddFilterFieldComponent } from 'fastCodeCore';
 
-export { UserpermissionListComponent } from './userpermission-list.component';
-export { UserpermissionDetailsComponent } from './userpermission-details.component';
-export { UserpermissionNewComponent } from './userpermission-new.component';
+export { [=authenticationTable?cap_first]permissionListComponent } from './[=moduleName]permission-list.component';
+export { [=authenticationTable?cap_first]permissionDetailsComponent } from './[=moduleName]permission-details.component';
+export { [=authenticationTable?cap_first]permissionNewComponent } from './[=moduleName]permission-new.component';
 
-export { IUserpermission } from './iuserpermission';
-export { UserpermissionService } from './userpermission.service';
+export { I[=authenticationTable?cap_first]permission } from './i[=moduleName]permission';
+export { [=authenticationTable?cap_first]permissionService } from './[=moduleName]permission.service';

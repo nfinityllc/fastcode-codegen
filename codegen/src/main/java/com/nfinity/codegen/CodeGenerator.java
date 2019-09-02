@@ -142,9 +142,9 @@ public class CodeGenerator {
 			//			if(authenticationSchema!=null && entityNames.contains(authenticationSchema))
 			//			 AuthenticationClassesTemplateGenerator.generateAutheticationClasses(destPath + "/" + backEndRootFolder, appName, audit,
 			//						history,flowable,authenticationType,schema,authenticationSchema);
-			//
-			generateAppStartupRunner(details, appName, sourcePackageName,backEndRootFolder,destPath);
-			generateFrontendAuthorization(destPath, appName, authenticationType);
+			//				
+			generateFrontendAuthorization(destPath, appName, authenticationType, authenticationTable);
+			generateAppStartupRunner(details, appName, sourcePackageName, backEndRootFolder, destPath, authenticationTable);
 		}
 
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType);
@@ -157,7 +157,7 @@ public class CodeGenerator {
 		generateBeanConfig(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
 
 	}
-	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath){
+	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath, String authenticationTable){
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
@@ -171,6 +171,7 @@ public class CodeGenerator {
 			entityMap.put("importPkg" , appName + ".domain.model." + name + "Entity");
 			entityMap.put("requestMapping" , "/" + name.toLowerCase());
 			entityMap.put("method" , "get" + name + "Changes");
+			entityMap.put("authenticationTable" , authenticationTable);
 
 			entitiesMap.put(name, entityMap);
 
@@ -231,7 +232,7 @@ public class CodeGenerator {
 		return propertyInfo;
 	}
 
-	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType ) {
+	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType, String authenticationTable ) {
 
 		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 		List<String> authorizationEntities = new ArrayList<String>();
@@ -247,11 +248,14 @@ public class CodeGenerator {
 		entityList.add("Rolepermission");
 		
 		if(authenticationType == "database") {
-			authorizationEntities.add("user");
+			if(authenticationTable == null) {
+				authorizationEntities.add("user");
+				entityList.add("User");
+				entityList.add("Userpermission");
+			}else {
+				entityList.add(authenticationTable + "permission");
+			}
 			authorizationEntities.add("userpermission");
-
-			entityList.add("User");
-			entityList.add("Userpermission");
 		}
 
 		updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
@@ -260,11 +264,17 @@ public class CodeGenerator {
 		authorizationEntities.add("login");
 		authorizationEntities.add("core");
 		for(String entity: authorizationEntities) {
-			generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType);
+			if(entity == "userpermission" && authenticationTable != null) {
+				generateFrontendAuthorizationComponents(appFolderPath + convertCamelCaseToDash(authenticationTable) + "permission", authorizationPath + entity, authenticationType, authenticationTable);
+			}
+			else {
+				generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType, authenticationTable);
+			}
+			
 		}
 
 	}
-	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType) {
+	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType, String authenticationTable) {
 		List<String> fl = FolderContentReader.getFilesFromFolder(templatePath);
 		Map<String, Object> templates = new HashMap<>();
 
@@ -279,13 +289,31 @@ public class CodeGenerator {
 			String p = filePath.replace("BOOT-INF/classes" + templatePath,"");
 			p = p.replace("\\", "/");
 			p = p.replace(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources" + templatePath,"");
-			templates.put(p, p.substring(0, p.lastIndexOf('.')));
+			String outputFileName = p.substring(0, p.lastIndexOf('.'));
+			if(outputFileName.contains("userpermission") && authenticationTable != null) {
+				outputFileName = outputFileName.replace("user", convertCamelCaseToDash(authenticationTable));
+			}
+			templates.put(p, outputFileName);
 		}
 
 		Map<String, Object> root = new HashMap<>();
 		root.put("authenticationType", authenticationType);
-
+		
+		if(authenticationTable == null) {
+			authenticationTable = "User";
+		}
+		root.put("authenticationTable", authenticationTable);
+		root.put("moduleName", convertCamelCaseToDash(authenticationTable));
 		generateFiles(templates, root, destination);
+	}
+	
+	private static String convertCamelCaseToDash(String str) {
+		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
+		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
+		for (int i = 0; i < splittedNames.length; i++) {
+			splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
+		}
+		return StringUtils.join(splittedNames, "-");
 	}
 
 	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType,String authenticationTable){

@@ -10,8 +10,8 @@ import { PickerDialogService, ErrorService } from 'fastCodeCore';
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
-<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service'
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+import { [=relationValue.eName]Service } from '../[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case]/[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case].service';
 </#if>
 </#list>
 </#if>
@@ -38,8 +38,8 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		public errorService: ErrorService,
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-		public [=relationValue.eName?lower_case]Service: [=relationValue.eName]Service,
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
 		</#if>
 		</#list>
 		</#if>
@@ -72,7 +72,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			</#list>
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne">
+			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
@@ -86,25 +86,10 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             </#if>
             </#if>
             </#list>
-            </#if>
-            <#if relationValue.relation == "OneToOne">
-            <#list relationValue.joinDetails as joinDetails>
-            <#if joinDetails.joinEntityName == relationValue.eName>
-            <#if joinDetails.joinColumn??>
-			<#if joinDetails.isJoinColumnOptional==false>          
-			[=joinDetails.joinColumn]: ['', Validators.required],
-			<#else>
-			[=joinDetails.joinColumn]: [''],
-			</#if>
-            </#if>
-            </#if>
-            </#list>
-			</#if>
-			<#if relationValue.relation == "ManyToOne">
-			<#if DescriptiveField[relationValue.eName]??>
+            <#if DescriptiveField[relationValue.eName]??>
 			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first] : [{ value: '', disabled: true }],
 			</#if>
-			</#if>
+            </#if>
 			</#list>
 			</#if>
 	    });
@@ -145,10 +130,8 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				</#if>
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]',
-				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-				service: this.[=relationValue.eName?lower_case]Service,
-				</#if>
-				<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+				<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+				service: this.[=relationValue.eName?uncap_first]Service,
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
 			    </#if>
@@ -179,7 +162,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		</#list>
 		<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne">
+			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
@@ -190,15 +173,6 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			</#if>
 			<#if DescriptiveField[relationValue.eName]??>
 			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first],
-			</#if>
-			</#list>
-			</#if>
-            <#if relationValue.relation == "OneToOne">
-            <#list relationValue.joinDetails as joinDetails>
-            <#if joinDetails.joinEntityName == relationValue.eName>
-            <#if joinDetails.joinColumn??>
-			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
-			</#if>
 			</#if>
 			</#list>
 			</#if>

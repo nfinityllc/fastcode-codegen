@@ -9,9 +9,11 @@ import [=PackageName].domain.Authorization.Rolepermission.RolepermissionManager;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.Role.RoleManager;
+<#if authenticationTable == null>
 import [=PackageName].domain.Authorization.User.IUserManager;
 import [=PackageName].domain.Authorization.User.UserManager;
 import [=PackageName].domain.model.UserEntity;
+</#if>
 import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -33,10 +35,12 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Autowired
     private IRoleManager rolesManager;
-
+    
+	<#if authenticationTable == null>
     @Autowired
     private IUserManager userManager;
 	
+	</#if>
 	@Autowired
     private IRolepermissionManager rolepermissionManager;
 
@@ -135,57 +139,57 @@ public class AppStartupRunner implements ApplicationRunner {
         rolepermissionManager.Create(pe7RP);
         rolepermissionManager.Create(pe8RP);
 
-        // Create users
-
-        if(env.getProperty("fastCode.auth.method").equalsIgnoreCase("database")) {
-
-            UserEntity ue1 = new UserEntity();
-
-            ue1.setEmailAddress("e1@nfinityllc.com");
-            ue1.setUserName("admin");
-            ue1.setPassword(pEncoder.encode("secret"));
-            ue1.setFirstName("Admin");
-            ue1.setLastName("Admin");
-            ue1.setIsActive(true);
-			ue1.setRoleId(re1.getId());
-			
-            userManager.Create(ue1);
-            
-            PermissionEntity pe9 = new PermissionEntity();
-	        PermissionEntity pe10 = new PermissionEntity();
-	        PermissionEntity pe11 = new PermissionEntity();
-	        PermissionEntity pe12 = new PermissionEntity();
-	
-	        pe9.setName("USERSENTITY_CREATE");
-	        pe10.setName("USERSENTITY_READ");
-	        pe11.setName("USERSENTITY_DELETE");
-	        pe12.setName("USERSENTITY_UPDATE");
-	
-	        pe9 = permissionManager.Create(pe9);
-	        pe10 = permissionManager.Create(pe10);
-	        pe11 = permissionManager.Create(pe11);
-	        pe12 = permissionManager.Create(pe12);
-	        
-	        RolepermissionEntity pe9RP = new RolepermissionEntity();
-        	RolepermissionEntity pe10RP = new RolepermissionEntity();
-        	RolepermissionEntity pe11RP = new RolepermissionEntity();
-        	RolepermissionEntity pe12RP = new RolepermissionEntity();
-        	
-        	pe9RP.setRoleId(re1.getId());
-        	pe10RP.setRoleId(re1.getId());
-        	pe11RP.setRoleId(re1.getId());
-        	pe12RP.setRoleId(re1.getId());
         
-        	pe9RP.setPermissionId(pe9.getId());
-	        pe10RP.setPermissionId(pe10.getId());
-	        pe11RP.setPermissionId(pe11.getId());
-	        pe12RP.setPermissionId(pe12.getId());
-	        
-	        rolepermissionManager.Create(pe9RP);
-        	rolepermissionManager.Create(pe10RP);
-        	rolepermissionManager.Create(pe11RP);
-        	rolepermissionManager.Create(pe12RP);
-        }
+
+        <#if authenticationTable == null>
+		// Create users
+        UserEntity ue1 = new UserEntity();
+
+        ue1.setEmailAddress("e1@nfinityllc.com");
+        ue1.setUserName("admin");
+        ue1.setPassword(pEncoder.encode("secret"));
+        ue1.setFirstName("Admin");
+        ue1.setLastName("Admin");
+        ue1.setIsActive(true);
+		ue1.setRoleId(re1.getId());
+		
+        userManager.Create(ue1);
+        
+        PermissionEntity pe9 = new PermissionEntity();
+        PermissionEntity pe10 = new PermissionEntity();
+        PermissionEntity pe11 = new PermissionEntity();
+        PermissionEntity pe12 = new PermissionEntity();
+
+        pe9.setName("USERSENTITY_CREATE");
+        pe10.setName("USERSENTITY_READ");
+        pe11.setName("USERSENTITY_DELETE");
+        pe12.setName("USERSENTITY_UPDATE");
+
+        pe9 = permissionManager.Create(pe9);
+        pe10 = permissionManager.Create(pe10);
+        pe11 = permissionManager.Create(pe11);
+        pe12 = permissionManager.Create(pe12);
+        
+        RolepermissionEntity pe9RP = new RolepermissionEntity();
+    	RolepermissionEntity pe10RP = new RolepermissionEntity();
+    	RolepermissionEntity pe11RP = new RolepermissionEntity();
+    	RolepermissionEntity pe12RP = new RolepermissionEntity();
+    	
+    	pe9RP.setRoleId(re1.getId());
+    	pe10RP.setRoleId(re1.getId());
+    	pe11RP.setRoleId(re1.getId());
+    	pe12RP.setRoleId(re1.getId());
+    
+    	pe9RP.setPermissionId(pe9.getId());
+        pe10RP.setPermissionId(pe10.getId());
+        pe11RP.setPermissionId(pe11.getId());
+        pe12RP.setPermissionId(pe12.getId());
+        
+        rolepermissionManager.Create(pe9RP);
+    	rolepermissionManager.Create(pe10RP);
+    	rolepermissionManager.Create(pe11RP);
+    	rolepermissionManager.Create(pe12RP);
+        </#if>
 
         // Add Permissions to Roles
         
@@ -220,13 +224,13 @@ public class AppStartupRunner implements ApplicationRunner {
 		[=entityKey]CreateRP.setRoleId(re1.getId());
 		[=entityKey]CreateRP.setPermissionId([=entityKey]Create.getId());
 		
-		[=entityKey]ReadRP.setRoleId(re1re1.getId());
+		[=entityKey]ReadRP.setRoleId(re1.getId());
 		[=entityKey]ReadRP.setPermissionId([=entityKey]Read.getId());
 		
-		[=entityKey]DeleteRP.setRoleId(re1re1.getId());
+		[=entityKey]DeleteRP.setRoleId(re1.getId());
 		[=entityKey]DeleteRP.setPermissionId([=entityKey]Delete.getId());
 		
-		[=entityKey]UpdateRP.setRoleId(re1re1.getId());
+		[=entityKey]UpdateRP.setRoleId(re1.getId());
 		[=entityKey]UpdateRP.setPermissionId([=entityKey]Update.getId());
 		
 		rolepermissionManager.Create([=entityKey]CreateRP);
