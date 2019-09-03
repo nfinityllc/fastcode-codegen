@@ -12,13 +12,11 @@ import [=PackageName].domain.model.[=ClassName]Id;
 import [=PackageName].domain<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-<#if relationValue.isParent==false>
 <#assign i=relationValue.joinDetails?size>
 <#if i!=0 && i!=1>
 import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-</#if>
 </#if>
 </#list>
 import [=CommonModulePackage].Search.*;
@@ -203,7 +201,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	</#if>
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-	<#if relationValue.isParent==false>
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -219,7 +216,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(re, found[=ClassName]);
 	}
 	
-   </#if>
    </#if>
    </#list>
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -640,6 +636,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			return null;
 		}
 		</#if>
+		<#break>
 		</#list>
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();

@@ -73,7 +73,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
-            <#if !Fields[joinDetails.joinColumn]??>
+            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))??>
 			<#if joinDetails.isJoinColumnOptional==false>          
 			[=joinDetails.joinColumn]: ['', Validators.required],
 			<#else>

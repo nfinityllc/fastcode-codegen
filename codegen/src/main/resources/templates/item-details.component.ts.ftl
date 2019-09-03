@@ -76,7 +76,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
-            <#if !Fields[joinDetails.joinColumn]??>
+            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))??>
 			<#if joinDetails.isJoinColumnOptional==false>          
 			[=joinDetails.joinColumn]: ['', Validators.required],
 			<#else>
@@ -166,15 +166,15 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
-            <#if !Fields[joinDetails.joinColumn]??>
+            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))??>
 			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
             </#if>
             </#if>
 			</#if>
+			</#list>
 			<#if DescriptiveField[relationValue.eName]??>
 			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first],
 			</#if>
-			</#list>
 			</#if>
 			</#list>
 		</#if>

@@ -83,7 +83,6 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	}
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne"|| relationValue.relation == "OneToOne">
-  <#if relationValue.isParent == false>
   
    //[=relationValue.eName]
 	public [=relationValue.eName]Entity Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
@@ -96,7 +95,6 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		    return null;
 		}
 	}
-   </#if>	
    </#if>
   </#list>
 }

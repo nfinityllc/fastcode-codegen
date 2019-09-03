@@ -3,11 +3,9 @@ package [=PackageName].application<#if AuthenticationType== "database" && ClassN
 import org.mapstruct.Mapper;
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation =="OneToOne">
-<#if relationValue.isParent==false>
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 <#break>
-</#if>
 </#if>
 </#list>
 <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
@@ -16,9 +14,7 @@ import org.mapstruct.Mappings;
 </#if>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-<#if relationValue.isParent==false>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-</#if>
 </#if>
 </#list>
 import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
@@ -173,7 +169,6 @@ public interface [=ClassName]Mapper {
    <#list Relationship as relationKey, relationValue>
 
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-   <#if relationValue.isParent == false>
    @Mappings({
    <#list relationValue.fDetails as fValue>
    <#list Fields as key,value> 
@@ -194,7 +189,6 @@ public interface [=ClassName]Mapper {
    })
    Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
  
-   </#if>
    </#if>
    </#list>
 }
