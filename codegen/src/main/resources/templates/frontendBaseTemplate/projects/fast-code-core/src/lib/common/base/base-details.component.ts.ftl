@@ -16,6 +16,7 @@ import { PickerDialogService, IFCDialogConfig } from '../../common/components/pi
 import { IGlobalPermissionService } from '../core/iglobal-permission.service';
 import { CanDeactivateGuard } from '../core/can-deactivate.guard';
 import { ErrorService } from '../core/error.service';
+import { ServiceUtils } from '../utils/serviceUtils';
 
 @Component({
 
@@ -36,9 +37,9 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
 	}
 
   associations: IAssociationEntry[];
-  toMany: IAssociationEntry[];
-  toOne: IAssociationEntry[];
-
+  childAssociations: IAssociationEntry[];
+  parentAssociations: IAssociationEntry[];
+  
   dialogRef: MatDialogRef<any>;
   pickerDialogRef: MatDialogRef<any>;
 
@@ -221,7 +222,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
 	onPickerScroll() {
 		if (!this.isLoadingPickerResults && this.hasMoreRecordsPicker && this.lastProcessedOffsetPicker < this.pickerDialogRef.componentInstance.items.length) {
 			this.isLoadingPickerResults = true;
-			let selectedAssociation: IAssociationEntry = this.toOne.find(association => association.table === this.pickerDialogRef.componentInstance.title);
+			let selectedAssociation: IAssociationEntry = this.associations.find(association => association.table === this.pickerDialogRef.componentInstance.title);
 
 			selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
 				items => {
@@ -250,7 +251,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
 
 		this.initializePickerPageInfo();
 
-		let selectedAssociation: IAssociationEntry = this.toOne.find(association => association.table === this.pickerDialogRef.componentInstance.title);
+		let selectedAssociation: IAssociationEntry = this.associations.find(association => association.table === this.pickerDialogRef.componentInstance.title);
 
 		selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
       items => {
@@ -271,6 +272,22 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
       queryParam[col.key] = this.item[col.referencedkey];
     })
     return queryParam;
+  }
+  openChildDetails(association: IAssociationEntry){
+    if(association.type == "OneToMany"){
+      this.router.navigate(['/' + association.table], { queryParams: this.getQueryParams(association) });
+    }
+    else if(association.type == "OneToOne"){
+      this.dataService.getChild(association.table, this.idParam).subscribe( childObj =>{
+        this.router.navigate(['/' + association.table + "/" + ServiceUtils.encodeIdByObject(childObj, association.associatedPrimaryKeys)])
+      },
+      error => {
+      	this.errorMessage = <any>error;
+		this.pickerDialogRef.close();
+		this.errorService.showError("An error occured while redirecting");
+      })
+      
+    }
   }
 
 }

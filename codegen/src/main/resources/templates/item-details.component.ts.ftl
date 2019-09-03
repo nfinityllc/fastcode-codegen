@@ -76,7 +76,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
-            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))??>
+            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))>
 			<#if joinDetails.isJoinColumnOptional==false>          
 			[=joinDetails.joinColumn]: ['', Validators.required],
 			<#else>
@@ -135,16 +135,19 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
 			    </#if>
+			    <#elseif relationValue.relation == "OneToOne" && relationValue.isParent == true>
+			    associatedPrimaryKeys: [<#list relationValue.fDetails as value><#if value.isPrimaryKey == true> '[=value.fieldName]', </#if></#list>]
                 </#if>
 			},
 		</#list>
 		];
-		this.toMany = this.associations.filter(association => {
-			return ((['ManyToMany','OneToMany'].indexOf(association.type) > - 1) && association.isParent);
+		
+		this.childAssociations = this.associations.filter(association => {
+			return (association.isParent);
 		});
 
-		this.toOne = this.associations.filter(association => {
-			return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1));
+		this.parentAssociations = this.associations.filter(association => {
+			return (!association.isParent);
 		});
 	}
   </#if>
@@ -166,7 +169,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
-            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))??>
+            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))>
 			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
             </#if>
             </#if>

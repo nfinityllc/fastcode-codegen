@@ -28,6 +28,12 @@ export class GenericApiService<T> {
     }), catchError(this.handleError));
 
   }
+  
+  getChild(childSuffix : string, id:any) : Observable<any>{
+    return this.http
+      .get<T>(this.url + '/' + id + "/" + childSuffix).pipe(catchError(this.handleError));
+  }
+  
   getAssociations(parentSuffix: string, parentId: any, searchFields?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
 
     let url = this.apiUrl + '/' + parentSuffix + '/' + parentId + '/' + this.suffix;

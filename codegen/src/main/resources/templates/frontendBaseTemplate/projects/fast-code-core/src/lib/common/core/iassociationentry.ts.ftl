@@ -9,4 +9,5 @@ export interface IAssociationEntry {
   descriptiveField?: string,
   referencedDescriptiveField?: string,
   associatedObj?: any,
+  associatedPrimaryKeys?: string[]
 }
