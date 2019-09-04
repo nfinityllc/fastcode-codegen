@@ -62,32 +62,26 @@ export class UserNewComponent extends BaseNewComponent<IUser> implements OnInit 
 		this.checkPassedData();
     }
  		
-		setAssociations(){
-	  	
-			this.associations = [
+	setAssociations(){
+		this.associations = [
 			{
 				column: [
-                      {
-					  key: 'roleId',
-					  value: undefined,
-					  referencedkey: 'id'
-					  },
-					  
+					{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					},
 				],
-				
 				isParent: false,
 				table: 'role',
 				type: 'ManyToOne',
 				service: this.roleService,
-                
 				descriptiveField: 'roleName',
-			    
-				},
-			];
-			this.toOne = this.associations.filter(association => {
-				return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1) && !association.isParent);
-			});
-	
-		}
+			},
+		];
+		this.parentAssociations = this.associations.filter(association => {
+			return (!association.isParent);
+		});
+	}
     
 }

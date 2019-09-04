@@ -46,8 +46,7 @@ export class BaseNewComponent<E> implements OnInit, CanDeactivateGuard {
 	pickerDialogRef: MatDialogRef<any>;
 
 	associations: IAssociationEntry[];
-	toMany: IAssociationEntry[];
-	toOne: IAssociationEntry[];
+	parentAssociations: IAssociationEntry[];
 
 	entityName: string = "";
 	IsReadPermission: Boolean = false;
@@ -115,7 +114,7 @@ export class BaseNewComponent<E> implements OnInit, CanDeactivateGuard {
 		}
 
 		this.loading = true;
-		this.dataService.create(this.itemForm.value)
+		this.dataService.create(this.itemForm.getRawValue())
 			.pipe(first())
 			.subscribe(
 				data => {
@@ -208,7 +207,7 @@ export class BaseNewComponent<E> implements OnInit, CanDeactivateGuard {
 	onPickerScroll() {
 		if (!this.isLoadingPickerResults && this.hasMoreRecordsPicker && this.lastProcessedOffsetPicker < this.pickerDialogRef.componentInstance.items.length) {
 			this.isLoadingPickerResults = true;
-			let selectedAssociation: IAssociationEntry = this.toOne.find(association => association.table === this.pickerDialogRef.componentInstance.title);
+			let selectedAssociation: IAssociationEntry = this.associations.find(association => association.table === this.pickerDialogRef.componentInstance.title);
 
 			selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
 				items => {
@@ -237,7 +236,7 @@ export class BaseNewComponent<E> implements OnInit, CanDeactivateGuard {
 
 		this.initializePickerPageInfo();
 
-		let selectedAssociation: IAssociationEntry = this.toOne.find(association => association.table === this.pickerDialogRef.componentInstance.title);
+		let selectedAssociation: IAssociationEntry = this.associations.find(association => association.table === this.pickerDialogRef.componentInstance.title);
 
 		selectedAssociation.service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
 			items => {

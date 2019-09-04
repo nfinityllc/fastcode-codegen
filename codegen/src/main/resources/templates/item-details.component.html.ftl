@@ -57,15 +57,17 @@
 			
 			</#list>
 			
-				<mat-form-field *ngFor="let association of toOne">
+				<mat-form-field *ngFor="let association of parentAssociations">
 					<input matInput disabled placeholder="{{association.table}}" formControlName="{{association.descriptiveField}}">
 					<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
 				</mat-form-field>
 				
-				<div *ngFor="let association of toMany">
-					<a *ngIf="association.type == 'OneToMany'" [routerLink]="['/' + association.table]" [queryParams]="getQueryParams(association)" class="btn btn-link">{{association.table}}</a>
-				</div>
 			</form>
+			<div *ngFor="let association of childAssociations" class="association-div">
+				<button mat-stroked-button color="primary" (click)="openChildDetails(association)" class="btn btn-link">
+					{{association.table}}
+				</button>
+			</div>
 		</mat-card-content>
 	</mat-card>
 </div>

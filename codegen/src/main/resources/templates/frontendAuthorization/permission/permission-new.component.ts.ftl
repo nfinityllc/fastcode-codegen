@@ -42,14 +42,12 @@ export class PermissionNewComponent extends BaseNewComponent<IPermission> implem
 		this.checkPassedData();
     }
  		
-		setAssociations(){
-	  	
-			this.associations = [
-			];
-			this.toOne = this.associations.filter(association => {
-				return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1) && !association.isParent);
-			});
-	
-		}
+	setAssociations(){
+		this.associations = [
+		];
+		this.parentAssociations = this.associations.filter(association => {
+			return (!association.isParent);
+		});
+	}
     
 }

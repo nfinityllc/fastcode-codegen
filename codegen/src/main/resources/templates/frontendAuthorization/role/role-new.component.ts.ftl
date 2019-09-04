@@ -46,8 +46,8 @@ export class RoleNewComponent extends BaseNewComponent<IRole> implements OnInit 
 	  	
 			this.associations = [
 			];
-			this.toOne = this.associations.filter(association => {
-				return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1) && !association.isParent);
+			this.parentAssociations = this.associations.filter(association => {
+				return (!association.isParent);
 			});
 	
 		}

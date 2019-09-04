@@ -247,11 +247,10 @@ public class [=ClassName]Controller {
 	}
    <#list Relationship as relationKey, relationValue>
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-    <#if relationValue.isParent==false>
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
-	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity<Get[=relationValue.eName]Output> Get[=relationValue.eName](@PathVariable String id) {
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
 	[=ClassName]Id [=ClassName?lower_case]Id =_[=ClassName?uncap_first]AppService.parse[=ClassName]Key(id);
@@ -278,14 +277,13 @@ public class [=ClassName]Controller {
 		}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
-	</#if>
     <#elseif relationValue.relation == "OneToMany">
     
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
-	@RequestMapping(value = "/{[=InstanceName]id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
-	public ResponseEntity Get[=relationValue.eName](@PathVariable String [=InstanceName]id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	@RequestMapping(value = "/{id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
+	public ResponseEntity Get[=relationValue.eName](@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 //		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
@@ -293,7 +291,7 @@ public class [=ClassName]Controller {
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		Map<String,String> joinColDetails=_[=ClassName?uncap_first]AppService.parse[=relationValue.eName]JoinColumn([=InstanceName]id);
+		Map<String,String> joinColDetails=_[=ClassName?uncap_first]AppService.parse[=relationValue.eName]JoinColumn(id);
 		if(joinColDetails== null)
 		{
 			logHelper.getLogger().error("Invalid Join Column");
