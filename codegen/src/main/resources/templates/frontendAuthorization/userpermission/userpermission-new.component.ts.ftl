@@ -48,50 +48,40 @@ export class [=authenticationTable]permissionNewComponent extends BaseNewCompone
 		this.checkPassedData();
     }
  		
-		setAssociations(){
-	  	
-			this.associations = [
+	setAssociations(){
+  	
+		this.associations = [
 			{
 				column: [
-                      {
-					  key: 'userid',
-					  value: undefined,
-					  referencedkey: 'userid'
-					  },
-					  
+					{
+						key: 'userid',
+						value: undefined,
+						referencedkey: 'userid'
+					},
 				],
-				
 				isParent: false,
 				table: '[=authenticationTable?uncap_first]',
 				type: 'ManyToOne',
 				service: this.[=authenticationTable?uncap_first]Service,
-                
 				descriptiveField: '[=authenticationTable?uncap_first]Username',
-			    
-				},
+			},
 			{
 				column: [
-                      {
-					  key: 'permissionId',
-					  value: undefined,
-					  referencedkey: 'id'
-					  },
-					  
+					{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+					},
 				],
-				
 				isParent: false,
 				table: 'permission',
 				type: 'ManyToOne',
 				service: this.permissionService,
-                
 				descriptiveField: 'permissionName',
-			    
-				},
-			];
-			this.toOne = this.associations.filter(association => {
-				return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1) && !association.isParent);
-			});
-	
-		}
-    
+			},
+		];
+		this.parentAssociations = this.associations.filter(association => {
+			return (!association.isParent);
+		});
+	}
 }

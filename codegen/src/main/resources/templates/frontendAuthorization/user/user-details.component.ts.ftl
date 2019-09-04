@@ -96,12 +96,12 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 				descriptiveField: 'roleName',
 			},
 		];
-		this.toMany = this.associations.filter(association => {
-			return ((['ManyToMany','OneToMany'].indexOf(association.type) > - 1) && association.isParent);
+		this.childAssociations = this.associations.filter(association => {
+			return (association.isParent);
 		});
 
-		this.toOne = this.associations.filter(association => {
-			return ((['ManyToOne','OneToOne'].indexOf(association.type) > - 1));
+		this.parentAssociations = this.associations.filter(association => {
+			return (!association.isParent);
 		});
 	}
 
