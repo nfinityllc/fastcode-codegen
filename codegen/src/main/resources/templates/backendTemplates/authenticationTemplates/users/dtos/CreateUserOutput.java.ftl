@@ -24,12 +24,12 @@ public class CreateUserOutput {
     private Date signInTokenExpireTimeUtc;
     private String lastName;
     private String userName;
-      <#if Audit!false>
+    <#if Audit!false>
     private String creatorUserId;
     private java.util.Date creationTime;
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
-</#if>     
+    </#if>     
     private Long roleId;       
     private String roleName;
     

@@ -96,7 +96,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
+        if(<#list relationValue.joinDetails?sort as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
 		{
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
 		if(found[=relationValue.eName]!=null)
@@ -429,7 +429,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
-
+        
+        <#if Fields??>
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
 		<#list Fields as key,value>
         <#if value.fieldType?lower_case == "string">
@@ -544,6 +545,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	    </#if>
 	    </#list>	
 		}
+		</#if>
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne" >
 		<#if relationValue.isParent==false>
@@ -560,6 +562,8 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Integer.parseInt(joinCol.getValue())));
 		<#elseif joinDetails.joinColumnType == "Double">
 		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Double.parseDouble(joinCol.getValue())));
+        <#elseif joinDetails.joinColumnType == "Short">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Short.parseShort(joinCol.getValue())));
         </#if>
 		}
 		</#if>
@@ -640,6 +644,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			return null;
 		}
 		</#if>
+        <#break>
 		</#list>
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();

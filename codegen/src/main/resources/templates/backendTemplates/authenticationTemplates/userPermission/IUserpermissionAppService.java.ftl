@@ -13,7 +13,7 @@ import [=PackageName].application.Authorization.[=AuthenticationTable]permission
 public interface I[=AuthenticationTable]permissionAppService {
 
 	Create[=AuthenticationTable]permissionOutput Create(Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission);
-
+    
     void Delete([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId );
 
     Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input);

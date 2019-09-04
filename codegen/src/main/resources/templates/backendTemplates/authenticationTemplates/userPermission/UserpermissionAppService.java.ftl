@@ -9,6 +9,9 @@ import [=PackageName].domain.Authorization.[=AuthenticationTable].[=Authenticati
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.Authorization.Permission.PermissionManager;
 import [=PackageName].domain.model.PermissionEntity;
+<#if CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=AuthenticationTable]Id;
+</#if>
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
@@ -57,18 +60,24 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	public Create[=AuthenticationTable]permissionOutput Create(Create[=AuthenticationTable]permissionInput input) {
 
 		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Create[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
-	  	if(input.getUserid()!=null)
+	  	
+    	if(<#if AuthenticationType=="database" && !UserInput??>input.getUserid()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=value.fieldName?cap_first]()!=null && <#else>input.get[=value.fieldName?cap_first]()!=null</#if></#list></#if>)
 		{
-		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(input.getUserid());
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.getUserid()<#elseif AuthenticationType=="database" && UserInput??>new [=AuthenticationTable]Id(<#list PrimaryKeys as key,value><#if key_has_next>input.get[=value.fieldName?cap_first](),<#else>input.get[=value.fieldName?cap_first]()</#if></#list></#if>));
 		if(found[=AuthenticationTable]!=null)
 		[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
 		}
+		else
+		return null;
+	  	
 	  	if(input.getPermissionId()!=null)
 		{
 		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
 		if(foundPermission!=null)
 		[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
 		}
+		else
+		return null;
 		[=AuthenticationTable]permissionEntity created[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Create([=AuthenticationTable?uncap_first]permission);
 		return mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput(created[=AuthenticationTable]permission);
 	}
@@ -78,9 +87,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	public Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input) {
 
 		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
-	  	if(input.getUserid()!=null)
+	  	if(<#if AuthenticationType=="database" && !UserInput??>input.getUserid()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=value.fieldName?cap_first]()!=null && <#else>input.get[=value.fieldName?cap_first]()!=null</#if></#list></#if>)
 		{
-		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(input.getUserid());
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.getUserid()<#elseif AuthenticationType=="database" && UserInput??>new [=AuthenticationTable]Id(<#list PrimaryKeys as key,value><#if key_has_next>input.get[=value.fieldName?cap_first](),<#else>input.get[=value.fieldName?cap_first]()</#if></#list></#if>));
 		if(found[=AuthenticationTable]!=null)
 		[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
 		}
@@ -214,11 +223,20 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	public void checkProperties(List<String> list) throws Exception  {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
-		
+		<#if AuthenticationType=="database" && !UserInput??>
+    	list.get(i).replace("%20","").trim().equals("userid")||
+  		<#elseif AuthenticationType=="database" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+   		<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+   	 	list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")||
+  		</#if> 
+  		</#list>
+  		</#if>
+  		</#if>
 		 list.get(i).replace("%20","").trim().equals("permission") ||
 		 list.get(i).replace("%20","").trim().equals("permissionId") ||
-		 list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]") ||
-		 list.get(i).replace("%20","").trim().equals("userid")
+		 list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]")
 		)) 
 		{
 		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
@@ -230,10 +248,37 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
-		
-		  if(list.get(i).replace("%20","").trim().equals("userid")) {
+		<#if AuthenticationType=="database" && !UserInput??>
+		if(list.get(i).replace("%20","").trim().equals("userid")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].userid.eq(Long.parseLong(value)));
 			}
+  		<#elseif AuthenticationType=="database" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+  		<#if value.fieldType?lower_case == "string" >
+  		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(value));
+			}
+		<#elseif value.fieldType?lower_case == "long" >
+		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Long.parseLong(value)));
+			}
+		<#elseif value.fieldType?lower_case == "integer">
+		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Integer.parseInt(value)));
+			}
+        <#elseif value.fieldType?lower_case == "short">
+        if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Short.parseShort(value)));
+			}
+		<#elseif value.fieldType?lower_case == "double">
+		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Double.parseDouble(value)));
+			}
+		</#if>
+  		</#list>
+  		</#if>
+  		</#if>
 		  if(list.get(i).replace("%20","").trim().equals("permissionId")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.permission.id.eq(Long.parseLong(value)));
 			}
@@ -244,12 +289,39 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	BooleanBuilder searchKeyValuePair(Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission, Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
 
-		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
-		}
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
+        
+		<#if AuthenticationType=="database" && !UserInput??>
         if(joinCol != null && joinCol.getKey().equals("userid")) {
 		    builder.and([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].userid.eq(Long.parseLong(joinCol.getValue())));
 		}
+  		<#elseif AuthenticationType=="database" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+  		<#if value.fieldType?lower_case == "string" >
+  		if(joinCol != null && joinCol.getKey().equals("[=value.fieldName?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(joinCol.getValue()));
+		}
+		<#elseif value.fieldType?lower_case == "long" >
+		if(joinCol != null && joinCol.getKey().equals("[=value.fieldName?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Long.parseLong(joinCol.getValue())));
+		}
+		<#elseif value.fieldType?lower_case == "integer">
+		if(joinCol != null && joinCol.getKey().equals("[=value.fieldName?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Integer.parseInt(joinCol.getValue())));
+		}
+        <#elseif value.fieldType?lower_case == "short">
+        if(joinCol != null && joinCol.getKey().equals("[=value.fieldName?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Short.parseShort(joinCol.getValue())));
+		}
+		<#elseif value.fieldType?lower_case == "double">
+		if(joinCol != null && joinCol.getKey().equals("[=value.fieldName?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Double.parseDouble(joinCol.getValue())));
+		}
+		</#if>
+  		</#list>
+  		</#if>
+  		</#if>
         }
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
         if(joinCol != null && joinCol.getKey().equals("permissionId")) {
@@ -282,9 +354,27 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		}
 		
 		[=AuthenticationTable?uncap_first]permissionId.setPermissionId(Long.valueOf(keyMap.get("permissionId")));
-		[=AuthenticationTable?uncap_first]permissionId.setUserid(Long.valueOf(keyMap.get("userid")));
+		<#if AuthenticationType=="database" && !UserInput??>
+        [=AuthenticationTable?uncap_first]permissionId.setUserid(Long.valueOf(keyMap.get("userid")));
+    	private Long userid;
+  		<#elseif AuthenticationType=="database" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+  		<#if value.fieldType?lower_case == "string" >
+		[=AuthenticationTable?uncap_first]permissionId.set[=value.fieldName?cap_first](keyMap.get("[=value.fieldName?uncap_first]"));
+		<#elseif value.fieldType?lower_case == "long" >
+		[=AuthenticationTable?uncap_first]permissionId.set[=value.fieldName?cap_first](Long.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+		<#elseif value.fieldType?lower_case == "integer">
+		[=AuthenticationTable?uncap_first]permissionId.set[=value.fieldName?cap_first](Integer.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+        <#elseif value.fieldType?lower_case == "short">
+        [=AuthenticationTable?uncap_first]permissionId.set[=value.fieldName?cap_first](Short.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+		<#elseif value.fieldType?lower_case == "double">
+		[=AuthenticationTable?uncap_first]permissionId.set[=value.fieldName?cap_first](Double.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+		</#if>
+  		</#list>
+  		</#if>
+  		</#if>
 		return [=AuthenticationTable?uncap_first]permissionId;
-		
 	}	
 	
 	

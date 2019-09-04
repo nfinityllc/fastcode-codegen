@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -29,8 +30,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.apache.bval.jsr.xml.FieldType;
 import org.apache.commons.io.FileUtils;
+
+import static java.util.stream.Collectors.*;
+import static java.util.Map.Entry.*;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
@@ -89,8 +93,15 @@ public class CodeGenerator {
 					primaryKeys.put(entry.getValue().getFieldName(), entry.getValue().getFieldType());
 			}
 		}
+		Map<String, String> sorted =primaryKeys
+				.entrySet()
+				.stream()
+				.sorted(comparingByKey())
+				.collect(
+				toMap(e -> e.getKey(), e -> e.getValue(),
+				(e1, e2) -> e2, LinkedHashMap::new));
 
-		root.put("PrimaryKeys", primaryKeys);
+		root.put("PrimaryKeys", sorted);
 		Map<String, RelationDetails> relationMap = details.getRelationsMap();
 		List<String> searchFields = new ArrayList<>();
 
@@ -144,7 +155,7 @@ public class CodeGenerator {
 			//						history,flowable,authenticationType,schema,authenticationSchema);
 			//				
 			generateFrontendAuthorization(destPath, appName, authenticationType, authenticationTable);
-			generateAppStartupRunner(details, appName, sourcePackageName, backEndRootFolder, destPath, authenticationTable);
+	//		generateAppStartupRunner(details, appName, sourcePackageName, backEndRootFolder, destPath, authenticationTable);
 		}
 
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType);

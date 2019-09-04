@@ -5,25 +5,53 @@ import org.hibernate.validator.constraints.Length;
 
 public class Update[=AuthenticationTable]permissionInput {
 
-  @NotNull(message = "permission Id Should not be null")
-  private Long permissionId;
+  @NotNull(message = "permissionId Should not be null")
+    private Long permissionId;
   
-  @NotNull(message = "user Id Should not be null")
-  private Long userid;
+    <#if AuthenticationType=="database" && !UserInput??>
+    @NotNull(message = "user Id Should not be null")
+    private Long userid;
+  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#if PrimaryKeys??>
+  	<#list PrimaryKeys as key,value>
+   	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+    @NotNull(message = "[=value.fieldName?uncap_first] Should not be null")
+    private [=value.fieldType] [=value.fieldName?uncap_first];
+  	</#if> 
+  	</#list>
+  	</#if>
+  	</#if>
+  
+  	public Long getPermissionId() {
+  	return permissionId;
+  	}
 
-  public Long getPermissionId() {
-  return permissionId;
-  }
+  	public void setPermissionId(Long permissionId){
+  	this.permissionId = permissionId;
+  	}
+  
+  	<#if AuthenticationType=="database" && !UserInput??>
+  	public Long getUserid() {
+  	return userid;
+  	}
 
-  public void setPermissionId(Long permissionId){
-  this.permissionId = permissionId;
-  }
-  public Long getUserid() {
-  return userid;
-  }
+  	public void setUserid(Long userid){
+  	this.userid = userid;
+  	}
+  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#if PrimaryKeys??>
+  	<#list PrimaryKeys as key,value>
+  	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+  	public [=value.fieldType] get[=value.fieldName?cap_first]() {
+  	return [=value.fieldName?uncap_first];
+  	}
 
-  public void setUserid(Long userid){
-  this.userid = userid;
-  }
+  	public void set[=value.fieldName?cap_first]([=value.fieldType] [=value.fieldName?uncap_first]){
+  	this.[=value.fieldName?uncap_first] = [=value.fieldName?uncap_first];
+  	}
+  	</#if> 
+  	</#list>
+  	</#if>
+  	</#if>
  
 }

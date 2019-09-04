@@ -7,22 +7,22 @@ public class [=ClassName]Id implements Serializable {
 <#list Fields as key,value>
  <#if value.isPrimaryKey !false>
  <#if value.fieldType?lower_case == "long">
-  private Long [=value.fieldName];
+    private Long [=value.fieldName];
  <#elseif value.fieldType?lower_case == "integer" >
-  private Integer [=value.fieldName];
+    private Integer [=value.fieldName];
  <#elseif value.fieldType?lower_case == "short" >
-  private Short [=value.fieldName];
+    private Short [=value.fieldName];
  <#elseif value.fieldType?lower_case == "double" >
-  private Double [=value.fieldName];
+    private Double [=value.fieldName];
  <#elseif value.fieldType?lower_case == "string">
-  private String [=value.fieldName];
+    private String [=value.fieldName];
  </#if> 
  </#if>
 </#list>
     public [=ClassName]Id() {
 
     }
-    public [=ClassName]Id(<#list PrimaryKeys?keys as key><#if key_has_next>[=PrimaryKeys[key]] [=key],<#else>[=PrimaryKeys[key]] [=key]</#if></#list>) {
+    public [=ClassName]Id(<#list PrimaryKeys?keys?sort as key><#if key_has_next>[=PrimaryKeys[key]] [=key],<#else>[=PrimaryKeys[key]] [=key]</#if></#list>) {
     <#list Fields as key,value>
     <#if value.isPrimaryKey !false>
   		this.[=value.fieldName] =[=value.fieldName];
@@ -30,7 +30,7 @@ public class [=ClassName]Id implements Serializable {
     </#list>
     }
     
-    <#list Fields as key,value>
+ <#list Fields as key,value>
  <#if value.isPrimaryKey !false>
  <#if value.fieldType?lower_case == "long">
     public Long get[=value.fieldName?cap_first]() {

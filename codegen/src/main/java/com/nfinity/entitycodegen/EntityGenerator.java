@@ -113,53 +113,51 @@ public class EntityGenerator {
 
 				}
 			}
-			if(authenticationTable !=null )
-			{
-				Boolean isTableExits=false;
-				if(entityDetailsMap.containsKey(authenticationTable)) {
-					isTableExits=true;
-				}
-				Scanner scanner = new Scanner(System.in);
-				UserInput input=new UserInput();
-				while(!isTableExits)
-				{
-					System.out.println("Enter Valid Authorization Table : ");
-					String str=scanner.nextLine();
-					str=str.substring(0, 1).toUpperCase() + str.substring(1);
-					System.out.println("  j" + str);
-					if(entityDetailsMap.containsKey(str))
-					{
-						isTableExits=true;
-						input.setAuthenticationSchema(str);
-					}
-				}
-				if(entityDetailsMap!=null)
-				{
-					entityDetailsMap=getAuthenticationTableFieldsMapping(entityDetailsMap,authenticationTable,scanner);
-				}
-				
-				for(Map.Entry<String,EntityDetails> entry: entityDetailsMap.entrySet())
-				{
-					if(entry.getKey().equals(authenticationTable))
-					{
-						
-						for(Map.Entry<String,FieldDetails> fieldsEntry: entry.getValue().getAuthenticationFieldsMap().entrySet())
-						{
-							System.out.println("aa s " +fieldsEntry.getKey() + " vas " +fieldsEntry.getValue().getFieldName());
-						}
-						}
-				
-				}
 			
+			if(authenticationTable !=null  && authenticationType=="database")
+			{
+				entityDetailsMap=validateAuthenticationTable(entityDetailsMap, authenticationTable);
 			}
+			if(authenticationType !="none")
+			{
+				EntityGenerator.GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath, audit,authenticationTable,authenticationType);
+            }
 
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
 
-	//	deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
+		return entityDetailsMap;
+	}
+	
+	public static Map<String,EntityDetails> validateAuthenticationTable(Map<String,EntityDetails> entityDetailsMap, String authenticationTable)
+	{
+		Boolean isTableExits=false;
+		if(entityDetailsMap!=null)
+		{
+		if(entityDetailsMap.containsKey(authenticationTable)) {
+			isTableExits=true;
+		}
+		Scanner scanner = new Scanner(System.in);
+		UserInput input=new UserInput();
+		while(!isTableExits)
+		{
+			System.out.println("Enter Valid Authorization Table : ");
+			String str=scanner.nextLine();
+			str=str.substring(0, 1).toUpperCase() + str.substring(1);
+			System.out.println("  j" + str);
+			if(entityDetailsMap.containsKey(str))
+			{
+				isTableExits=true;
+				input.setAuthenticationSchema(str);
+			}
+		}
+		
+			return getAuthenticationTableFieldsMapping(entityDetailsMap,authenticationTable,scanner);
+		}
 		return entityDetailsMap;
 	}
 	
@@ -211,29 +209,59 @@ public class EntityGenerator {
 				authFields.replace(authFieldsEntry.getKey(), selected);
 					
 				}
-			
-//				for(Map.Entry<String,FieldDetails> fields: authFields.entrySet())
-//				{
-//					System.out.println("aa " +fields.getKey() + " va " +fields.getValue().getFieldName());
-//				}
+
 				entry.getValue().setAuthenticationFieldsMap(authFields);
 			}
 		}
 		
-//		for(Map.Entry<String,EntityDetails> entry: entityDetails.entrySet())
-//		{
-//			if(entry.getKey().equals(authenticationTable))
-//			{
-//				
-//				for(Map.Entry<String,FieldDetails> fieldsEntry: entry.getValue().getAuthenticationFieldsMap().entrySet())
-//				{
-//					System.out.println("aa " +fieldsEntry.getKey() + " va " +fieldsEntry.getValue().getFieldName());
-//				}
-//				}
-//		
-//		}
-	
 		return entityDetails;
+	}
+	
+	public static void GenerateAutheticationEntities(Map<String,EntityDetails> entityDetails, String schemaName, String packageName,
+			String destPath, Boolean audit,String authenticationTable,String authenticationType) {
+
+		Map<String,FieldDetails> primaryKeys= new HashMap<>();
+		Map<String, Object> root = new HashMap<>();
+		root.put("PackageName", packageName);
+		root.put("Audit", audit);
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
+		root.put("AuthenticationType",authenticationType);
+		root.put("SchemaName",schemaName);
+		if(authenticationTable!=null) {
+			root.put("UserInput","true");
+			root.put("AuthenticationTable", authenticationTable);
+		}
+		else
+		{
+			root.put("UserInput",null);
+			root.put("AuthenticationTable", "User");	
+		}
+
+		setTemplateLoader();
+
+		for(Map.Entry<String,EntityDetails> entry : entityDetails.entrySet())
+		{
+			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
+			if(className.equalsIgnoreCase(authenticationTable))
+			{
+			root.put("ClassName", className);
+			root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
+			root.put("Fields", entry.getValue().getFieldsMap());
+			root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
+			for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
+			if(entryFields.getValue().getIsPrimaryKey())
+			{
+				System.out.println(" primary key " + entryFields.getValue().getFieldName());
+		         primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
+			}
+		    }
+			root.put("PrimaryKeys", primaryKeys);
+			}
+		}
+		
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
+
+		generateFiles(AuthenticationClassesTemplateGenerator.getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destinationFolder);
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
@@ -255,6 +283,7 @@ public class EntityGenerator {
 		else
 			root.put("AuthenticationTable", "User");
 		root.put("Audit", audit);
+		root.put("AuthenticationFields", entityDetails.getAuthenticationFieldsMap());
 
 		setTemplateLoader();
 
@@ -279,10 +308,6 @@ public class EntityGenerator {
 		generateEntity(root, destinationFolder);
 		if (compositePrimaryKeyEntities.contains(className)) {
 			generateIdClass(root, destinationFolder);
-		}
-		if(authenticationType !="none")
-		{
-		generateFiles(AuthenticationClassesTemplateGenerator.getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destinationFolder);
 		}
 
 	}

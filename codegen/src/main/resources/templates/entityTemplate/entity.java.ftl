@@ -181,7 +181,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#else>
   
   @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
-  @JoinColumns({<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", nullable=<#if joinDetails.isJoinColumnOptional!false>true<#else>false</#if>),<#else>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", nullable=<#if joinDetails.isJoinColumnOptional!false>true<#else>false</#if>)</#if></#list>})
+  @JoinColumns({<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", insertable=false, updatable=false),<#else>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", insertable=false, updatable=false)</#if></#list>})
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }

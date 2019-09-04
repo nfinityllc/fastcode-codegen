@@ -2,10 +2,12 @@ package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Permission.PermissionAppService;
 import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
+<#if AuthenticationType == "database">
 import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
+</#if>
 import [=PackageName].application.Authorization.Permission.Dto.*;
 import [=PackageName].application.Authorization.Rolepermission.Dto.FindRolepermissionByIdOutput;
-import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
@@ -35,10 +37,10 @@ public class PermissionController {
     
     @Autowired
 	private RolepermissionAppService  _rolepermissionAppService;
-    
+    <#if AuthenticationType == "database">
     @Autowired
 	private [=AuthenticationTable]permissionAppService  _[=AuthenticationTable?uncap_first]permissionAppService;
-
+    </#if>
 	@Autowired
 	private LoggingHelper logHelper;
 
@@ -136,9 +138,8 @@ public class PermissionController {
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}   
- 
-  
-    
+
+    <#if AuthenticationType == "database">
 	@RequestMapping(value = "/{permissionid}/[=AuthenticationTable?uncap_first]permission", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -163,4 +164,5 @@ public class PermissionController {
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	} 
+	</#if>
 }
