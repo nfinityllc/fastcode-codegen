@@ -12,11 +12,13 @@ import [=PackageName].domain.model.[=ClassName]Id;
 import [=PackageName].domain<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
+</#if>
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent==false)>
 <#assign i=relationValue.joinDetails?size>
 <#if i!=0 && i!=1>
 import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
 import [=CommonModulePackage].Search.*;
@@ -94,7 +96,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails?sort as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
+        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
 		{
 		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
 		if(found[=relationValue.eName]!=null)

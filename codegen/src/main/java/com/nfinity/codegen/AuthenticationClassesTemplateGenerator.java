@@ -47,30 +47,30 @@ public class AuthenticationClassesTemplateGenerator {
 			root.put("UserInput",null);
 			root.put("AuthenticationTable", "User");	
 		}
-		
+
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
 			Map<String,FieldDetails> primaryKeys= new HashMap<>();
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			if(authenticationTable!=null)
 			{
-			if(className.equalsIgnoreCase(authenticationTable))
-			{
-			root.put("ClassName", className);
-			root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
-			root.put("Fields", entry.getValue().getFieldsMap());
-			root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
-			for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
-				if(entryFields.getValue().getIsPrimaryKey())
+				if(className.equalsIgnoreCase(authenticationTable))
 				{
-					System.out.println(" primary key " + entryFields.getValue().getFieldName());
-			         primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
+					root.put("ClassName", className);
+					root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
+					root.put("Fields", entry.getValue().getFieldsMap());
+					root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
+					for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
+						if(entryFields.getValue().getIsPrimaryKey())
+						{
+							System.out.println(" primary key " + entryFields.getValue().getFieldName());
+							primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
+						}
+					}
+					root.put("PrimaryKeys", primaryKeys);
 				}
 			}
-				root.put("PrimaryKeys", primaryKeys);
-			}
-			}
-			
+
 		}
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
 	}
@@ -173,9 +173,9 @@ public class AuthenticationClassesTemplateGenerator {
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getAuthenticationControllerTemplates(authenticationType,authenticationTable), root, destFolderBackend);
 
-	//	destFolderBackend = destPath + "/domain/model";
-	//	new File(destFolderBackend).mkdirs();
-	//	generateFiles(getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destFolderBackend);
+		//	destFolderBackend = destPath + "/domain/model";
+		//	new File(destFolderBackend).mkdirs();
+		//	generateFiles(getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destFolderBackend);
 
 	}
 
@@ -221,38 +221,38 @@ public class AuthenticationClassesTemplateGenerator {
 	private static Map<String, Object> getUserPermissionApplicationLayerTemplates(String authenticationTable) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
-        if(authenticationTable!=null)
-        {
-		backEndTemplate.put("userPermission/IUserpermissionAppService.java.ftl", "I"+authenticationTable+"permissionAppService.java");
-		backEndTemplate.put("userPermission/UserpermissionAppService.java.ftl", authenticationTable+"permissionAppService.java");
-		backEndTemplate.put("userPermission/UserpermissionMapper.java.ftl", authenticationTable+"permissionMapper.java");
-		//	backEndTemplate.put("userPermission/UserPermissionAppServiceTest.java.ftl", "UserPermissionAppServiceTest.java");
-        }
-        else
-        {
-    		backEndTemplate.put("userPermission/IUserpermissionAppService.java.ftl", "IUserpermissionAppService.java");
-    		backEndTemplate.put("userPermission/UserpermissionAppService.java.ftl", "UserpermissionAppService.java");
-    		backEndTemplate.put("userPermission/UserpermissionMapper.java.ftl", "UserpermissionMapper.java");
-    		//	backEndTemplate.put("userPermission/UserPermissionAppServiceTest.java.ftl", "UserPermissionAppServiceTest.java");
-         }
+		if(authenticationTable!=null)
+		{
+			backEndTemplate.put("userPermission/IUserpermissionAppService.java.ftl", "I"+authenticationTable+"permissionAppService.java");
+			backEndTemplate.put("userPermission/UserpermissionAppService.java.ftl", authenticationTable+"permissionAppService.java");
+			backEndTemplate.put("userPermission/UserpermissionMapper.java.ftl", authenticationTable+"permissionMapper.java");
+			//	backEndTemplate.put("userPermission/UserPermissionAppServiceTest.java.ftl", "UserPermissionAppServiceTest.java");
+		}
+		else
+		{
+			backEndTemplate.put("userPermission/IUserpermissionAppService.java.ftl", "IUserpermissionAppService.java");
+			backEndTemplate.put("userPermission/UserpermissionAppService.java.ftl", "UserpermissionAppService.java");
+			backEndTemplate.put("userPermission/UserpermissionMapper.java.ftl", "UserpermissionMapper.java");
+			//	backEndTemplate.put("userPermission/UserPermissionAppServiceTest.java.ftl", "UserPermissionAppServiceTest.java");
+		}
 		return backEndTemplate;
 	}
 
 	private static Map<String, Object> getUserPermissionManagerLayerTemplates(String authenticationTable) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
-        if(authenticationTable!=null)
-        {
-		backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "I"+authenticationTable+"permissionManager.java");
-		backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", authenticationTable+"permissionManager.java");
-		//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
-        }
-        else
-        {
-        backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "IUserpermissionManager.java");
-		backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", "UserspermissionManager.java");
-		//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
-        }
+		if(authenticationTable!=null)
+		{
+			backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "I"+authenticationTable+"permissionManager.java");
+			backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", authenticationTable+"permissionManager.java");
+			//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
+		}
+		else
+		{
+			backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "IUserpermissionManager.java");
+			backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", "UserspermissionManager.java");
+			//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
+		}
 		return backEndTemplate;
 	}
 
@@ -343,27 +343,27 @@ public class AuthenticationClassesTemplateGenerator {
 	private static Map<String, Object> getUserPermissionDtoTemplates(String authenticationTable) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
-        if(authenticationTable!=null)
-        {
-		backEndTemplate.put("userPermission/dtos/CreateUserpermissionInput.java.ftl", "Create"+authenticationTable+"permissionInput.java");
-		backEndTemplate.put("userPermission/dtos/CreateUserpermissionOutput.java.ftl", "Create"+authenticationTable+"permissionOutput.java");
-		backEndTemplate.put("userPermission/dtos/UpdateUserpermissionInput.java.ftl", "Update"+authenticationTable+"permissionInput.java");
-		backEndTemplate.put("userPermission/dtos/UpdateUserpermissionOutput.java.ftl", "Update"+authenticationTable+"permissionOutput.java");
-		backEndTemplate.put("userPermission/dtos/FindUserpermissionByIdOutput.java.ftl", "Find"+authenticationTable+"permissionByIdOutput.java");
-		backEndTemplate.put("userPermission/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
-		backEndTemplate.put("userPermission/dtos/GetCustomUserOutput.java.ftl", "Get"+authenticationTable+"Output.java");
-        }
-        else
-        {
-        	backEndTemplate.put("userPermission/dtos/CreateUserpermissionInput.java.ftl", "CreateUserpermissionInput.java");
-    		backEndTemplate.put("userPermission/dtos/CreateUserpermissionOutput.java.ftl", "CreateUserpermissionOutput.java");
-    		backEndTemplate.put("userPermission/dtos/UpdateUserpermissionInput.java.ftl", "UpdateUserpermissionInput.java");
-    		backEndTemplate.put("userPermission/dtos/UpdateUserpermissionOutput.java.ftl", "UpdateUserpermissionOutput.java");
-    		backEndTemplate.put("userPermission/dtos/FindUserpermissionByIdOutput.java.ftl", "FindUserpermissionByIdOutput.java");
-    		backEndTemplate.put("userPermission/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
-    		backEndTemplate.put("userPermission/dtos/GetUserOutput.java.ftl", "GetUserOutput.java");
-            
-        }
+		if(authenticationTable!=null)
+		{
+			backEndTemplate.put("userPermission/dtos/CreateUserpermissionInput.java.ftl", "Create"+authenticationTable+"permissionInput.java");
+			backEndTemplate.put("userPermission/dtos/CreateUserpermissionOutput.java.ftl", "Create"+authenticationTable+"permissionOutput.java");
+			backEndTemplate.put("userPermission/dtos/UpdateUserpermissionInput.java.ftl", "Update"+authenticationTable+"permissionInput.java");
+			backEndTemplate.put("userPermission/dtos/UpdateUserpermissionOutput.java.ftl", "Update"+authenticationTable+"permissionOutput.java");
+			backEndTemplate.put("userPermission/dtos/FindUserpermissionByIdOutput.java.ftl", "Find"+authenticationTable+"permissionByIdOutput.java");
+			backEndTemplate.put("userPermission/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
+			backEndTemplate.put("userPermission/dtos/GetCustomUserOutput.java.ftl", "Get"+authenticationTable+"Output.java");
+		}
+		else
+		{
+			backEndTemplate.put("userPermission/dtos/CreateUserpermissionInput.java.ftl", "CreateUserpermissionInput.java");
+			backEndTemplate.put("userPermission/dtos/CreateUserpermissionOutput.java.ftl", "CreateUserpermissionOutput.java");
+			backEndTemplate.put("userPermission/dtos/UpdateUserpermissionInput.java.ftl", "UpdateUserpermissionInput.java");
+			backEndTemplate.put("userPermission/dtos/UpdateUserpermissionOutput.java.ftl", "UpdateUserpermissionOutput.java");
+			backEndTemplate.put("userPermission/dtos/FindUserpermissionByIdOutput.java.ftl", "FindUserpermissionByIdOutput.java");
+			backEndTemplate.put("userPermission/dtos/GetPermissionOutput.java.ftl", "GetPermissionOutput.java");
+			backEndTemplate.put("userPermission/dtos/GetUserOutput.java.ftl", "GetUserOutput.java");
+
+		}
 		return backEndTemplate;
 	}
 
@@ -417,15 +417,15 @@ public class AuthenticationClassesTemplateGenerator {
 		if(authenticationType=="database") {
 			if(authenticationTable==null)
 			{
-			backEndTemplate.put("users/userController.java.ftl", "UserController.java");
-			backEndTemplate.put("userPermission/UserpermissionController.java.ftl", "UserpermissionController.java");
+				backEndTemplate.put("users/userController.java.ftl", "UserController.java");
+				backEndTemplate.put("userPermission/UserpermissionController.java.ftl", "UserpermissionController.java");
 			}
 			else
 			{
-			//	backEndTemplate.put("users/userController.java.ftl", authenticationTable.substring(0, 1).toLowerCase() + authenticationTable.substring(1)+"Controller.java");
+				//	backEndTemplate.put("users/userController.java.ftl", authenticationTable.substring(0, 1).toLowerCase() + authenticationTable.substring(1)+"Controller.java");
 				backEndTemplate.put("userPermission/UserpermissionController.java.ftl", authenticationTable+"permissionController.java");
 			}
-			
+
 		}
 
 		backEndTemplate.put("permissions/permissionsController.java.ftl", "PermissionController.java");
@@ -442,14 +442,14 @@ public class AuthenticationClassesTemplateGenerator {
 		if(authenticationType=="database") {
 			if(authenticationTable==null)
 			{
-			backEndTemplate.put("users/iuserRepository.java.ftl", "IUserRepository.java");
-			backEndTemplate.put("userPermission/IUserpermissionRepository.java.ftl", "IUserpermissionRepository.java");
+				backEndTemplate.put("users/iuserRepository.java.ftl", "IUserRepository.java");
+				backEndTemplate.put("userPermission/IUserpermissionRepository.java.ftl", "IUserpermissionRepository.java");
 			}
 			else
 			{
 				backEndTemplate.put("userPermission/IUserpermissionRepository.java.ftl", "I"+authenticationTable+"permissionRepository.java");
 			}
-			
+
 		}
 
 		backEndTemplate.put("permissions/ipermissionsRepository.java.ftl", "IPermissionRepository.java");
@@ -466,9 +466,9 @@ public class AuthenticationClassesTemplateGenerator {
 		if(authenticationType=="database") {
 			if(authenticationTable==null)
 			{
-			backEndTemplate.put("backendTemplates/authenticationTemplates/entities/userEntity.java.ftl", "UserEntity.java");
-			backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionEntity.java.ftl", "UserpermissionEntity.java");
-			backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionId.java.ftl", "UserpermissionId.java");
+				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/userEntity.java.ftl", "UserEntity.java");
+				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionEntity.java.ftl", "UserpermissionEntity.java");
+				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionId.java.ftl", "UserpermissionId.java");
 			}
 			else
 			{
