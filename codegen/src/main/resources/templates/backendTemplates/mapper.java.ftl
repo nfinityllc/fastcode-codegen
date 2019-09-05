@@ -42,14 +42,14 @@ public interface [=ClassName]Mapper {
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??>
    <#if !Fields[joinDetails.joinColumn]??>
-   @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
    </#if>
    </#if>
    </#if>
    </#list>
    <#if DescriptiveField[relationValue.eName]??>
    <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                    
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                    
    </#if>
    </#if>
    </#if>
@@ -86,14 +86,14 @@ public interface [=ClassName]Mapper {
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??>
    <#if !Fields[joinDetails.joinColumn]??>
-   @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
    </#if>
    </#if>
    </#if>
    </#list>
    <#if DescriptiveField[relationValue.eName]??>
    <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
    </#if>
    </#if>
    </#if>
@@ -128,14 +128,14 @@ public interface [=ClassName]Mapper {
    <#if joinDetails.joinEntityName == relationValue.eName>
    <#if joinDetails.joinColumn??>
    <#if !Fields[joinDetails.joinColumn]??>
-   @Mapping(source = "[=relationValue.eName?lower_case].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
    </#if>
    </#if>
    </#if>
    </#list>
    <#if DescriptiveField[relationValue.eName]??>
    <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-   @Mapping(source = "[=relationValue.eName?lower_case].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
    </#if>
    </#if>
    </#if>
@@ -174,7 +174,7 @@ public interface [=ClassName]Mapper {
    <#list Fields as key,value> 
    <#if fValue.fieldName == value.fieldName>
    <#if fValue.fieldType?lower_case == "long" || fValue.fieldType?lower_case == "integer" || fValue.fieldType?lower_case == "short" || fValue.fieldType?lower_case == "double" || fValue.fieldType?lower_case == "boolean" || fValue.fieldType?lower_case == "date" || fValue.fieldType?lower_case == "string">
-   @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
    </#if>
    </#if>
    </#list>
@@ -187,7 +187,7 @@ public interface [=ClassName]Mapper {
    </#if>
    </#list>
    })
-   Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
+   Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?uncap_first], [=EntityClassName] [=InstanceName]);
  
    </#if>
    </#list>

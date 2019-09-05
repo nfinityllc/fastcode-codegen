@@ -70,7 +70,7 @@ export class RoleDetailsComponent extends BaseDetailsComponent<IRole> implements
 					},
 				],
 				isParent: true,
-				table: '[=authenticationTable]',
+				table: '[=AuthenticationTable]',
 				type: 'OneToMany',
 			},
 		];

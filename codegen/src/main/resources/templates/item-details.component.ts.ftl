@@ -140,6 +140,31 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
                 </#if>
 			},
 		</#list>
+		<#--<#if AuthenticationType=="database">
+		<#if ClassName == AuthenticationTable>
+			{
+				column: [
+				    
+					{
+						key: '[=joinDetails.joinColumn]',
+						value: undefined,
+						referencedkey: '[=joinDetails.referenceColumn]'
+					},
+				],
+				isParent: true,
+				table: '[AuthenticationTable?uncap_first]',
+				type: '[=relationValue.relation]',
+				<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+				service: this.[=relationValue.eName?uncap_first]Service,
+				<#if DescriptiveField[relationValue.eName]??>
+				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+			    </#if>
+			    <#elseif relationValue.relation == "OneToOne" && relationValue.isParent == true>
+			    associatedPrimaryKeys: [<#list relationValue.fDetails as value><#if value.isPrimaryKey == true> '[=value.fieldName]', </#if></#list>]
+                </#if>
+			},		
+		</#if>
+		</#if>-->
 		];
 		
 		this.childAssociations = this.associations.filter(association => {

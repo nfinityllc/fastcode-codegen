@@ -149,15 +149,6 @@ public class CodeGenerator {
 
 		}
 
-		if(authenticationType != "none") {
-			//			if(authenticationSchema!=null && entityNames.contains(authenticationSchema))
-			//			 AuthenticationClassesTemplateGenerator.generateAutheticationClasses(destPath + "/" + backEndRootFolder, appName, audit,
-			//						history,flowable,authenticationType,schema,authenticationSchema);
-			//				
-			generateFrontendAuthorization(destPath, appName, authenticationType, authenticationTable);
-	//		generateAppStartupRunner(details, appName, sourcePackageName, backEndRootFolder, destPath, authenticationTable);
-		}
-
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
@@ -241,90 +232,6 @@ public class CodeGenerator {
 		propertyInfo.put("packageName",appName.replace(".", "/"));
 
 		return propertyInfo;
-	}
-
-	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType, String authenticationTable ) {
-
-		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
-		List<String> authorizationEntities = new ArrayList<String>();
-		String authorizationPath = TEMPLATE_FOLDER + "/frontendAuthorization/";
-
-		authorizationEntities.add("role");
-		authorizationEntities.add("permission");
-		authorizationEntities.add("rolepermission");
-		
-		List<String> entityList = new ArrayList<String>();
-		entityList.add("Role");
-		entityList.add("Permission");
-		entityList.add("Rolepermission");
-		
-		if(authenticationType == "database") {
-			if(authenticationTable == null) {
-				authorizationEntities.add("user");
-				entityList.add("User");
-				entityList.add("Userpermission");
-			}else {
-				entityList.add(authenticationTable + "permission");
-			}
-			authorizationEntities.add("userpermission");
-		}
-
-		updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
-		updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType);
-
-		authorizationEntities.add("login");
-		authorizationEntities.add("core");
-		for(String entity: authorizationEntities) {
-			if(entity == "userpermission" && authenticationTable != null) {
-				generateFrontendAuthorizationComponents(appFolderPath + convertCamelCaseToDash(authenticationTable) + "permission", authorizationPath + entity, authenticationType, authenticationTable);
-			}
-			else {
-				generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType, authenticationTable);
-			}
-			
-		}
-
-	}
-	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType, String authenticationTable) {
-		List<String> fl = FolderContentReader.getFilesFromFolder(templatePath);
-		Map<String, Object> templates = new HashMap<>();
-
-		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, templatePath + "/");
-		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
-		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
-		cfg.setDefaultEncoding("UTF-8");
-		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
-		cfg.setTemplateLoader(mtl);
-
-		for (String filePath : fl) {
-			String p = filePath.replace("BOOT-INF/classes" + templatePath,"");
-			p = p.replace("\\", "/");
-			p = p.replace(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources" + templatePath,"");
-			String outputFileName = p.substring(0, p.lastIndexOf('.'));
-			if(outputFileName.contains("userpermission") && authenticationTable != null) {
-				outputFileName = outputFileName.replace("user", convertCamelCaseToDash(authenticationTable));
-			}
-			templates.put(p, outputFileName);
-		}
-
-		Map<String, Object> root = new HashMap<>();
-		root.put("authenticationType", authenticationType);
-		
-		if(authenticationTable == null) {
-			authenticationTable = "User";
-		}
-		root.put("authenticationTable", authenticationTable);
-		root.put("moduleName", convertCamelCaseToDash(authenticationTable));
-		generateFiles(templates, root, destination);
-	}
-	
-	private static String convertCamelCaseToDash(String str) {
-		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
-		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
-		for (int i = 0; i < splittedNames.length; i++) {
-			splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
-		}
-		return StringUtils.join(splittedNames, "-");
 	}
 
 	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType,String authenticationTable){
@@ -445,8 +352,8 @@ public class CodeGenerator {
 		sourceBuilder.setLength(0);
 
 		if(authenticationType == "none") {
-			sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent");
-			sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent");
+			sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent},");
+			sourceBuilder.append("\n  " + " { path: 'manageEntityHistory', component: ManageEntityHistoryComponent},");
 		}
 		else {
 			sourceBuilder.append("\n  " + " { path: 'entityHistory', component: EntityHistoryComponent ,canActivate: [ AuthGuard ]},");
@@ -819,13 +726,13 @@ public class CodeGenerator {
 			String listComp,newComp,detailsComp;
 			if(authenticationType == "none") {
 				listComp = "\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canDeactivate: [CanDeactivateGuard] },";
-				newComp = "\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent }," + "\n";
-				detailsComp = "\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent, canDeactivate: [CanDeactivateGuard] },";
+				newComp = "\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent },";
+				detailsComp = "\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent, canDeactivate: [CanDeactivateGuard] }," + "\n";
 			}
 			else {
 				listComp = "\n  " +" { path: '" + str.toLowerCase() + "', component: " + str + "ListComponent, canActivate: [ AuthGuard ], canDeactivate: [CanDeactivateGuard] },";
-				newComp = "\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  }," + "\n";
-				detailsComp = "\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ], canDeactivate: [CanDeactivateGuard] },";
+				newComp = "\n  " + " { path: '" + str.toLowerCase() + "/new', component: " + str + "NewComponent ,canActivate: [ AuthGuard ]  },";
+				detailsComp = "\n  " + " { path: '" + str.toLowerCase() + "/:id', component: " +str + "DetailsComponent ,canActivate: [ AuthGuard ], canDeactivate: [CanDeactivateGuard] },"+ "\n";
 			}
 
 			sourceBuilder.append(listComp);
