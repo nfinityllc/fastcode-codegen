@@ -143,7 +143,7 @@ public class EntityDetails {
 						if(!mappedBy.isEmpty())
 							relation.setIsParent(true);	
 						String entity = StringUtils.substringBeforeLast(entityName, ".");
-						
+
 						String referenceColumn = findPrimaryKey(
 								entity.concat("." + relation.geteName()), classList);
 						if (referenceColumn != null)
@@ -155,19 +155,19 @@ public class EntityDetails {
 
 						JoinColumns joinColumnsAnnotation = (javax.persistence.JoinColumns) a;
 						JoinColumn[] joinColumnArray = joinColumnsAnnotation.value();
-                      for (JoinColumn j : joinColumnArray) {
+						for (JoinColumn j : joinColumnArray) {
 
 							joinDetails=new JoinDetails();
 							joinDetails.setJoinEntityName(details.getFieldType());
 							String referenceCol=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, j.referencedColumnName()); 
 							String name=CaseFormat.LOWER_UNDERSCORE .to(CaseFormat.LOWER_CAMEL, j.name());
-                             
-                            if(referenceCol.isEmpty())
-                            {
-                            	joinDetails.setReferenceColumn(name); 
-                            }
-                            else
-                            joinDetails.setReferenceColumn(referenceCol);
+
+							if(referenceCol.isEmpty())
+							{
+								joinDetails.setReferenceColumn(name); 
+							}
+							else
+								joinDetails.setReferenceColumn(referenceCol);
 							joinDetails.setJoinColumn(name); 
 
 							joinDetails.setIsJoinColumnOptional(j.nullable());
@@ -189,7 +189,7 @@ public class EntityDetails {
 					if (a.annotationType().toString().equals("interface javax.persistence.JoinColumn")) {
 
 						JoinColumn joinCol= (javax.persistence.JoinColumn) a;
-      
+
 						joinDetails.setJoinColumn(
 								CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, joinCol.name()));
 						joinDetails.setIsJoinColumnOptional(joinCol.nullable());
@@ -206,7 +206,7 @@ public class EntityDetails {
 							String entity = StringUtils.substringBeforeLast(entityName, ".");
 							String referenceColumn = findPrimaryKey(
 									entity.concat("." + relation.geteName()), classList);
-							
+
 							if (referenceColumn != null)
 								joinDetails.setReferenceColumn(referenceColumn);
 						}
@@ -244,9 +244,9 @@ public class EntityDetails {
 				if (relation.geteName() != null) {
 					if(joinDetailsList.isEmpty())
 						joinDetailsList.add(joinDetails);
-					
+
 					joinDetailsList.sort( (u1, u2) -> { 
-						return u1.getJoinColumn().compareTo(u2.getJoinColumn());}); 
+						return u1.getReferenceColumn().compareTo(u2.getReferenceColumn());}); 
 					relation.setJoinDetails(joinDetailsList);
 					relation.setfDetails(getFields(relation.geteName(), classList));
 					relationsMap.put(className + "-" + relation.geteName(), relation);
@@ -267,7 +267,7 @@ public class EntityDetails {
 
 	private static String findPrimaryKey(String entityPackage, List<Class<?>> classList) {
 		String primaryKey = null;
-       
+
 		for (Class<?> currentClass : classList) {
 			String entityName = currentClass.getName();
 			if (entityName.equals(entityPackage)) {
@@ -291,7 +291,7 @@ public class EntityDetails {
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		}
 		return null;

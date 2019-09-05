@@ -181,7 +181,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   <#else>
   
   @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
-  @JoinColumns({<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", insertable=false, updatable=false),<#else>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]", insertable=false, updatable=false)</#if></#list>})
+  @JoinColumns({<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]"<#if CompositeKeyClasses?seq_contains(ClassName)>, insertable=false, updatable=false</#if>),<#else>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]"<#if CompositeKeyClasses?seq_contains(ClassName)>, insertable=false, updatable=false</#if>)</#if></#list>})
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }
@@ -208,10 +208,13 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   </#list>
   </#if>
   <#if relationValue.relation == "OneToOne">
+  <#assign i=relationValue.joinDetails?size>
+  <#if i==1>
   <#list relationValue.joinDetails as joinDetails>
   <#if joinDetails.joinEntityName == relationValue.eName>
   <#if relationValue.isParent== false>
   <#if joinDetails.joinColumn??>
+  
   @OneToOne
   @JoinColumn(name = "[=joinDetails.joinColumn]"<#if CompositeKeyClasses?seq_contains(ClassName)>, insertable=false, updatable=false</#if>)
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
@@ -224,8 +227,14 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   private [=relationValue.eName]Entity [=relationValue.fName];
   </#if>
   </#if>
-  <#if relationValue.isParent== true>
-  @OneToOne(mappedBy = "[=ClassName?uncap_first]")
+  </#if>
+  <#break>
+  </#list>
+  <#else>
+  <#if relationValue.isParent== false>
+  
+  @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
+  @JoinColumns({<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]"<#if CompositeKeyClasses?seq_contains(ClassName)>, insertable=false, updatable=false</#if>),<#else>@JoinColumn(name="[=joinDetails.joinColumn]"<#if joinDetails.joinColumnType?lower_case !="string">, columnDefinition="[=joinDetails.joinColumnType]"</#if>, referencedColumnName="[=joinDetails.referenceColumn]"<#if CompositeKeyClasses?seq_contains(ClassName)>, insertable=false, updatable=false</#if>)</#if></#list>})
   public [=relationValue.eName]Entity get[=relationValue.eName]() {
     return [=relationValue.fName];
   }
@@ -236,8 +245,21 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
   private [=relationValue.eName]Entity [=relationValue.fName];
   </#if>
   </#if>
-  </#list>
+  <#if relationValue.isParent== true>
+  <#list relationValue.joinDetails as joinDetails>
   
+  @OneToOne(mappedBy = "[=ClassName?uncap_first]")
+  public [=relationValue.eName]Entity get[=relationValue.eName]() {
+    return [=relationValue.fName];
+  }
+  public void set[=relationValue.eName]([=relationValue.eName]Entity [=relationValue.fName]) {
+    this.[=relationValue.fName] = [=relationValue.fName];
+  }
+  
+  private [=relationValue.eName]Entity [=relationValue.fName];
+  <#break>
+  </#list>
+  </#if>
   </#if>
   </#if>
   </#list>

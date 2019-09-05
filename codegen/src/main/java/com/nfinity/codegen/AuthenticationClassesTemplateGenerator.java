@@ -65,7 +65,6 @@ public class AuthenticationClassesTemplateGenerator {
 					root.put("Fields", entry.getValue().getFieldsMap());
 					root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
 					root.put("DescriptiveField", entry.getValue().getEntitiesDescriptiveFieldMap());
-					
 					for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
 						if(entryFields.getValue().getIsPrimaryKey())
 						{
