@@ -66,9 +66,9 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
                       <#if joinDetails.joinEntityName == relationValue.eName>
                       <#if joinDetails.joinColumn??>
                       {
-					  key: '[=joinDetails.joinColumn]',
-					  value: undefined,
-					  referencedkey: '[=joinDetails.referenceColumn]'
+					  	key: '[=joinDetails.joinColumn]',
+					  	value: undefined,
+					  	referencedkey: '[=joinDetails.referenceColumn]'
 					  },
 					  </#if>
                       </#if>
@@ -109,40 +109,27 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		</#list>
 		</#list>
 		</#if>
-		<#if isJoinColumn == false>
-		<#if value.fieldType?lower_case == "string">
+		<#if isJoinColumn == false && (value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "string")>
 			{
 				column: '[=value.fieldName]',
 				label: '[=value.fieldName]',
+				<#if value.isPrimaryKey == true>
+				sort: false,
+				filter: false,
+				<#else>
 				sort: true,
 				filter: true,
+				</#if>
+				<#if value.fieldType?lower_case == "string">
 				type: listColumnType.String
-			},
-		<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short">
-			{
-				column: '[=value.fieldName]',
-				label: '[=value.fieldName]',
-				sort: true,
-				filter: true,
+				<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short">
 				type: listColumnType.Number
-			},
-		<#elseif value.fieldType?lower_case == "date">
-			{
-				column: '[=value.fieldName]',
-				label: '[=value.fieldName]',
-				sort: true,
-				filter: true,
+				<#elseif value.fieldType?lower_case == "date">
 				type: listColumnType.Date
-			},
-		<#elseif value.fieldType?lower_case == "boolean">
-			{
-				column: '[=value.fieldName]',
-				label: '[=value.fieldName]',
-				sort: true,
-				filter: true,
+				<#elseif value.fieldType?lower_case == "boolean">
 				type: listColumnType.Boolean
+				</#if>
 			},
-		</#if> 
 		</#if>
 		</#list>
 		<#list Relationship as relationKey, relationValue>
@@ -153,7 +140,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				label: '[=relationValue.eName]',
 				sort: false,
 				filter: false,
-				type: listColumnType.Boolean
+				type: listColumnType.String
 	  		},
 			</#if>
 		</#if>

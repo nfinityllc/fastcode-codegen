@@ -7,7 +7,7 @@
 	<mat-card>
 		<h2>{{title}}</h2>
 		<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">
-			<mat-form-field *ngFor="let association of toOne">
+			<mat-form-field *ngFor="let association of parentAssociations">
 				<input formControlName="{{association.descriptiveField}}" matInput placeholder="{{association.table}}">
 				<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
 			</mat-form-field>       
