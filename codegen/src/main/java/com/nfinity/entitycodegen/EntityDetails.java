@@ -30,7 +30,16 @@ public class EntityDetails {
 	List<String> compositeKeyClasses = new ArrayList<>();
 	Map<String, FieldDetails> entitiesDescriptiveFieldMap = new HashMap<>();
 	Map<String, FieldDetails> authenticationFieldsMap = null;
+	UserInput userInput =new UserInput();
+	
 
+	public UserInput getUserInput() {
+		return userInput;
+	}
+
+	public void setUserInput(UserInput userInput) {
+		this.userInput = userInput;
+	}
 
 	public Map<String, FieldDetails> getAuthenticationFieldsMap() {
 		return authenticationFieldsMap;

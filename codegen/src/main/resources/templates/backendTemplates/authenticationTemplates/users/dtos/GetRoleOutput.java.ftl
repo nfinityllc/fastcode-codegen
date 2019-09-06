@@ -12,24 +12,74 @@ public class GetRoleOutput {
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
     </#if>
-    private Long userId;
-    private String userName;
+    <#if AuthenticationType=="database" && !UserInput??>
+    private Long userid;
+    private String username;
+  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#if PrimaryKeys??>
+  	<#list PrimaryKeys as key,value>
+   	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+    private [=value] [=key?uncap_first];
+  	</#if> 
+  	</#list>
+  	</#if>
+    <#if AuthenticationFields??>
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "User Name">
+  	<#if !PrimaryKeys[authValue.fieldName]??>
+  	private [=authValue.fieldType] [=authValue.fieldName?uncap_first];
+    </#if>
+    </#if>
+    </#list>
+  	</#if>
+    </#if>
 
-    public Long getUserId() {
-        return userId;
-    }
+    <#if AuthenticationType=="database" && !UserInput??>
+  	public Long getUserid() {
+  	return userid;
+  	}
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+  	public void setUserid(Long userid){
+  	this.userid = userid;
+  	}
+  	
+  	public String getUsername() {
+   		return username;
+  	}
 
-    public String getUserName() {
-        return userName;
-    }
+  	public void setUsername(String username){
+   		this.username = username;
+  	}
+  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#if PrimaryKeys??>
+  	<#list PrimaryKeys as key,value>
+  	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+    public [=value] get[=key?cap_first]() {
+  	return [=key?uncap_first];
+  	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+  	public void set[=key?cap_first]([=value] [=key?uncap_first]){
+  	this.[=key?uncap_first] = [=key?uncap_first];
+  	}
+  	</#if> 
+  	</#list>
+  	</#if>
+    <#if AuthenticationFields??>
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "User Name">
+  	<#if !PrimaryKeys[authValue.fieldName]??>
+  	public [=authValue.fieldType] get[=authValue.fieldName?cap_first]() {
+   		return [=authValue.fieldName?uncap_first];
+  	}
+
+  	public void set[=authValue.fieldName?cap_first]([=authValue.fieldType] [=authValue.fieldName?uncap_first]){
+   		this.[=authValue.fieldName?uncap_first] = [=authValue.fieldName?uncap_first];
+  	}
+  	</#if>
+    </#if>
+    </#list>
+    </#if>
+  	</#if>
 
     public String getDisplayName() {
         return displayName;

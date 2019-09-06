@@ -55,6 +55,7 @@ public class AuthenticationClassesTemplateGenerator {
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
 			Map<String,FieldDetails> primaryKeys= new HashMap<>();
+			Map<String,FieldDetails> userPrimaryKeys= new HashMap<>();
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			if(authenticationTable!=null)
 			{
@@ -68,7 +69,8 @@ public class AuthenticationClassesTemplateGenerator {
 					for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
 						if(entryFields.getValue().getIsPrimaryKey())
 						{
-							System.out.println(" primary key " + entryFields.getValue().getFieldName());
+							String fieldName= entryFields.getValue().getFieldName();
+							primaryKeys.put(authenticationTable+fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1), entryFields.getValue());
 							primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
 						}
 					}

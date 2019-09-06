@@ -24,7 +24,7 @@ public class Create[=AuthenticationTable]permissionOutput {
     </#list>
     </#if>
   	</#if>
-  	 private String permissionName;
+  	private String permissionName;
   
   	 public String getPermissionName() {
    		return permissionName;

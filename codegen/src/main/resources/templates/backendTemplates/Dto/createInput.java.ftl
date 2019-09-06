@@ -22,7 +22,6 @@ public class Create[=ClassName]Input {
  </#if> 
  </#if> 
 </#list>
-
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
  <#list relationValue.joinDetails as joinDetails>
@@ -30,16 +29,15 @@ public class Create[=ClassName]Input {
  <#if joinDetails.joinColumn??>
  <#if !Fields[joinDetails.joinColumn]??>
   private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+  
  </#if>
  </#if>
  </#if>
 </#list>
 </#if>
 </#list>
-
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-  
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if joinDetails.joinColumn??>
@@ -52,6 +50,7 @@ public class Create[=ClassName]Input {
   public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
   this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
+  
   </#if>
   </#if>
   </#if>

@@ -251,37 +251,37 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		<#if AuthenticationType=="database" && !UserInput??>
 		if(list.get(i).replace("%20","").trim().equals("userid")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].userid.eq(Long.parseLong(value)));
-			}
+		}
   		<#elseif AuthenticationType=="database" && UserInput??>
   		<#if PrimaryKeys??>
   		<#list PrimaryKeys as key,value>
   		<#if value.fieldType?lower_case == "string" >
   		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(value));
-			}
+		}
 		<#elseif value.fieldType?lower_case == "long" >
 		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Long.parseLong(value)));
-			}
+		}
 		<#elseif value.fieldType?lower_case == "integer">
 		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Integer.parseInt(value)));
-			}
+		}
         <#elseif value.fieldType?lower_case == "short">
         if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Short.parseShort(value)));
-			}
+		}
 		<#elseif value.fieldType?lower_case == "double">
 		if(list.get(i).replace("%20","").trim().equals("[=value.fieldName?uncap_first]")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first].eq(Double.parseDouble(value)));
-			}
+		}
 		</#if>
   		</#list>
   		</#if>
   		</#if>
-		  if(list.get(i).replace("%20","").trim().equals("permissionId")) {
+		if(list.get(i).replace("%20","").trim().equals("permissionId")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.permission.id.eq(Long.parseLong(value)));
-			}
+		}
 		}
 		return builder;
 	}

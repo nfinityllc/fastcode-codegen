@@ -108,7 +108,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first]", target = "[=value.fieldName?uncap_first]"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=value.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first]permission[=value.fieldName?cap_first]"),
    </#if> 
    </#list>
    </#if>

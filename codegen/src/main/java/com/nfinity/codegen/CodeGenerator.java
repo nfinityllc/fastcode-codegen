@@ -77,10 +77,15 @@ public class CodeGenerator {
 		root.put("AuthenticationType", authenticationType);
 		root.put("EmailModule", email);
 		root.put("ApiPath", className.substring(0, 1).toLowerCase() + className.substring(1));
-		if(authenticationTable !=null)
+		if(authenticationTable!=null) {
+			root.put("UserInput","true");
 			root.put("AuthenticationTable", authenticationTable);
+		}
 		else
+		{
+			root.put("UserInput",null);
 			root.put("AuthenticationTable", "User");	
+		}	
 
 		Map<String, FieldDetails> actualFieldNames = details.getFieldsMap();
 		Map<String,String> primaryKeys= new HashMap<>();
@@ -627,7 +632,7 @@ public class CodeGenerator {
 				for(Map.Entry<String, FieldDetails> map : authFields.entrySet())
 				{
 					if(map.getKey()=="User Name")
-						backEndTemplate.put("authenticationTemplates/users/dtos/FindUserByNameOutput.java.ftl", "Find"+authenticationTable+"By"+map.getValue().getFieldName().substring(0, 1).toUpperCase() + map.getValue().getFieldName().substring(1)+"Output.java");
+						backEndTemplate.put("authenticationTemplates/users/dtos/FindCustomUserByNameOutput.java.ftl", "Find"+authenticationTable+"By"+map.getValue().getFieldName().substring(0, 1).toUpperCase() + map.getValue().getFieldName().substring(1)+"Output.java");
 				}
 			}
 			else

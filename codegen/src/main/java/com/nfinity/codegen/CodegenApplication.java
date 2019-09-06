@@ -105,7 +105,7 @@ public class CodegenApplication implements ApplicationRunner {
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		UserInput input = composeInput(configProperties);
-
+        UserInput input1=new UserInput();
 		String groupArtifactId = input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));
@@ -132,11 +132,12 @@ public class CodegenApplication implements ApplicationRunner {
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
 				input.getAudit(),input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
+
 		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
 
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
-
+        
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType() );
 
 		if(!input.getAuthenticationType().equals("none"))

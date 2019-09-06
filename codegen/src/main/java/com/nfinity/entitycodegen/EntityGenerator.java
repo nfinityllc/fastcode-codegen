@@ -86,9 +86,7 @@ public class EntityGenerator {
 					relationMap = EntityDetails.FindOneToOneJoinColFromChildEntity(relationMap, classList);
 					// Get parent descrptive fields from user
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-						if(entry.getValue().getRelation().equals("OneToOne")) {
-						System.out.println(" e parent " + entry.getValue().geteName() +" "+ entry.getValue().getIsParent() + "");
-						}
+						
 						if(entry.getValue().getRelation().equals("OneToOne") && !entry.getValue().getIsParent())
 						{
 							if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName())))
@@ -145,15 +143,18 @@ public class EntityGenerator {
 		UserInput input=new UserInput();
 		while(!isTableExits)
 		{
-			System.out.println("Enter Valid Authorization Table : ");
-			String str=scanner.nextLine();
-			str=str.substring(0, 1).toUpperCase() + str.substring(1);
-			System.out.println("  j" + str);
-			if(entityDetailsMap.containsKey(str))
-			{
-				isTableExits=true;
-				input.setAuthenticationSchema(str);
-			}
+			System.out.println(" INVALID AUTHORIZATION SCHEMA ");
+			System.exit(0);
+//			System.out.println("Enter Valid Authorization Table : ");
+//			String str=scanner.nextLine();
+//			str=str.substring(0, 1).toUpperCase() + str.substring(1);
+//			System.out.println("  j" + str);
+//			if(entityDetailsMap.containsKey(str))
+//			{
+//				isTableExits=true;
+//				
+//				authenticationTable=str;
+//			}
 		}
 		
 			return getAuthenticationTableFieldsMapping(entityDetailsMap,authenticationTable,scanner);

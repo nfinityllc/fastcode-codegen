@@ -80,17 +80,17 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#if joinDetails.joinColumn??>
 	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null)
 		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
-		if(found[=relationValue.eName]!=null)
-		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
+			if(found[=relationValue.eName]!=null)
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
 		<#if joinDetails.isJoinColumnOptional==false>
-		else
-		return null;
+			else
+				return null;
 		</#if>
 		}
 		<#if joinDetails.isJoinColumnOptional==false>
 		else
-		return null;
+			return null;
 		</#if>
         </#if>
         </#if>
@@ -98,14 +98,14 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#else>
         if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
 		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
-		if(found[=relationValue.eName]!=null)
-		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+			if(found[=relationValue.eName]!=null)
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
 		else
-		return null;
+			return null;
 		}
 		else
-		return null;
+			return null;
 		</#if>
 		</#if>
         </#if>
@@ -129,17 +129,17 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#if joinDetails.joinColumn??>
 	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null)
 		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
-		if(found[=relationValue.eName]!=null)
-		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
+			if(found[=relationValue.eName]!=null)
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
 		<#if joinDetails.isJoinColumnOptional==false>
-		else
-		return null;
+			else
+				return null;
 		</#if>
 		}
 		<#if joinDetails.isJoinColumnOptional==false>
 		else
-		return null;
+			return null;
 		</#if>
 		</#if>
         </#if>
@@ -147,14 +147,14 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#else>
         if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
 		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
-		if(found[=relationValue.eName]!=null)
-		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-		else
-		return null;
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+			if(found[=relationValue.eName]!=null)
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			else
+				return null;
 		}
 		else
-		return null;
+			return null;
 		</#if>
         </#if>
 		</#if>
@@ -179,7 +179,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		if (found[=ClassName] == null)  
 			return null ; 
  	   
- 	   Find[=ClassName]ByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]); 
+ 	    Find[=ClassName]ByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]); 
 		return output;
 	}
 	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>

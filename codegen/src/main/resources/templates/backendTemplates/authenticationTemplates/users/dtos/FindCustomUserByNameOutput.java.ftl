@@ -1,24 +1,25 @@
-package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable].Dto;
 
 import java.util.Date;
-public class Create[=ClassName]Output {
 
-<#list Fields as key,value>
+public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "User Name">[=authValue.fieldName?cap_first]</#if></#list><#else>Name</#if>Output {
+
+ <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-    <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+  <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "Password">
   	<#if value.fieldName != authValue.fieldName>
-    private [=value.fieldType] [=value.fieldName];
+  private [=value.fieldType] [=value.fieldName];
     </#if>
     </#if>
     </#list>
     </#if>
     <#else>
-    private [=value.fieldType] [=value.fieldName];
+  private [=value.fieldType] [=value.fieldName];
     </#if> 
- </#if>
+ </#if> 
 </#list>
 <#if Audit!false>
   private String creatorUserId;
@@ -28,16 +29,26 @@ public class Create[=ClassName]Output {
 </#if>
 <#list Relationship as relationKey,relationValue>
  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if CompositeKeyClasses?seq_contains(ClassName)>
+ <#list relationValue.joinDetails as joinDetails>
+ <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if !Fields[joinDetails.joinColumn]?? >
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+ </#if>
+</#if>
+</#list>
+ <#else>
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if joinDetails.joinColumn??>
- <#if !Fields[joinDetails.joinColumn]??>
+ <#if !Fields[joinDetails.joinColumn]?? >
   private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
  </#if>
  </#if>
  </#if>
 </#list>
-</#if>
+ </#if>  
+ </#if>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if DescriptiveField[relationValue.eName]??>
   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
@@ -47,17 +58,17 @@ public class Create[=ClassName]Output {
   </#if>
   </#if>
 </#list>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
   private Long roleId;       
   private String roleName;
     
   public Long getRoleId() {
-   	return roleId;
+  	return roleId;
   }
 
   public void setRoleId(Long roleId){
   	this.roleId = roleId;
   }
+  
   public String getRoleName() {
     return roleName;
   }
@@ -65,9 +76,8 @@ public class Create[=ClassName]Output {
   public void setRoleName(String roleName){
    	this.roleName = roleName;
   }
-  </#if>
-	
-  <#list Relationship as relationKey,relationValue>
+  
+<#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if CompositeKeyClasses?seq_contains(ClassName)>
    <#list relationValue.joinDetails as joinDetails>
@@ -103,7 +113,7 @@ public class Create[=ClassName]Output {
   }
   
 </#if> 
-</#if>
+</#if> 
 </#if>
 </#if>
 </#list>
@@ -125,7 +135,7 @@ public class Create[=ClassName]Output {
   </#if>
 </#list>
 <#list Fields as key,value>
-  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+ <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean"|| value.fieldType?lower_case == "date"|| value.fieldType?lower_case == "string" >
   <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
   <#if AuthenticationFields??>
   <#list AuthenticationFields as authKey,authValue>
@@ -153,7 +163,7 @@ public class Create[=ClassName]Output {
   }
   
   </#if> 
-  </#if>
+  </#if> 
 </#list>
 <#if Audit!false>
   public java.util.Date getCreationTime() {
@@ -188,4 +198,5 @@ public class Create[=ClassName]Output {
       this.creatorUserId = creatorUserId;
   }
 </#if>
+
 }
