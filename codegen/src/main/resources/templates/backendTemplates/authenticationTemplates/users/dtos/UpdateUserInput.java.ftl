@@ -2,11 +2,8 @@ package [=PackageName].application.Authorization.User.Dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.Length;
-
 import java.util.Date;
-
 
 public class UpdateUserInput {
 
@@ -47,9 +44,6 @@ public class UpdateUserInput {
   
   private Date lockoutEndDateUtc;
   
-  @Length(max = 128, message = "password must be less than 128 characters")
-  private String password;
-  
   @Length(max = 328, message = "passwordResetCode must be less than 328 characters")
   private String passwordResetCode;
   
@@ -64,10 +58,8 @@ public class UpdateUserInput {
   @Length(max = 32, message = "userName must be less than 32 characters")
   private String userName;
   
-
   private Long roleId;
 
-  
   public Long getRoleId() {
   return roleId;
   }
@@ -169,14 +161,6 @@ public class UpdateUserInput {
 
   public void setLockoutEndDateUtc(Date lockoutEndDateUtc){
   this.lockoutEndDateUtc = lockoutEndDateUtc;
-  }
-  
-  public String getPassword() {
-  return password;
-  }
-
-  public void setPassword(String password){
-  this.password = password;
   }
   
   public String getPasswordResetCode() {

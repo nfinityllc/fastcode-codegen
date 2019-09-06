@@ -17,7 +17,6 @@ public class UpdateUserOutput {
     private Date lastLoginTime;
     private Date lockoutEndDateUtc;
     private String firstName;
-    private String password;
     private String passwordResetCode;
     private String phoneNumber;
     private Long profilePictureId;
@@ -26,12 +25,12 @@ public class UpdateUserOutput {
     private Date signInTokenExpireTimeUtc;
     private String lastName;
     private String userName;
-   <#if Audit!false>
+    <#if Audit!false>
     private String creatorUserId;
     private java.util.Date creationTime;
     private String lastModifierUserId;
-    private java.util.Date lastModificationTime;
-</#if>
+    private java.util.Date lastModificationTime; 
+    </#if>
 	private Long roleId;       
     private String roleName;
     
@@ -73,7 +72,6 @@ public class UpdateUserOutput {
     public void setAuthenticationSource(String authenticationSource) {
         this.authenticationSource = authenticationSource;
     }
-
 
     public String getEmailAddress() {
         return emailAddress;
@@ -173,16 +171,6 @@ public class UpdateUserOutput {
         this.firstName = firstName;
     }
 
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
     public String getPasswordResetCode() {
         return passwordResetCode;
     }
@@ -190,7 +178,6 @@ public class UpdateUserOutput {
     public void setPasswordResetCode(String passwordResetCode) {
         this.passwordResetCode = passwordResetCode;
     }
-
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -242,7 +229,6 @@ public class UpdateUserOutput {
         this.lastName = lastName;
     }
 
-
     public String getUserName() {
         return userName;
     }
@@ -250,7 +236,6 @@ public class UpdateUserOutput {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
 
  <#if Audit!false>
     public java.util.Date getCreationTime() {
@@ -285,7 +270,6 @@ public class UpdateUserOutput {
       	this.creatorUserId = creatorUserId;
     }
 </#if>
-
 
     public Boolean isActive() {
         return isActive;

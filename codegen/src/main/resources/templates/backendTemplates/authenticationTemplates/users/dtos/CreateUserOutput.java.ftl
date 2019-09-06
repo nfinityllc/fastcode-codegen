@@ -15,7 +15,6 @@ public class CreateUserOutput {
     private Date lastLoginTime;
     private Date lockoutEndDateUtc;
     private String firstName;
-    private String password;
     private String passwordResetCode;
     private String phoneNumber;
     private Long profilePictureId;
@@ -138,14 +137,6 @@ public class CreateUserOutput {
         this.firstName = firstName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getPasswordResetCode() {
         return passwordResetCode;
     }
@@ -209,7 +200,8 @@ public class CreateUserOutput {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-<#if Audit!false>
+    <#if Audit!false>
+    
     public java.util.Date getCreationTime() {
         return creationTime;
     }
@@ -241,5 +233,5 @@ public class CreateUserOutput {
     public void setCreatorUserId(String creatorUserId) {
       	this.creatorUserId = creatorUserId;
     }
-</#if>
+    </#if>
 }
