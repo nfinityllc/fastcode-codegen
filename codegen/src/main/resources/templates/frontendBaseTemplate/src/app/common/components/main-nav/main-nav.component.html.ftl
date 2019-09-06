@@ -29,11 +29,16 @@
 
         <mat-nav-list class="subnav">
 
-          <#if AuthenticationType != "database">
-          <a mat-list-item class="mat-sub-list-item" routerLink="users">{{'MainNav.Users' | translate }} </a>
+          <#if AuthenticationType == "database" && !UserInput??>
+          <a mat-list-item class="mat-sub-list-item" routerLink="user">Users </a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="userpermission">Users Permissions </a>
+          <#elseif AuthenticationType == "database" && UserInput??>
+          <a mat-list-item class="mat-sub-list-item" routerLink="[=AuthenticationTable?lower_case]">[=AuthenticationTable] </a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="[=AuthenticationTable?lower_case]permission">[=AuthenticationTable] Permissions </a>
           </#if>          
-          <a mat-list-item class="mat-sub-list-item" routerLink="roles">Roles</a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="permissions">Permissions</a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="role">Roles</a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="permission">Permissions</a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="rolepermission">Roles Permissions</a>
 
         </mat-nav-list>
       </mat-expansion-panel>

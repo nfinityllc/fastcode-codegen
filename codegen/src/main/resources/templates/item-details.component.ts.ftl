@@ -140,31 +140,24 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
                 </#if>
 			},
 		</#list>
-		<#--<#if AuthenticationType=="database">
+		<#if AuthenticationType=="database">
 		<#if ClassName == AuthenticationTable>
 			{
 				column: [
-				    
+				    <#list PrimaryKeys as key,value>
 					{
-						key: '[=joinDetails.joinColumn]',
+						key: '[=key?uncap_first]',
 						value: undefined,
-						referencedkey: '[=joinDetails.referenceColumn]'
+						referencedkey: '[=key?uncap_first]'
 					},
+					</#list>
 				],
 				isParent: true,
-				table: '[AuthenticationTable?uncap_first]',
-				type: '[=relationValue.relation]',
-				<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
-				service: this.[=relationValue.eName?uncap_first]Service,
-				<#if DescriptiveField[relationValue.eName]??>
-				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
-			    </#if>
-			    <#elseif relationValue.relation == "OneToOne" && relationValue.isParent == true>
-			    associatedPrimaryKeys: [<#list relationValue.fDetails as value><#if value.isPrimaryKey == true> '[=value.fieldName]', </#if></#list>]
-                </#if>
+				table: '[=AuthenticationTable?uncap_first]',
+				type: 'OneToMany',
 			},		
 		</#if>
-		</#if>-->
+		</#if>
 		];
 		
 		this.childAssociations = this.associations.filter(association => {

@@ -125,7 +125,7 @@ public class EntityGenerator {
 			ex.printStackTrace();
 		}
 
-//		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
 		return entityDetailsMap;

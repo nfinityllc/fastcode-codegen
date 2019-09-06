@@ -157,7 +157,7 @@ public class CodeGenerator {
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
-		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames);
+		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames,authenticationTable);
 
 		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName, connectionString, schema,authenticationType,email);
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
@@ -875,14 +875,15 @@ public class CodeGenerator {
 	}
 
 
-	public static void updateEntitiesJsonFile(String path,List<String> entityNames) {
+	public static void updateEntitiesJsonFile(String path,List<String> entityNames, String authenticationTable) {
 
 		try {
 
 			JSONArray entityArray = (JSONArray) readJsonFile(path);
 			for(String entityName: entityNames)
 			{
-				entityArray.add(entityName.toLowerCase());
+				if(entityName.toLowerCase() != authenticationTable.toLowerCase())
+					entityArray.add(entityName.toLowerCase());
 			}
 
 			String prettyJsonString = beautifyJson(entityArray, "Array"); 
