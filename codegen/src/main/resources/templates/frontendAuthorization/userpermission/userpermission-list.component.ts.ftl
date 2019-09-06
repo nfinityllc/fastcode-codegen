@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
-import { I[=authenticationTable]permission } from './i[=moduleName]permission';
-import { [=authenticationTable]permissionService } from './[=moduleName]permission.service';
+import { I[=AuthenticationTable]permission } from './i[=moduleName]permission';
+import { [=AuthenticationTable]permissionService } from './[=moduleName]permission.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { [=authenticationTable]permissionNewComponent} from './[=moduleName]permission-new.component';
+import { [=AuthenticationTable]permissionNewComponent} from './[=moduleName]permission-new.component';
 import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 
-import { [=authenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
+import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
 
 @Component({
@@ -16,9 +16,9 @@ import { PermissionService } from '../permission/permission.service';
   templateUrl: './[=moduleName]permission-list.component.html',
   styleUrls: ['./[=moduleName]permission-list.component.scss']
 })
-export class [=authenticationTable]permissionListComponent extends BaseListComponent<I[=authenticationTable]permission> implements OnInit {
+export class [=AuthenticationTable]permissionListComponent extends BaseListComponent<I[=AuthenticationTable]permission> implements OnInit {
 
-	title:string = "[=authenticationTable]permission";
+	title:string = "[=AuthenticationTable]permission";
 	
 	constructor(
 		public router: Router,
@@ -27,9 +27,9 @@ export class [=authenticationTable]permissionListComponent extends BaseListCompo
 		public dialog: MatDialog,
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
-		public dataService: [=authenticationTable]permissionService,
+		public dataService: [=AuthenticationTable]permissionService,
 		public errorService: ErrorService,
-		public [=authenticationTable?uncap_first]Service: [=authenticationTable]Service,
+		public [=AuthenticationTable?uncap_first]Service: [=AuthenticationTable]Service,
 		public permissionService: PermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
@@ -54,11 +54,11 @@ export class [=authenticationTable]permissionListComponent extends BaseListCompo
 					},					  
 				],
 				isParent: false,
-				descriptiveField: '[=authenticationTable?uncap_first]Username',
+				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
 				referencedDescriptiveField: 'username',
-				service: this.[=authenticationTable?uncap_first]Service,
+				service: this.[=AuthenticationTable?uncap_first]Service,
 				associatedObj: undefined,
-				table: '[=authenticationTable?uncap_first]',
+				table: '[=AuthenticationTable?uncap_first]',
 				type: 'ManyToOne'
 			},
 			{
@@ -83,8 +83,8 @@ export class [=authenticationTable]permissionListComponent extends BaseListCompo
   	setColumns(){
   		this.columns = [
 			{
-	  			column: '[=authenticationTable]',
-				label: '[=authenticationTable]',
+	  			column: '[=AuthenticationTable]',
+				label: '[=AuthenticationTable]',
 				sort: false,
 				filter: false,
 				type: listColumnType.Boolean
@@ -109,7 +109,7 @@ export class [=authenticationTable]permissionListComponent extends BaseListCompo
   	}
   
 	addNew() {
-		super.addNew([=authenticationTable]permissionNewComponent);
+		super.addNew([=AuthenticationTable]permissionNewComponent);
 	}
   
 }

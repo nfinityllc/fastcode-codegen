@@ -2,8 +2,12 @@ package com.nfinity.codegen;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.FieldDetails;
@@ -28,7 +32,7 @@ public class AuthenticationClassesTemplateGenerator {
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setTemplateLoader(mtl);
 
-		String backendAppFolder = destination + "/src/main/java/" + packageName.replace(".", "/");
+		String backendAppFolder = destination + "/" + packageName.substring(packageName.lastIndexOf(".") + 1) + "/src/main/java/" + packageName.replace(".", "/");
 
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
@@ -60,6 +64,7 @@ public class AuthenticationClassesTemplateGenerator {
 					root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
 					root.put("Fields", entry.getValue().getFieldsMap());
 					root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
+					root.put("DescriptiveField", entry.getValue().getEntitiesDescriptiveFieldMap());
 					for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
 						if(entryFields.getValue().getIsPrimaryKey())
 						{
@@ -73,6 +78,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		}
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
+		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root);
 	}
 
 	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
@@ -183,7 +189,19 @@ public class AuthenticationClassesTemplateGenerator {
 		for (Map.Entry<String, Object> entry : templateFiles.entrySet()) {
 			try {
 				Template template = cfg.getTemplate(entry.getKey());
+
+				String entryPath = entry.getValue().toString();
 				File fileName = new File(destPath + "/" + entry.getValue().toString());
+
+				String dirPath = destPath;
+				if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
+					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
+				}
+				File dir = new File(dirPath);
+				if(!dir.exists()) {
+					dir.mkdirs();
+				};
+
 				PrintWriter writer = new PrintWriter(fileName);
 				template.process(root, writer);
 				writer.flush();
@@ -191,6 +209,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
+
 			}
 		}
 	}
@@ -514,5 +533,82 @@ public class AuthenticationClassesTemplateGenerator {
 
 
 		return backEndTemplate;
+	}
+	
+	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType, String authenticationTable, Map<String, Object> root) {
+
+		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
+		List<String> authorizationEntities = new ArrayList<String>();
+		String authorizationPath = CodeGenerator.TEMPLATE_FOLDER + "/frontendAuthorization/";
+
+		authorizationEntities.add("role");
+		authorizationEntities.add("permission");
+		authorizationEntities.add("rolepermission");
+		
+		List<String> entityList = new ArrayList<String>();
+		entityList.add("Role");
+		entityList.add("Permission");
+		entityList.add("Rolepermission");
+		
+		if(authenticationType == "database") {
+			if(authenticationTable == null) {
+				authorizationEntities.add("user");
+				entityList.add("User");
+				entityList.add("Userpermission");
+			}else {
+				entityList.add(authenticationTable + "permission");
+			}
+			authorizationEntities.add("userpermission");
+		}
+
+		CodeGenerator.updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
+		CodeGenerator.updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType);
+
+		authorizationEntities.add("login");
+		authorizationEntities.add("core");
+		for(String entity: authorizationEntities) {
+			if(entity == "userpermission" && authenticationTable != null) {
+				generateFrontendAuthorizationComponents(appFolderPath + convertCamelCaseToDash(authenticationTable) + "permission", authorizationPath + entity, authenticationType, authenticationTable, root);
+			}
+			else {
+				generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType, authenticationTable, root);
+			}
+			
+		}
+
+	}
+	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType, String authenticationTable, Map<String,Object> root) {
+		List<String> fl = FolderContentReader.getFilesFromFolder(templatePath);
+		Map<String, Object> templates = new HashMap<>();
+
+		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, templatePath + "/");
+		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
+		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+		cfg.setTemplateLoader(mtl);
+
+		for (String filePath : fl) {
+			String p = filePath.replace("BOOT-INF/classes" + templatePath,"");
+			p = p.replace("\\", "/");
+			p = p.replace(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources" + templatePath,"");
+			String outputFileName = p.substring(0, p.lastIndexOf('.'));
+			if(outputFileName.contains("userpermission") && authenticationTable != null) {
+				outputFileName = outputFileName.replace("user", convertCamelCaseToDash(authenticationTable));
+			}
+			templates.put(p, outputFileName);
+		}
+
+		root.put("moduleName", convertCamelCaseToDash(authenticationTable));
+		generateFiles(templates, root, destination);
+	}
+	
+	private static String convertCamelCaseToDash(String str) {
+		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
+		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
+		for (int i = 0; i < splittedNames.length; i++) {
+			splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
+		}
+		return StringUtils.join(splittedNames, "-");
 	}
 }

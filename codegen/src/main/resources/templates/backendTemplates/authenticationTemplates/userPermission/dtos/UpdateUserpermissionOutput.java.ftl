@@ -76,7 +76,6 @@ public class Update[=AuthenticationTable]permissionOutput {
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "User Name">
   	<#if !PrimaryKeys[authValue.fieldName]??>
-  	
   	public [=authValue.fieldType] get[=authValue.fieldName?cap_first]() {
    		return [=authValue.fieldName?uncap_first];
   	}

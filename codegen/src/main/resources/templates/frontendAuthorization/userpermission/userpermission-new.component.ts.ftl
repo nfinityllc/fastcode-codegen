@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { [=authenticationTable]permissionService } from './[=moduleName]permission.service';
-import { I[=authenticationTable]permission } from './i[=moduleName]permission';
+import { [=AuthenticationTable]permissionService } from './[=moduleName]permission.service';
+import { I[=AuthenticationTable]permission } from './i[=moduleName]permission';
 
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -8,7 +8,7 @@ import { first } from 'rxjs/operators';
 import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { [=authenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
+import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
 
 @Component({
@@ -16,21 +16,21 @@ import { PermissionService } from '../permission/permission.service';
   templateUrl: './[=moduleName]permission-new.component.html',
   styleUrls: ['./[=moduleName]permission-new.component.scss']
 })
-export class [=authenticationTable]permissionNewComponent extends BaseNewComponent<I[=authenticationTable]permission> implements OnInit {
+export class [=AuthenticationTable]permissionNewComponent extends BaseNewComponent<I[=AuthenticationTable]permission> implements OnInit {
   
-    title:string = "New [=authenticationTable]permission";
+    title:string = "New [=AuthenticationTable]permission";
 		constructor(
 			public formBuilder: FormBuilder,
 			public router: Router,
 			public route: ActivatedRoute,
 			public dialog: MatDialog,
-			public dialogRef: MatDialogRef<[=authenticationTable]permissionNewComponent>,
+			public dialogRef: MatDialogRef<[=AuthenticationTable]permissionNewComponent>,
 			@Inject(MAT_DIALOG_DATA) public data: any,
 			public global: Globals,
 			public pickerDialogService: PickerDialogService,
-			public dataService: [=authenticationTable]permissionService,
+			public dataService: [=AuthenticationTable]permissionService,
 			public errorService: ErrorService,
-			public [=authenticationTable?uncap_first]Service: [=authenticationTable]Service,
+			public [=AuthenticationTable?uncap_first]Service: [=AuthenticationTable]Service,
 			public permissionService: PermissionService,
 		) {
 			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
@@ -41,9 +41,24 @@ export class [=authenticationTable]permissionNewComponent extends BaseNewCompone
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({
 			permissionId: ['', Validators.required],
-			userid: ['', Validators.required],
-			[=authenticationTable?uncap_first]Username : [{ value: '', disabled: true }],
 			permissionName : [{ value: '', disabled: true }],
+			<#if AuthenticationType=="database" && !UserInput??>
+			userid: ['', Validators.required],
+			[=AuthenticationTable?uncap_first]Username : [{ value: '', disabled: true }],
+			<#elseif AuthenticationType=="database" && UserInput??>
+			<#if PrimaryKeys??>
+			<#list PrimaryKeys as key,value>
+			<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+			[=value.fieldName] : ['', Validators.required],
+			</#if> 
+			</#list>
+			</#if>
+			</#if>
+			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
+			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : [{ value: '', disabled: true }],
+			<#else>
+			[=AuthenticationTable?uncap_first]Username : [{ value: '', disabled: true }],
+			</#if>
 		});
 		this.checkPassedData();
     }
@@ -53,17 +68,35 @@ export class [=authenticationTable]permissionNewComponent extends BaseNewCompone
 		this.associations = [
 			{
 				column: [
+					<#if AuthenticationType=="database" && !UserInput??>
 					{
 						key: 'userid',
 						value: undefined,
-						referencedkey: 'userid'
+						referencedkey: 'id'
 					},
+					<#elseif AuthenticationType=="database" && UserInput??>
+					<#if PrimaryKeys??>
+					<#list PrimaryKeys as key,value>
+					<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+					{
+						key: '[=value.fieldName]',
+						value: undefined,
+						referencedkey: '[=value.fieldName]'
+					},
+					</#if>
+					</#list>
+					</#if>
+					</#if>
 				],
 				isParent: false,
-				table: '[=authenticationTable?uncap_first]',
+				table: '[=AuthenticationTable?uncap_first]',
 				type: 'ManyToOne',
-				service: this.[=authenticationTable?uncap_first]Service,
-				descriptiveField: '[=authenticationTable?uncap_first]Username',
+				service: this.[=AuthenticationTable?uncap_first]Service,
+				<#if DescriptiveField[AuthenticationTable]??>
+				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName]?cap_first',
+				<#else>
+				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
+				</#if>
 			},
 			{
 				column: [
