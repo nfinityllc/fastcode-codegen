@@ -70,7 +70,7 @@ public class AuthenticationClassesTemplateGenerator {
 						if(entryFields.getValue().getIsPrimaryKey())
 						{
 							String fieldName= entryFields.getValue().getFieldName();
-							primaryKeys.put(authenticationTable+fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1), entryFields.getValue());
+							userPrimaryKeys.put(authenticationTable+fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1), entryFields.getValue());
 							primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
 						}
 					}

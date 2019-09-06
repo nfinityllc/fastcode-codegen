@@ -33,7 +33,12 @@
 			</#list>
 			</#if>
 			<#if isJoinColumn == false>
-			<#if value.fieldType == "Date">
+			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+    		<#if AuthenticationFields??>
+  			<#list AuthenticationFields as authKey,authValue>
+  			<#if authKey== "Password">
+  			<#if value.fieldName != authValue.fieldName>
+    		<#if value.fieldType == "Date">
 			<ng-container matColumnDef="[=value.fieldName]">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName] </mat-header-cell>
 				<mat-cell *matCellDef="let item">
@@ -50,6 +55,30 @@
 				</mat-cell>
 			</ng-container>
 			</#if>
+    		</#if>
+    		</#if>
+    		</#list>
+    		</#if>
+   			<#else>
+   			<#if value.fieldType == "Date">
+			<ng-container matColumnDef="[=value.fieldName]">
+				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName] </mat-header-cell>
+				<mat-cell *matCellDef="let item">
+					<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
+					{{item.[=value.fieldName] | date: defaultDateFormat}}
+				</mat-cell>
+			</ng-container>
+			<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
+			<ng-container matColumnDef="[=value.fieldName]">
+				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName]</mat-header-cell>
+				<mat-cell *matCellDef="let item">
+					<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
+					{{ item.[=value.fieldName] }}
+				</mat-cell>
+			</ng-container>
+			</#if>
+    		</#if>
+			
 			</#if>
 			</#list>
 			<#list Relationship as relationKey, relationValue>

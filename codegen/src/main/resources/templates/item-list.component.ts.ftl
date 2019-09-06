@@ -110,7 +110,12 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		</#list>
 		</#if>
 		<#if isJoinColumn == false && (value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "string")>
-			{
+			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+    		<#if AuthenticationFields??>
+  			<#list AuthenticationFields as authKey,authValue>
+  			<#if authKey== "Password">
+  			<#if value.fieldName != authValue.fieldName>
+    		{
 				column: '[=value.fieldName]',
 				label: '[=value.fieldName]',
 				<#if value.isPrimaryKey == true>
@@ -130,6 +135,33 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				type: listColumnType.Boolean
 				</#if>
 			},
+    		</#if>
+    		</#if>
+    		</#list>
+    		</#if>
+    		<#else>
+    		{
+				column: '[=value.fieldName]',
+				label: '[=value.fieldName]',
+				<#if value.isPrimaryKey == true>
+				sort: false,
+				filter: false,
+				<#else>
+				sort: true,
+				filter: true,
+				</#if>
+				<#if value.fieldType?lower_case == "string">
+				type: listColumnType.String
+				<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short">
+				type: listColumnType.Number
+				<#elseif value.fieldType?lower_case == "date">
+				type: listColumnType.Date
+				<#elseif value.fieldType?lower_case == "boolean">
+				type: listColumnType.Boolean
+				</#if>
+			},
+    	</#if>
+			
 		</#if>
 		</#list>
 		<#list Relationship as relationKey, relationValue>
