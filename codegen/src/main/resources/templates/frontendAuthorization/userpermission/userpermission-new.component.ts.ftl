@@ -92,7 +92,7 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 				table: '[=AuthenticationTable?uncap_first]',
 				type: 'ManyToOne',
 				service: this.[=AuthenticationTable?uncap_first]Service,
-				<#if DescriptiveField[AuthenticationTable]??>
+				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
 				<#else>
 				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
