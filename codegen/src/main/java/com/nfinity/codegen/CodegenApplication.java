@@ -174,8 +174,8 @@ public class CodegenApplication implements ApplicationRunner {
 			GitRepositoryManager.addToGitRepository(input.getDestinationPath());
 		}
 
-
-
+		System.out.println(" Code generation Completed ...");
+		System.exit(1);
 	}
 
 	@Override

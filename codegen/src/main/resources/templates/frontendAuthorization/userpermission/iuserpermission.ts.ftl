@@ -18,8 +18,10 @@ export interface I[=AuthenticationTable]permission {
 	</#list>
 	</#if>
 	<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
+	<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
 	[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]: string;
-	<#else>
+	</#if>
+    <#else>
 	<#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "User Name">
