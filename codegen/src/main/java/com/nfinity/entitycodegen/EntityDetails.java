@@ -386,10 +386,16 @@ public class EntityDetails {
 
 											joinDetails.setJoinEntityName(entry.getValue().geteName());
 
-											joinDetails.setReferenceColumn(CaseFormat.LOWER_UNDERSCORE 
-													.to(CaseFormat.LOWER_CAMEL, j.referencedColumnName())); 
+											String referenceCol=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, j.referencedColumnName()); 
+											String name=CaseFormat.LOWER_UNDERSCORE .to(CaseFormat.LOWER_CAMEL, j.name());
 
-
+											if(referenceCol.isEmpty())
+											{
+												joinDetails.setReferenceColumn(name); 
+											}
+											else
+												joinDetails.setReferenceColumn(referenceCol);
+											
 											joinDetails.setJoinColumn(CaseFormat.LOWER_UNDERSCORE 
 													.to(CaseFormat.LOWER_CAMEL, j.name())); 
 
@@ -404,9 +410,6 @@ public class EntityDetails {
 												joinDetails.setJoinColumnType("Double");
 											else
 												joinDetails.setJoinColumnType("String");
-
-
-
 
 											joinDetailsList.add(joinDetails);
 
@@ -508,8 +511,16 @@ public class EntityDetails {
 											joinDetails=new JoinDetails();
 
 											joinDetails.setJoinEntityName(entry.getValue().geteName());
+											String referenceCol=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, j.referencedColumnName()); 
+											String name=CaseFormat.LOWER_UNDERSCORE .to(CaseFormat.LOWER_CAMEL, j.name());
 
-											joinDetails.setReferenceColumn(CaseFormat.LOWER_UNDERSCORE .to(CaseFormat.LOWER_CAMEL, j.referencedColumnName())); 
+											if(referenceCol.isEmpty())
+											{
+												joinDetails.setReferenceColumn(name); 
+											}
+											else
+												joinDetails.setReferenceColumn(referenceCol);
+											
 											joinDetails.setJoinColumn(CaseFormat.LOWER_UNDERSCORE 
 													.to(CaseFormat.LOWER_CAMEL,j.name())); 
 											joinDetails.setIsJoinColumnOptional(j.nullable());
