@@ -38,13 +38,11 @@ public interface [=AuthenticationTable]permissionMapper {
    </#list>
    </#if>
    </#if> 
-   <#if DescriptiveField??>
-   <#if DescriptiveField[AuthenticationTable]??>
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
    <#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
    @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=DescriptiveField[AuthenticationTable].fieldName?cap_first]"),  
    </#if>
-   </#if>
- 	</#if>               
+   </#if>           
    @Mapping(source = "permission.name", target = "permissionName"),                   
    @Mapping(source = "permission.id", target = "permissionId")                   
    }) 
@@ -74,13 +72,11 @@ public interface [=AuthenticationTable]permissionMapper {
    </#list>
    </#if>
    </#if>  
-   <#if DescriptiveField??>
-   <#if DescriptiveField[AuthenticationTable]??>
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
    <#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
    @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=DescriptiveField[AuthenticationTable].fieldName?cap_first]"),  
  	</#if>     
-	</#if>
-   </#if>                  
+	</#if>                 
    @Mapping(source = "permission.name", target = "permissionName"),                   
    @Mapping(source = "permission.id", target = "permissionId")                  
    }) 
@@ -108,13 +104,11 @@ public interface [=AuthenticationTable]permissionMapper {
    </#list>
    </#if>
    </#if>  
-   <#if DescriptiveField??>
-   <#if DescriptiveField[AuthenticationTable]??>
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
    <#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
    @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=DescriptiveField[AuthenticationTable].fieldName?cap_first]"),  
     </#if>     
-	</#if>
-   </#if>                
+	</#if>               
    @Mapping(source = "permission.name", target = "permissionName"),                   
    @Mapping(source = "permission.id", target = "permissionId")                  
    }) 

@@ -105,7 +105,6 @@ public class CodegenApplication implements ApplicationRunner {
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		UserInput input = composeInput(configProperties);
-        UserInput input1=new UserInput();
 		String groupArtifactId = input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));
@@ -166,7 +165,6 @@ public class CodegenApplication implements ApplicationRunner {
 		{
 			FlowableFrontendCodeGenerator.generate(input.getDestinationPath(), artifactId + "Client");
 		}
-
 
 		if (configProperties.getUseGit() != null
 				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
