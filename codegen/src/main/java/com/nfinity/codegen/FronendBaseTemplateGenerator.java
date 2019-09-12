@@ -37,7 +37,7 @@ public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
-	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable, String authenticationType) {
+	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable, String authenticationType, String authenticationTable) {
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
 		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json",flowable);
@@ -58,6 +58,15 @@ public class FronendBaseTemplateGenerator {
 		root.put("SchedulerModule", scheduler);
 		root.put("FlowableModule", flowable);
 		root.put("AuthenticationType",authenticationType);
+		if(authenticationTable!=null) {
+			root.put("UserInput","true");
+			root.put("AuthenticationTable", authenticationTable);
+		}
+		else
+		{
+			root.put("UserInput",null);
+			root.put("AuthenticationTable", "User");	
+		}	
 
 
 		for (String filePath : fl) {

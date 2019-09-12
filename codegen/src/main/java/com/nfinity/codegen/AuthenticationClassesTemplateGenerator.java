@@ -611,14 +611,14 @@ public class AuthenticationClassesTemplateGenerator {
 			}
 			templates.put(p, outputFileName);
 		}
-
+		
 		if(authenticationTable != null) {
 			root.put("moduleName", convertCamelCaseToDash(authenticationTable));
-			}
-			else {
+		}
+		else {
 			root.put("moduleName", "user");
-			}
-		
+		}
+
 		generateFiles(templates, root, destination);
 	}
 	

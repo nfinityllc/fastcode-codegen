@@ -134,13 +134,11 @@ export class BaseNewComponent<E> implements OnInit, CanDeactivateGuard {
 	}
 
 	selectAssociation(association) {
-		let parentField: string = association.descriptiveField.replace(association.table, '');
-		parentField = parentField.charAt(0).toLowerCase() + parentField.slice(1);
 
 		let dialogConfig: IFCDialogConfig = <IFCDialogConfig>{
 			Title: association.table,
 			IsSingleSelection: true,
-			DisplayField: parentField
+			DisplayField: association.referencedDescriptiveField
 		};
 
 		this.pickerDialogRef = this.pickerDialogService.open(dialogConfig);
@@ -171,7 +169,7 @@ export class BaseNewComponent<E> implements OnInit, CanDeactivateGuard {
 				association.column.forEach(col => {
 					this.itemForm.get(col.key).setValue(associatedItem[col.referencedkey]);
 				});
-				this.itemForm.get(association.descriptiveField).setValue(associatedItem[parentField]);
+				this.itemForm.get(association.descriptiveField).setValue(associatedItem[association.referencedDescriptiveField]);
 			}
 		});
 	}

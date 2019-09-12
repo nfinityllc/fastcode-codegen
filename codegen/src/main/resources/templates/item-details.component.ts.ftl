@@ -160,6 +160,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				service: this.[=relationValue.eName?uncap_first]Service,
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+			    referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
 			    </#if>
 			    <#elseif relationValue.relation == "OneToOne" && relationValue.isParent == true>
 			    associatedPrimaryKeys: [<#list relationValue.fDetails as value><#if value.isPrimaryKey == true> '[=value.fieldName]', </#if></#list>]
