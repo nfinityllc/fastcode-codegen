@@ -173,14 +173,14 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				column: [
 				    <#list PrimaryKeys as key,value>
 					{
-						key: '[=key?uncap_first]',
+						key: '[=AuthenticationTable?uncap_first + key]',
 						value: undefined,
 						referencedkey: '[=key?uncap_first]'
 					},
 					</#list>
 				],
 				isParent: true,
-				table: '[=AuthenticationTable?uncap_first]',
+				table: '[=AuthenticationTable?lower_case]permission',
 				type: 'OneToMany',
 			},		
 		</#if>

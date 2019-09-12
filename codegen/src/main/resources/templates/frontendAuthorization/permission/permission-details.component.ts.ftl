@@ -61,6 +61,7 @@ export class PermissionDetailsComponent extends BaseDetailsComponent<IPermission
 				table: 'rolepermission',
 				type: 'OneToMany',
 			},
+			<#if AuthenticationType=="database">
 			{
 				column: [
 					{
@@ -70,9 +71,10 @@ export class PermissionDetailsComponent extends BaseDetailsComponent<IPermission
 					},
 				],
 				isParent: true,
-				table: 'userpermission',
+				table: '[=AuthenticationTable?lower_case]permission',
 				type: 'OneToMany',
 			},
+			</#if>
 		];
 		this.childAssociations = this.associations.filter(association => {
 			return (association.isParent);
