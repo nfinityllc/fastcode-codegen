@@ -20,7 +20,15 @@ export interface I[=AuthenticationTable]permission {
 	<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 	[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]: string;
 	<#else>
-	[=AuthenticationTable?uncap_first]Username: string;
+	<#if AuthenticationFields??>
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "User Name">
+  	<#if !PrimaryKeys[authValue.fieldName]??>
+  	[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]: string;
+  	</#if>
+    </#if>
+    </#list>
+    </#if>
 	</#if>
 	</#if>
   }
