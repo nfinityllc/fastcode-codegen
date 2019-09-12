@@ -1,9 +1,13 @@
 package com.nfinity.codegen;
 
+import static java.util.Map.Entry.comparingByKey;
+import static java.util.stream.Collectors.toMap;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +59,6 @@ public class AuthenticationClassesTemplateGenerator {
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
 			Map<String,FieldDetails> primaryKeys= new HashMap<>();
-			Map<String,FieldDetails> userPrimaryKeys= new HashMap<>();
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			if(authenticationTable!=null)
 			{
@@ -69,12 +72,20 @@ public class AuthenticationClassesTemplateGenerator {
 					for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
 						if(entryFields.getValue().getIsPrimaryKey())
 						{
-							String fieldName= entryFields.getValue().getFieldName();
-							userPrimaryKeys.put(authenticationTable+fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1), entryFields.getValue());
 							primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
+	
 						}
 					}
-					root.put("PrimaryKeys", primaryKeys);
+					Map<String, FieldDetails> sorted =primaryKeys
+							.entrySet()
+							.stream()
+							.sorted(comparingByKey())
+							.collect(
+									toMap(e -> e.getKey(), e -> e.getValue(),
+											(e1, e2) -> e2, LinkedHashMap::new));
+
+					root.put("PrimaryKeys", sorted);
+				//	root.put("PrimaryKeys", primaryKeys);
 				}
 			}
 
@@ -607,6 +618,7 @@ public class AuthenticationClassesTemplateGenerator {
 		else {
 			root.put("moduleName", "user");
 		}
+
 		generateFiles(templates, root, destination);
 	}
 	

@@ -6,7 +6,7 @@ public class [=AuthenticationTable]permissionId implements Serializable {
 
     private Long permissionId;
     <#if AuthenticationType=="database" && !UserInput??>
-    private Long userid;
+    private Long userId;
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
@@ -21,10 +21,10 @@ public class [=AuthenticationTable]permissionId implements Serializable {
 
     }
    
-    public [=AuthenticationTable]permissionId(Long permissionId,<#if AuthenticationType=="database" && !UserInput??>Long userid<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>[=value.fieldType] [=value.fieldName?uncap_first],<#else>[=value.fieldType] [=value.fieldName?uncap_first]</#if></#list></#if>){
+    public [=AuthenticationTable]permissionId(Long permissionId,<#if AuthenticationType=="database" && !UserInput??>Long userId<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>[=value.fieldType] [=value.fieldName?uncap_first],<#else>[=value.fieldType] [=value.fieldName?uncap_first]</#if></#list></#if>){
   		this.permissionId =permissionId;
   		<#if AuthenticationType=="database" && !UserInput??>
-   		this.userid =userid;
+   		this.userId =userId;
   	    <#elseif AuthenticationType=="database" && UserInput??>
         <#list PrimaryKeys as key,value>
         this.[=value.fieldName?uncap_first]=[=value.fieldName?uncap_first];
@@ -39,12 +39,12 @@ public class [=AuthenticationTable]permissionId implements Serializable {
         this.permissionId = permissionId;
     }
     <#if AuthenticationType=="database" && !UserInput??>
-  	public Long getUserid() {
-  		return userid;
+  	public Long getUserId() {
+  		return userId;
   	}
 
-  	public void setUserid(Long userid){
-  		this.userid = userid;
+  	public void setUserId(Long userId){
+  		this.userId = userId;
   	}
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
