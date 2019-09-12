@@ -53,11 +53,13 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 			</#if> 
 			</#list>
 			</#if>
-			</#if>
+			
 			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : [{ value: '', disabled: true }],
 			<#else>
 			[=AuthenticationTable?uncap_first]Username : [{ value: '', disabled: true }],
+			</#if>
+			
 			</#if>
 		});
 		this.checkPassedData();
@@ -92,9 +94,13 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 				table: '[=AuthenticationTable?uncap_first]',
 				type: 'ManyToOne',
 				service: this.[=AuthenticationTable?uncap_first]Service,
-				<#if DescriptiveField[AuthenticationTable]??>
+				<#if AuthenticationType=="database" && UserInput??>
+				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
 				<#else>
+				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
+				</#if>
+				<#elseif AuthenticationType=="database" && !UserInput??>
 				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
 				</#if>
 			},

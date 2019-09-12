@@ -147,6 +147,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				service: this.[=relationValue.eName?uncap_first]Service,
 				<#if DescriptiveField[relationValue.eName]??>
 				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
 				</#if>
 			    
 				},

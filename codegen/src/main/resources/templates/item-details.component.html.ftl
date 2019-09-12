@@ -15,6 +15,7 @@
 			<#assign isJoinColumn = false>
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
+			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			<#list relationValue.joinDetails as joinDetails>
             <#if joinDetails.joinEntityName == relationValue.eName>
             <#if joinDetails.joinColumn??>
@@ -24,6 +25,7 @@
             </#if>
 			</#if>
 			</#list>
+			</#if>
 			</#list>
 			</#if>
             <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  

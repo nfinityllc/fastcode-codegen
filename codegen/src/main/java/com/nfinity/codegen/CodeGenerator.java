@@ -882,8 +882,9 @@ public class CodeGenerator {
 			JSONArray entityArray = (JSONArray) readJsonFile(path);
 			for(String entityName: entityNames)
 			{
-				if(entityName.toLowerCase() != authenticationTable.toLowerCase())
+				if(!entityName.equalsIgnoreCase(authenticationTable)) {
 					entityArray.add(entityName.toLowerCase());
+				}
 			}
 
 			String prettyJsonString = beautifyJson(entityArray, "Array"); 

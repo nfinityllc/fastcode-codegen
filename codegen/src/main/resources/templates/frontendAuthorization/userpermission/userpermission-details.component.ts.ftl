@@ -54,11 +54,11 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			</#if> 
 			</#list>
 			</#if>
-			</#if>
 			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : [{ value: '', disabled: true }],
 			<#else>
 			[=AuthenticationTable?uncap_first]Username : [{ value: '', disabled: true }],
+			</#if>
 			</#if>
 	    });
 	    if (this.idParam) {
@@ -95,9 +95,13 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				table: '[=AuthenticationTable?uncap_first]',
 				type: 'ManyToOne',
 				service: this.[=AuthenticationTable?uncap_first]Service,
-				<#if DescriptiveField[AuthenticationTable]??>
+				<#if AuthenticationType=="database" && UserInput??>
+				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
 				<#else>
+				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
+				</#if>
+				<#elseif AuthenticationType=="database" && !UserInput??>
 				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
 				</#if>
 				
@@ -130,8 +134,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		this.item = item;
 		this.itemForm.patchValue({
 			permissionId: item.permissionId,
+			permissionName: item.permissionName,
 			<#if AuthenticationType=="database" && !UserInput??>
-			userid: item.userid,
+			[=AuthenticationTable?uncap_first]Id: item.[=AuthenticationTable?uncap_first]Id,
+			[=AuthenticationTable?uncap_first]Username: item.[=AuthenticationTable?uncap_first]Username,
 			<#elseif AuthenticationType=="database" && UserInput??>
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
@@ -140,13 +146,12 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			</#if> 
 			</#list>
 			</#if>
-			</#if>
 			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : item.[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first],
 			<#else>
 			[=AuthenticationTable?uncap_first]Username: item.[=AuthenticationTable?uncap_first]Username,
 			</#if>
-			permissionName: item.permissionName,
+			</#if>
 		});
 	}
 }

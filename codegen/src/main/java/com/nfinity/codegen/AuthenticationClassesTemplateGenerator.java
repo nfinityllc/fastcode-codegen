@@ -271,7 +271,7 @@ public class AuthenticationClassesTemplateGenerator {
 		else
 		{
 			backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "IUserpermissionManager.java");
-			backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", "UserspermissionManager.java");
+			backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", "UserpermissionManager.java");
 			//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
 		}
 		return backEndTemplate;
@@ -600,8 +600,13 @@ public class AuthenticationClassesTemplateGenerator {
 			}
 			templates.put(p, outputFileName);
 		}
-
-		root.put("moduleName", convertCamelCaseToDash(authenticationTable));
+		
+		if(authenticationTable != null) {
+			root.put("moduleName", convertCamelCaseToDash(authenticationTable));
+		}
+		else {
+			root.put("moduleName", "user");
+		}
 		generateFiles(templates, root, destination);
 	}
 	
