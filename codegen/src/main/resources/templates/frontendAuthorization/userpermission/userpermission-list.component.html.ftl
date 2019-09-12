@@ -20,7 +20,25 @@
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=AuthenticationTable?cap_first]')">[=AuthenticationTable?cap_first]</mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("[=AuthenticationTable?cap_first]")}}:</span>
-					{{ item.[=AuthenticationTable]Username }}
+				<#if AuthenticationType=="database" && UserInput??>
+				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
+				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
+				{{ item.[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] }}
+				</#if>
+                <#else>
+                <#if AuthenticationFields??>
+  				<#list AuthenticationFields as authKey,authValue>
+  				<#if authKey== "User Name">
+  				<#if !PrimaryKeys[authValue.fieldName]??>
+  				{{ item.[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first] }}
+				</#if>
+    			</#if>
+    			</#list>
+    			</#if>
+				</#if>
+				<#elseif AuthenticationType=="database" && !UserInput??>
+				{{ item.[=AuthenticationTable?uncap_first]Username }}
+				</#if>
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="Permission">

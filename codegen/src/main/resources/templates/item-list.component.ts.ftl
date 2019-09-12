@@ -98,6 +98,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		<#assign isJoinColumn = false>
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 		<#list relationValue.joinDetails as joinDetails>
 	    <#if joinDetails.joinEntityName == relationValue.eName>
 	    <#if joinDetails.joinColumn??>
@@ -107,14 +108,12 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 	    </#if>
 		</#if>
 		</#list>
+		</#if>
 		</#list>
 		</#if>
 		<#if isJoinColumn == false && (value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "string")>
 			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-    		<#if AuthenticationFields??>
-  			<#list AuthenticationFields as authKey,authValue>
-  			<#if authKey== "Password">
-  			<#if value.fieldName != authValue.fieldName>
+    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName>
     		{
 				column: '[=value.fieldName]',
 				label: '[=value.fieldName]',
@@ -135,9 +134,6 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				type: listColumnType.Boolean
 				</#if>
 			},
-    		</#if>
-    		</#if>
-    		</#list>
     		</#if>
     		<#else>
     		{

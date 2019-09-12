@@ -9,11 +9,11 @@ export interface I[=AuthenticationTable]permission {
 	<#if PrimaryKeys??>
 	<#list PrimaryKeys as key,value>
 	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
-	[=value.fieldName] : number;
+	[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : number;
 	<#elseif value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-	[=value.fieldName] : string;
+	[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : string;
 	<#elseif value.fieldType?lower_case == "boolean">
-	[=value.fieldName] : boolean;
+	[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : boolean;
 	</#if> 
 	</#list>
 	</#if>

@@ -64,6 +64,7 @@ export class RolepermissionNewComponent extends BaseNewComponent<IRolepermission
 				type: 'ManyToOne',
 				service: this.permissionService,
 				descriptiveField: 'permissionName',
+				referencedDescriptiveField: 'name',
 			},
 			{
 				column: [
@@ -78,6 +79,7 @@ export class RolepermissionNewComponent extends BaseNewComponent<IRolepermission
 				type: 'ManyToOne',
 				service: this.roleService,
 				descriptiveField: 'roleName',
+				referencedDescriptiveField: 'name',
 			},
 		];
 		this.parentAssociations = this.associations.filter(association => {

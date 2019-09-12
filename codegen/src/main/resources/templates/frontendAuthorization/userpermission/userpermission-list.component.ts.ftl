@@ -47,15 +47,49 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 		this.associations = [
 			{
 				column: [
+					<#if AuthenticationType=="database" && !UserInput??>
 					{
 						key: 'userid',
 						value: undefined,
-						referencedkey: 'userid'
-					},					  
+						referencedkey: 'id'
+					},
+					<#elseif AuthenticationType=="database" && UserInput??>
+					<#if PrimaryKeys??>
+					<#list PrimaryKeys as key,value>
+					<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+					{
+						key: '[=AuthenticationTable?uncap_first + value.fieldName?cap_first]',
+						value: undefined,
+						referencedkey: '[=value.fieldName]'
+					},
+					</#if>
+					</#list>
+					</#if>
+					</#if>				  
 				],
 				isParent: false,
+				<#if AuthenticationType=="database" && UserInput??>
+				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
+				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
+				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
+				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
+				</#if>
+                <#else>
+                <#if AuthenticationFields??>
+  				<#list AuthenticationFields as authKey,authValue>
+  				<#if authKey== "User Name">
+  				<#if !PrimaryKeys[authValue.fieldName]??>
+  				descriptiveField: '[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]',
+				referencedDescriptiveField: '[=authValue.fieldName]',
+				</#if>
+    			</#if>
+    			</#list>
+    			</#if>
+				</#if>
+				<#elseif AuthenticationType=="database" && !UserInput??>
 				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
 				referencedDescriptiveField: 'username',
+				</#if>
 				service: this.[=AuthenticationTable?uncap_first]Service,
 				associatedObj: undefined,
 				table: '[=AuthenticationTable?uncap_first]',

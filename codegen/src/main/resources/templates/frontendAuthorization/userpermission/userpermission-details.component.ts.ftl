@@ -50,7 +50,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
 			<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-			[=value.fieldName] : ['', Validators.required],
+			[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : ['', Validators.required],
 			</#if> 
 			</#list>
 			</#if>
@@ -63,7 +63,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
   			<#list AuthenticationFields as authKey,authValue>
   			<#if authKey== "User Name">
   			<#if !PrimaryKeys[authValue.fieldName]??>
-  			[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
+  			[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
   			</#if>
     		</#if>
     		</#list>
@@ -92,7 +92,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 					<#list PrimaryKeys as key,value>
 					<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
 					{
-						key: '[=value.fieldName]',
+						key: '[=AuthenticationTable?uncap_first + value.fieldName?cap_first]',
 						value: undefined,
 						referencedkey: '[=value.fieldName]'
 					},
@@ -109,13 +109,15 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
+				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
 				</#if>
                 <#else>
-				<#if AuthenticationFields??>
+                <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
   				<#if authKey== "User Name">
   				<#if !PrimaryKeys[authValue.fieldName]??>
-  				descriptiveField: '[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]',
+  				descriptiveField: '[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]',
+				referencedDescriptiveField: '[=authValue.fieldName]',
 				</#if>
     			</#if>
     			</#list>
@@ -123,6 +125,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				</#if>
 				<#elseif AuthenticationType=="database" && !UserInput??>
 				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
+				referencedDescriptiveField: 'username',
 				</#if>
 				
 			},
@@ -162,7 +165,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
 			<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-			[=value.fieldName] : item.[=value.fieldName],
+			[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : item.[=AuthenticationTable?uncap_first + value.fieldName?cap_first],
 			</#if> 
 			</#list>
 			</#if>
@@ -175,7 +178,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
   			<#list AuthenticationFields as authKey,authValue>
   			<#if authKey== "User Name">
   			<#if !PrimaryKeys[authValue.fieldName]??>
-  			[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]: item.[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first],
+  			[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: item.[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first],
 			</#if>
     		</#if>
     		</#list>

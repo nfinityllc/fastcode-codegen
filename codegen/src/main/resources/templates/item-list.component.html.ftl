@@ -21,6 +21,7 @@
 			<#assign isJoinColumn = false>
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
+			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			<#list relationValue.joinDetails as joinDetails>
 	        <#if joinDetails.joinEntityName == relationValue.eName>
 	        <#if joinDetails.joinColumn??>
@@ -30,14 +31,12 @@
 	        </#if>
 			</#if>
 			</#list>
+			</#if>
 			</#list>
 			</#if>
 			<#if isJoinColumn == false>
 			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-    		<#if AuthenticationFields??>
-  			<#list AuthenticationFields as authKey,authValue>
-  			<#if authKey== "Password">
-  			<#if value.fieldName != authValue.fieldName>
+    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName && isJoinColumn == false>
     		<#if value.fieldType == "Date">
 			<ng-container matColumnDef="[=value.fieldName]">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName] </mat-header-cell>
@@ -55,9 +54,6 @@
 				</mat-cell>
 			</ng-container>
 			</#if>
-    		</#if>
-    		</#if>
-    		</#list>
     		</#if>
    			<#else>
    			<#if value.fieldType == "Date">

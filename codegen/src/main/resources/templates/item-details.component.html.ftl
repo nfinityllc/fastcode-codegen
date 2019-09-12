@@ -29,11 +29,7 @@
 			</#list>
 			</#if>
             <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-    		<#if AuthenticationFields??>
-  			<#list AuthenticationFields as authKey,authValue>
-  			<#if authKey== "Password">
-  			<#if value.fieldName != authValue.fieldName>
-    		<#if isJoinColumn == false>
+    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName && isJoinColumn == false>
 			<#if value.fieldType?lower_case == "boolean">
 				<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>            
 			<#elseif value.fieldType?lower_case == "date">
@@ -61,10 +57,6 @@
 				</mat-form-field>
 			</#if>
 			</#if>
-    		</#if>
-    		</#if>
-    		</#list>
-    		</#if>
     		<#else>
     		<#if isJoinColumn == false>
 			<#if value.fieldType?lower_case == "boolean">

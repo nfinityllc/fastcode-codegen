@@ -49,7 +49,7 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
 			<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-			[=value.fieldName] : ['', Validators.required],
+			[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : ['', Validators.required],
 			</#if> 
 			</#list>
 			</#if>
@@ -63,7 +63,7 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
   			<#list AuthenticationFields as authKey,authValue>
   			<#if authKey== "User Name">
   			<#if !PrimaryKeys[authValue.fieldName]??>
-  			[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
+  			[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
   			</#if>
     		</#if>
     		</#list>
@@ -91,7 +91,7 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 					<#list PrimaryKeys as key,value>
 					<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
 					{
-						key: '[=value.fieldName]',
+						key: '[=AuthenticationTable?uncap_first + value.fieldName?cap_first]',
 						value: undefined,
 						referencedkey: '[=value.fieldName]'
 					},
@@ -108,20 +108,23 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
+				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
 				</#if>
                 <#else>
-				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
-				</#if>
-				<#elseif AuthenticationType=="database" && !UserInput??>
-				<#if AuthenticationFields??>
+                <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
   				<#if authKey== "User Name">
   				<#if !PrimaryKeys[authValue.fieldName]??>
-  				descriptiveField: '[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]',
+  				descriptiveField: '[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]',
+				referencedDescriptiveField: '[=authValue.fieldName]',
 				</#if>
     			</#if>
     			</#list>
     			</#if>
+				</#if>
+				<#elseif AuthenticationType=="database" && !UserInput??>
+				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
+				referencedDescriptiveField: 'username',
 				</#if>
 			},
 			{
