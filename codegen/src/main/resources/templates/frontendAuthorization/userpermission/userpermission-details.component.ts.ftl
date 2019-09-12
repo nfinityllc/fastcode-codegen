@@ -55,8 +55,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			</#list>
 			</#if>
 			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
+			<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
 			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : [{ value: '', disabled: true }],
-			<#else>
+			</#if>
+            <#else>
 			<#if AuthenticationFields??>
   			<#list AuthenticationFields as authKey,authValue>
   			<#if authKey== "User Name">
@@ -105,8 +107,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				service: this.[=AuthenticationTable?uncap_first]Service,
 				<#if AuthenticationType=="database" && UserInput??>
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
+				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
-				<#else>
+				</#if>
+                <#else>
 				<#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
   				<#if authKey== "User Name">
@@ -163,8 +167,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			</#list>
 			</#if>
 			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
+			<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
 			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : item.[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first],
-			<#else>
+			</#if>
+            <#else>
 			<#if AuthenticationFields??>
   			<#list AuthenticationFields as authKey,authValue>
   			<#if authKey== "User Name">
