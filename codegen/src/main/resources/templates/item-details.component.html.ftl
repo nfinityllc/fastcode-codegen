@@ -31,7 +31,7 @@
             <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
     		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName && isJoinColumn == false>
 			<#if value.fieldType?lower_case == "boolean">
-				<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>            
+				<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>
 			<#elseif value.fieldType?lower_case == "date">
 				<mat-form-field>
 					<input formControlName="[=value.fieldName]" matInput [matDatepicker]="[=value.fieldName]Picker" placeholder="Enter [=value.fieldName]">

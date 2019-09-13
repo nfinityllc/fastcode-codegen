@@ -35,7 +35,7 @@
 			</#list>
 			</#if>
 			<#if isJoinColumn == false>
-			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
     		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName && isJoinColumn == false>
     		<#if value.fieldType == "Date">
 			<ng-container matColumnDef="[=value.fieldName]">

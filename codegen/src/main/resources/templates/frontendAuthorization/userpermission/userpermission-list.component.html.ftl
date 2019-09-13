@@ -37,7 +37,7 @@
     			</#if>
 				</#if>
 				<#elseif AuthenticationType=="database" && !UserInput??>
-				{{ item.[=AuthenticationTable?uncap_first]Username }}
+				{{ item.[=AuthenticationTable?uncap_first]UserName }}
 				</#if>
 				</mat-cell>
 			</ng-container>

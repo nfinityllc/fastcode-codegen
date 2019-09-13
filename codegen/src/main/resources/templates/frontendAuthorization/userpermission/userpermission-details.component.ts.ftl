@@ -45,7 +45,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			permissionName : [{ value: '', disabled: true }],
 			<#if AuthenticationType=="database" && !UserInput??>
 			userid: ['', Validators.required],
-			[=AuthenticationTable?uncap_first]Username : [{ value: '', disabled: true }],
+			[=AuthenticationTable?uncap_first]UserName : [{ value: '', disabled: true }],
 			<#elseif AuthenticationType=="database" && UserInput??>
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
@@ -124,8 +124,8 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
     			</#if>
 				</#if>
 				<#elseif AuthenticationType=="database" && !UserInput??>
-				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
-				referencedDescriptiveField: 'username',
+				descriptiveField: '[=AuthenticationTable?uncap_first]UserName',
+				referencedDescriptiveField: 'userName',
 				</#if>
 				
 			},
@@ -160,7 +160,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			permissionName: item.permissionName,
 			<#if AuthenticationType=="database" && !UserInput??>
 			[=AuthenticationTable?uncap_first]Id: item.[=AuthenticationTable?uncap_first]Id,
-			[=AuthenticationTable?uncap_first]Username: item.[=AuthenticationTable?uncap_first]Username,
+			[=AuthenticationTable?uncap_first]UserName: item.[=AuthenticationTable?uncap_first]UserName,
 			<#elseif AuthenticationType=="database" && UserInput??>
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>

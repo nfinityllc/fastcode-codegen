@@ -47,11 +47,11 @@ export interface [=IEntity] {
       [=joinDetails.joinColumn]: number;
   <#elseif joinDetails.joinColumnType?lower_case == "boolean">
       [=joinDetails.joinColumn]: boolean;
-  <#else>    
+  <#else>
       [=joinDetails.joinColumn]: string;
   </#if>
 <#else>   
-      <#if joinDetails.joinColumnType?lower_case == "long" ||  joinDetails.joinColumnType?lower_case == "int" ||  joinDetails.joinColumnType?lower_case == "short" ||  joinDetails.joinColumnType?lower_case == "double"> 
+  <#if joinDetails.joinColumnType?lower_case == "long" ||  joinDetails.joinColumnType?lower_case == "int" ||  joinDetails.joinColumnType?lower_case == "short" ||  joinDetails.joinColumnType?lower_case == "double"> 
       [=joinDetails.joinColumn]?: number;
   <#elseif joinDetails.joinColumnType?lower_case == "boolean">
       [=joinDetails.joinColumn]?: boolean;

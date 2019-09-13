@@ -4,7 +4,7 @@ export interface I[=AuthenticationTable]permission {
 	permissionName?: string;
 	<#if AuthenticationType=="database" && !UserInput??>
 	[=AuthenticationTable?uncap_first]Id?: string;
-	[=AuthenticationTable?uncap_first]Username?: string;
+	[=AuthenticationTable?uncap_first]UserName?: string;
 	<#elseif AuthenticationType=="database" && UserInput??>
 	<#if PrimaryKeys??>
 	<#list PrimaryKeys as key,value>

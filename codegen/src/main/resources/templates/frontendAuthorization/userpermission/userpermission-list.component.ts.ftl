@@ -87,8 +87,8 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
     			</#if>
 				</#if>
 				<#elseif AuthenticationType=="database" && !UserInput??>
-				descriptiveField: '[=AuthenticationTable?uncap_first]Username',
-				referencedDescriptiveField: 'username',
+				descriptiveField: '[=AuthenticationTable?uncap_first]UserName',
+				referencedDescriptiveField: 'userName',
 				</#if>
 				service: this.[=AuthenticationTable?uncap_first]Service,
 				associatedObj: undefined,
