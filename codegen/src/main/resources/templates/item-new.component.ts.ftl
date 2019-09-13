@@ -67,6 +67,9 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#if>
 			</#if>
 			</#list>
+			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+			confirmPassword: ['', Validators.required],
+			</#if>
 			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>

@@ -51,6 +51,7 @@ export class UserNewComponent extends BaseNewComponent<IUser> implements OnInit 
 			lastName: ['', Validators.required],
 			lockoutEndDateUtc: [''],
 			password: [''],
+			confirmPassword: ['', Validators.required],
 			passwordResetCode: [''],
 			phoneNumber: [''],
 			profilePictureId: [''],
