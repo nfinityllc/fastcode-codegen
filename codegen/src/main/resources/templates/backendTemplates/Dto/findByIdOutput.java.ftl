@@ -28,7 +28,7 @@ public class Find[=ClassName]ByIdOutput {
 </#if>
 <#list Relationship as relationKey,relationValue>
  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-  <#if CompositeKeyClasses?seq_contains(ClassName)>
+ <#if CompositeKeyClasses?seq_contains(ClassName)>
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if !Fields[joinDetails.joinColumn]?? >
@@ -49,10 +49,8 @@ public class Find[=ClassName]ByIdOutput {
  </#if>  
  </#if>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-  <#if DescriptiveField[relationValue.eName]??>
-  <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-  private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
-  </#if>
+  <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+	private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first];
   </#if>
   </#if>
 </#list>
@@ -119,17 +117,15 @@ public class Find[=ClassName]ByIdOutput {
 </#if>
   </#if>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-  <#if DescriptiveField[relationValue.eName]??>
-  <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-  public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=relationValue.eName][=DescriptiveField[relationValue.eName].fieldName?cap_first]() {
-   return [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
+  <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+  public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=DescriptiveField[relationValue.eName].description?cap_first]() {
+  	return [=DescriptiveField[relationValue.eName].description?uncap_first];
   }
 
-  public void set[=relationValue.eName][=DescriptiveField[relationValue.eName].fieldName?cap_first]([=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]){
-   this.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first] = [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
+  public void set[=DescriptiveField[relationValue.eName].description?cap_first]([=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first]){
+  	this.[=DescriptiveField[relationValue.eName].description?uncap_first] = [=DescriptiveField[relationValue.eName].description?uncap_first];
   }
-  
-  </#if>
+ 
   </#if>
   </#if>
 </#list>

@@ -49,10 +49,8 @@ public class Update[=ClassName]Output {
  </#if>  
  </#if>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-  <#if DescriptiveField[relationValue.eName]??>
-  <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-  private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
-</#if>
+  <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+	private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first];
   </#if>
   </#if>
 </#list>
@@ -117,17 +115,15 @@ public class Update[=ClassName]Output {
 </#if>
   </#if>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-  <#if DescriptiveField[relationValue.eName]??>
-  <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-  public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=relationValue.eName][=DescriptiveField[relationValue.eName].fieldName?cap_first]() {
-   return [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
+  <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+  public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=DescriptiveField[relationValue.eName].description?cap_first]() {
+  	return [=DescriptiveField[relationValue.eName].description?uncap_first];
   }
 
-  public void set[=relationValue.eName][=DescriptiveField[relationValue.eName].fieldName?cap_first]([=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]){
-   this.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first] = [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
+  public void set[=DescriptiveField[relationValue.eName].description?cap_first]([=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first]){
+  	this.[=DescriptiveField[relationValue.eName].description?uncap_first] = [=DescriptiveField[relationValue.eName].description?uncap_first];
   }
-  
-  </#if>
+ 
   </#if>
   </#if>
 </#list>
@@ -139,11 +135,11 @@ public class Update[=ClassName]Output {
   <#if authKey== "Password">
   <#if value.fieldName != authValue.fieldName>
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  	return [=value.fieldName];
   }
 
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  	this.[=value.fieldName] = [=value.fieldName];
   }
   
   </#if>
@@ -152,11 +148,11 @@ public class Update[=ClassName]Output {
   </#if>
   <#else>
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  	return [=value.fieldName];
   }
 
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  	this.[=value.fieldName] = [=value.fieldName];
   }
   
   </#if> 
@@ -164,23 +160,23 @@ public class Update[=ClassName]Output {
 </#list>
 <#if Audit!false>
   public java.util.Date getCreationTime() {
-      return creationTime;
+  	return creationTime;
   }
 
   public void setCreationTime(java.util.Date creationTime) {
-      this.creationTime = creationTime;
+  	this.creationTime = creationTime;
   }
 
   public String getLastModifierUserId() {
-      return lastModifierUserId;
+  	return lastModifierUserId;
   }
 
   public void setLastModifierUserId(String lastModifierUserId) {
-      this.lastModifierUserId = lastModifierUserId;
+  	this.lastModifierUserId = lastModifierUserId;
   }
 
   public java.util.Date getLastModificationTime() {
-      return lastModificationTime;
+  	return lastModificationTime;
   }
 
   public void setLastModificationTime(java.util.Date lastModificationTime) {

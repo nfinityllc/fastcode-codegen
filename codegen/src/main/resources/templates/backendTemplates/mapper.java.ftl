@@ -47,10 +47,8 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#list>
-   <#if DescriptiveField[relationValue.eName]??>
-   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                    
-   </#if>
+   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=DescriptiveField[relationValue.eName].description?uncap_first]"),                    
    </#if>
    </#if>
    </#if>
@@ -91,10 +89,8 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#list>
-   <#if DescriptiveField[relationValue.eName]??>
-   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
-   </#if>
+   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=DescriptiveField[relationValue.eName].description?uncap_first]"),                    
    </#if>
    </#if>
    </#if>
@@ -133,10 +129,8 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if>
    </#list>
-   <#if DescriptiveField[relationValue.eName]??>
-   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]"),                   
-   </#if>
+   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=DescriptiveField[relationValue.eName].description?uncap_first]"),                    
    </#if>
    </#if>
    </#if>

@@ -8,7 +8,15 @@ public class FieldDetails {
 	boolean isNullable=true;
 	boolean isPrimaryKey;
 	int length;
+	String description;
 	
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	public String getFieldName() {
 		return fieldName;
 	}
