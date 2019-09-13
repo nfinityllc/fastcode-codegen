@@ -30,6 +30,21 @@
 			<mat-form-field>
 				<input formControlName="phoneNumber" matInput placeholder="Enter phoneNumber">
 			</mat-form-field>
+			
+			<mat-form-field>
+				<input type="password"matInput placeholder="New password" formControlName="password" required>
+				<mat-error *ngIf="itemForm.hasError('required', 'password')">
+					Please enter your new password
+				</mat-error>
+			</mat-form-field>
+			
+			<mat-form-field>
+				<input matInput type="password" placeholder="Confirm password" formControlName="confirmPassword"
+				pattern="{{ itemForm.get('password').value }}">
+				<mat-error *ngIf="!itemForm.get('confirmPassword').valid && itemForm.get('confirmPassword').touched">
+					Passwords do not match
+				</mat-error>
+			</mat-form-field>
 		
 			<mat-checkbox formControlName="isActive">isActive</mat-checkbox>            
 		
