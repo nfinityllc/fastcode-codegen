@@ -21,7 +21,7 @@ public class Get[=AuthenticationTable]Output {
   private String phoneNumber;
   private Long profilePictureId;
   private Boolean twoFactorEnabled;
-  private String username;
+  private String userName;
 
   private Long [=AuthenticationTable]permissionPermissionId;
   
@@ -32,14 +32,14 @@ public class Get[=AuthenticationTable]Output {
   public void set[=AuthenticationTable]permissionPermissionId(Long [=AuthenticationTable]permissionPermissionId){
   this.[=AuthenticationTable]permissionPermissionId = [=AuthenticationTable]permissionPermissionId;
   }
-  private Long [=AuthenticationTable]permissionUserid;
+  private Long [=AuthenticationTable]permissionUserId;
   
-  public Long get[=AuthenticationTable]permissionUserid() {
-  return [=AuthenticationTable]permissionUserid;
+  public Long get[=AuthenticationTable]permissionUserId() {
+  return [=AuthenticationTable]permissionUserId;
   }
 
-  public void set[=AuthenticationTable]permissionUserid(Long [=AuthenticationTable]permissionUserid){
-  this.[=AuthenticationTable]permissionUserid = [=AuthenticationTable]permissionUserid;
+  public void set[=AuthenticationTable]permissionUserId(Long [=AuthenticationTable]permissionUserId){
+  this.[=AuthenticationTable]permissionUserId = [=AuthenticationTable]permissionUserId;
   }
   public Integer getAccessFailedCount() {
   return accessFailedCount;
@@ -167,12 +167,12 @@ public class Get[=AuthenticationTable]Output {
   public void setTwoFactorEnabled(Boolean twoFactorEnabled){
   this.twoFactorEnabled = twoFactorEnabled;
   }
-  public String getUsername() {
-  return username;
+  public String getUserName() {
+  return userName;
   }
 
-  public void setUsername(String username){
-  this.username = username;
+  public void setUsername(String userName){
+  this.userName = userName;
   }
 
 }

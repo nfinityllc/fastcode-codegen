@@ -17,18 +17,15 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class PomFileModifier {
 
-	public static void update(String path,String authenticationType,Boolean scheduler) {
+	public static void update(String path,String authenticationType,Boolean scheduler,Boolean history) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
-		Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
-		Dependency javersCore = new Dependency("org.javers","javers-core","3.10.2");
 		Dependency mapstruct = new Dependency("org.mapstruct", "mapstruct", "1.2.0.Final");
 		Dependency querydsljpa = new Dependency("com.querydsl", "querydsl-jpa", "4.2.1");
 		Dependency querydslapt= new Dependency("com.querydsl", "querydsl-apt", "4.2.1");
@@ -54,13 +51,20 @@ public class PomFileModifier {
 			Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
 			dependencies.add(json_web_token);
 		}
-		if(authenticationType =="ldap")
+		else if(authenticationType =="ldap")
 		{
 			Dependency ldap_security = new Dependency("org.springframework.security","spring-security-ldap","5.1.1.RELEASE");
 			dependencies.add(ldap_security);
 		}
-		dependencies.add(javersSql);
-		dependencies.add(javersCore);
+		
+		if(history)
+		{
+			Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
+			Dependency javersCore = new Dependency("org.javers","javers-core","3.10.2");
+			dependencies.add(javersSql);
+			dependencies.add(javersCore);
+		}
+
 		dependencies.add(mapstruct);
 		dependencies.add(querydsljpa);
 		dependencies.add(querydslapt);

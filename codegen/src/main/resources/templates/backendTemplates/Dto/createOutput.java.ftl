@@ -41,8 +41,7 @@ public class Create[=ClassName]Output {
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if DescriptiveField[relationValue.eName]??>
   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-  private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
-  
+   private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
   </#if>
   </#if>
   </#if>
