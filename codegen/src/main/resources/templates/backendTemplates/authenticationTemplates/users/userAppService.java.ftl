@@ -21,6 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 import java.util.*;
+<#if Flowable!false>
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 
 @Service
 @Validated
@@ -61,9 +66,14 @@ public class UserAppService implements IUserAppService {
 		user.setRole(foundRole);
 		}
 		UserEntity createdUser = _userManager.Create(user);
+		<#if Flowable!false>
+			//Map and create flowable user
+			ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(createdUser);
+			idmIdentityService.createUser(createdUser, actIdUser);
+		</#if>
 		return mapper.UserEntityToCreateUserOutput(createdUser);
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(value="User", key = "#userId")
 	public UpdateUserOutput Update(Long userId, UpdateUserInput input) {
@@ -76,6 +86,10 @@ public class UserAppService implements IUserAppService {
 		user.setRole(foundRole);
 		}
 		UserEntity updatedUser = _userManager.Update(user);
+		<#if Flowable!false>
+		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(updatedUser);
+		idmIdentityService.updateUser(updatedUser, actIdUser, oldRoleName);
+		</#if>
 		return mapper.UserEntityToUpdateUserOutput(updatedUser);
 	}
 	
@@ -86,8 +100,12 @@ public class UserAppService implements IUserAppService {
 
 		UserEntity existing = _userManager.FindById(userId) ; 
 		_userManager.Delete(existing);
+		<#if Flowable!false>
+		idmIdentityService.deleteUser(existing.getUserName());
+		</#if>
 	}
-	
+<#if Flowable!false>
+</#if>
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "User", key = "#userId")
 	public FindUserByIdOutput FindById(Long  userId) {

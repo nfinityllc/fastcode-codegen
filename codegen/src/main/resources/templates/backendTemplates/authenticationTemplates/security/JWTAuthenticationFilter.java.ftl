@@ -3,6 +3,7 @@ package [=PackageName].security;
 <#if AuthenticationType == "database">
 import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.LoginUserInput;
 </#if>
+import [=PackageName].application.Flowable.FlowableIdentityService;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     IRoleManager _roleManager;
+    FlowableIdentityService idmIdentityService;
 
     private AuthenticationManager authenticationManager;
 
@@ -88,7 +90,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         if (auth != null) {
         <#if AuthenticationType == "database">
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-                claims.setSubject(((User) auth.getPrincipal()).getUsername());
+                User appUser = (User) auth.getPrincipal();
+                claims.setSubject(appUser.getUsername());
+                //Flowable IDM Support
+                if(idmIdentityService==null){
+                    ServletContext servletContext = req.getServletContext();
+                    WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+                    idmIdentityService = webApplicationContext.getBean(FlowableIdentityService.class);
+                }
+                cookieValue = idmIdentityService.createTokenAndCookie(appUser.getUsername(), req, res);
             }
        </#if>
        <#if AuthenticationType == "ldap">
@@ -110,6 +120,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrintWriter out = res.getWriter();
         out.println("{");
         out.println("\"token\":" + "\"" + SecurityConstants.TOKEN_PREFIX + token + "\"");
+        if(cookieValue != null) {
+            out.println(",\"" + SecurityConstants.COOKIE_NAME + "\":" + "\"" + cookieValue + "\"");
+        }
         out.println("}");
         out.close();
 
