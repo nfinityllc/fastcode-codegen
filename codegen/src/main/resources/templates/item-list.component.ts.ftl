@@ -82,7 +82,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				</#if>
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
-				table: '[=relationValue.eName?lower_case]',
+				table: '[=relationValue.eName?uncap_first]',
 				type: '[=relationValue.relation]'
 			},
 		</#if>
