@@ -13,14 +13,14 @@ public class Get[=AuthenticationTable]Output {
    	private Long [=AuthenticationTable]permissionPermissionId;
   
    <#if AuthenticationType=="database" && !UserInput??>
-   	private Long [=AuthenticationTable?uncap_first]permissionUserId;
+   	private Long [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
   
-   	public Long get[=AuthenticationTable]permissionUserId() {
-   		return [=AuthenticationTable?uncap_first]permissionUserId;
+   	public Long get[=AuthenticationTable]permission[=AuthenticationTable]Id() {
+   		return [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
    	}
 
-   	public void set[=AuthenticationTable]permissionUserId(Long [=AuthenticationTable?uncap_first]permissionUserId){
-   		this.[=AuthenticationTable?uncap_first]permissionUserId = [=AuthenticationTable?uncap_first]permissionUserId;
+   	public void set[=AuthenticationTable]permission[=AuthenticationTable]Id(Long [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id){
+   		this.[=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id = [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
    	}
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>

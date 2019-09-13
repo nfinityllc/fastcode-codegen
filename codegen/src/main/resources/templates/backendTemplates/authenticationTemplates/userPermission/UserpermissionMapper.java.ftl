@@ -18,8 +18,8 @@ public interface [=AuthenticationTable]permissionMapper {
    
    @Mappings({ 
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "userName"),                   
-   @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "userId"),  
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]UserName"),                   
+   @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "[=AuthenticationTable?uncap_first]Id"),  
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
@@ -52,8 +52,8 @@ public interface [=AuthenticationTable]permissionMapper {
 
    @Mappings({ 
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "userName"),                   
-   @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "userId"),  
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]UserName"),                   
+   @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "[=AuthenticationTable?uncap_first]Id"),  
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
@@ -84,8 +84,8 @@ public interface [=AuthenticationTable]permissionMapper {
 
    @Mappings({ 
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "userName"),                   
-   @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "userId"),  
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]UserName"),                   
+   @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "[=AuthenticationTable?uncap_first]Id"),  
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
@@ -118,7 +118,7 @@ public interface [=AuthenticationTable]permissionMapper {
    @Mappings({
    @Mapping(source = "[=AuthenticationTable?uncap_first]permission.permissionId", target = "[=AuthenticationTable?uncap_first]permissionPermissionId"),
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.userId", target = "[=AuthenticationTable?uncap_first]permissionUserId")
+   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first]Id", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first]Id")
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
@@ -134,7 +134,7 @@ public interface [=AuthenticationTable]permissionMapper {
 
    @Mappings({
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.userId", target = "[=AuthenticationTable?uncap_first]permissionUserId"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first]Id", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first]Id"),
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>

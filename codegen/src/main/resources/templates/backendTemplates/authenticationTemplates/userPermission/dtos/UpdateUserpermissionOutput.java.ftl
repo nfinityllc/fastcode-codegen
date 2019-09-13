@@ -4,8 +4,8 @@ public class Update[=AuthenticationTable]permissionOutput {
 
   private Long permissionId;
   	<#if AuthenticationType=="database" && !UserInput??>
-    private Long userId;
-    private String userName;
+    private Long [=AuthenticationTable?uncap_first]Id;
+    private String [=AuthenticationTable?uncap_first]UserName;
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
@@ -48,21 +48,21 @@ public class Update[=AuthenticationTable]permissionOutput {
     }
   
     <#if AuthenticationType=="database" && !UserInput??>
-  	public Long getUserId() {
-  	return userId;
-  	}
+  	public Long get[=AuthenticationTable?cap_first]Id() {
+  	 	return [=AuthenticationTable?uncap_first]Id;
+  	 }
 
-  	public void setUserId(Long userId){
-  	this.userId = userId;
-  	}
+  	 public void set[=AuthenticationTable?cap_first]Id(Long [=AuthenticationTable?uncap_first]Id){
+  	  	this.[=AuthenticationTable?uncap_first]Id = [=AuthenticationTable?uncap_first]Id;
+  	 }
   	
-  	public String getUserName() {
-   		return userName;
-  	}
+  	 public String get[=AuthenticationTable?cap_first]UserName() {
+   	  	return [=AuthenticationTable?uncap_first]UserName;
+  	 }
 
-  	public void setUserName(String userName){
-   		this.userName = userName;
-  	}
+  	 public void set[=AuthenticationTable?cap_first]UserName(String [=AuthenticationTable?uncap_first]UserName){
+   	  	this.[=AuthenticationTable?uncap_first]UserName = [=AuthenticationTable?uncap_first]UserName;
+  	 }
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>

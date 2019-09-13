@@ -10,7 +10,7 @@ public class Update[=AuthenticationTable]permissionInput {
   
     <#if AuthenticationType=="database" && !UserInput??>
     @NotNull(message = "user Id Should not be null")
-    private Long userId;
+    private Long [=AuthenticationTable?uncap_first]Id;
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
@@ -31,12 +31,12 @@ public class Update[=AuthenticationTable]permissionInput {
   	}
   
   	<#if AuthenticationType=="database" && !UserInput??>
-  	public Long getUserId() {
-  	return userId;
+  	public Long get[=AuthenticationTable?cap_first]Id() {
+  	 	return [=AuthenticationTable?uncap_first]Id;
   	}
 
-  	public void setUserId(Long userId){
-  	this.userId = userId;
+  	public void set[=AuthenticationTable?cap_first]Id(Long [=AuthenticationTable?uncap_first]Id){
+  	  	this.[=AuthenticationTable?uncap_first]Id = [=AuthenticationTable?uncap_first]Id;
   	}
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
