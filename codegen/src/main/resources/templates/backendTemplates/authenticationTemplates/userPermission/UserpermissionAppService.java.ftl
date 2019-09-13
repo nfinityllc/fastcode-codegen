@@ -61,9 +61,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 
 		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Create[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
 	  	
-    	if(<#if AuthenticationType=="database" && !UserInput??>input.getUserId()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if>)
+    	if(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if>)
 		{
-		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.getUserId()<#elseif AuthenticationType=="database" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()<#elseif AuthenticationType=="database" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
 
 		if(found[=AuthenticationTable]!=null)
 			[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
@@ -88,9 +88,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	public Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input) {
 
 		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
-	  	if(<#if AuthenticationType=="database" && !UserInput??>input.getUserId()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if>)
+	  	if(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if>)
 		{
-		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.getUserId()<#elseif AuthenticationType=="database" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()<#elseif AuthenticationType=="database" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
 		if(found[=AuthenticationTable]!=null)
 			[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
 		}
@@ -355,7 +355,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		
 		[=AuthenticationTable?uncap_first]permissionId.setPermissionId(Long.valueOf(keyMap.get("permissionId")));
 		<#if AuthenticationType=="database" && !UserInput??>
-        [=AuthenticationTable?uncap_first]permissionId.setUserId(Long.valueOf(keyMap.get("userId")));
+        [=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable]Id(Long.valueOf(keyMap.get("[=AuthenticationTable?uncap_first]Id")));
   		<#elseif AuthenticationType=="database" && UserInput??>
   		<#if PrimaryKeys??>
   		<#list PrimaryKeys as key,value>

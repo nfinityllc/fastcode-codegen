@@ -32,14 +32,14 @@ public class Get[=AuthenticationTable]Output {
   public void set[=AuthenticationTable]permissionPermissionId(Long [=AuthenticationTable]permissionPermissionId){
   this.[=AuthenticationTable]permissionPermissionId = [=AuthenticationTable]permissionPermissionId;
   }
-  private Long [=AuthenticationTable]permissionUserId;
+  private Long [=AuthenticationTable]permission[=AuthenticationTable]Id;
   
-  public Long get[=AuthenticationTable]permissionUserId() {
-  return [=AuthenticationTable]permissionUserId;
+  public Long get[=AuthenticationTable]permission[=AuthenticationTable]Id() {
+  return [=AuthenticationTable]permission[=AuthenticationTable]Id;
   }
 
-  public void set[=AuthenticationTable]permissionUserId(Long [=AuthenticationTable]permissionUserId){
-  this.[=AuthenticationTable]permissionUserId = [=AuthenticationTable]permissionUserId;
+  public void set[=AuthenticationTable]permission[=AuthenticationTable]Id(Long [=AuthenticationTable]permission[=AuthenticationTable]Id){
+  this.[=AuthenticationTable]permission[=AuthenticationTable]Id = [=AuthenticationTable]permission[=AuthenticationTable]Id;
   }
   public Integer getAccessFailedCount() {
   return accessFailedCount;
@@ -171,7 +171,7 @@ public class Get[=AuthenticationTable]Output {
   return userName;
   }
 
-  public void setUsername(String userName){
+  public void setUserName(String userName){
   this.userName = userName;
   }
 
