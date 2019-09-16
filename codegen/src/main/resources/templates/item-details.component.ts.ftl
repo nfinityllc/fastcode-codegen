@@ -87,7 +87,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             </#if>
             </#list>
             <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
-			[=DescriptiveField[relationValue.eName].description??uncap_first] : [{ value: '', disabled: true }],
+			[=DescriptiveField[relationValue.eName].description?uncap_first] : [{ value: '', disabled: true }],
 			</#if>
             </#if>
 			</#list>
