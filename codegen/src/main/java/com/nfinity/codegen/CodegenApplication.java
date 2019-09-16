@@ -168,14 +168,14 @@ public class CodegenApplication implements ApplicationRunner {
 
 		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
+		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
+		
+		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
+
 		if(input.getFlowable()) {
 			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId);
 		}
-
-		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
-
-		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
-
+		
 		if(!input.getAuthenticationType().equals("none"))
 		{
 			AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath(), groupArtifactId, input.getAudit(),

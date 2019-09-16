@@ -1,11 +1,10 @@
 package [=PackageName].domain.Flowable.Users;
 
-
 import [=PackageName].domain.Flowable.Groups.ActIdGroupEntity;
 import [=PackageName].domain.IRepository.IActIdGroupRepository;
 import [=PackageName].domain.IRepository.IActIdUserRepository;
-import [=PackageName].logging.LoggingHelper;
-import org.apache.commons.lang.StringUtils;
+import [=PackageName].CommonModule.logging.LoggingHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

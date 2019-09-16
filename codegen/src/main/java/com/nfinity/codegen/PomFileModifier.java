@@ -35,6 +35,7 @@ public class PomFileModifier {
 		Dependency springFoxSwagger = new Dependency("io.springfox","springfox-swagger2","2.7.0");
 		Dependency springFoxSwaggerUI = new Dependency("io.springfox","springfox-swagger-ui","2.7.0");
 		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
+	    Dependency httpComponents = new Dependency("org.apache.httpcomponents","httpclient","4.5");
 	
 		if(scheduler)
 		{
@@ -73,6 +74,7 @@ public class PomFileModifier {
 		dependencies.add(springFoxSwagger);
 		dependencies.add(springFoxSwaggerUI);
 		dependencies.add(springFoxDataRest);
+		dependencies.add(httpComponents);
 		
 		PomFileModifier.addDependenciesAndPluginsToPom(path,dependencies);
 

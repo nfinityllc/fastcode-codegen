@@ -1,6 +1,6 @@
 package [=PackageName].domain.Flowable.Groups;
 
-import [=PackageName].logging.LoggingHelper;
+import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

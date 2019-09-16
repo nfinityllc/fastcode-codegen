@@ -1,7 +1,7 @@
 package [=PackageName].domain.Flowable.Tokens;
 
 import [=PackageName].domain.IRepository.IActIdTokenRepository;
-import [=PackageName].logging.LoggingHelper;
+import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

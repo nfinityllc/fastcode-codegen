@@ -3,7 +3,7 @@ package [=PackageName].domain.Flowable.PrivilegeMappings;
 import [=PackageName].domain.Flowable.Privileges.ActIdPrivEntity;
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 import [=PackageName].domain.IRepository.IActIdPrivMappingRepository;
-import [=PackageName].logging.LoggingHelper;
+import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

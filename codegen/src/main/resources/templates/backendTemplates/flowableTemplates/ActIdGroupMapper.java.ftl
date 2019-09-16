@@ -1,12 +1,12 @@
 package [=PackageName].application.Flowable;
 
-import [=PackageName].domain.Authorization.Roles.RolesEntity;
+import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Flowable.Groups.ActIdGroupEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ActIdGroupMapper {
-public ActIdGroupEntity createRolesEntityToActIdGroupEntity(RolesEntity role) {
+public ActIdGroupEntity createRolesEntityToActIdGroupEntity(RoleEntity role) {
     if ( role == null ) {
         return null;
     }

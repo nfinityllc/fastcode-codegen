@@ -1,7 +1,7 @@
 package [=PackageName].application.Flowable;
 
-import [=PackageName].domain.Authorization.Roles.RolesEntity;
-import [=PackageName].domain.Authorization.Users.UsersEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.Flowable.Groups.ActIdGroupEntity;
 import [=PackageName].domain.Flowable.Groups.IActIdGroupManager;
 import [=PackageName].domain.Flowable.Memberships.ActIdMembershipEntity;
@@ -16,7 +16,7 @@ import [=PackageName].domain.Flowable.Tokens.IActIdTokenManager;
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 import [=PackageName].domain.Flowable.Users.IActIdUserManager;
 import [=PackageName].security.SecurityConstants;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.conn.util.InetAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -117,7 +117,7 @@ public IActIdPrivMappingManager get_actIdPrivMappingManager() {
 public void set_actIdPrivMappingManager(IActIdPrivMappingManager _actIdPrivMappingManager) {
     this._actIdPrivMappingManager = _actIdPrivMappingManager;
 }
-public void createUser(UsersEntity createdUser, ActIdUserEntity actIdUser) {
+public void createUser(UserEntity createdUser, ActIdUserEntity actIdUser) {
     if (StringUtils.isBlank(actIdUser.getId()) ||
     StringUtils.isBlank(actIdUser.getFirst())) {
         //User not valid
@@ -133,7 +133,7 @@ public void createUser(UsersEntity createdUser, ActIdUserEntity actIdUser) {
     }
     _actIdUserManager.create(actIdUser);
     //Check if user is associated with a role
-    RolesEntity role = createdUser.getRole();
+    RoleEntity role = createdUser.getRole();
     if(role != null)
     {
         //Check if the role already exists in the flowable group table
@@ -146,7 +146,7 @@ public void createUser(UsersEntity createdUser, ActIdUserEntity actIdUser) {
     }
 }
 
-public void updateUser(UsersEntity updatedUser, ActIdUserEntity actIdUser, String oldRoleName) {
+public void updateUser(UserEntity updatedUser, ActIdUserEntity actIdUser, String oldRoleName) {
     //Check if user already exists
     ActIdUserEntity existingUser = _actIdUserManager.findByUserId(actIdUser.getId());
     if (StringUtils.isNotBlank(actIdUser.getId()) && existingUser != null) {
@@ -217,6 +217,7 @@ public void deleteUser(String id) {
         actIdGroup.setRev(0L);
         actIdGroup.setType(null);
         _actIdGroupManager.create(actIdGroup);
+        }
 
 
         public void updateGroup(String groupId, String oldRoleName) {

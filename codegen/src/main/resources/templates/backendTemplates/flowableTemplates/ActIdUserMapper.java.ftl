@@ -1,12 +1,12 @@
 package [=PackageName].application.Flowable;
 
-import [=PackageName].domain.Authorization.Users.UsersEntity;
+import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ActIdUserMapper {
-public ActIdUserEntity createUsersEntityToActIdUserEntity(UsersEntity user) {
+public ActIdUserEntity createUsersEntityToActIdUserEntity(UserEntity user) {
     if ( user == null ) {
         return null;
     }
