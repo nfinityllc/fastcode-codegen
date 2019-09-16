@@ -11,7 +11,7 @@ import { PickerDialogService, ErrorService } from 'fastCodeCore';
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case]/[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case].service';
+import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[=relationValue.eModuleName].service';
 </#if>
 </#list>
 </#if>
@@ -128,7 +128,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				isParent: false,
 				</#if>
 				</#if>
-				table: '[=relationValue.eName?lower_case]',
+				table: '[=relationValue.eName?uncap_first]',
 				type: '[=relationValue.relation]',
 				<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 				service: this.[=relationValue.eName?uncap_first]Service,
@@ -211,7 +211,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			</#if>
 			</#list>
 			<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
-			[=DescriptiveField[relationValue.eName].description??uncap_first]: item.[=DescriptiveField[relationValue.eName].description??uncap_first],
+			[=DescriptiveField[relationValue.eName].description?uncap_first]: item.[=DescriptiveField[relationValue.eName].description?uncap_first],
 			</#if>
 			</#if>
 			</#list>

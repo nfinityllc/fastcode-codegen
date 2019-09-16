@@ -84,7 +84,7 @@
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=relationValue.eName]')">[=relationValue.eName] </mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("[=relationValue.eName]")}}:</span>
-					{{ item.[=DescriptiveField[relationValue.eName].description?cap_first] }}
+					{{ item.[=DescriptiveField[relationValue.eName].description?uncap_first] }}
 				</mat-cell>
 			</ng-container>
 			</#if>

@@ -139,6 +139,7 @@ public class EntityDetails {
 						relation.setRelation("ManyToOne");
 						relation.setfName(field.getName());
 						relation.seteName(details.getFieldType());
+						relation.seteModuleName(geteModuleName(details.getFieldType()));
 						joinDetails.setJoinEntityName(details.getFieldType());
 					}
 					if (a.annotationType().toString().equals("interface javax.persistence.OneToOne")) {
@@ -146,6 +147,7 @@ public class EntityDetails {
 						OneToOne oneToOne= (javax.persistence.OneToOne) a;
 						relation.setfName(field.getName());
 						relation.seteName(details.getFieldType());
+						relation.seteModuleName(geteModuleName(details.getFieldType()));
 						joinDetails.setJoinEntityName(details.getFieldType());
 
 						String mappedBy = oneToOne.mappedBy();
@@ -241,6 +243,7 @@ public class EntityDetails {
 						details.setFieldName(targetEntity.toLowerCase());
 						details.setFieldType(targetEntity);
 						relation.seteName(targetEntity);
+						relation.seteModuleName(geteModuleName(targetEntity));
 						relation.setfName(targetEntity.toLowerCase());
 						joinDetails.setJoinEntityName(details.getFieldType());
 						String mappedBy = oneToMany.mappedBy();
@@ -272,6 +275,16 @@ public class EntityDetails {
 		}
 		Map<String, FieldDetails> sortedMap = new TreeMap<>(fieldsMap);
 		return new EntityDetails(sortedMap, relationsMap);
+	}
+	
+	private static String geteModuleName(String className) {
+		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(className);
+		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
+		String instanceName = StringUtils.join(splittedNames);
+		for (int i = 0; i < splittedNames.length; i++) {
+			splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
+		}
+		return StringUtils.join(splittedNames, "-");
 	}
 
 	private static String findPrimaryKey(String entityPackage, List<Class<?>> classList) {

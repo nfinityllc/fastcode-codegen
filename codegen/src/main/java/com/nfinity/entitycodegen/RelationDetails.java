@@ -10,6 +10,7 @@ public class RelationDetails {
 	String relation;
 	String joinTable;
 	String eName;
+	String eModuleName;
 	String fName;
 	Boolean isParent=false;
 	List<JoinDetails> joinDetails = new ArrayList<JoinDetails>();
@@ -78,6 +79,13 @@ public class RelationDetails {
 		this.fDetails = fDetails;
 	}
 	
+	public String geteModuleName() {
+		return eModuleName;
+	}
+
+	public void seteModuleName(String eModuleName) {
+		this.eModuleName = eModuleName;
+	}
 
 	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities) {
 		FieldDetails descriptiveField = null;
@@ -89,4 +97,5 @@ public class RelationDetails {
 	//	}
 		return descriptiveFieldEntities;
 	}
+
 }

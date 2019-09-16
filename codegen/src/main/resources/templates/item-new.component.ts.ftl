@@ -11,7 +11,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dial
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case]/[=relationValue.eName?uncap_first?replace("[A-Z]", "-$0", 'r')?lower_case].service';
+import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[=relationValue.eModuleName].service';
 </#if>
 </#list>
 </#if>
