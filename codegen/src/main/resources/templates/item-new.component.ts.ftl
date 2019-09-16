@@ -86,11 +86,9 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
             </#if>
             </#if>
             </#list>
-            <#list DescriptiveField as dEntityName, dField>
-			<#if dEntityName == relationValue.eName>
-			[=relationValue.eName?uncap_first][=dField.fieldName?cap_first] : [{ value: '', disabled: true }],
+            <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+			[=DescriptiveField[relationValue.eName].description?uncap_first] : [{ value: '', disabled: true }],
 			</#if>
-            </#list>
 			</#if>
 			</#list>
 			</#if>
@@ -123,8 +121,8 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				table: '[=relationValue.eName?lower_case]',
 				type: '[=relationValue.relation]',
 				service: this.[=relationValue.eName?uncap_first]Service,
-				<#if DescriptiveField[relationValue.eName]??>
-				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+				descriptiveField: '[=DescriptiveField[relationValue.eName].description?uncap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
 				</#if>
 			    

@@ -79,12 +79,12 @@
 			</#list>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
-			<#if DescriptiveField[relationValue.eName]??>
+			<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
 			<ng-container matColumnDef="[=relationValue.eName]">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=relationValue.eName]')">[=relationValue.eName] </mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("[=relationValue.eName]")}}:</span>
-					{{ item.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first] }}
+					{{ item.[=DescriptiveField[relationValue.eName].description?cap_first] }}
 				</mat-cell>
 			</ng-container>
 			</#if>

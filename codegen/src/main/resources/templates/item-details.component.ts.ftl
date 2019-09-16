@@ -86,8 +86,8 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             </#if>
             </#if>
             </#list>
-            <#if DescriptiveField[relationValue.eName]??>
-			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first] : [{ value: '', disabled: true }],
+            <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+			[=DescriptiveField[relationValue.eName].description??uncap_first] : [{ value: '', disabled: true }],
 			</#if>
             </#if>
 			</#list>
@@ -132,8 +132,8 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				type: '[=relationValue.relation]',
 				<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 				service: this.[=relationValue.eName?uncap_first]Service,
-				<#if DescriptiveField[relationValue.eName]??>
-				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+				descriptiveField: '[=DescriptiveField[relationValue.eName].description?uncap_first]',
 			    referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
 			    </#if>
 			    <#elseif relationValue.relation == "OneToOne" && relationValue.isParent == true>
@@ -210,8 +210,8 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             </#if>
 			</#if>
 			</#list>
-			<#if DescriptiveField[relationValue.eName]??>
-			[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]: item.[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first],
+			<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+			[=DescriptiveField[relationValue.eName].description??uncap_first]: item.[=DescriptiveField[relationValue.eName].description??uncap_first],
 			</#if>
 			</#if>
 			</#list>

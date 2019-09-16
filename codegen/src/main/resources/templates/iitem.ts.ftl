@@ -29,13 +29,13 @@ export interface [=IEntity] {
 </#list>
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
-<#if DescriptiveField[relationValue.eName]??>
+<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
   <#if DescriptiveField[relationValue.eName].fieldType?lower_case == "long" || DescriptiveField[relationValue.eName].fieldType?lower_case == "int" || DescriptiveField[relationValue.eName].fieldType?lower_case == "short" || DescriptiveField[relationValue.eName].fieldType?lower_case == "double">
-      [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]?: number;
+      [=DescriptiveField[relationValue.eName].description?uncap_first]?: number;
   <#elseif DescriptiveField[relationValue.eName].fieldType?lower_case == "boolean">
-      [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]?: boolean;
+      [=DescriptiveField[relationValue.eName].description?uncap_first]?: boolean;
   <#else>
-      [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]?: string;
+      [=DescriptiveField[relationValue.eName].description?uncap_first]?: string;
   </#if> 
 </#if>
 <#list relationValue.joinDetails as joinDetails>

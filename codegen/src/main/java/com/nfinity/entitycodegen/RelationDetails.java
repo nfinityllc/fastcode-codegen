@@ -84,7 +84,7 @@ public class RelationDetails {
 		
 		//if (this.getRelation() == "ManyToOne" || this.getRelation() == "OneToOne") {
 				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
-				descriptiveField.setDescription(this.getcName().concat("DescriptiveField"));
+				descriptiveField.setDescription(this.geteName().concat("DescriptiveField"));
 				descriptiveFieldEntities.put(this.geteName(),descriptiveField);
 	//	}
 		return descriptiveFieldEntities;

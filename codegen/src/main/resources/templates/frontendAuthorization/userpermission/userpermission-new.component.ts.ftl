@@ -140,6 +140,7 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 				type: 'ManyToOne',
 				service: this.permissionService,
 				descriptiveField: 'permissionName',
+				referencedDescriptiveField: 'name',
 			},
 		];
 		this.parentAssociations = this.associations.filter(association => {
