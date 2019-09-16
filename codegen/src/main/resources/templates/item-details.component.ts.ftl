@@ -25,7 +25,7 @@ import { BaseDetailsComponent, Globals } from 'fastCodeCore';
 })
 export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity]> implements OnInit {
   title:string='[=ClassName]';
-  parentUrl:string='[=ApiPath]';
+  parentUrl:string='[=ApiPath?lower_case]';
   //roles: IRole[];  
 	constructor(
 		public formBuilder: FormBuilder,
