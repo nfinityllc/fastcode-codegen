@@ -17,9 +17,9 @@ public interface RolepermissionMapper {
     RolepermissionEntity CreateRolepermissionInputToRolepermissionEntity(CreateRolepermissionInput rolepermissionDto);
    
    @Mappings({ 
-   @Mapping(source = "permission.name", target = "permissionName"),                   
+   @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
    @Mapping(source = "permission.id", target = "permissionId"),                   
-   @Mapping(source = "role.displayName", target = "roleDisplayName"),                   
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
    }) 
    CreateRolepermissionOutput RolepermissionEntityToCreateRolepermissionOutput(RolepermissionEntity entity);
@@ -27,17 +27,17 @@ public interface RolepermissionMapper {
     RolepermissionEntity UpdateRolepermissionInputToRolepermissionEntity(UpdateRolepermissionInput rolepermissionDto);
 
    @Mappings({ 
-   @Mapping(source = "permission.name", target = "permissionName"),                   
+   @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
    @Mapping(source = "permission.id", target = "permissionId"),                   
-   @Mapping(source = "role.displayName", target = "roleDisplayName"),                   
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
    }) 
    UpdateRolepermissionOutput RolepermissionEntityToUpdateRolepermissionOutput(RolepermissionEntity entity);
 
    @Mappings({ 
-   @Mapping(source = "permission.name", target = "permissionName"),                   
+   @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
    @Mapping(source = "permission.id", target = "permissionId"),                   
-   @Mapping(source = "role.displayName", target = "roleDisplayName"),                   
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
    }) 
    FindRolepermissionByIdOutput RolepermissionEntityToFindRolepermissionByIdOutput(RolepermissionEntity entity);

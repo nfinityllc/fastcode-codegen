@@ -24,7 +24,7 @@ public interface UserMapper {
     UserEntity CreateUserInputToUserEntity(CreateUserInput userDto);
     
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
      CreateUserOutput UserEntityToCreateUserOutput(UserEntity entity);
@@ -32,19 +32,19 @@ public interface UserMapper {
     UserEntity UpdateUserInputToUserEntity(UpdateUserInput userDto);
 
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     UpdateUserOutput UserEntityToUpdateUserOutput(UserEntity entity);
 
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     FindUserByIdOutput UserEntityToFindUserByIdOutput(UserEntity entity);
     
     @Mappings({ 
-    @Mapping(source = "role.name", target = "roleName"),                   
+    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
     @Mapping(source = "role.id", target = "roleId"),                   
     }) 
     FindUserByNameOutput UserEntityToFindUserByNameOutput(UserEntity entity);
@@ -58,7 +58,7 @@ public interface UserMapper {
             @Mapping(source = "role.lastModificationTime", target = "lastModificationTime"),
               </#if>
             @Mapping(source = "user.id", target = "userId"),
-            @Mapping(source = "user.userName", target = "userName")
+            @Mapping(source = "user.userName", target = "userDescriptiveField")
     })
     GetRoleOutput RoleEntityToGetRoleOutput(RoleEntity role, UserEntity user);
 }

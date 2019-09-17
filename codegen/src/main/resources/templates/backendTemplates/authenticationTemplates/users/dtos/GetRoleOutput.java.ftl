@@ -14,7 +14,7 @@ public class GetRoleOutput {
     </#if>
     <#if AuthenticationType=="database" && !UserInput??>
     private Long userId;
-    private String userName;
+    private String userDescriptiveField;
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
@@ -43,12 +43,12 @@ public class GetRoleOutput {
   	this.userId = userId;
   	}
   	
-  	public String getUserName() {
-   		return userName;
+  	public String getUserDescriptiveField() {
+   		return userDescriptiveField;
   	}
 
-  	public void setUserName(String userName){
-   		this.userName = userName;
+  	public void setUserDescriptiveField(String userDescriptiveField){
+   		this.userDescriptiveField = userDescriptiveField;
   	}
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>

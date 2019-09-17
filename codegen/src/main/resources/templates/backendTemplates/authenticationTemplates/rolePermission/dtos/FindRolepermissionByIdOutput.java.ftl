@@ -5,23 +5,23 @@ public class FindRolepermissionByIdOutput {
   private Long permissionId;
   private Long roleId;
 
-  private String permissionName;
-  private String roleDisplayName;
+  private String permissionDescriptiveField;
+  private String roleDescriptiveField;
 
-  public String getPermissionName() {
-   return permissionName;
+  public String getPermissionDescriptiveField() {
+   return permissionDescriptiveField;
   }
 
-  public void setPermissionName(String permissionName){
-   this.permissionName = permissionName;
+  public void setPermissionDescriptiveField(String permissionDescriptiveField){
+   this.permissionDescriptiveField = permissionDescriptiveField;
   }
 
-  public String getRoleDisplayName() {
-   return roleDisplayName;
+  public String getRoleDescriptiveField() {
+   return roleDescriptiveField;
   }
 
-  public void setRoleDisplayName(String roleDisplayName){
-   this.roleDisplayName = roleDisplayName;
+  public void setRoleDescriptiveField(String roleDescriptiveField){
+   this.roleDescriptiveField = roleDescriptiveField;
   }
   public Long getPermissionId() {
   return permissionId;

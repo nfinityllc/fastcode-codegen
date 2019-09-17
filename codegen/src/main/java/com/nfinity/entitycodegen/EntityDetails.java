@@ -102,7 +102,6 @@ public class EntityDetails {
 					javax.persistence.Table tableAnn =(javax.persistence.Table)ann;
 					tableName= tableAnn.name();
 				}
-				System.out.println(" ANNNN " + ann.annotationType() + "  -- a  " + ann.toString());
 			}
 			Field[] fields = classObj.getClass().getDeclaredFields();
 
