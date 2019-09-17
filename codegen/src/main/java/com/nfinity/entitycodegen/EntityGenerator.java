@@ -140,7 +140,6 @@ public class EntityGenerator {
 			isTableExits=true;
 		}
 		Scanner scanner = new Scanner(System.in);
-		UserInput input=new UserInput();
 		while(!isTableExits)
 		{
 			System.out.println(" INVALID AUTHORIZATION SCHEMA ");
@@ -246,6 +245,7 @@ public class EntityGenerator {
 			if(className.equalsIgnoreCase(authenticationTable))
 			{
 			root.put("ClassName", className);
+			root.put("TableName", entry.getValue().getEntityTableName());
 			root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
 			root.put("Fields", entry.getValue().getFieldsMap());
 			root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
@@ -277,6 +277,7 @@ public class EntityGenerator {
 		root.put("PackageName", packageName);
 		root.put("CommonModulePackage", packageName.concat(".CommonModule"));
 		root.put("CompositeKeyClasses", entityDetails.getCompositeKeyClasses());
+		root.put("TableName", entityDetails.getEntityTableName());
 		root.put("SchemaName", schemaName);
 		root.put("AuthenticationType",authenticationType);
 		if(authenticationTable !=null)

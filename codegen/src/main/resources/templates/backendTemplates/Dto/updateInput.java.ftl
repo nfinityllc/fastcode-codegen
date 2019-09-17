@@ -72,11 +72,11 @@ public class Update[=ClassName]Input {
    <#if !Fields[joinDetails.joinColumn]?? >
    <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
-  return [=joinDetails.joinColumn];
+  	return [=joinDetails.joinColumn];
   }
 
   public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
-  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
+  	this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
   
   </#if>
@@ -90,11 +90,11 @@ public class Update[=ClassName]Input {
  <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
-  return [=joinDetails.joinColumn];
+  	return [=joinDetails.joinColumn];
   }
 
   public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
-  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
+  	this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
   
 </#if> 
@@ -113,11 +113,11 @@ public class Update[=ClassName]Input {
   <#if authKey== "Password">
   <#if value.fieldName != authValue.fieldName>
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  	return [=value.fieldName];
   }
 
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  	this.[=value.fieldName] = [=value.fieldName];
   }
   
   </#if>
@@ -126,11 +126,11 @@ public class Update[=ClassName]Input {
   </#if>
   <#else>
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  	return [=value.fieldName];
   }
 
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  	this.[=value.fieldName] = [=value.fieldName];
   }
   
   </#if> 

@@ -62,6 +62,19 @@ server.ssl.key-alias=tomcat
 <#if AuthenticationType != "none">
 fastCode.auth.method=[=AuthenticationType]
 </#if>
+<#if AuthenticationType == "ldap">
+# LDAP Server Setup - /login
+
+fastCode.ldap.contextsourceurl=ldap://localhost:10389/dc=nfinityllc,dc=com
+fastCode.ldap.manager.dn=uid=admin,ou=system
+fastCode.ldap.manager.password=secret
+fastCode.ldap.usersearchbase=ou=people
+fastCode.ldap.usersearchfilter=(uid={0})
+fastCode.ldap.roleprefix=
+fastCode.ldap.groupsearchbase=ou=groups
+fastCode.ldap.groupsearchfilter=(member={0})
+#fastCode.ldap.ldiffilename=C:/Program Files/Apache Directory Studio/users.ldif
+</#if>
 fastCode.offset.default=0
 fastCode.limit.default=10
 fastCode.sort.direction.default=ASC

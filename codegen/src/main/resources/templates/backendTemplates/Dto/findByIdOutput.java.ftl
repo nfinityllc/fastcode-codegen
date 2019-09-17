@@ -50,7 +50,7 @@ public class Find[=ClassName]ByIdOutput {
  </#if>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
-	private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first];
+  private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first];
   </#if>
   </#if>
 </#list>
@@ -83,11 +83,11 @@ public class Find[=ClassName]ByIdOutput {
   <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
-  return [=joinDetails.joinColumn];
+  	return [=joinDetails.joinColumn];
   }
 
   public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
-  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
+  	this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
   
   </#if>
@@ -102,11 +102,11 @@ public class Find[=ClassName]ByIdOutput {
  <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
-  return [=joinDetails.joinColumn];
+  	return [=joinDetails.joinColumn];
   }
 
   public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
-  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
+  	this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
   
 </#if> 
@@ -137,11 +137,11 @@ public class Find[=ClassName]ByIdOutput {
   <#if authKey== "Password">
   <#if value.fieldName != authValue.fieldName>
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  	return [=value.fieldName];
   }
 
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  	this.[=value.fieldName] = [=value.fieldName];
   }
   
   </#if>
@@ -150,11 +150,11 @@ public class Find[=ClassName]ByIdOutput {
   </#if>
   <#else>
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  	return [=value.fieldName];
   }
 
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  	this.[=value.fieldName] = [=value.fieldName];
   }
   
   </#if> 
@@ -162,11 +162,11 @@ public class Find[=ClassName]ByIdOutput {
 </#list>
 <#if Audit!false>
   public java.util.Date getCreationTime() {
-      return creationTime;
+  	return creationTime;
   }
 
   public void setCreationTime(java.util.Date creationTime) {
-      this.creationTime = creationTime;
+  	this.creationTime = creationTime;
   }
 
   public String getLastModifierUserId() {
@@ -174,23 +174,23 @@ public class Find[=ClassName]ByIdOutput {
   }
 
   public void setLastModifierUserId(String lastModifierUserId) {
-      this.lastModifierUserId = lastModifierUserId;
+  	this.lastModifierUserId = lastModifierUserId;
   }
 
   public java.util.Date getLastModificationTime() {
-      return lastModificationTime;
+  	return lastModificationTime;
   }
 
   public void setLastModificationTime(java.util.Date lastModificationTime) {
-      this.lastModificationTime = lastModificationTime;
+    this.lastModificationTime = lastModificationTime;
   }
 
   public String getCreatorUserId() {
-      return creatorUserId;
+    return creatorUserId;
   }
 
   public void setCreatorUserId(String creatorUserId) {
-      this.creatorUserId = creatorUserId;
+    this.creatorUserId = creatorUserId;
   }
 </#if>
  
