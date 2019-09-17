@@ -1,9 +1,7 @@
 package com.nfinity.entitycodegen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,9 +14,6 @@ import javax.persistence.OneToOne;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static java.util.Map.Entry.comparingByKey;
-import static java.util.stream.Collectors.toMap;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import com.google.common.base.CaseFormat;
@@ -30,15 +25,15 @@ public class EntityDetails {
 	List<String> compositeKeyClasses = new ArrayList<>();
 	Map<String, FieldDetails> entitiesDescriptiveFieldMap = new HashMap<>();
 	Map<String, FieldDetails> authenticationFieldsMap = null;
-	UserInput userInput =new UserInput();
-	
+	String entityTableName;
 
-	public UserInput getUserInput() {
-		return userInput;
+	
+	public String getEntityTableName() {
+		return entityTableName;
 	}
 
-	public void setUserInput(UserInput userInput) {
-		this.userInput = userInput;
+	public void setEntityTableName(String entityTableName) {
+		this.entityTableName = entityTableName;
 	}
 
 	public Map<String, FieldDetails> getAuthenticationFieldsMap() {
@@ -57,10 +52,11 @@ public class EntityDetails {
 		this.entitiesDescriptiveFieldMap = entitiesDescriptiveFieldMap;
 	}
 
-	public EntityDetails(Map<String, FieldDetails> fieldsMap, Map<String, RelationDetails> relationsMap) {
+	public EntityDetails(Map<String, FieldDetails> fieldsMap, Map<String, RelationDetails> relationsMap,String tableName) {
 		super();
 		this.fieldsMap = fieldsMap;
 		this.relationsMap = relationsMap;
+		this.entityTableName = tableName;
 	}
 
 	public Map<String, FieldDetails> getFieldsMap() {
@@ -94,11 +90,20 @@ public class EntityDetails {
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-
+        String tableName=null;
 		try {
 
 			Class<?> myClass = entityClass;
 			Object classObj = (Object) myClass.newInstance();
+			Annotation[] classAnnotations=classObj.getClass().getAnnotations();
+			for (Annotation ann : classAnnotations) {
+				if(ann.annotationType().toString().equals("interface javax.persistence.Table"))
+				{
+					javax.persistence.Table tableAnn =(javax.persistence.Table)ann;
+					tableName= tableAnn.name();
+				}
+				System.out.println(" ANNNN " + ann.annotationType() + "  -- a  " + ann.toString());
+			}
 			Field[] fields = classObj.getClass().getDeclaredFields();
 
 			for (Field field : fields) {
@@ -274,13 +279,13 @@ public class EntityDetails {
 			e.printStackTrace();
 		}
 		Map<String, FieldDetails> sortedMap = new TreeMap<>(fieldsMap);
-		return new EntityDetails(sortedMap, relationsMap);
+		return new EntityDetails(sortedMap, relationsMap,tableName);
 	}
 	
 	private static String geteModuleName(String className) {
 		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(className);
 		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
-		String instanceName = StringUtils.join(splittedNames);
+//		String instanceName = StringUtils.join(splittedNames);
 		for (int i = 0; i < splittedNames.length; i++) {
 			splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
 		}

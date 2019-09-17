@@ -15,7 +15,7 @@ import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 </#if>
 @Entity
-@Table(name = "[=ClassName]", schema = "[=SchemaName]")
+@Table(<#if TableName??>name = "[=TableName]",</#if> schema = "[=SchemaName]")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>

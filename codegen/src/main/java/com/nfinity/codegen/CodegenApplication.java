@@ -1,5 +1,6 @@
 package com.nfinity.codegen;
 
+import com.google.common.base.CaseFormat;
 import com.nfinity.entitycodegen.BaseAppGen;
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
@@ -84,8 +85,12 @@ public class CodegenApplication implements ApplicationRunner {
 			{
 				System.out.print("\nEnter table name :");
 				str= scanner.nextLine();
+				if(str.contains("_"))
+				{
+					str=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
+				}
 				input.setAuthenticationSchema(str.substring(0, 1).toUpperCase() + str.substring(1));
-
+                System.out.println(" aa s name " + input.getAuthenticationSchema());
 			}	
 			input.setAuthenticationType("database");
 		}
