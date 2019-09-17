@@ -5,7 +5,7 @@ public class Create[=AuthenticationTable]permissionOutput {
   	private Long permissionId;
   	<#if AuthenticationType=="database" && !UserInput??>
     private Long [=AuthenticationTable?uncap_first]Id;
-    private String [=AuthenticationTable?uncap_first]UserDescriptiveField;
+    private String [=AuthenticationTable?uncap_first]DescriptiveField;
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
@@ -14,19 +14,17 @@ public class Create[=AuthenticationTable]permissionOutput {
   	</#if> 
   	</#list>
   	</#if>
+    </#if>
+    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+    private [=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first];
+    <#else>
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "User Name">
-  	<#if !PrimaryKeys[authValue.fieldName]??>
-  	private [=authValue.fieldType] [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first];
-    </#if>
+  	private [=authValue.fieldType] [=AuthenticationTable?uncap_first]DescriptiveField;
     </#if>
     </#list>
     </#if>
-  	</#if>
-    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
-    private [=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first];
-    
     </#if>
   	private String permissionDescriptiveField;
   
@@ -55,12 +53,12 @@ public class Create[=AuthenticationTable]permissionOutput {
   	  	this.[=AuthenticationTable?uncap_first]Id = [=AuthenticationTable?uncap_first]Id;
   	 }
   	
-  	 public String get[=AuthenticationTable?cap_first]UserDescriptiveField() {
-   	  	return [=AuthenticationTable?uncap_first]UserDescriptiveField;
+  	 public String get[=AuthenticationTable?cap_first]DescriptiveField() {
+   	  	return [=AuthenticationTable?uncap_first]DescriptiveField;
   	 }
 
-  	 public void set[=AuthenticationTable?cap_first]UserDescriptiveField(String [=AuthenticationTable?uncap_first]UserDescriptiveField){
-   	  	this.[=AuthenticationTable?uncap_first]UserDescriptiveField = [=AuthenticationTable?uncap_first]UserDescriptiveField;
+  	 public void set[=AuthenticationTable?cap_first]DescriptiveField(String [=AuthenticationTable?uncap_first]DescriptiveField){
+   	  	this.[=AuthenticationTable?uncap_first]DescriptiveField = [=AuthenticationTable?uncap_first]DescriptiveField;
   	 }
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
@@ -76,29 +74,28 @@ public class Create[=AuthenticationTable]permissionOutput {
   	</#if> 
   	</#list>
   	</#if>
+    </#if>
+    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+     public [=DescriptiveField[AuthenticationTable].fieldType?cap_first] get[=DescriptiveField[AuthenticationTable].description?cap_first]() {
+  		return [=DescriptiveField[AuthenticationTable].description?uncap_first];
+  	 }
+
+  	 public void set[=DescriptiveField[AuthenticationTable].description?cap_first]([=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first]){
+  	 	this.[=DescriptiveField[AuthenticationTable].description?uncap_first] = [=DescriptiveField[AuthenticationTable].description?uncap_first];
+  	 }
+    <#else>
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "User Name">
-  	<#if !PrimaryKeys[authValue.fieldName]??>
-  	 public [=authValue.fieldType] get[=AuthenticationTable?cap_first][=authValue.fieldName?cap_first]() {
-   	  	return [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first];
+  	 public String get[=AuthenticationTable?cap_first]DescriptiveField() {
+   	  	return [=AuthenticationTable?uncap_first]DescriptiveField;
   	 }
 
-  	 public void set[=AuthenticationTable?cap_first][=authValue.fieldName?cap_first]([=authValue.fieldType] [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]){
-   	   	this.[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first] = [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first];
+  	 public void set[=AuthenticationTable?cap_first]DescriptiveField(String [=AuthenticationTable?uncap_first]DescriptiveField){
+   	  	this.[=AuthenticationTable?uncap_first]DescriptiveField = [=AuthenticationTable?uncap_first]DescriptiveField;
   	 }
-  	</#if>
     </#if>
     </#list>
     </#if>
-  	</#if>
-   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
-    public [=DescriptiveField[AuthenticationTable].fieldType?cap_first] get[=DescriptiveField[AuthenticationTable].description?cap_first]() {
-     	return [=DescriptiveField[AuthenticationTable].description?uncap_first];
-    }
-
-    public void set[=DescriptiveField[AuthenticationTable].description?cap_first]([=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first]){
-    	this.[=DescriptiveField[AuthenticationTable].description?uncap_first] = [=DescriptiveField[AuthenticationTable].description?uncap_first];
-    }
-  </#if>
+    </#if>
 }

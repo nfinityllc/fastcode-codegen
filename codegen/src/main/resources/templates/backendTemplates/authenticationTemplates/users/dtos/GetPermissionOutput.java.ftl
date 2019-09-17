@@ -12,8 +12,8 @@ public class GetPermissionOutput {
     private java.util.Date lastModificationTime;
     </#if>
     <#if AuthenticationType=="database" && !UserInput??>
-    private Long userid;
-    private String username;
+    private Long userId;
+    private String userDescriptiveField;
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
@@ -34,20 +34,20 @@ public class GetPermissionOutput {
     </#if>
 
     <#if AuthenticationType=="database" && !UserInput??>
-  	public Long getUserid() {
+  	public Long getUserId() {
   	return userid;
   	}
 
-  	public void setUserid(Long userid){
-  	this.userid = userid;
+  	public void setUserId(Long userId){
+  	this.userId = userId;
   	}
   	
-  	public String getUsername() {
-   		return username;
+  	public String getUserDescriptiveField() {
+   		return userDescriptiveField;
   	}
 
-  	public void setUsername(String username){
-   		this.username = username;
+  	public void setUsername(String userDescriptiveField){
+   		this.userDescriptiveField = userDescriptiveField;
   	}
   	<#elseif AuthenticationType=="database" && UserInput??>
   	<#if PrimaryKeys??>

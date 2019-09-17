@@ -18,7 +18,7 @@ public interface [=AuthenticationTable]permissionMapper {
    
    @Mappings({ 
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]UserDescriptiveField"),                   
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),                   
    @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "[=AuthenticationTable?uncap_first]Id"),  
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
@@ -28,19 +28,18 @@ public interface [=AuthenticationTable]permissionMapper {
    </#if> 
    </#list>
    </#if>
-   <#if AuthenticationFields??>
-   <#list AuthenticationFields as authKey,authValue>
-   <#if authKey== "User Name">
-   <#if !PrimaryKeys[authValue.fieldName]??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]"),  
-   </#if>
-   </#if>
-   </#list>
-   </#if>
    </#if> 
    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
    @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
-   </#if>           
+   <#else>
+   <#if AuthenticationFields??>
+   <#list AuthenticationFields as authKey,authValue>
+   <#if authKey== "User Name">
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),                   
+   </#if>
+   </#list>
+   </#if>
+   </#if>          
    @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
    @Mapping(source = "permission.id", target = "permissionId")                   
    }) 
@@ -50,7 +49,7 @@ public interface [=AuthenticationTable]permissionMapper {
 
    @Mappings({ 
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]UserDescriptiveField"),                   
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),                   
    @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "[=AuthenticationTable?uncap_first]Id"),  
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
@@ -60,19 +59,18 @@ public interface [=AuthenticationTable]permissionMapper {
    </#if> 
    </#list>
    </#if>
+   </#if> 
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
+   <#else>
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "User Name">
-   <#if !PrimaryKeys[authValue.fieldName]??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]"),  
-   </#if>
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),                   
    </#if>
    </#list>
    </#if>
-   </#if>  
-  <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
-   </#if>              
+   </#if>             
    @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
    @Mapping(source = "permission.id", target = "permissionId")                  
    }) 
@@ -80,7 +78,7 @@ public interface [=AuthenticationTable]permissionMapper {
 
    @Mappings({ 
    <#if AuthenticationType=="database" && !UserInput??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]UserDescriptiveField"),                   
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),                   
    @Mapping(source = "[=AuthenticationTable?uncap_first].id", target = "[=AuthenticationTable?uncap_first]Id"),  
    <#elseif AuthenticationType=="database" && UserInput??>
    <#if PrimaryKeys??>
@@ -90,18 +88,17 @@ public interface [=AuthenticationTable]permissionMapper {
    </#if> 
    </#list>
    </#if>
+   </#if> 
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
+   <#else>
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "User Name">
-   <#if !PrimaryKeys[authValue.fieldName]??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]"),  
-   </#if>
+   @Mapping(source = "[=AuthenticationTable?uncap_first].userName", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),                   
    </#if>
    </#list>
    </#if>
-   </#if>  
-   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
    </#if>              
    @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
    @Mapping(source = "permission.id", target = "permissionId")                  
