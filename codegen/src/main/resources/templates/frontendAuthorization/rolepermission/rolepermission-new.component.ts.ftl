@@ -42,8 +42,8 @@ export class RolepermissionNewComponent extends BaseNewComponent<IRolepermission
 		this.itemForm = this.formBuilder.group({
 			permissionId: ['', Validators.required],
 			roleId: ['', Validators.required],
-			permissionName : [{ value: '', disabled: true }],
-			roleName : [{ value: '', disabled: true }],
+			permissionDescriptiveField : [{ value: '', disabled: true }],
+			roleDescriptiveField : [{ value: '', disabled: true }],
 		});
 		this.checkPassedData();
     }
@@ -63,7 +63,7 @@ export class RolepermissionNewComponent extends BaseNewComponent<IRolepermission
 				table: 'permission',
 				type: 'ManyToOne',
 				service: this.permissionService,
-				descriptiveField: 'permissionName',
+				descriptiveField: 'permissionDescriptiveField',
 				referencedDescriptiveField: 'name',
 			},
 			{
@@ -78,7 +78,7 @@ export class RolepermissionNewComponent extends BaseNewComponent<IRolepermission
 				table: 'role',
 				type: 'ManyToOne',
 				service: this.roleService,
-				descriptiveField: 'roleName',
+				descriptiveField: 'roleDescriptiveField',
 				referencedDescriptiveField: 'name',
 			},
 		];

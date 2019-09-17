@@ -47,15 +47,14 @@ export class RolepermissionListComponent extends BaseListComponent<IRolepermissi
 		this.associations = [
 			{
 				column: [
-                      {
-					  key: 'permissionId',
-					  value: undefined,
-					  referencedkey: 'id'
-					  },
-					  
+                	{
+						key: 'permissionId',
+						value: undefined,
+						referencedkey: 'id'
+					},
 				],
 				isParent: false,
-				descriptiveField: 'permissionName',
+				descriptiveField: 'permissionDescriptiveField',
 				referencedDescriptiveField: 'name',
 				service: this.permissionService,
 				associatedObj: undefined,
@@ -64,15 +63,15 @@ export class RolepermissionListComponent extends BaseListComponent<IRolepermissi
 			},
 			{
 				column: [
-                      {
-					  key: 'roleId',
-					  value: undefined,
-					  referencedkey: 'id'
-					  },
+                	{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					},
 					  
 				],
 				isParent: false,
-				descriptiveField: 'roleName',
+				descriptiveField: 'roleDescriptiveField',
 				referencedDescriptiveField: 'name',
 				service: this.roleService,
 				associatedObj: undefined,

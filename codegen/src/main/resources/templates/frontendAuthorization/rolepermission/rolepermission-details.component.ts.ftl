@@ -43,8 +43,8 @@ export class RolepermissionDetailsComponent extends BaseDetailsComponent<IRolepe
 		this.itemForm = this.formBuilder.group({
 			permissionId: ['', Validators.required],
 			roleId: ['', Validators.required],
-			permissionName : [{ value: '', disabled: true }],
-			roleName : [{ value: '', disabled: true }],
+			permissionDescriptiveField : [{ value: '', disabled: true }],
+			roleDescriptiveField : [{ value: '', disabled: true }],
 	    });
 	    if (this.idParam) {
 			this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
@@ -66,7 +66,7 @@ export class RolepermissionDetailsComponent extends BaseDetailsComponent<IRolepe
 				table: 'permission',
 				type: 'ManyToOne',
 				service: this.permissionService,
-				descriptiveField: 'permissionName',
+				descriptiveField: 'permissionDescriptiveField',
 				referencedDescriptiveField: 'name',
 			},
 			{
@@ -81,7 +81,7 @@ export class RolepermissionDetailsComponent extends BaseDetailsComponent<IRolepe
 				table: 'role',
 				type: 'ManyToOne',
 				service: this.roleService,
-				descriptiveField: 'roleName',
+				descriptiveField: 'roleDescriptiveField',
 				referencedDescriptiveField: 'name',
 			},
 		];
@@ -99,8 +99,8 @@ export class RolepermissionDetailsComponent extends BaseDetailsComponent<IRolepe
 		this.itemForm.patchValue({
 			permissionId: item.permissionId,
 			roleId: item.roleId,
-			permissionName: item.permissionName,
-			roleName: item.roleName,
+			permissionDescriptiveField: item.permissionDescriptiveField,
+			roleDescriptiveField: item.roleDescriptiveField,
 		});
 	}
 }

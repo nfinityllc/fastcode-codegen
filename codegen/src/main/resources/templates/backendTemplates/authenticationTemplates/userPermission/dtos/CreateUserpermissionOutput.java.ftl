@@ -98,7 +98,7 @@ public class Create[=AuthenticationTable]permissionOutput {
     }
 
     public void set[=DescriptiveField[AuthenticationTable].description?cap_first]([=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first]){
-    	this.[=DescriptiveField[AuthenticationTable].description?cap_first] = [=DescriptiveField[AuthenticationTable].description?uncap_first];
+    	this.[=DescriptiveField[AuthenticationTable].description?uncap_first] = [=DescriptiveField[AuthenticationTable].description?uncap_first];
     }
   </#if>
 }

@@ -1,10 +1,10 @@
 export interface I[=AuthenticationTable]permission {  
 
 	permissionId: number;
-	permissionName?: string;
+	permissionDescriptiveField?: string;
 	<#if AuthenticationType=="database" && !UserInput??>
 	[=AuthenticationTable?uncap_first]Id?: string;
-	[=AuthenticationTable?uncap_first]UserName?: string;
+	[=AuthenticationTable?uncap_first]DescriptiveField?: string;
 	<#elseif AuthenticationType=="database" && UserInput??>
 	<#if PrimaryKeys??>
 	<#list PrimaryKeys as key,value>
@@ -18,9 +18,7 @@ export interface I[=AuthenticationTable]permission {
 	</#list>
 	</#if>
 	<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-	<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
-	[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]: string;
-	</#if>
+	[=DescriptiveField[AuthenticationTable].description?uncap_first]: string;
     <#else>
 	<#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>

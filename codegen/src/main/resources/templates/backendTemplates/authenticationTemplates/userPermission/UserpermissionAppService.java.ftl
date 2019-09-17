@@ -360,15 +360,15 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
   		<#if PrimaryKeys??>
   		<#list PrimaryKeys as key,value>
   		<#if value.fieldType?lower_case == "string" >
-		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](keyMap.get("[=value.fieldName?uncap_first]"));
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](keyMap.get("[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]"));
 		<#elseif value.fieldType?lower_case == "long" >
-		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Long.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Long.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]")));
 		<#elseif value.fieldType?lower_case == "integer">
-		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Integer.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Integer.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]")));
         <#elseif value.fieldType?lower_case == "short">
-        [=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Short.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+        [=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Short.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]")));
 		<#elseif value.fieldType?lower_case == "double">
-		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Double.valueOf(keyMap.get("[=value.fieldName?uncap_first]")));
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable?cap_first][=value.fieldName?cap_first](Double.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]")));
 		</#if>
   		</#list>
   		</#if>

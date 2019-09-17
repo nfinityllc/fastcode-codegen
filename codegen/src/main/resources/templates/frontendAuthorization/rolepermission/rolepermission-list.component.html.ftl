@@ -20,20 +20,20 @@
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Permission')">Permission </mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("Permission")}}:</span>
-					{{ item.permissionName }}
+					{{ item.permissionDescriptiveField }}
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="Role">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Role')">Role </mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("Role")}}:</span>
-					{{ item.roleName }}
+					{{ item.roleDescriptiveField }}
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="actions">
 				<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 				<mat-cell *matCellDef="let item" (click)="$event.stopPropagation()"> 
-					<button mat-button color="accent"(click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany") ? ('GENERAL.ACTIONS.DE-LINK' | translate) : ('GENERAL.ACTIONS.DELETE' | translate) }}</button>
+					<button mat-button color="accent"(click)="delete(item)">{{'GENERAL.ACTIONS.DELETE' | translate}}</button>
 				</mat-cell>
 			</ng-container>
 			<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

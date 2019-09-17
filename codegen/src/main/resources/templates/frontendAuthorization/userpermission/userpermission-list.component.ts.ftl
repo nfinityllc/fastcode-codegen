@@ -38,7 +38,11 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 	ngOnInit() {
 		this.setAssociation();
 		this.setColumns();
-		this.primaryKeys = [ "permissionId", "userid",  ]
+		<#if !UserInput??>
+		this.primaryKeys = [ "permissionId", "userId" ]
+		<#else>
+		this.primaryKeys = [ "permissionId", <#list PrimaryKeys as key,value>"[=AuthenticationTable?uncap_first + value.fieldName?cap_first]", </#list>]
+		</#if>
 		super.ngOnInit();
 	}
   

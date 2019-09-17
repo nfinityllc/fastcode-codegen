@@ -22,9 +22,7 @@
 					<span class="mobile-label">{{getMobileLabelForField("[=AuthenticationTable?cap_first]")}}:</span>
 				<#if AuthenticationType=="database" && UserInput??>
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
-				{{ item.[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] }}
-				</#if>
+				{{ item.[=DescriptiveField[AuthenticationTable].description?uncap_first] }}
                 <#else>
                 <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
@@ -37,7 +35,7 @@
     			</#if>
 				</#if>
 				<#elseif AuthenticationType=="database" && !UserInput??>
-				{{ item.[=AuthenticationTable?uncap_first]UserName }}
+				{{ item.[=AuthenticationTable?uncap_first]DescriptiveField }}
 				</#if>
 				</mat-cell>
 			</ng-container>
@@ -45,7 +43,7 @@
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Permission')">Permission </mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("Permission")}}:</span>
-					{{ item.permissionName }}
+					{{ item.permissionDescriptiveField }}
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="actions">

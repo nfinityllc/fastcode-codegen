@@ -20,7 +20,7 @@ import { BaseDetailsComponent, Globals } from 'fastCodeCore';
 })
 export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetailsComponent<I[=AuthenticationTable]permission> implements OnInit {
   title:string='[=AuthenticationTable]permission';
-  parentUrl:string='[=AuthenticationTable]permission';
+  parentUrl:string='[=AuthenticationTable?lower_case]permission';
   
 	constructor(
 		public formBuilder: FormBuilder,
@@ -42,10 +42,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({
 			permissionId: ['', Validators.required],
-			permissionName : [{ value: '', disabled: true }],
+			permissionDescriptiveField : [{ value: '', disabled: true }],
 			<#if AuthenticationType=="database" && !UserInput??>
-			userid: ['', Validators.required],
-			[=AuthenticationTable?uncap_first]UserName : [{ value: '', disabled: true }],
+			[=AuthenticationTable?uncap_first]Id: ['', Validators.required],
+			[=AuthenticationTable?uncap_first]DescriptiveField : [{ value: '', disabled: true }],
 			<#elseif AuthenticationType=="database" && UserInput??>
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
@@ -54,11 +54,9 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			</#if> 
 			</#list>
 			</#if>
-			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-			<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
-			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : [{ value: '', disabled: true }],
-			</#if>
-            <#else>
+			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+			[=DescriptiveField[AuthenticationTable].description?uncap_first] : [{ value: '', disabled: true }],
+			<#else>
 			<#if AuthenticationFields??>
   			<#list AuthenticationFields as authKey,authValue>
   			<#if authKey== "User Name">
@@ -83,7 +81,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				column: [
 					<#if AuthenticationType=="database" && !UserInput??>
 					{
-						key: 'userid',
+						key: '[=AuthenticationTable?uncap_first]Id',
 						value: undefined,
 						referencedkey: 'id'
 					},
@@ -106,12 +104,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				type: 'ManyToOne',
 				service: this.[=AuthenticationTable?uncap_first]Service,
 				<#if AuthenticationType=="database" && UserInput??>
-				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
-				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
+				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??  && DescriptiveField[AuthenticationTable].description??>
+				descriptiveField: '[=DescriptiveField[AuthenticationTable].description?uncap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
-				</#if>
-                <#else>
+				<#else>
                 <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
   				<#if authKey== "User Name">
@@ -124,7 +120,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
     			</#if>
 				</#if>
 				<#elseif AuthenticationType=="database" && !UserInput??>
-				descriptiveField: '[=AuthenticationTable?uncap_first]UserName',
+				descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
 				referencedDescriptiveField: 'userName',
 				</#if>
 				
@@ -141,7 +137,8 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				table: 'permission',
 				type: 'ManyToOne',
 				service: this.permissionService,
-				descriptiveField: 'permissionName',
+				descriptiveField: 'permissionDescriptiveField',
+				referencedDescriptiveField: 'name',
 			},
 		];
 		this.childAssociations = this.associations.filter(association => {
@@ -160,7 +157,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			permissionName: item.permissionName,
 			<#if AuthenticationType=="database" && !UserInput??>
 			[=AuthenticationTable?uncap_first]Id: item.[=AuthenticationTable?uncap_first]Id,
-			[=AuthenticationTable?uncap_first]UserName: item.[=AuthenticationTable?uncap_first]UserName,
+			[=AuthenticationTable?uncap_first]DescriptiveField: item.[=AuthenticationTable?uncap_first]DescriptiveField,
 			<#elseif AuthenticationType=="database" && UserInput??>
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
@@ -170,10 +167,8 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 			</#list>
 			</#if>
 			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-			<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
-			[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first] : item.[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first],
-			</#if>
-            <#else>
+			[=DescriptiveField[AuthenticationTable].description?uncap_first] : item.[=DescriptiveField[AuthenticationTable].description?uncap_first],
+			<#else>
 			<#if AuthenticationFields??>
   			<#list AuthenticationFields as authKey,authValue>
   			<#if authKey== "User Name">
