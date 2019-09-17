@@ -24,7 +24,7 @@ public class Find[=AuthenticationTable]permissionByIdOutput {
     </#list>
   	</#if>
     </#if>
-    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[relationValue.eName].description??>
+    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
     private [=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first];
     </#if>
   	private String permissionDescriptiveField;
@@ -91,13 +91,13 @@ public class Find[=AuthenticationTable]permissionByIdOutput {
     </#list>
     </#if>
   	</#if>
-   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[relationValue.eName].description??>
-     public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=DescriptiveField[relationValue.eName].description?cap_first]() {
-  		return [=DescriptiveField[relationValue.eName].description?uncap_first];
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+     public [=DescriptiveField[AuthenticationTable].fieldType?cap_first] get[=DescriptiveField[AuthenticationTable].description?cap_first]() {
+  		return [=DescriptiveField[AuthenticationTable].description?uncap_first];
   	}
 
-  	public void set[=DescriptiveField[relationValue.eName].description?cap_first]([=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first]){
-  		this.[=DescriptiveField[relationValue.eName].description?uncap_first] = [=DescriptiveField[relationValue.eName].description?uncap_first];
+  	public void set[=DescriptiveField[AuthenticationTable].description?cap_first]([=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first]){
+  		this.[=DescriptiveField[AuthenticationTable].description?uncap_first] = [=DescriptiveField[AuthenticationTable].description?uncap_first];
   	}
  
   </#if>

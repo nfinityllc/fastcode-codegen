@@ -24,7 +24,7 @@ public class Create[=AuthenticationTable]permissionOutput {
     </#list>
     </#if>
   	</#if>
-    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[relationValue.eName].description??>
+    <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
     private [=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first];
     
     </#if>
@@ -92,8 +92,7 @@ public class Create[=AuthenticationTable]permissionOutput {
     </#list>
     </#if>
   	</#if>
-   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[relationValue.eName].description??>>
-   <#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
     public [=DescriptiveField[AuthenticationTable].fieldType?cap_first] get[=DescriptiveField[AuthenticationTable].description?cap_first]() {
      	return [=DescriptiveField[AuthenticationTable].description?uncap_first];
     }
@@ -101,6 +100,5 @@ public class Create[=AuthenticationTable]permissionOutput {
     public void set[=DescriptiveField[AuthenticationTable].description?cap_first]([=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first]){
     	this.[=DescriptiveField[AuthenticationTable].description?cap_first] = [=DescriptiveField[AuthenticationTable].description?uncap_first];
     }
-  </#if>
   </#if>
 }

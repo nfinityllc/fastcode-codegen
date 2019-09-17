@@ -277,7 +277,12 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
     }
     else if(association.type == "OneToOne"){
       this.dataService.getChild(association.table, this.idParam).subscribe( childObj =>{
-        this.router.navigate(['/' + association.table.toLowerCase() + "/" + ServiceUtils.encodeIdByObject(childObj, association.associatedPrimaryKeys)])
+      	if(childObj){
+          this.router.navigate(['/' + association.table.toLowerCase() + "/" + ServiceUtils.encodeIdByObject(childObj, association.associatedPrimaryKeys)])
+        }
+        else{
+          this.errorService.showError(`No child ${association.table} found.`);
+        }  
       },
       error => {
       	this.errorMessage = <any>error;

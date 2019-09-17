@@ -38,7 +38,7 @@ public interface [=AuthenticationTable]permissionMapper {
    </#list>
    </#if>
    </#if> 
-   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[relationValue.eName].description??>
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
    @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
    </#if>           
    @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
@@ -70,7 +70,7 @@ public interface [=AuthenticationTable]permissionMapper {
    </#list>
    </#if>
    </#if>  
-  <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[relationValue.eName].description??>
+  <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
    @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
    </#if>              
    @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
@@ -100,7 +100,7 @@ public interface [=AuthenticationTable]permissionMapper {
    </#list>
    </#if>
    </#if>  
-   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[relationValue.eName].description??>
+   <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
    @Mapping(source = "[=AuthenticationTable?uncap_first].[=DescriptiveField[AuthenticationTable].fieldName?uncap_first]", target = "[=DescriptiveField[AuthenticationTable].description?uncap_first]"),  
    </#if>              
    @Mapping(source = "permission.name", target = "permissionDescriptiveField"),                   
