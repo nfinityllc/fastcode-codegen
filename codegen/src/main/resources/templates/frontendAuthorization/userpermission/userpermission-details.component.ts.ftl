@@ -154,7 +154,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		this.item = item;
 		this.itemForm.patchValue({
 			permissionId: item.permissionId,
-			permissionName: item.permissionName,
+			permissionDescriptiveField: item.permissionDescriptiveField,
 			<#if AuthenticationType=="database" && !UserInput??>
 			[=AuthenticationTable?uncap_first]Id: item.[=AuthenticationTable?uncap_first]Id,
 			[=AuthenticationTable?uncap_first]DescriptiveField: item.[=AuthenticationTable?uncap_first]DescriptiveField,

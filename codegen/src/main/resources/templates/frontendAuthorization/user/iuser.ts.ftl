@@ -19,6 +19,6 @@ export interface IUser {
       profilePictureId?: number;
       twoFactorEnabled?: boolean;
       userName: string;
-      roleName?: string;
+      roleDescriptiveField?: string;
       roleId?: number;
   }

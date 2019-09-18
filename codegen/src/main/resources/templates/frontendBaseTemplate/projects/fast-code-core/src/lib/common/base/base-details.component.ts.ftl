@@ -273,7 +273,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
   }
   openChildDetails(association: IAssociationEntry){
     if(association.type == "OneToMany"){
-      this.router.navigate(['/' + association.table], { queryParams: this.getQueryParams(association) });
+      this.router.navigate(['/' + association.table.toLowerCase()], { queryParams: this.getQueryParams(association) });
     }
     else if(association.type == "OneToOne"){
       this.dataService.getChild(association.table, this.idParam).subscribe( childObj =>{

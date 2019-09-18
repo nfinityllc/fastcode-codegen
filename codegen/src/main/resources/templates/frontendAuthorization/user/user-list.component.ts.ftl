@@ -45,15 +45,14 @@ export class UserListComponent extends BaseListComponent<IUser> implements OnIni
 		this.associations = [
 			{
 				column: [
-                      {
-					  key: 'roleId',
-					  value: undefined,
-					  referencedkey: 'id'
-					  },
-					  
+                    {
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					},
 				],
 				isParent: false,
-				descriptiveField: 'roleName',
+				descriptiveField: 'roleDescriptiveField',
 				referencedDescriptiveField: 'name',
 				service: this.roleService,
 				associatedObj: undefined,
