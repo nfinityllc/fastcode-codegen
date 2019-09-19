@@ -59,7 +59,7 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 			twoFactorEnabled: [false],
 			userName: ['', Validators.required],
 			roleId: [''],
-			roleName : [{ value: '', disabled: true }],
+			roleDescriptiveField : [{ value: '', disabled: true }],
 	    });
 	    if (this.idParam) {
 			this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
@@ -93,7 +93,8 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 				table: 'role',
 				type: 'ManyToOne',
 				service: this.roleService,
-				descriptiveField: 'roleName',
+				descriptiveField: 'roleDescriptiveField',
+				referencedDescriptiveField: 'name',
 			},
 		];
 		this.childAssociations = this.associations.filter(association => {
@@ -128,7 +129,7 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 			twoFactorEnabled: item.twoFactorEnabled,
 			userName: item.userName,
 			roleId: item.roleId,
-			roleName: item.roleName,
+			roleDescriptiveField: item.roleDescriptiveField,
 		});
 	}
 }

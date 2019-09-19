@@ -15,6 +15,9 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 </#if>
 </#list>
 </#if>
+<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+import { RoleService} from '../role/role.service';
+</#if>
 
 @Component({
   selector: 'app-[=ModuleName]-list',
@@ -40,6 +43,9 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
 		</#if>
 		</#list>
+		</#if>
+		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+		public roleService: RoleService,
 		</#if>
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
@@ -87,6 +93,23 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 			},
 		</#if>
 		</#list>
+		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+			{
+				column: [
+					{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					},
+				],
+				isParent: false,
+				table: 'role',
+				type: 'ManyToOne',
+				service: this.roleService,
+				descriptiveField: 'roleDescriptiveField',
+				referencedDescriptiveField: 'name',
+			},	
+		</#if>
 		];
 	}
   </#if>
@@ -111,31 +134,14 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		</#if>
 		</#list>
 		</#if>
-		<#if isJoinColumn == false && (value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "string")>
-			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName>
-    		{
-				column: '[=value.fieldName]',
-				label: '[=value.fieldName]',
-				<#if value.isPrimaryKey == true>
-				sort: false,
-				filter: false,
-				<#else>
-				sort: true,
-				filter: true,
-				</#if>
-				<#if value.fieldType?lower_case == "string">
-				type: listColumnType.String
-				<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short">
-				type: listColumnType.Number
-				<#elseif value.fieldType?lower_case == "date">
-				type: listColumnType.Date
-				<#elseif value.fieldType?lower_case == "boolean">
-				type: listColumnType.Boolean
-				</#if>
-			},
-    		</#if>
-    		<#else>
+		<#-- to exclude the password field in case of user provided "User" table -->
+		<#assign isPasswordField = false>
+		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName == value.fieldName>
+		<#assign isPasswordField = true>
+		</#if>
+		</#if>
+		<#if isJoinColumn == false && isPasswordField = false && (value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "string")>
     		{
 				column: '[=value.fieldName]',
 				label: '[=value.fieldName]',
@@ -157,8 +163,6 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 				</#if>
 			},
     	</#if>
-			
-		</#if>
 		</#list>
 		<#list Relationship as relationKey, relationValue>
 		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
@@ -173,6 +177,15 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 			</#if>
 		</#if>
 		</#list>
+		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+			{
+	  			column: 'Role',
+				label: 'Role',
+				sort: false,
+				filter: false,
+				type: listColumnType.Boolean
+			},
+		</#if>
 		  	{
 				column: 'actions',
 				label: 'Actions',

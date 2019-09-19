@@ -3,27 +3,27 @@ export interface [=IEntity] {
  <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "short" ||  value.fieldType?lower_case == "double"> 
      <#if value.isNullable == true>
-      [=value.fieldName]?: number;
+	[=value.fieldName]?: number;
      <#else>
-      [=value.fieldName]: number;
+	[=value.fieldName]: number;
       </#if> 
 <#elseif value.fieldType?lower_case == "boolean">
      <#if value.isNullable == true>
-      [=value.fieldName]?: boolean;
+	[=value.fieldName]?: boolean;
      <#else>
-      [=value.fieldName]: boolean;
+	[=value.fieldName]: boolean;
       </#if> 
  <#elseif value.fieldType?lower_case == "date">
       <#if value.isNullable == true>
-      [=value.fieldName]?: string;
+	[=value.fieldName]?: string;
      <#else>
-      [=value.fieldName]: string;
+	[=value.fieldName]: string;
       </#if> 
 <#elseif value.fieldType?lower_case == "string">
        <#if value.isNullable == true>
-      [=value.fieldName]?: string;
+	[=value.fieldName]?: string;
      <#else>
-      [=value.fieldName]: string;
+	[=value.fieldName]: string;
       </#if> 
  </#if> 
 </#list>
@@ -31,11 +31,11 @@ export interface [=IEntity] {
 <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
   <#if DescriptiveField[relationValue.eName].fieldType?lower_case == "long" || DescriptiveField[relationValue.eName].fieldType?lower_case == "int" || DescriptiveField[relationValue.eName].fieldType?lower_case == "short" || DescriptiveField[relationValue.eName].fieldType?lower_case == "double">
-      [=DescriptiveField[relationValue.eName].description?uncap_first]?: number;
+	[=DescriptiveField[relationValue.eName].description?uncap_first]?: number;
   <#elseif DescriptiveField[relationValue.eName].fieldType?lower_case == "boolean">
-      [=DescriptiveField[relationValue.eName].description?uncap_first]?: boolean;
+	[=DescriptiveField[relationValue.eName].description?uncap_first]?: boolean;
   <#else>
-      [=DescriptiveField[relationValue.eName].description?uncap_first]?: string;
+	[=DescriptiveField[relationValue.eName].description?uncap_first]?: string;
   </#if> 
 </#if>
 <#list relationValue.joinDetails as joinDetails>
@@ -44,19 +44,19 @@ export interface [=IEntity] {
 <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))>
 <#if joinDetails.isJoinColumnOptional==false>
  <#if joinDetails.joinColumnType?lower_case == "long" ||  joinDetails.joinColumnType?lower_case == "int" ||  joinDetails.joinColumnType?lower_case == "short" ||  joinDetails.joinColumnType?lower_case == "double"> 
-      [=joinDetails.joinColumn]: number;
+	[=joinDetails.joinColumn]: number;
   <#elseif joinDetails.joinColumnType?lower_case == "boolean">
-      [=joinDetails.joinColumn]: boolean;
+	[=joinDetails.joinColumn]: boolean;
   <#else>
-      [=joinDetails.joinColumn]: string;
+	[=joinDetails.joinColumn]: string;
   </#if>
 <#else>   
   <#if joinDetails.joinColumnType?lower_case == "long" ||  joinDetails.joinColumnType?lower_case == "int" ||  joinDetails.joinColumnType?lower_case == "short" ||  joinDetails.joinColumnType?lower_case == "double"> 
-      [=joinDetails.joinColumn]?: number;
+	[=joinDetails.joinColumn]?: number;
   <#elseif joinDetails.joinColumnType?lower_case == "boolean">
-      [=joinDetails.joinColumn]?: boolean;
+	[=joinDetails.joinColumn]?: boolean;
   <#else>    
-      [=joinDetails.joinColumn]?: string;
+	[=joinDetails.joinColumn]?: string;
   </#if>
 </#if>
 </#if>
@@ -65,4 +65,8 @@ export interface [=IEntity] {
 </#list>
 </#if>
 </#list>
-  }
+<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+	roleId?: number;
+	roleDescriptiveField?: String; 
+</#if>
+}

@@ -15,6 +15,9 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 </#if>
 </#list>
 </#if>
+<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+import { RoleService} from '../role/role.service';
+</#if>
 
 @Component({
   selector: 'app-[=ModuleName]-new',
@@ -24,27 +27,30 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> implements OnInit {
   
     title:string = "New [=ClassName]";
-		constructor(
-			public formBuilder: FormBuilder,
-			public router: Router,
-			public route: ActivatedRoute,
-			public dialog: MatDialog,
-			public dialogRef: MatDialogRef<[=ClassName]NewComponent>,
-			@Inject(MAT_DIALOG_DATA) public data: any,
-			public global: Globals,
-			public pickerDialogService: PickerDialogService,
-			public dataService: [=ClassName]Service,
-			public errorService: ErrorService,
-			<#if Relationship?has_content>
-			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
-			public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
-			</#if>
-			</#list>
-			</#if>
-		) {
-			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
-	  }
+	constructor(
+		public formBuilder: FormBuilder,
+		public router: Router,
+		public route: ActivatedRoute,
+		public dialog: MatDialog,
+		public dialogRef: MatDialogRef<[=ClassName]NewComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: any,
+		public global: Globals,
+		public pickerDialogService: PickerDialogService,
+		public dataService: [=ClassName]Service,
+		public errorService: ErrorService,
+		<#if Relationship?has_content>
+		<#list Relationship as relationKey, relationValue>
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
+		</#if>
+		</#list>
+		</#if>
+		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+		public roleService: RoleService,
+		</#if>
+	) {
+		super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
+	}
  
 	ngOnInit() {
       	<#if Relationship?has_content>
@@ -92,6 +98,10 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#if>
 			</#list>
 			</#if>
+			<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+			roleId: [''],
+			roleDescriptiveField : [{ value: '', disabled: true }],
+			</#if>
 		});
 		this.checkPassedData();
     }
@@ -102,33 +112,50 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			this.associations = [
 			<#list Relationship as relationKey, relationValue>
 			<#if (relationValue.relation == "OneToOne" && relationValue.isParent == false) || relationValue.relation == "ManyToOne">
-			{
-				column: [
-				      <#list relationValue.joinDetails as joinDetails>
-                      <#if joinDetails.joinEntityName == relationValue.eName>
-                      <#if joinDetails.joinColumn??>
-                      {
-					  key: '[=joinDetails.joinColumn]',
-					  value: undefined,
-					  referencedkey: '[=joinDetails.referenceColumn]'
-					  },
-					  </#if>
-                      </#if>
-                      </#list>
-					  
-				],
-				isParent: false,
-				table: '[=relationValue.eName?lower_case]',
-				type: '[=relationValue.relation]',
-				service: this.[=relationValue.eName?uncap_first]Service,
-				<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
-				descriptiveField: '[=DescriptiveField[relationValue.eName].description?uncap_first]',
-				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
-				</#if>
+				{
+					column: [
+					    <#list relationValue.joinDetails as joinDetails>
+	                    <#if joinDetails.joinEntityName == relationValue.eName>
+	                    <#if joinDetails.joinColumn??>
+						{
+							key: '[=joinDetails.joinColumn]',
+							value: undefined,
+							referencedkey: '[=joinDetails.referenceColumn]'
+						},
+						</#if>
+	                    </#if>
+	                    </#list>
+						  
+					],
+					isParent: false,
+					table: '[=relationValue.eName?lower_case]',
+					type: '[=relationValue.relation]',
+					service: this.[=relationValue.eName?uncap_first]Service,
+					<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+					descriptiveField: '[=DescriptiveField[relationValue.eName].description?uncap_first]',
+					referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
+					</#if>
 			    
 				},
 			</#if>
 			</#list>
+			<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+				{
+					column: [
+						{
+							key: 'roleId',
+							value: undefined,
+							referencedkey: 'id'
+						},
+					],
+					isParent: false,
+					table: 'role',
+					type: 'ManyToOne',
+					service: this.roleService,
+					descriptiveField: 'roleDescriptiveField',
+					referencedDescriptiveField: 'name',
+				},	
+			</#if>
 			];
 			this.parentAssociations = this.associations.filter(association => {
 				return (!association.isParent);

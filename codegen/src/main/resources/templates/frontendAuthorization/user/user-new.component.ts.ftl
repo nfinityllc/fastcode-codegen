@@ -58,7 +58,7 @@ export class UserNewComponent extends BaseNewComponent<IUser> implements OnInit 
 			twoFactorEnabled: [false],
 			userName: ['', Validators.required],
 			roleId: [''],
-			roleName : [{ value: '', disabled: true }],
+			roleDescriptiveField : [{ value: '', disabled: true }],
 		});
 		this.checkPassedData();
     }
@@ -77,7 +77,8 @@ export class UserNewComponent extends BaseNewComponent<IUser> implements OnInit 
 				table: 'role',
 				type: 'ManyToOne',
 				service: this.roleService,
-				descriptiveField: 'roleName',
+				descriptiveField: 'roleDescriptiveField',
+				referencedDescriptiveField: 'name',
 			},
 		];
 		this.parentAssociations = this.associations.filter(association => {

@@ -7,27 +7,7 @@ import org.hibernate.validator.constraints.Length;
 public class Update[=ClassName]Input {
 
 <#list Fields as key,value>
- <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-
-  <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-    <#if AuthenticationFields??>
-  	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "Password">
-  	<#if value.fieldName != authValue.fieldName>
-  	<#if value.isNullable==false>
-  @NotNull(message = "[=value.fieldName] Should not be null")
-  </#if> 
-  <#if value.fieldType?lower_case == "string"> 
-  <#if value.length !=0>
-  @Length(max = <#if value.length !=0>[=value.length?c]<#else>255</#if>, message = "[=value.fieldName] must be less than <#if value.length !=0>[=value.length?c]<#else>255</#if> characters")
-  </#if>
-  </#if>
-  private [=value.fieldType] [=value.fieldName];
-    </#if>
-    </#if>
-    </#list>
-    </#if>
-    <#else>
+  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
   <#if value.isNullable==false>
   @NotNull(message = "[=value.fieldName] Should not be null")
   </#if> 
@@ -37,8 +17,7 @@ public class Update[=ClassName]Input {
   </#if>
   </#if>
   private [=value.fieldType] [=value.fieldName];
-    </#if> 
- </#if>  
+  </#if>
 </#list>
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -96,7 +75,6 @@ public class Update[=ClassName]Input {
   public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
   	this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
-  
 </#if> 
 </#if>
 </#if>
@@ -107,11 +85,7 @@ public class Update[=ClassName]Input {
 </#list>
 <#list Fields as key,value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean"|| value.fieldType?lower_case == "date"|| value.fieldType?lower_case == "string" >
-  <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-  <#if AuthenticationFields??>
-  <#list AuthenticationFields as authKey,authValue>
-  <#if authKey== "Password">
-  <#if value.fieldName != authValue.fieldName>
+ 
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
   	return [=value.fieldName];
   }
@@ -119,22 +93,18 @@ public class Update[=ClassName]Input {
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
   	this.[=value.fieldName] = [=value.fieldName];
   }
-  
-  </#if>
-  </#if>
-  </#list>
-  </#if>
-  <#else>
-  public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  	return [=value.fieldName];
-  }
-
-  public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  	this.[=value.fieldName] = [=value.fieldName];
-  }
-  
-  </#if> 
  </#if> 
 </#list>
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+  private Long roleId;
+    
+  public Long getRoleId() {
+   	return roleId;
+  }
+
+  public void setRoleId(Long roleId){
+  	this.roleId = roleId;
+  }
+</#if>
  
 }

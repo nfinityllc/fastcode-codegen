@@ -74,18 +74,14 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 				isParent: false,
 				<#if AuthenticationType=="database" && UserInput??>
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-				<#if DescriptiveField[AuthenticationTable].isPrimaryKey == false>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
-				</#if>
                 <#else>
                 <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
   				<#if authKey== "User Name">
-  				<#if !PrimaryKeys[authValue.fieldName]??>
-  				descriptiveField: '[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]',
+  				descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
 				referencedDescriptiveField: '[=authValue.fieldName]',
-				</#if>
     			</#if>
     			</#list>
     			</#if>
@@ -108,7 +104,7 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 					},  
 				],
 				isParent: false,
-				descriptiveField: 'permissionName',
+				descriptiveField: 'permissionDescriptiveField',
 				referencedDescriptiveField: 'name',
 				service: this.permissionService,
 				associatedObj: undefined,

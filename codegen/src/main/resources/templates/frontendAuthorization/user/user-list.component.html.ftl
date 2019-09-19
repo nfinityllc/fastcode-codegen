@@ -61,7 +61,7 @@
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Role')">Role </mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("Role")}}:</span>
-					{{ item.roleName }}
+					{{ item.roleDescriptiveField }}
 				</mat-cell>
 			</ng-container>
 			

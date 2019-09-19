@@ -145,14 +145,31 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if> 
    </#list> 
+   <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+   <#if AuthenticationFields??>
+   <#list AuthenticationFields as authKey,authValue>
+   <#if authKey== "User Name">
+   @Mappings({ 
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
+   @Mapping(source = "role.id", target = "roleId"),                   
+   })
+   </#if>
+   </#list>
+   </#if>
+   </#if>
    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
 <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+   @Mappings({ 
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
+   @Mapping(source = "role.id", target = "roleId"),                   
+   }) 
+   Find[=ClassName]WithAllFieldsByIdOutput [=ClassName]EntityToFind[=ClassName]WithAllFieldsByIdOutput([=ClassName]Entity entity);
 <#if AuthenticationFields??>
 <#list AuthenticationFields as authKey,authValue>
 <#if authKey== "User Name">
    @Mappings({ 
-   @Mapping(source = "role.name", target = "roleName"),                   
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
    }) 
    Find[=ClassName]By[=authValue.fieldName?cap_first]Output [=ClassName]EntityToFind[=ClassName]By[=authValue.fieldName?cap_first]Output([=ClassName]Entity entity);

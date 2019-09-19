@@ -1,23 +1,11 @@
 package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
 
 import java.util.Date;
-public class Find[=ClassName]ByIdOutput {
+public class Find[=ClassName]WithAllFieldsByIdOutput {
 
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-  <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-    <#if AuthenticationFields??>
-  	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "Password">
-  	<#if value.fieldName != authValue.fieldName>
   private [=value.fieldType] [=value.fieldName];
-    </#if>
-    </#if>
-    </#list>
-    </#if>
-    <#else>
-  private [=value.fieldType] [=value.fieldName];
-    </#if> 
  </#if> 
 </#list>
 <#if Audit!false>
@@ -131,11 +119,6 @@ public class Find[=ClassName]ByIdOutput {
 </#list>
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean"|| value.fieldType?lower_case == "date"|| value.fieldType?lower_case == "string" >
-  <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-  <#if AuthenticationFields??>
-  <#list AuthenticationFields as authKey,authValue>
-  <#if authKey== "Password">
-  <#if value.fieldName != authValue.fieldName>
   public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
   	return [=value.fieldName];
   }
@@ -144,20 +127,6 @@ public class Find[=ClassName]ByIdOutput {
   	this.[=value.fieldName] = [=value.fieldName];
   }
   
-  </#if>
-  </#if>
-  </#list>
-  </#if>
-  <#else>
-  public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
-  	return [=value.fieldName];
-  }
-
-  public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
-  	this.[=value.fieldName] = [=value.fieldName];
-  }
-  
-  </#if> 
   </#if> 
 </#list>
 <#if Audit!false>

@@ -66,11 +66,11 @@ export class RoleDetailsComponent extends BaseDetailsComponent<IRole> implements
 					{
 						key: 'roleId',
 						value: undefined,
-						referencedkey: 'userid'
+						referencedkey: 'id'
 					},
 				],
 				isParent: true,
-				table: '[=AuthenticationTable]',
+				table: '[=AuthenticationTable?uncap_first]',
 				type: 'OneToMany',
 			},
 		];

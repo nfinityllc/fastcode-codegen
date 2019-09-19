@@ -34,10 +34,15 @@
 			</#if>
 			</#list>
 			</#if>
-			<#if isJoinColumn == false>
-			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName && isJoinColumn == false>
-    		<#if value.fieldType == "Date">
+			<#-- to exclude the password field in case of user provided "User" table -->
+			<#assign isPasswordField = false>
+			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName == value.fieldName>
+			<#assign isPasswordField = true>
+			</#if>
+			</#if>
+			<#if isJoinColumn == false && isPasswordField = false>
+			<#if value.fieldType == "Date">
 			<ng-container matColumnDef="[=value.fieldName]">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName] </mat-header-cell>
 				<mat-cell *matCellDef="let item">
@@ -55,27 +60,6 @@
 			</ng-container>
 			</#if>
     		</#if>
-   			<#else>
-   			<#if value.fieldType == "Date">
-			<ng-container matColumnDef="[=value.fieldName]">
-				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName] </mat-header-cell>
-				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
-					{{item.[=value.fieldName] | date: defaultDateFormat}}
-				</mat-cell>
-			</ng-container>
-			<#elseif value.fieldType?lower_case == "string" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
-			<ng-container matColumnDef="[=value.fieldName]">
-				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName]</mat-header-cell>
-				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("[=value.fieldName?cap_first]")}}:</span>
-					{{ item.[=value.fieldName] }}
-				</mat-cell>
-			</ng-container>
-			</#if>
-    		</#if>
-			
-			</#if>
 			</#list>
 			<#list Relationship as relationKey, relationValue>
 			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
@@ -90,6 +74,15 @@
 			</#if>
 			</#if>
 			</#list>
+			<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+			<ng-container matColumnDef="Role">
+				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Role')">Role </mat-header-cell>
+				<mat-cell *matCellDef="let item">
+					<span class="mobile-label">{{getMobileLabelForField("Role")}}:</span>
+					{{ item.roleDescriptiveField }}
+				</mat-cell>
+			</ng-container>
+			</#if>
 			<ng-container matColumnDef="actions">
 				<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 				<mat-cell *matCellDef="let item" (click)="$event.stopPropagation()"> 
