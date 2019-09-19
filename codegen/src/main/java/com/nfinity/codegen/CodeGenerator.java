@@ -640,6 +640,7 @@ public class CodeGenerator {
 
 			backEndTemplate.put("authenticationTemplates/users/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
 			backEndTemplate.put("authenticationTemplates/users/dtos/LoginUserInput.java.ftl", "LoginUserInput.java");
+			backEndTemplate.put("authenticationTemplates/users/dtos/FindCustomUserWithAllFieldsByIdOutput.java.ftl", "Find"+authenticationTable+"WithAllFieldsByIdOutput.java");
 		}
 		return backEndTemplate;
 	}

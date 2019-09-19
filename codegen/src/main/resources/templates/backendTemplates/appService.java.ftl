@@ -42,6 +42,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.Role.RoleManager;
+</#if>
 @Service
 @Validated
 public class [=ClassName]AppService implements I[=ClassName]AppService {
@@ -52,7 +56,12 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Autowired
 	private I[=ClassName]Manager _[=ClassName?uncap_first]Manager;
-  
+	
+	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	@Autowired
+	private RoleManager _roleManager;
+    
+    </#if>
     <#list Relationship as relationKey,relationValue>
     <#if ClassName != relationValue.eName && relationValue.relation !="OneToMany">
     @Autowired
@@ -78,38 +87,49 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
-	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null)
-		{
+	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null) {
 			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
-			if(found[=relationValue.eName]!=null)
+			if(found[=relationValue.eName]!=null) {
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			}
 		<#if joinDetails.isJoinColumnOptional==false>
-			else
+			else {
 				return null;
+			}
 		</#if>
 		}
 		<#if joinDetails.isJoinColumnOptional==false>
-		else
+		else {
 			return null;
+		}
 		</#if>
         </#if>
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
-		{
+        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
 			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
-			if(found[=relationValue.eName]!=null)
+			if(found[=relationValue.eName]!=null) {
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-		else
+			}
+			else {
+				return null;
+			}
+		}
+		else {
 			return null;
 		}
-		else
-			return null;
 		</#if>
 		</#if>
         </#if>
 		</#list>
+		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+		if(input.getRoleId()!=null) {
+			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+			if(foundRole!=null)
+			[=ClassName?uncap_first].setRole(foundRole);
+		}
+		</#if>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
 	}
@@ -127,38 +147,49 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
-	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null)
-		{
+	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null) {
 			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
-			if(found[=relationValue.eName]!=null)
+			if(found[=relationValue.eName]!=null) {
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			}
 		<#if joinDetails.isJoinColumnOptional==false>
-			else
+			else {
 				return null;
+			}
 		</#if>
 		}
 		<#if joinDetails.isJoinColumnOptional==false>
-		else
+		else {
 			return null;
+		}
 		</#if>
 		</#if>
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>)
-		{
+        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
 			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
-			if(found[=relationValue.eName]!=null)
+			if(found[=relationValue.eName]!=null){
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-			else
+			}
+			else {
 				return null;
+			}
 		}
-		else
+		else {
 			return null;
+		}
 		</#if>
         </#if>
 		</#if>
 		</#list>
+		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+		if(input.getRoleId()!=null) {
+			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+			if(foundRole!=null)
+			[=ClassName?uncap_first].setRole(foundRole);
+		}
+		</#if>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
 		return mapper.[=EntityClassName]ToUpdate[=ClassName]Output(updated[=ClassName]);
 	}
@@ -183,9 +214,21 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public Find[=ClassName]WithAllFieldsByIdOutput FindWithAllFieldsById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		if (found[=ClassName] == null)  
+			return null ; 
+ 	   
+ 	    Find[=ClassName]WithAllFieldsByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]WithAllFieldsByIdOutput(found[=ClassName]); 
+		return output;
+	}
 	<#if AuthenticationFields??>
 	<#list AuthenticationFields as authKey,authValue>
 	<#if authKey== "User Name">
+	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=authValue.fieldName?uncap_first]")
 	public Find[=ClassName]By[=authValue.fieldName?cap_first]Output FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
@@ -660,6 +703,42 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
     </#if>
     </#list>
+    
+    <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+    public Map<String,String> parse[=AuthenticationTable]permissionJoinColumn(String keysString) {
+    	Map<String,String> joinColumnMap = new HashMap<String,String>();
+    	<#assign primaryKeyLength=PrimaryKeys?size>
+		<#if primaryKeyLength gt 1 >
+		String[] keyEntries = keysString.split(",");
+		
+		Map<String,String> keyMap = new HashMap<String,String>();
+		if(keyEntries.length > 1) {
+			for(String keyEntry: keyEntries)
+			{
+				String[] keyEntryArr = keyEntry.split(":");
+				if(keyEntryArr.length > 1) {
+					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
+				}
+				else {
+					return null;
+				}
+			}
+		}
+		else {
+			return null;
+		}
+		
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keyMap.get("[=fieldName?uncap_first]"));
+		</#list>
+		<#elseif primaryKeyLength == 1>
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keysString"));
+		</#list>
+		</#if>
+		return joinColumnMap;
+	}
+	</#if>
 	
 }
 

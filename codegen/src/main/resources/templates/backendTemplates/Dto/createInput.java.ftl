@@ -72,5 +72,16 @@ public class Create[=ClassName]Input {
   </#if> 
   </#if>
 </#list>
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+  private Long roleId;
+    
+  public Long getRoleId() {
+   	return roleId;
+  }
+
+  public void setRoleId(Long roleId){
+  	this.roleId = roleId;
+  }
+</#if>
  
 }
