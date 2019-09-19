@@ -54,6 +54,8 @@ public class UpdateUserInput {
   
   private Boolean twoFactorEnabled;
   
+  private String password;
+  
   @NotNull(message = "userName Should not be null")
   @Length(max = 32, message = "userName must be less than 32 characters")
   private String userName;
@@ -153,6 +155,14 @@ public class UpdateUserInput {
 
   public void setLastName(String lastName){
   this.lastName = lastName;
+  }
+  
+  public String getPassword() {
+  return password;
+  }
+
+  public void setPassword(String password){
+  this.password = password;
   }
   
   public Date getLockoutEndDateUtc() {

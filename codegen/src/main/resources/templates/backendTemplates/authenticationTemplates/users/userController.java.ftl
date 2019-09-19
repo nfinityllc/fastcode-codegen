@@ -91,13 +91,14 @@ public class UserController {
 	// ------------ Update user ------------
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdateUserOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateUserInput user) {
-    FindUserByIdOutput currentUser = _userAppService.FindById(Long.valueOf(id));
+    	FindUserWithAllFieldsByIdOutput currentUser = _userAppService.FindWithAllFieldsById(Long.valueOf(id));
 		
 		if (currentUser == null) {
 			logHelper.getLogger().error("Unable to update. User with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
+		user.setPassword(currentUser.getPassword());
     return new ResponseEntity(_userAppService.Update(Long.valueOf(id),user), HttpStatus.OK);
 	}
 

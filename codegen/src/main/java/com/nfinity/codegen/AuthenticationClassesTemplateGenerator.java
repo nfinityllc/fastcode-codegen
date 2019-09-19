@@ -365,6 +365,7 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("users/dtos/CreateUserOutput.java.ftl", "CreateUserOutput.java");
 		backEndTemplate.put("users/dtos/UpdateUserInput.java.ftl", "UpdateUserInput.java");
 		backEndTemplate.put("users/dtos/UpdateUserOutput.java.ftl", "UpdateUserOutput.java");
+		backEndTemplate.put("users/dtos/FindUserWithAllFieldsByIdOutput.java.ftl", "FindUserWithAllFieldsByIdOutput.java");
 		backEndTemplate.put("users/dtos/FindUserByIdOutput.java.ftl", "FindUserByIdOutput.java");
 		backEndTemplate.put("users/dtos/FindUserByNameOutput.java.ftl", "FindUserByNameOutput.java");
 		backEndTemplate.put("users/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");

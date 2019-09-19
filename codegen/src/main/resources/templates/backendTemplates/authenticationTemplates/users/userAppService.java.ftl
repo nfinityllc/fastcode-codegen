@@ -130,6 +130,18 @@ public class UserAppService implements IUserAppService {
 		return  mapper.UserEntityToFindUserByNameOutput(foundUser);
 
 	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "User", key = "#userId")
+	public FindUserWithAllFieldsByIdOutput FindWithAllFieldsById(Long userId) {
+
+		UserEntity foundUser = _userManager.FindById(userId);
+		if (foundUser == null)  
+			return null ; 
+ 	   
+ 	    FindUserWithAllFieldsByIdOutput output=mapper.UserEntityToFindUserWithAllFieldsByIdOutput(foundUser); 
+		return output;
+	}
 
 	 //Role
 	// ReST API Call - GET /user/1/role

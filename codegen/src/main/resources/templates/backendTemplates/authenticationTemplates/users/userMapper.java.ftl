@@ -49,6 +49,13 @@ public interface UserMapper {
     }) 
     FindUserByNameOutput UserEntityToFindUserByNameOutput(UserEntity entity);
 
+	@Mappings({ 
+    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
+    @Mapping(source = "role.id", target = "roleId"),                   
+    }) 
+    FindUserWithAllFieldsByIdOutput UserEntityToFindUserWithAllFieldsByIdOutput(UserEntity entity);
+  
+
     @Mappings({
             @Mapping(source = "role.id", target = "id"),
               <#if Audit!false>
