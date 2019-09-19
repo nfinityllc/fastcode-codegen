@@ -9,6 +9,8 @@ import [=PackageName].domain.Authorization.[=AuthenticationTable].[=Authenticati
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.Authorization.Permission.PermissionManager;
 import [=PackageName].domain.model.PermissionEntity;
+import [=PackageName].domain.model.RolepermissionEntity;
+
 <#if CompositeKeyClasses?? && CompositeKeyClasses?seq_contains(ClassName)>
 import [=PackageName].domain.model.[=AuthenticationTable]Id;
 </#if>
@@ -19,6 +21,7 @@ import org.springframework.cache.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,24 +64,24 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 
 		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Create[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
 	  	
-    	if(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if>)
+    	if(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if> || input.getPermissionId()!=null)
 		{
 		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()<#elseif AuthenticationType=="database" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
-
-		if(found[=AuthenticationTable]!=null)
-			[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
+		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
+		
+		if(found[=AuthenticationTable]!=null || foundPermission!=null)
+		{			
+				if(!checkIfPermissionAlreadyAssigned(found[=AuthenticationTable], foundPermission))
+				{
+					[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
+					[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
+				}
+				else return null;
 		}
-		else
-			return null;
-	  	
-	  	if(input.getPermissionId()!=null)
-		{
-			PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
-			if(foundPermission!=null)
-				[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
+		else return null;
 		}
-		else
-			return null;
+		else return null;
+		
 		[=AuthenticationTable]permissionEntity created[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Create([=AuthenticationTable?uncap_first]permission);
 		return mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput(created[=AuthenticationTable]permission);
 	}
@@ -88,22 +91,58 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	public Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input) {
 
 		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
-	  	if(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if>)
+	  	
+		if(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()!=null<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if> || input.getPermissionId()!=null)
 		{
 		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if AuthenticationType=="database" && !UserInput??>input.get[=AuthenticationTable]Id()<#elseif AuthenticationType=="database" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
-		if(found[=AuthenticationTable]!=null)
-			[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
+		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
+		
+		if(found[=AuthenticationTable]!=null || foundPermission!=null)
+		{			
+				if(!checkIfPermissionAlreadyAssigned(found[=AuthenticationTable], foundPermission))
+				{
+					[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
+					[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
+				}
+				else return null;
 		}
-	  	if(input.getPermissionId()!=null)
-		{
-			PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
-			if(foundPermission!=null)
-				[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
+		else return null;
 		}
+		else return null;
+		
 		[=AuthenticationTable]permissionEntity updated[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Update([=AuthenticationTable?uncap_first]permission);
 		return mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput(updated[=AuthenticationTable]permission);
 	}
 	
+	public boolean checkIfPermissionAlreadyAssigned([=AuthenticationTable]Entity found[=AuthenticationTable],PermissionEntity foundPermission)
+	{
+		if(found[=AuthenticationTable].getRole() !=null)
+		{
+			Set<RolepermissionEntity> rolePermission = found[=AuthenticationTable].getRole().getRolepermissionSet();
+			Iterator iterator = rolePermission.iterator();
+			 
+			while (iterator.hasNext()) { 
+				RolepermissionEntity pe = (RolepermissionEntity) iterator.next();
+				if (pe.getPermission() == foundPermission ) {
+					return true;
+				}
+			}
+		}
+		 
+		
+		Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]Permission = found[=AuthenticationTable].get[=AuthenticationTable]permissionSet();
+		 
+		Iterator pIterator = [=AuthenticationTable?uncap_first]Permission.iterator();
+			while (pIterator.hasNext()) { 
+				[=AuthenticationTable]permissionEntity pe = ([=AuthenticationTable]permissionEntity) pIterator.next();
+				if (pe.getPermission() == foundPermission ) {
+					return true;
+				}
+			}
+			
+		return false;
+	}
+
 	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(value="[=AuthenticationTable]permission", key = "#id")
 	public void Delete([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {

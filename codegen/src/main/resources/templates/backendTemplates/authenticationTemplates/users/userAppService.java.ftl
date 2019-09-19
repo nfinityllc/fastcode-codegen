@@ -7,6 +7,8 @@ import [=PackageName].application.Authorization.User.Dto.*;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.Authorization.User.IUserManager;
+import [=PackageName].domain.model.RolepermissionEntity;
+import [=PackageName].domain.model.UserpermissionEntity;
 import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.model.QUserEntity;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -73,7 +75,24 @@ public class UserAppService implements IUserAppService {
 		{
 		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
 		if(foundRole!=null)
-		user.setRole(foundRole);
+		{
+			Set<UserpermissionEntity> userPermission = user.getUserpermissionSet();
+			Set<RolepermissionEntity> rolePermission = foundRole.getRolepermissionSet();
+			
+			Iterator pIterator = userPermission.iterator();
+			Iterator rIterator = rolePermission.iterator();
+				while (pIterator.hasNext()) { 
+					System.out.println(" in up iterartor");
+					UserpermissionEntity up = (UserpermissionEntity) pIterator.next();
+					while(rIterator.hasNext()) {
+						RolepermissionEntity rp = (RolepermissionEntity) pIterator.next();
+					if (up.getPermission() == rp.getPermission() ) {
+                         userPermission.remove(rp.getPermission());
+					}
+					}
+				}
+		    user.setRole(foundRole);
+		}
 		}
 		UserEntity updatedUser = _userManager.Update(user);
 		return mapper.UserEntityToUpdateUserOutput(updatedUser);
