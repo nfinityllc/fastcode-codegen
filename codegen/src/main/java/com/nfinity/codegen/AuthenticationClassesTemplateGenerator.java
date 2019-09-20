@@ -581,6 +581,11 @@ public class AuthenticationClassesTemplateGenerator {
 
 		authorizationEntities.add("login");
 		authorizationEntities.add("core");
+		if(authenticationType == "oidc")
+		{
+			authorizationEntities.add("oauth");
+		}
+		
 		for(String entity: authorizationEntities) {
 			if(entity == "userpermission" && authenticationTable != null) {
 				generateFrontendAuthorizationComponents(appFolderPath + convertCamelCaseToDash(authenticationTable) + "permission", authorizationPath + entity, authenticationType, authenticationTable, root);
