@@ -62,9 +62,10 @@ public class CodegenApplication implements ApplicationRunner {
 		System.out.print("\n1. none");
 		System.out.print("\n2. database");
 		System.out.print("\n3. ldap");
-		System.out.print("\nEnter 1,2,or 3 : ");
+		System.out.print("\n4. oidc");
+		System.out.print("\nEnter 1,2,3 or 4 : ");
 		int value = scanner.nextInt();
-		while (value < 1 || value > 3) {
+		while (value < 1 || value > 4) {
 			System.out.println("\nInvalid Input \nEnter again :");
 			value = scanner.nextInt();
 		}
@@ -96,6 +97,9 @@ public class CodegenApplication implements ApplicationRunner {
 		}
 		else if (value == 3) {
 			input.setAuthenticationType("ldap");
+		}
+		else if (value == 4) {
+			input.setAuthenticationType("oidc");
 		}
 
 		//		input.setDatabaseAuthentication(root.get("db-autentication") == null

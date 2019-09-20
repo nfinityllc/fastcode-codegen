@@ -12,7 +12,7 @@ public class GetRoleOutput {
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
     </#if>
-    <#if AuthenticationType=="database" && !UserInput??>
+    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
     private Long userId;
     private String userDescriptiveField;
   	<#elseif AuthenticationType=="database" && UserInput??>
@@ -34,7 +34,7 @@ public class GetRoleOutput {
   	</#if>
     </#if>
 
-    <#if AuthenticationType=="database" && !UserInput??>
+    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc" >
   	public Long getUserId() {
   	return userId;
   	}

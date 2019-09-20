@@ -16,7 +16,7 @@ import java.util.Date;
 public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
 
   private Long permissionId;
-  <#if AuthenticationType=="database" && !UserInput??>
+  <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   private Long userId;
   <#elseif AuthenticationType=="database" && UserInput??>
   <#if PrimaryKeys??>
@@ -51,7 +51,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   this.permissionId = permissionId;
   }
   
-  <#if AuthenticationType=="database" && !UserInput??>
+  <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   @Id
   @Column(name = "userId", nullable = false)
   public Long getUserId() {
@@ -80,7 +80,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   </#if>
   
   @ManyToOne
-  <#if AuthenticationType=="database" && !UserInput??>
+  <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   @JoinColumn(name = "[=AuthenticationTable?uncap_first]Id", insertable=false, updatable=false)
   <#elseif AuthenticationType=="database" && UserInput??>
   <#if PrimaryKeys??>

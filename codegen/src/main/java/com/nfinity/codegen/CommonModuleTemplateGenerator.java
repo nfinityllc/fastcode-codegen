@@ -150,6 +150,7 @@ public class CommonModuleTemplateGenerator {
 		backEndTemplate.put("error/ApiSubError.java.ftl", "ApiSubError.java");
 		backEndTemplate.put("error/ApiValidationError.java.ftl", "ApiValidationError.java");
 		backEndTemplate.put("error/RestExceptionHandler.java.ftl", "RestExceptionHandler.java");
+		backEndTemplate.put("error/ExceptionMessageConstants.java.ftl", "ExceptionMessageConstants.java");
 		
 		return backEndTemplate;
 	}

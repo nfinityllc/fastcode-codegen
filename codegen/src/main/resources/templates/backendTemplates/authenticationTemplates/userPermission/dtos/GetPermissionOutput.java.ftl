@@ -15,7 +15,7 @@ public class GetPermissionOutput {
   this.[=AuthenticationTable?uncap_first]permissionPermissionId = [=AuthenticationTable?uncap_first]permissionPermissionId;
   }
   
-   <#if AuthenticationType=="database" && !UserInput??>
+   <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc" >
    private Long [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
   
    public Long get[=AuthenticationTable]permission[=AuthenticationTable]Id() {

@@ -35,7 +35,7 @@ public class PomFileModifier {
 		Dependency springFoxSwagger = new Dependency("io.springfox","springfox-swagger2","2.7.0");
 		Dependency springFoxSwaggerUI = new Dependency("io.springfox","springfox-swagger-ui","2.7.0");
 		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
-	
+		
 		if(scheduler)
 		{
 			Dependency hibernate_cp = new Dependency("org.hibernate","hibernate-c3p0","4.3.6.Final");
@@ -55,6 +55,13 @@ public class PomFileModifier {
 		{
 			Dependency ldap_security = new Dependency("org.springframework.security","spring-security-ldap","5.1.1.RELEASE");
 			dependencies.add(ldap_security);
+		}
+		else if(authenticationType == "oidc")
+		{
+			Dependency jsonToken = new Dependency("io.jsonwebtoken","jjwt","0.9.0");
+			Dependency nimbus= new Dependency("com.nimbusds","nimbus-jose-jwt","7.7");
+			dependencies.add(jsonToken);
+			dependencies.add(nimbus);
 		}
 		
 		if(history)

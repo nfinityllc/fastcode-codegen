@@ -12,7 +12,7 @@ public class Get[=AuthenticationTable]Output {
 
    	private Long [=AuthenticationTable]permissionPermissionId;
   
-   <#if AuthenticationType=="database" && !UserInput??>
+   <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
    	private Long [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
   
    	public Long get[=AuthenticationTable]permission[=AuthenticationTable]Id() {

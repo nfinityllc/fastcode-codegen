@@ -1,6 +1,6 @@
 package [=PackageName];
 
-<#if AuthenticationType == "database">
+<#if AuthenticationType == "database" || AuthenticationType=="oidc">
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -18,13 +18,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-<#if AuthenticationType == "database">
+<#if AuthenticationType == "database" || AuthenticationType=="oidc">
 @EnableTransactionManagement
 @EnableJpaRepositories
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 </#if>
 public class BeanConfig {
-<#if AuthenticationType == "database">
+<#if AuthenticationType == "database" || AuthenticationType=="oidc">
     
     @Bean
     AuditorAware<String> auditorProvider() {

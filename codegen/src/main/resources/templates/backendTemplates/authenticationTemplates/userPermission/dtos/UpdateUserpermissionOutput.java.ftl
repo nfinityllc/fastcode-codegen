@@ -3,7 +3,7 @@ package [=PackageName].application.Authorization.[=AuthenticationTable]permissio
 public class Update[=AuthenticationTable]permissionOutput {
 
   private Long permissionId;
-  	<#if AuthenticationType=="database" && !UserInput??>
+  	<#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc" >
     private Long [=AuthenticationTable?uncap_first]Id;
     private String [=AuthenticationTable?uncap_first]DescriptiveField;
   	<#elseif AuthenticationType=="database" && UserInput??>
@@ -44,7 +44,7 @@ public class Update[=AuthenticationTable]permissionOutput {
     	this.permissionId = permissionId;
     }
   
-    <#if AuthenticationType=="database" && !UserInput??>
+    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc" >
   	public Long get[=AuthenticationTable?cap_first]Id() {
   	 	return [=AuthenticationTable?uncap_first]Id;
   	 }
