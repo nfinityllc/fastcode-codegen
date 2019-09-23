@@ -14,9 +14,11 @@
 
         <mat-nav-list class="subnav">
 
-          <a *ngFor="let entity of entityList" mat-list-item class="mat-sub-list-item" [routerLink]="[entity]">
-            {{entity}}
-          </a>
+          <ng-container *ngFor="let entity of entityList">
+            <a <#if AuthenticationType != "none">*ngIf="isMenuVisible(entity)"</#if> mat-list-item class="mat-sub-list-item" [routerLink]="[entity]">
+              {{entity}}
+            </a>
+          </ng-container>
 
         </mat-nav-list>
       </mat-expansion-panel>
@@ -30,15 +32,15 @@
         <mat-nav-list class="subnav">
 
           <#if AuthenticationType == "database" && !UserInput??>
-          <a mat-list-item class="mat-sub-list-item" routerLink="user">Users </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="userpermission">Users Permissions </a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('user')" routerLink="user">Users </a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('userpermission')" routerLink="userpermission">Users Permissions </a>
           <#elseif AuthenticationType == "database" && UserInput??>
-          <a mat-list-item class="mat-sub-list-item" routerLink="[=AuthenticationTable?lower_case]">[=AuthenticationTable] </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="[=AuthenticationTable?lower_case]permission">[=AuthenticationTable] Permissions </a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('[=AuthenticationTable?lower_case]')" routerLink="[=AuthenticationTable?lower_case]">[=AuthenticationTable] </a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('[=AuthenticationTable?lower_case]permission')" routerLink="[=AuthenticationTable?lower_case]permission">[=AuthenticationTable] Permissions </a>
           </#if>          
-          <a mat-list-item class="mat-sub-list-item" routerLink="role">Roles</a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="permission">Permissions</a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="rolepermission">Roles Permissions</a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('role')" routerLink="role">Roles</a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('permission')" routerLink="permission">Permissions</a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('rolepermission')" routerLink="rolepermission">Roles Permissions</a>
 
         </mat-nav-list>
       </mat-expansion-panel>

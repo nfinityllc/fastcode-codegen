@@ -25,6 +25,7 @@ import freemarker.template.Template;
 public class AuthenticationClassesTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String SECURITY_CLASSES_TEMPLATE_FOLDER = "/templates/backendTemplates/authenticationTemplates";
+	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
 
 	public static void generateAutheticationClasses(String destination, String packageName,Boolean audit,Boolean history,Boolean flowable,String authenticationType
 			,String schemaName,String authenticationTable,Map<String,EntityDetails> details) {
@@ -92,6 +93,7 @@ public class AuthenticationClassesTemplateGenerator {
 		}
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
 		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root);
+		generateAppStartupRunner(details, packageName, backendAppFolder, authenticationTable);
 	}
 
 	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
@@ -590,6 +592,7 @@ public class AuthenticationClassesTemplateGenerator {
 		}
 
 	}
+	
 	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType, String authenticationTable, Map<String,Object> root) {
 		List<String> fl = FolderContentReader.getFilesFromFolder(templatePath);
 		Map<String, Object> templates = new HashMap<>();
@@ -622,6 +625,40 @@ public class AuthenticationClassesTemplateGenerator {
 		generateFiles(templates, root, destination);
 	}
 	
+	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String packageName, String backEndRootFolder, String authenticationTable){
+		
+		Map<String, Object> entitiesMap = new HashMap<String,Object>();
+		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
+		{
+
+			Map<String, String> entityMap = new HashMap<String,String>();
+			String key = entry.getKey();
+			String name = key.substring(key.lastIndexOf(".") + 1);
+
+			entityMap.put("entity" , name + "Entity");
+			entityMap.put("requestMapping" , "/" + name.toLowerCase());
+			entityMap.put("method" , "get" + name + "Changes");
+			entitiesMap.put(name, entityMap);
+
+		}
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/"); 
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
+
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 
+		cfg.setDefaultEncoding("UTF-8"); 
+		cfg.setTemplateLoader(mtl); 
+
+		Map<String, Object> root = new HashMap<>();
+		root.put("entitiesMap", entitiesMap);
+		root.put("PackageName", packageName);
+		root.put("authenticationTable" , authenticationTable);
+		Map<String, Object> template = new HashMap<>();
+		template.put("AppStartupRunner.java.ftl", "AppStartupRunner.java");
+
+		new File(backEndRootFolder).mkdirs();
+		generateFiles(template, root, backEndRootFolder);
+	}
+
 	private static String convertCamelCaseToDash(String str) {
 		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
 		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);

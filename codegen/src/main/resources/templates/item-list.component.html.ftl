@@ -8,9 +8,8 @@
 		</span>
 	</span>
 	<span class="middle">{{title}}</span>
-	<i class="material-icons" (click)="addNew()">
-		add
-	</i>
+	<button mat-button [disabled]="!IsCreatePermission" (click)="addNew()">
+ 		Add </button>
 </mat-toolbar>
 <div class="container">
 	<app-list-filters [columnsList]="selectedColumns" (onSearch)="applyFilter($event)"></app-list-filters>
@@ -41,7 +40,7 @@
 			<#assign isPasswordField = true>
 			</#if>
 			</#if>
-			<#if isJoinColumn == false && isPasswordField = false>
+			<#if isJoinColumn == false && isPasswordField == false>
 			<#if value.fieldType == "Date">
 			<ng-container matColumnDef="[=value.fieldName]">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=value.fieldName]')"> [=value.fieldName] </mat-header-cell>

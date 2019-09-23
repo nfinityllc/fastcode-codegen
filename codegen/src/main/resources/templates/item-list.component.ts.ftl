@@ -7,7 +7,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import {[=ClassName]NewComponent} from './[=ModuleName]-new.component';
 import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
-
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
@@ -17,6 +16,9 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 </#if>
 <#if AuthenticationType=="database" && ClassName == AuthenticationTable>
 import { RoleService} from '../role/role.service';
+</#if>
+<#if AuthenticationType !="none" >
+import { GlobalPermissionService } from 'fastCodeCore';
 </#if>
 
 @Component({
@@ -46,6 +48,9 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		</#if>
 		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
 		public roleService: RoleService,
+		</#if>
+		<#if AuthenticationType !="none" >
+		public globalPermissionService: GlobalPermissionService,
 		</#if>
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)

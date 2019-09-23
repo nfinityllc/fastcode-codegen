@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Globals } from '../../../globals';
 <#if AuthenticationType != "none">
 import { AuthenticationService } from '../../../core/authentication.service';
+import { GlobalPermissionService } from '../../../core/global-permission.service';
 </#if>
 import { ActivatedRoute, Router, Event } from '@angular/router';
 import entities from './entities.json';
@@ -38,6 +39,7 @@ export class MainNavComponent {
 		public Global: Globals,
 		<#if AuthenticationType != "none">
 		public Auth: AuthenticationService,
+		public globalPermissionService: GlobalPermissionService,
 		</#if>
 	) {
 
@@ -57,9 +59,14 @@ export class MainNavComponent {
 		console.log('nav clicked');
 	}
 	<#if AuthenticationType != "none">
+	isMenuVisible(entityName:string){
+		return  this.Auth.token? this.globalPermissionService.hasPermissionOnEntity(entityName,"READ"):false;
+	}
+	
 	login() {
 		this.router.navigate(['/login'], { queryParams: { returnUrl: 'dashboard' } });
 	}
+	
 	logout() {
 		this.Auth.logout();
 		this.router.navigate(['/']);

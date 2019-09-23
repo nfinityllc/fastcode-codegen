@@ -1,10 +1,10 @@
 <div *ngIf="item" class="container">
 	<mat-toolbar class="action-tool-bar" color="primary">
-		<button mat-flat-button (click)="onBack()">
+		<button mat-button (click)="onBack()">
 	    {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>
 		<span class="middle">{{title}}</span>
 	
-		<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()">
+		<button [disabled]="!IsUpdatePermission" mat-button (click)="itemNgForm.ngSubmit.emit()">
 	    {{'GENERAL.ACTIONS.SAVE' | translate}} </button>
 	</mat-toolbar>
 	<mat-card class="card">
@@ -36,7 +36,6 @@
 			</#if>
 			</#if>
             <#if isJoinColumn == false && isPasswordField == false>  
-    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName && isJoinColumn == false>
 			<#if value.fieldType?lower_case == "boolean">
 				<mat-checkbox formControlName="[=value.fieldName]">[=value.fieldName]</mat-checkbox>
 			<#elseif value.fieldType?lower_case == "date">
@@ -62,7 +61,6 @@
 					<mat-error *ngIf="!itemForm.get('[=value.fieldName]').valid && itemForm.get('[=value.fieldName]').touched">[=value.fieldName] is required</mat-error>
 				    </#if>
 				</mat-form-field>
-			</#if>
 			</#if>
    			</#if>
 			</#list>

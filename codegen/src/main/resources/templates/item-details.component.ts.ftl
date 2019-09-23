@@ -20,6 +20,9 @@ import { RoleService} from '../role/role.service';
 </#if>
 
 import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+<#if AuthenticationType !="none" >
+import { GlobalPermissionService } from 'fastCodeCore';
+</#if>
 
 @Component({
   selector: 'app-[=ModuleName]-details',
@@ -48,6 +51,9 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		</#if>
 		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
 		public roleService: RoleService,
+		</#if>
+		<#if AuthenticationType !="none" >
+		public globalPermissionService: GlobalPermissionService,
 		</#if>
 	) {
 		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);

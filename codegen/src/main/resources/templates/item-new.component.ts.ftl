@@ -18,6 +18,9 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 <#if AuthenticationType=="database" && ClassName == AuthenticationTable>
 import { RoleService} from '../role/role.service';
 </#if>
+<#if AuthenticationType !="none" >
+import { GlobalPermissionService } from 'fastCodeCore';
+</#if>
 
 @Component({
   selector: 'app-[=ModuleName]-new',
@@ -47,6 +50,9 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 		</#if>
 		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
 		public roleService: RoleService,
+		</#if>
+		<#if AuthenticationType !="none" >
+		public globalPermissionService: GlobalPermissionService,
 		</#if>
 	) {
 		super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);

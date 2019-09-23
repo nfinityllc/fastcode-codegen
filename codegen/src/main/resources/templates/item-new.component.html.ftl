@@ -1,8 +1,8 @@
 <div class="container">
 	<mat-toolbar class="action-tool-bar" color="primary">
-		<button mat-flat-button (click)="onCancel()">{{'GENERAL.ACTIONS.CANCEL' | translate}}</button>
-			<span class="middle">{{title}}</span>
-			<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading">{{'GENERAL.ACTIONS.SAVE' | translate}}</button>
+		<button mat-button (click)="onCancel()">{{'GENERAL.ACTIONS.CANCEL' | translate}}</button>
+		<span class="middle">{{title}}</span>
+		<button mat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading || !IsCreatePermission">{{'GENERAL.ACTIONS.SAVE' | translate}}</button>
 	</mat-toolbar>
 	<mat-card>
 		<h2>{{title}}</h2>
