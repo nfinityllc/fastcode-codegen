@@ -1,19 +1,11 @@
 package [=PackageName].security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import [=PackageName].domain.model.PermissionEntity;
-import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.User.IUserManager;
-import [=PackageName].domain.model.UserEntity;
 
 import [=CommonModulePackage].error.ApiError;
 import [=CommonModulePackage].error.ExceptionMessageConstants;
 import [=CommonModulePackage].logging.LoggingHelper;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.DefaultClock;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -21,13 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+<#if AuthenticationType == "database" || AuthenticationType == "ldap">
+import java.util.stream.Collectors;
+</#if>
+import java.util.*;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -35,26 +29,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+
+<#if AuthenticationType == "oidc">
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.springframework.security.core.authority.AuthorityUtils;
+import [=PackageName].domain.model.UserpermissionEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.User.IUserManager;
+import [=PackageName].domain.model.UserEntity;
 import com.nimbusds.jose.*;
 import com.nimbusds.jwt.*;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+</#if>
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     //@Autowired
     private Environment environment;
 
+ <#if AuthenticationType == "oidc">
     private IUserManager _userMgr;
+ </#if>
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
-
-    private Clock clock = DefaultClock.INSTANCE;
-
-  //  private IJwtRepository jwtRepo;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req,
@@ -120,6 +121,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (StringUtils.isNotEmpty(token) && token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             String userName = null;
             List<GrantedAuthority> authorities = null;
+            <#if AuthenticationType == "database" || AuthenticationType == "ldap">
             if(!environment.getProperty("fastCode.auth.method").equals("openid")) {
 
                  claims = Jwts.parser()
@@ -131,28 +133,21 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 authorities = scopes.stream()
                         .map(authority -> new SimpleGrantedAuthority(authority))
                         .collect(Collectors.toList());
-            }else {
+            }
+            </#if>
+            <#if AuthenticationType == "oidc">
 
+            SignedJWT accessToken = null;
+            JWTClaimsSet claimSet = null;
 
-                SignedJWT accessToken = null;
-                JWTClaimsSet claimSet = null;
-
-                try {
-                   /* claims = Jwts.parser()
-                            .setSigningKey(DatatypeConverter.parseBase64Binary(SecurityConstants.OKTA_SECRET))
-                            .parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, "").trim())
-                            .getBody();*/
-
-                    accessToken = SignedJWT.parse(token.replace(SecurityConstants.TOKEN_PREFIX, ""));
-                //    claimSet = accessToken.getJWTClaimsSet();
-                 //   userName = claimSet.getSubject();
-
-
-                    String kid = accessToken.getHeader().getKeyID();
-
+            try {
+              
+                accessToken = SignedJWT.parse(token.replace(SecurityConstants.TOKEN_PREFIX, ""));
+            
+                String kid = accessToken.getHeader().getKeyID();
+                
                 JWKSet jwks = null;
-
-                    jwks = JWKSet.load(new URL("https://dev-568072.okta.com/oauth2/default/v1/keys"));
+				jwks = JWKSet.load(new URL(environment.getProperty("spring.security.oauth2.client.provider.oidc.issuer-uri") + "/v1/keys"));
 
                 RSAKey jwk = (RSAKey) jwks.getKeyByKeyId(kid);
 
@@ -178,13 +173,19 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
                 UserEntity userEntity = _userMgr.FindByUserName(userName);
 
-                Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity);
-                List<String> pList = new ArrayList<String>();
-
-                for (PermissionEntity item: permissions) {
-                    pList.add(item.getName());
-                }
-
+                Set<UserpermissionEntity> spe = userEntity.getUserpermissionSet();
+                
+//              Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
+//              for (PermissionEntity item: permissions) { 
+//              	pList.add(item.getName()); 
+//              } 
+                List<String> pList = new ArrayList<String>(); 
+                Iterator pIterator = spe.iterator();
+        		while (pIterator.hasNext()) { 
+        			UserpermissionEntity pe = (UserpermissionEntity) pIterator.next();
+        			pList.add(pe.getPermission().getName());
+        		}
+         
                 RoleEntity role = _userMgr.GetRole(userEntity.getId());
                 List<String> groups = new ArrayList<String>();
 
@@ -195,56 +196,10 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 String[] groupsArray = new String[groups.size()];
 
                 authorities = con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray)));
-            }
+            </#if>
 
-
-
-          /*  List<GrantedAuthority> authorities = null;
-
-
-            if(!environment.getProperty("fastCode.auth.method").equals("openid")) {
-                List<String> scopes = claims.get("scopes", List.class);
-                authorities = scopes.stream()
-                        .map(authority -> new SimpleGrantedAuthority(authority))
-                        .collect(Collectors.toList());
-            }
-            //need to get authorities from database
-            else {
-                // Get the authorities from the database
-
-                if(_userMgr==null){
-                    ServletContext servletContext = request.getServletContext();
-                    WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-                    _userMgr = webApplicationContext.getBean(IUserManager.class);
-                }
-
-                // Add all the roles and permissions in a list and then convert the list into all permissions, removing duplicates
-
-                UserEntity userEntity = _userMgr.FindByUserName(user);
-
-                Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity);
-                List<String> pList = new ArrayList<String>();
-
-                for (PermissionEntity item: permissions) {
-                    pList.add(item.getName());
-                }
-
-                RoleEntity role = _userMgr.GetRole(userEntity.getId());
-                List<String> groups = new ArrayList<String>();
-
-                groups.add(role.getName());
-                groups.addAll(pList);
-
-                ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities();
-                String[] groupsArray = new String[groups.size()];
-
-                authorities = con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray)));
-
-            }*/
-
-
-            if ((userName != null) && StringUtils.isNotEmpty(userName)) {
-                return new UsernamePasswordAuthenticationToken(userName, null, authorities);
+                if ((userName != null) && StringUtils.isNotEmpty(userName)) {
+                	return new UsernamePasswordAuthenticationToken(userName, null, authorities);
             }
         }
         return null;

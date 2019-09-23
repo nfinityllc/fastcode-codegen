@@ -1,6 +1,6 @@
 package [=PackageName].security;
 
-import [=PackageName].domain.model.PermissionEntity;
+import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
 import io.jsonwebtoken.Claims;
@@ -90,13 +90,23 @@ public class ConvertToPrivilegeAuthorities {
             if (ga.getAuthority().startsWith("ROLE_")) {
 
                 RoleEntity re = _roleManager.FindByRoleName(ga.getAuthority());
-                Set<PermissionEntity> spe = re.getPermissions();
-                if (spe.size() != 0) {
-                    for (PermissionEntity pe : spe) {
-                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
-                        newlistAuthorities.add(authority);
-                    }
-                }
+                Set<RolepermissionEntity> rpe=re.getRolepermissionSet();
+//              Set<PermissionEntity> spe = re.getPermissions();
+//              if (spe.size() != 0) {
+//              	for (PermissionEntity pe : spe) {
+//                  	SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
+//                      newlistAuthorities.add(authority);
+//                  }
+//              }
+                if (rpe.size() != 0) {
+                Iterator iterator = rpe.iterator();
+   			 
+    			while (iterator.hasNext()) { 
+    				RolepermissionEntity pe = (RolepermissionEntity) iterator.next();
+    				SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getPermission().getName());
+                    newlistAuthorities.add(authority);	
+    				}
+    			}
             } else {
 
                 newlistAuthorities.add(ga);

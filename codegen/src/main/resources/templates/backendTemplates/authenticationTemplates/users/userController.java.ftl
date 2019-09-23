@@ -19,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 <#if AuthenticationType == "oidc">
-import [=PackageName].domain.model.PermissionEntity;
+import [=PackageName].domain.model.UserpermissionEntity;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.User.IUserManager;
 import [=PackageName].domain.model.UserEntity;
@@ -30,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Iterator;
 </#if>
 import java.util.List;
 import java.util.Map;
@@ -68,12 +69,18 @@ public class UserController {
  
         String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
         UserEntity userEntity = _userMgr.FindByUserName(userName); 
-        Set<PermissionEntity> permissions =_userMgr.GetPermission(userEntity); 
+        Set<UserpermissionEntity> spe = userEntity.getUserpermissionSet();
+        
+//      Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
+//      for (PermissionEntity item: permissions) { 
+//      	pList.add(item.getName()); 
+//      } 
         List<String> pList = new ArrayList<String>(); 
- 
-        for (PermissionEntity item: permissions) { 
-            pList.add(item.getName()); 
-        } 
+        Iterator pIterator = spe.iterator();
+		while (pIterator.hasNext()) { 
+			UserpermissionEntity pe = (UserpermissionEntity) pIterator.next();
+			pList.add(pe.getPermission().getName());
+		}
  
         RoleEntity role = _userMgr.GetRole(userEntity.getId()); 
         List<String> groups = new ArrayList<String>(); 
