@@ -5,13 +5,6 @@ import [=PackageName].domain.model.UserEntity;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import [=CommonModulePackage].Search.SearchFields;
-<#if AuthenticationType == "oidc">
-import [=PackageName].domain.model.PermissionEntity;
-import java.util.Set;
-</#if>
-
-import java.util.List;
 
 public interface IUserManager {
     // CRUD Operations
@@ -29,9 +22,7 @@ public interface IUserManager {
    
     //Role
     public RoleEntity GetRole(Long userId);
-    <#if AuthenticationType == "oidc">
-    public Set<PermissionEntity> GetPermissions(UserEntity user);
-    </#if>
+   
   
 }
 

@@ -59,12 +59,12 @@ server.ssl.key-store-password=Rfhh8ek2
 # The alias mapped to the certificate
 server.ssl.key-alias=tomcat
 
-<#if AuthenticationType != "none">
-fastCode.auth.method=[=AuthenticationType]
+<#if AuthenticationType == "database">
+fastCode.auth.method=database
 </#if>
 <#if AuthenticationType == "ldap">
 # LDAP Server Setup - /login
-
+fastCode.auth.method=ldap
 fastCode.ldap.contextsourceurl=ldap://localhost:10389/dc=nfinityllc,dc=com
 fastCode.ldap.manager.dn=uid=admin,ou=system
 fastCode.ldap.manager.password=secret
@@ -76,11 +76,12 @@ fastCode.ldap.groupsearchfilter=(member={0})
 #fastCode.ldap.ldiffilename=C:/Program Files/Apache Directory Studio/users.ldif
 </#if>
 <#if AuthenticationType == "oidc">
+fastCode.auth.method=openid
 
-spring.security.oauth2.client.registration.oidc.client-id=0oa137abax4DPBhui357
-#spring.security.oauth2.client.registration.oidc.client-secret=tS23X8Cipe9G7XmfZk-VesHqdXzJRiGmz4DtXP5a
-spring.security.oauth2.client.provider.oidc.issuer-uri=https://dev-568072.okta.com/oauth2/default
+spring.security.oauth2.client.registration.oidc.client-id=0oa1dpe6xa5SKvHR0357
+spring.security.oauth2.client.provider.oidc.issuer-uri=https://nfinityllc-usman.okta.com/oauth2/default
 spring.main.allow-bean-definition-overriding=true
+
 </#if> 
 fastCode.offset.default=0
 fastCode.limit.default=10

@@ -1,6 +1,5 @@
 package [=PackageName].domain.Authorization.User;
 
-import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.IRepository.IUserpermissionRepository;
@@ -78,14 +77,6 @@ public class UserManager implements IUserManager {
 		}
 
 	}
-<#if AuthenticationType == "oidc">
-
-	public Set<PermissionEntity> GetPermissions(UserEntity user) {
- 
- 		UserEntity foundUser = _userRepository.findById(user.getId().longValue());
- 		return foundUser.getPermissions();
- 	}
-</#if>
  
 }
 
