@@ -10,7 +10,7 @@ import [=PackageName].domain.Authorization.User.UserManager;
 import [=PackageName].domain.Authorization.[=authenticationTable].I[=authenticationTable]Manager;
 </#if>
 <#list entitiesMap as entityKey, entityMap>
-<#if entityKey != authenticationTable>
+<#if !authenticationTable?? || entityKey != authenticationTable>
 import [=PackageName].domain.[=entityKey].I[=entityKey]Manager;
 </#if>
 </#list>

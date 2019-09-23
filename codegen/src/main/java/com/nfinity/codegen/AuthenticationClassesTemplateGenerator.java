@@ -567,7 +567,7 @@ public class AuthenticationClassesTemplateGenerator {
 		entityList.add("Permission");
 		entityList.add("Rolepermission");
 		
-		if(authenticationType == "database") {
+		if(authenticationType == "database" || authenticationType == "oidc") {
 			if(authenticationTable == null) {
 				authorizationEntities.add("user");
 				entityList.add("User");

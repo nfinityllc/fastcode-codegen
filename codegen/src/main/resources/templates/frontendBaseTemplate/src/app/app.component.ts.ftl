@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { FastCodeCoreTranslateUiService } from 'fastCodeCore';
 <#if SchedulerModule!false>
 import { SchedulerTranslateUiService } from 'scheduler';
@@ -10,6 +10,11 @@ import { EmailBuilderTranslateUiService } from 'ip-email-builder';
 <#if FlowableModule!false>
 import { UpgradeModule } from "@angular/upgrade/static";
 import { TaskAppTranslateUiService } from 'task-app';
+</#if>
+<#if AuthenticationType == 'oidc'>
+import { OAuthService, JwksValidationHandler, OAuthErrorEvent, OAuthSuccessEvent, OAuthInfoEvent } from 'angular-oauth2-oidc';
+import { AuthOidcConfig } from './oauth/auth-oidc-config';
+import { AuthenticationService } from './core/authentication.service';
 </#if>
 
 @Component({
@@ -24,9 +29,15 @@ export class AppComponent {
     private translate: TranslateService,
     private fastCodeCoreTranslateUiService: FastCodeCoreTranslateUiService,
     <#if SchedulerModule!false>
-    private schedulerTranslateUiService: SchedulerTranslateUiService,</#if>
+    private schedulerTranslateUiService: SchedulerTranslateUiService,
+    </#if>
     <#if EmailModule!false>
-    private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,</#if>
+    private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
+    </#if>
+	<#if AuthenticationType == 'oidc'>
+    private authService: AuthenticationService,
+    private oauthService: OAuthService
+    </#if>
  ) {
     translate.addLangs(["en", "fr"]);
     translate.setDefaultLang('en');
@@ -39,6 +50,9 @@ export class AppComponent {
       <#if EmailModule!false>
       this.emailBuilderTranslateUiService.init(browserLang);</#if>
     });
+	<#if AuthenticationType == 'oidc'>
+    this.authService.configure();
+    </#if>
   }
   
   <#if FlowableModule!false>

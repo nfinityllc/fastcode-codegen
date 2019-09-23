@@ -11,7 +11,12 @@ import { IGlobalPermissionService,ITokenDetail } from 'fastCodeCore';
 //import {AuthOidcConfig} from './oauth/auth-oidc-config'
 const API_URL = environment.apiUrl;
 const helper = new JwtHelperService();
-
+<#if AuthenticationType == 'oidc'>
+import { AuthOidcConfig} from '../oauth/auth-oidc-config';
+import { OAuthService, JwksValidationHandler, OAuthStorage, OAuthErrorEvent, OAuthSuccessEvent, OAuthInfoEvent } from 'angular-oauth2-oidc';
+import { Router } from '@angular/router';
+</#if>
+	
 @Injectable()
 export class AuthenticationService  {
   private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ).append('Access-Control-Allow-Origin', '*') };
@@ -20,17 +25,68 @@ export class AuthenticationService  {
   public loginType = environment.loginType;
   public authUrl = environment.authUrl;
   private userPermissions:IPermission[];
+  <#if AuthenticationType == 'oidc'>
+  private oidcPermissions:string[]=[];
+  </#if>
   private decodedToken:ITokenDetail;
-  constructor(private http: HttpClient) { 
-    //this.configure();
+  constructor(
+  	private http: HttpClient,
+  	<#if AuthenticationType == 'oidc'>
+  	private router: Router,
+  	private oauthService: OAuthService,
+  	private authStorage: OAuthStorage
+	</#if>
+  ) {
   }
   
+  <#if AuthenticationType == 'oidc'>
+  configure() {
+
+    this.oauthService.configure(AuthOidcConfig);
+    this.oauthService.tokenValidationHandler = new JwksValidationHandler();
+
+    this.oauthService.events.subscribe(event => {
+      if (event instanceof OAuthErrorEvent) {
+        console.error(event);
+      }
+      else if (event instanceof OAuthSuccessEvent) {
+
+        console.log('Oauth success:' + event.type);
+        if(event.type == "token_received"){
+          this.getLoggedInUserPermissions().subscribe(permsList=>{
+            this.oidcPermissions = permsList;
+              this.router.navigate(['dashboard']);
+          })
+
+        }
+
+      }
+      else if (event instanceof OAuthInfoEvent) {
+        console.log(event);
+      }
+      else {
+        console.warn(event);
+      }
+    });
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(r=> {
+      console.log("logged in!");
+    }).catch(err => {
+          console.log("Unable to login");
+        }); //with login form
+    //this.oauthService.loadDiscoveryDocumentAndLogin()
+  }
+  </#if>
+  
   getMainUsers(): Observable<any> {    
-   return this.http.get<any[]>(this.apiUrl + '/users' ).pipe( catchError(this.handleError));
-   
-    }
-    get token():string {
-      return !localStorage.getItem("token") ? null : localStorage.getItem("token");
+    return this.http.get<any[]>(this.apiUrl + '/users' ).pipe( catchError(this.handleError));
+  }
+  
+  get token():string {
+    <#if AuthenticationType == 'oidc'>
+    return this.authStorage.getItem('access_token')
+    <#else>
+    return !localStorage.getItem("token") ? null : localStorage.getItem("token");
+    </#if> 
   }
   decodeToken():ITokenDetail {
     if(this.decodedToken)
@@ -49,7 +105,7 @@ export class AuthenticationService  {
       }
       else 
       return null;
-  }
+    }
   }
   postLogin(user: any): Observable<any> {
       console.log("AFSD")
@@ -64,25 +120,34 @@ export class AuthenticationService  {
       }));      
   //    return this.http.post<any>(this.apiUrl +'/login', user, this._reqOptionsArgs).pipe(catchError(this.handleError));
   }
-
-  AuthLogin(user: any): Observable<any> {
+  
+  getLoggedInUserPermissions(): Observable<any> {
     console.log("AFSD")
-    return this.http.get<any>(this.authUrl+'/oidc',this._reqOptionsArgs).pipe(map(res => {
-        let retval = res;
-        console.log(retval)
-        localStorage.setItem("salt", retval.salt);  
-        localStorage.setItem("token", retval.token);
-        return retval;
-    }),catchError((error, caught)=> {
-        let err = error;
-        let c = caught;
-        return error;
-    }));      
-//    return this.http.post<any>(this.apiUrl +'/login', user, this._reqOptionsArgs).pipe(catchError(this.handleError));
-}
+    return this.http.get<any>(this.authUrl + '/users/me', this._reqOptionsArgs).pipe(map(res => {
+      let retval = res;
+
+      return retval;
+    }), catchError((error, caught) => {
+      let err = error;
+      let c = caught;
+      return error;
+    }));
+
+  }
+
+  <#if AuthenticationType == 'oidc'>
+  AuthLogin(user: any) {
+    console.log("AuthLogin start ...")
+    this.oauthService.initLoginFlow();
+  }
+  </#if>
+
   logout() {
+  <#if AuthenticationType == 'oidc'>
+    this.oauthService.logOut();
+  </#if>
     localStorage.removeItem('token');
-}
+  }
   
 getTokenExpirationDate(token: string): Date {
   const decoded = helper.decodeToken(token);
