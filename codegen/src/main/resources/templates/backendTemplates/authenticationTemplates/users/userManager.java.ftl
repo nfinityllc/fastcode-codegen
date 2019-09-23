@@ -78,6 +78,14 @@ public class UserManager implements IUserManager {
 		}
 
 	}
+<#if AuthenticationType == "oidc">
 
+	public Set<PermissionEntity> GetPermissions(UserEntity user) {
+ 
+ 		UserEntity foundUser = _userRepository.findById(user.getId().longValue());
+ 		return foundUser.getPermissions();
+ 	}
+</#if>
+ 
 }
 

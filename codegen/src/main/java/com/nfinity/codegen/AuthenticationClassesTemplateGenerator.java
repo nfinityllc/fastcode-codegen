@@ -99,7 +99,7 @@ public class AuthenticationClassesTemplateGenerator {
 	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
 		String authenticationType =root.get("AuthenticationType").toString();
 		String destFolderBackend;
-		if(authenticationType=="database" && authenticationTable == null)
+		if((authenticationType=="database" && authenticationTable == null) || authenticationType=="oidc")
 		{
 			destFolderBackend = destPath + "/application/Authorization/User" ;
 			new File(destFolderBackend).mkdirs();
@@ -367,6 +367,7 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("users/dtos/CreateUserOutput.java.ftl", "CreateUserOutput.java");
 		backEndTemplate.put("users/dtos/UpdateUserInput.java.ftl", "UpdateUserInput.java");
 		backEndTemplate.put("users/dtos/UpdateUserOutput.java.ftl", "UpdateUserOutput.java");
+		backEndTemplate.put("users/dtos/FindUserWithAllFieldsByIdOutput.java.ftl", "FindUserWithAllFieldsByIdOutput.java");
 		backEndTemplate.put("users/dtos/FindUserByIdOutput.java.ftl", "FindUserByIdOutput.java");
 		backEndTemplate.put("users/dtos/FindUserByNameOutput.java.ftl", "FindUserByNameOutput.java");
 		backEndTemplate.put("users/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
@@ -448,7 +449,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		if(authenticationType=="database") {
+		if(authenticationType=="database" || authenticationType == "oidc") {
 			if(authenticationTable==null)
 			{
 				backEndTemplate.put("users/userController.java.ftl", "UserController.java");
@@ -473,7 +474,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		if(authenticationType=="database") {
+		if(authenticationType=="database" || authenticationType == "oidc") {
 			if(authenticationTable==null)
 			{
 				backEndTemplate.put("users/iuserRepository.java.ftl", "IUserRepository.java");
@@ -497,7 +498,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		if(authenticationType=="database") {
+		if(authenticationType=="database" || authenticationType == "oidc") {
 			if(authenticationTable==null)
 			{
 				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/userEntity.java.ftl", "UserEntity.java");
@@ -527,6 +528,7 @@ public class AuthenticationClassesTemplateGenerator {
 			backEndTemplate.put("security/JWTAuthenticationFilter.java.ftl", "JWTAuthenticationFilter.java");
 			backEndTemplate.put("security/JWTAuthorizationFilter.java.ftl", "JWTAuthorizationFilter.java");
 			backEndTemplate.put("security/SecurityConstants.java.ftl", "SecurityConstants.java");
+			backEndTemplate.put("security/ConvertToPrivilegeAuthorities.java.ftl", "ConvertToPrivilegeAuthorities.java");
 		}
 
 		return backEndTemplate;
@@ -537,7 +539,7 @@ public class AuthenticationClassesTemplateGenerator {
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
 		if(authenticationType != "none") {
-			if(authenticationType == "database")
+			if(authenticationType == "database" || authenticationType == "oidc")
 			{
 				//	backEndTemplate.put("BeanConfig.java.ftl", "BeanConfig.java");
 				backEndTemplate.put("AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");
@@ -581,6 +583,11 @@ public class AuthenticationClassesTemplateGenerator {
 
 		authorizationEntities.add("login");
 		authorizationEntities.add("core");
+		if(authenticationType == "oidc")
+		{
+			authorizationEntities.add("oauth");
+		}
+		
 		for(String entity: authorizationEntities) {
 			if(entity == "userpermission" && authenticationTable != null) {
 				generateFrontendAuthorizationComponents(appFolderPath + convertCamelCaseToDash(authenticationTable) + "permission", authorizationPath + entity, authenticationType, authenticationTable, root);

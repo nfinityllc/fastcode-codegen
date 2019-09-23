@@ -75,6 +75,13 @@ fastCode.ldap.groupsearchbase=ou=groups
 fastCode.ldap.groupsearchfilter=(member={0})
 #fastCode.ldap.ldiffilename=C:/Program Files/Apache Directory Studio/users.ldif
 </#if>
+<#if AuthenticationType == "oidc">
+
+spring.security.oauth2.client.registration.oidc.client-id=0oa137abax4DPBhui357
+#spring.security.oauth2.client.registration.oidc.client-secret=tS23X8Cipe9G7XmfZk-VesHqdXzJRiGmz4DtXP5a
+spring.security.oauth2.client.provider.oidc.issuer-uri=https://dev-568072.okta.com/oauth2/default
+spring.main.allow-bean-definition-overriding=true
+</#if> 
 fastCode.offset.default=0
 fastCode.limit.default=10
 fastCode.sort.direction.default=ASC

@@ -8,7 +8,7 @@ public class Create[=AuthenticationTable]permissionInput {
     @NotNull(message = "permissionId Should not be null")
     private Long permissionId;
   
-    <#if AuthenticationType=="database" && !UserInput??>
+    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
     @NotNull(message = "user Id Should not be null")
     private Long [=AuthenticationTable?uncap_first]Id;
   	<#elseif AuthenticationType=="database" && UserInput??>
@@ -30,7 +30,7 @@ public class Create[=AuthenticationTable]permissionInput {
   	this.permissionId = permissionId;
   	}
   
-  	<#if AuthenticationType=="database" && !UserInput??>
+  	<#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   	public Long get[=AuthenticationTable?cap_first]Id() {
   	return [=AuthenticationTable?uncap_first]Id;
   	}

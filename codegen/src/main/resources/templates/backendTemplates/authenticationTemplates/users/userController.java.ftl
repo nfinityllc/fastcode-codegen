@@ -18,7 +18,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
+<#if AuthenticationType == "oidc">
+import [=PackageName].domain.model.PermissionEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.User.IUserManager;
+import [=PackageName].domain.model.UserEntity;
+import [=PackageName].security.ConvertToPrivilegeAuthorities;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import java.util.ArrayList;
+import java.util.Set;
+</#if>
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +41,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
 
 	@Autowired
 	private UserAppService _userAppService;
@@ -45,8 +56,44 @@ public class UserController {
 
 	@Autowired
 	private Environment env;
+<#if AuthenticationType == "oidc">
 
-
+    @Autowired
+ 	private IUserManager _userMgr;
+ 	
+    //current login user info 
+ 
+    @RequestMapping(value = "/me", method = RequestMethod.GET) 
+    public ResponseEntity GetMeInfo() throws Exception{ 
+ 
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
+        UserEntity userEntity = _userMgr.FindByUserName(userName); 
+        Set<PermissionEntity> permissions =_userMgr.GetPermission(userEntity); 
+        List<String> pList = new ArrayList<String>(); 
+ 
+        for (PermissionEntity item: permissions) { 
+            pList.add(item.getName()); 
+        } 
+ 
+        RoleEntity role = _userMgr.GetRole(userEntity.getId()); 
+        List<String> groups = new ArrayList<String>(); 
+ 
+        groups.add(role.getName()); 
+        groups.addAll(pList); 
+        ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities(); 
+        String[] groupsArray = new String[groups.size()]; 
+ 
+        List<GrantedAuthority> authorities =  con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray))); 
+        //AuthorityUtils.authorityListToSet(authorities); 
+        List<String> resultingPermissions = new ArrayList<String>(); 
+        for (GrantedAuthority item: authorities) { 
+            resultingPermissions.add(item.getAuthority()); 
+        } 
+ 
+        return new ResponseEntity(resultingPermissions, HttpStatus.OK); 
+    } 
+  </#if>  
+  
 	// CRUD Operations
 
 	// ------------ Create a user ------------
@@ -91,13 +138,14 @@ public class UserController {
 	// ------------ Update user ------------
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdateUserOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateUserInput user) {
-    FindUserByIdOutput currentUser = _userAppService.FindById(Long.valueOf(id));
+    	FindUserWithAllFieldsByIdOutput currentUser = _userAppService.FindWithAllFieldsById(Long.valueOf(id));
 		
 		if (currentUser == null) {
 			logHelper.getLogger().error("Unable to update. User with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
+		user.setPassword(currentUser.getPassword());
     return new ResponseEntity(_userAppService.Update(Long.valueOf(id),user), HttpStatus.OK);
 	}
 

@@ -120,7 +120,8 @@ public class RoleController {
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		
-		return ResponseEntity.ok(_roleAppService.Find(searchCriteria,Pageable));
+		List<FindRoleByIdOutput> roles = roleAppService.Find(searchCriteria, Pageable);
+ 		return ResponseEntity.ok(roles);
 	}
     <#if AuthenticationType == "database">
   

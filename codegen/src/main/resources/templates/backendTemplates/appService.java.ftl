@@ -32,7 +32,14 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+import java.util.Set;
 
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.Role.RoleManager;
+import [=PackageName].domain.model.RolepermissionEntity;
+import [=PackageName].domain.model.[=ClassName]permissionEntity;
+</#if>
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -42,10 +49,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.Role.RoleManager;
-</#if>
 @Service
 @Validated
 public class [=ClassName]AppService implements I[=ClassName]AppService {
@@ -124,10 +127,27 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
 		</#list>
 		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-		if(input.getRoleId()!=null) {
-			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-			if(foundRole!=null)
-			[=ClassName?uncap_first].setRole(foundRole);
+		if(input.getRoleId()!=null)
+		{
+		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+		if(foundRole!=null)
+		{
+			Set<[=ClassName]permissionEntity> [=ClassName?uncap_first]Permission = [=ClassName?uncap_first].get[=ClassName]permissionSet();
+			Set<RolepermissionEntity> rolePermission = foundRole.getRolepermissionSet();
+			
+			Iterator pIterator = [=ClassName?uncap_first]Permission.iterator();
+			Iterator rIterator = rolePermission.iterator();
+				while (pIterator.hasNext()) { 
+					[=ClassName]permissionEntity up = ([=ClassName]permissionEntity) pIterator.next();
+					while(rIterator.hasNext()) {
+						RolepermissionEntity rp = (RolepermissionEntity) pIterator.next();
+					if (up.getPermission() == rp.getPermission() ) {
+                         [=ClassName?uncap_first]Permission.remove(rp.getPermission());
+					}
+					}
+				}
+		    [=ClassName?uncap_first].setRole(foundRole);
+		}
 		}
 		</#if>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
