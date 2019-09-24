@@ -4,16 +4,6 @@ import [=PackageName].domain.model.*;
 import [=PackageName].domain.Authorization.Permission.IPermissionManager;
 import [=PackageName].domain.Authorization.Rolepermission.IRolepermissionManager;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
-<#if !authenticationTable??>
-import [=PackageName].domain.Authorization.User.UserManager;
-<#else>
-import [=PackageName].domain.Authorization.[=authenticationTable].I[=authenticationTable]Manager;
-</#if>
-<#list entitiesMap as entityKey, entityMap>
-<#if !authenticationTable?? || entityKey != authenticationTable>
-import [=PackageName].domain.[=entityKey].I[=entityKey]Manager;
-</#if>
-</#list>
 import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -36,19 +26,9 @@ public class AppStartupRunner implements ApplicationRunner {
     @Autowired
     private IRoleManager rolesManager;
     
-	<#if !authenticationTable??>
-    @Autowired
-    private IUserManager userManager;
-	
-	</#if>
 	@Autowired
     private IRolepermissionManager rolepermissionManager;
     
-    <#list entitiesMap as entityKey, entityMap>
-	@Autowired
-	private I[=entityKey]Manager [=entityKey?uncap_first]Manager;
-	
-	</#list>
     @Autowired
     private LoggingHelper loggingHelper;
 

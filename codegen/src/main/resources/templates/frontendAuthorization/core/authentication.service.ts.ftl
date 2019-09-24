@@ -91,15 +91,21 @@ export class AuthenticationService  {
   decodeToken():ITokenDetail {
     if(this.decodedToken)
     {
+      <#if AuthenticationType == 'oidc'>
+      if(this.decodedToken.scopes.length == 0)
+      {  
+        this.decodedToken.scopes =this.oidcPermissions ; 
+      }
+      </#if>
       return this.decodedToken;
     }
    else {
       if(this.token)
       { 
-       // this.decodedToken = helper.decodeToken(this.token) as ITokenDetail;
         let decodedToken:ITokenDetail = helper.decodeToken(this.token) as ITokenDetail;
-        if(!decodedToken.scopes)
-          decodedToken.scopes = ['ROLES_CREATE'];
+        <#if AuthenticationType == 'oidc'>
+        decodedToken.scopes =this.oidcPermissions || [];
+		</#if>
         this.decodedToken = decodedToken;
         return this.decodedToken;
       }
@@ -123,7 +129,7 @@ export class AuthenticationService  {
   
   getLoggedInUserPermissions(): Observable<any> {
     console.log("AFSD")
-    return this.http.get<any>(this.authUrl + '/users/me', this._reqOptionsArgs).pipe(map(res => {
+    return this.http.get<any>(this.authUrl + '/user/me', this._reqOptionsArgs).pipe(map(res => {
       let retval = res;
 
       return retval;
@@ -136,7 +142,7 @@ export class AuthenticationService  {
   }
 
   <#if AuthenticationType == 'oidc'>
-  AuthLogin(user: any) {
+  AuthLogin() {
     console.log("AuthLogin start ...")
     this.oauthService.initLoginFlow();
   }

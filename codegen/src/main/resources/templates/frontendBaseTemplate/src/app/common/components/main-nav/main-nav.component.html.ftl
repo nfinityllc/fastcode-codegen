@@ -31,10 +31,10 @@
 
         <mat-nav-list class="subnav">
 
-          <#if AuthenticationType == "database" && !UserInput??>
+          <#if (AuthenticationType == "database" || AuthenticationType == "oidc") && !UserInput??>
           <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('user')" routerLink="user">Users </a>
           <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('userpermission')" routerLink="userpermission">Users Permissions </a>
-          <#elseif AuthenticationType == "database" && UserInput??>
+          <#elseif (AuthenticationType == "database" || AuthenticationType == "oidc") && UserInput??>
           <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('[=AuthenticationTable?lower_case]')" routerLink="[=AuthenticationTable?lower_case]">[=AuthenticationTable] </a>
           <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('[=AuthenticationTable?lower_case]permission')" routerLink="[=AuthenticationTable?lower_case]permission">[=AuthenticationTable] Permissions </a>
           </#if>          
