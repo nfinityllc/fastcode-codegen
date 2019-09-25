@@ -104,13 +104,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             String userId = "";
             <#if AuthenticationType == "database">
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-                String userId = ((User) auth.getPrincipal()).getUsername();
+                userId = ((User) auth.getPrincipal()).getUsername();
                 claims.setSubject(userId);
             }
             </#if>
             <#if AuthenticationType == "ldap">
             if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
-                String userId = ((LdapUserDetailsImpl) auth.getPrincipal()).getUsername();
+                userId = ((LdapUserDetailsImpl) auth.getPrincipal()).getUsername();
                 claims.setSubject(userId);
             }
             </#if>
