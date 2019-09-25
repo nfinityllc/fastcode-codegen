@@ -266,7 +266,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
  </#if> 
 </#list>
 
-<#if AuthenticationType=="database">
+<#if AuthenticationType!="none">
 <#if ClassName == AuthenticationTable>
 @OneToMany(mappedBy = "[=AuthenticationTable?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 

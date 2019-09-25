@@ -17,7 +17,8 @@ public class UserInput {
 	Boolean flowable;
 	String authenticationType=null;
 	String authenticationSchema;
-	
+	Boolean doUpgrade;
+
 	
 	public String getAuthenticationSchema() {
 		return authenticationSchema;
@@ -104,7 +105,8 @@ public class UserInput {
 	}
 	public void setAuthenticationType(String authenticationType) {
 		this.authenticationType = authenticationType;
-	}	
-	
+	}
+	public Boolean getUpgrade() { return doUpgrade; }
+	public void setUpgrade(Boolean doUpgrade) { this.doUpgrade = doUpgrade; }
 }
 

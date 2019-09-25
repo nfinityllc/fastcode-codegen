@@ -126,7 +126,7 @@ public class AuthenticationClassesTemplateGenerator {
 			generateFiles(getUserPermissionDtoTemplates(authenticationTable), root, destFolderBackend);
 		}
 
-		if(authenticationType=="database" && authenticationTable !=null)
+		if(authenticationType!="none" && authenticationTable !=null)
 		{
 			destFolderBackend = destPath + "/domain/Authorization/"+ authenticationTable +"permission";
 			new File(destFolderBackend).mkdirs();
@@ -475,6 +475,7 @@ public class AuthenticationClassesTemplateGenerator {
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
 		if(authenticationType=="database" || authenticationType == "oidc") {
+
 			if(authenticationTable==null)
 			{
 				backEndTemplate.put("users/iuserRepository.java.ftl", "IUserRepository.java");
@@ -566,7 +567,6 @@ public class AuthenticationClassesTemplateGenerator {
 		entityList.add("Role");
 		entityList.add("Permission");
 		entityList.add("Rolepermission");
-		
 		
 		if(authenticationTable == null) {
 			authorizationEntities.add("user");

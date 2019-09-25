@@ -6,7 +6,7 @@ public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list Auth
 
  <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-  <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+  <#if AuthenticationType!= "none" && ClassName == AuthenticationTable>
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "Password">
@@ -136,7 +136,7 @@ public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list Auth
 </#list>
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean"|| value.fieldType?lower_case == "date"|| value.fieldType?lower_case == "string" >
-  <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+  <#if AuthenticationType!= "none" && ClassName == AuthenticationTable>
   <#if AuthenticationFields??>
   <#list AuthenticationFields as authKey,authValue>
   <#if authKey== "Password">

@@ -21,6 +21,13 @@ import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#if>
 </#list>
+<#if ClassName == AuthenticationTable>
+	<#if Flowable!false>
+		import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+		import [=PackageName].application.Flowable.ActIdUserMapper;
+		import [=PackageName].application.Flowable.FlowableIdentityService;
+	</#if>
+</#if>
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
@@ -151,6 +158,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		</#if>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
+		<#if ClassName == AuthenticationTable>
+			<#if Flowable!false>
+				//Map and create flowable user
+				ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(created[=ClassName]);
+				idmIdentityService.createUser(createdUser, actIdUser);
+			</#if>
+		</#if>
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
 	}
 	
@@ -158,6 +172,16 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
 	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>, Update[=ClassName]Input input) {
 
+		<#if ClassName == AuthenticationTable>
+			<#if Flowable!false>
+				String oldRoleName = null;
+				//TODO: how to map Role in custom User table?
+				[=EntityClassName] oldUserRole = _[=ClassName?uncap_first]Manager.FindById(input.get[=ClassName?uncap_first]Id());
+				if(oldUserRole.getRole() != null) {
+				oldRoleName = oldUserRole.getRole().getName();
+				}
+			</#if>
+		</#if>
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -211,6 +235,12 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		</#if>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
+		<#if ClassName == AuthenticationTable>
+			<#if Flowable!false>
+				ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(updated[=ClassName]);
+				idmIdentityService.updateUser(updated[=ClassName], actIdUser, oldRoleName);
+			</#if>
+		</#if>
 		return mapper.[=EntityClassName]ToUpdate[=ClassName]Output(updated[=ClassName]);
 	}
 	
@@ -220,6 +250,17 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 
 		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id) ; 
 		_[=ClassName?uncap_first]Manager.Delete(existing);
+		<#if ClassName == AuthenticationTable>
+		<#if Flowable!false>
+		<#if AuthenticationFields??>
+		<#list AuthenticationFields as authKey,authValue>
+		<#if authKey == "User Name">
+			idmIdentityService.deleteUser(existing.get[=authValue.fieldName?cap_first]());
+		</#if>
+		</#list>
+		</#if>
+		</#if>
+		</#if>
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)

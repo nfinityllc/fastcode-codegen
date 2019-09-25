@@ -287,6 +287,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
+
 		<#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc" >
 		if(list.get(i).replace("%20","").trim().equals("userId")) {
 			builder.or([=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first].id.eq(Long.parseLong(value)));

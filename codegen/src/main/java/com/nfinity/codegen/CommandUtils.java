@@ -34,14 +34,31 @@ class CommandUtils {
             int exitCode = 0;
             exitCode = process.waitFor();
             assert exitCode == 0;
-            return outputValue.toString();
+            return outputValue.toString().trim();
         } catch (Exception e) {
             throw new InternalError(e);
         }
     }
 
     static String runProcess(String command, String path) {
-        String[] builderCommand = new String[] { "cmd.exe", "/c", command };
+        String[] builderCommand = getBuilderCommand(command);
         return runProcess(builderCommand, path, true);
+    }
+
+    static String runGitProcess(String args, String path) {
+        String command = "git " + args;
+        String[] builderCommand = getBuilderCommand(command);
+        return runProcess(builderCommand, path, true);
+    }
+
+    private static String[] getBuilderCommand(String command) {
+        String[] builderCommand;
+        boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+        if (isWindows) {
+            builderCommand = new String[] { "cmd.exe", "/c", command };
+        } else {
+            builderCommand = new String[] { "sh", "-c", command };
+        }
+        return builderCommand;
     }
 }
