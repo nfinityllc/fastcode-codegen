@@ -30,7 +30,7 @@
 			</#if>
 			<#-- to exclude the password field in case of user provided "User" table -->
 			<#assign isPasswordField = false>
-			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
     		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName == value.fieldName>
 			<#assign isPasswordField = true>
 			</#if>

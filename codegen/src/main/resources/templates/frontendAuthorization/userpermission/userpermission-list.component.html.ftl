@@ -20,7 +20,7 @@
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=AuthenticationTable?cap_first]')">[=AuthenticationTable?cap_first]</mat-header-cell>
 				<mat-cell *matCellDef="let item">
 					<span class="mobile-label">{{getMobileLabelForField("[=AuthenticationTable?cap_first]")}}:</span>
-				<#if AuthenticationType=="database" && UserInput??>
+				<#if UserInput??>
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				{{ item.[=DescriptiveField[AuthenticationTable].description?uncap_first] }}
                 <#else>
@@ -34,7 +34,7 @@
     			</#list>
     			</#if>
 				</#if>
-				<#elseif AuthenticationType=="database" && !UserInput??>
+				<#elseif !UserInput??>
 				{{ item.[=AuthenticationTable?uncap_first]DescriptiveField }}
 				</#if>
 				</mat-cell>

@@ -51,13 +51,13 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 		this.associations = [
 			{
 				column: [
-					<#if AuthenticationType=="database" && !UserInput??>
+					<#if !UserInput??>
 					{
 						key: 'userid',
 						value: undefined,
 						referencedkey: 'id'
 					},
-					<#elseif AuthenticationType=="database" && UserInput??>
+					<#elseif UserInput??>
 					<#if PrimaryKeys??>
 					<#list PrimaryKeys as key,value>
 					<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -72,7 +72,7 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 					</#if>				  
 				],
 				isParent: false,
-				<#if AuthenticationType=="database" && UserInput??>
+				<#if UserInput??>
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
@@ -86,7 +86,7 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
     			</#list>
     			</#if>
 				</#if>
-				<#elseif AuthenticationType=="database" && !UserInput??>
+				<#elseif !UserInput??>
 				descriptiveField: '[=AuthenticationTable?uncap_first]UserName',
 				referencedDescriptiveField: 'userName',
 				</#if>

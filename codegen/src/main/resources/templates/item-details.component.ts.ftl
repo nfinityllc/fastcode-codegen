@@ -15,7 +15,7 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 </#if>
 </#list>
 </#if>
-<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import { RoleService} from '../role/role.service';
 </#if>
 
@@ -49,7 +49,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		</#if>
 		</#list>
 		</#if>
-		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		public roleService: RoleService,
 		</#if>
 		<#if AuthenticationType !="none" >
@@ -68,7 +68,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			<#list Fields as key,value>
 			<#-- to exclude the password field in case of user provided "User" table -->
 			<#assign isPasswordField = false>
-			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
     		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName == value.fieldName>
 			<#assign isPasswordField = true>
 			</#if>
@@ -113,7 +113,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
             </#if>
 			</#list>
 			</#if>
-			<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 			roleId: [''],
 			roleDescriptiveField : [{ value: '', disabled: true }],
 			</#if>
@@ -167,7 +167,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
                 </#if>
 			},
 		</#list>
-		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 			{
 				column: [
 				    <#list PrimaryKeys as key,value>
@@ -217,7 +217,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 		 	<#assign fieldType = value.fieldType?lower_case fieldName = value.fieldName?lower_case>
 		 	<#-- to exclude the password field in case of user provided "User" table -->
 		 	<#assign isPasswordField = false>
-			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
     		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName == value.fieldName>
 			<#assign isPasswordField = true>
 			</#if>
@@ -248,7 +248,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			</#if>
 			</#list>
 		</#if>
-		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 			roleId: item.roleId,
 			roleDescriptiveField : item.roleDescriptiveField
 		</#if>

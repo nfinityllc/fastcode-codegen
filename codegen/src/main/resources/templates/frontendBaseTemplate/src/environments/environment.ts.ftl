@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiUrl:  '/api', //'https://localhost:5555',
-  loginType:'database',
+  loginType:'[=AuthenticationType]',
   authUrl: '/api', //'http://localhost:5555'
 };
 

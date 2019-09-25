@@ -2,10 +2,10 @@ export interface I[=AuthenticationTable]permission {
 
 	permissionId: number;
 	permissionDescriptiveField?: string;
-	<#if AuthenticationType=="database" && !UserInput??>
+	<#if !UserInput??>
 	[=AuthenticationTable?uncap_first]Id?: string;
 	[=AuthenticationTable?uncap_first]DescriptiveField?: string;
-	<#elseif AuthenticationType=="database" && UserInput??>
+	<#elseif UserInput??>
 	<#if PrimaryKeys??>
 	<#list PrimaryKeys as key,value>
 	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">

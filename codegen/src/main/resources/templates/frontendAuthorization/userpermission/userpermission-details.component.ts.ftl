@@ -43,10 +43,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		this.itemForm = this.formBuilder.group({
 			permissionId: ['', Validators.required],
 			permissionDescriptiveField : [{ value: '', disabled: true }],
-			<#if AuthenticationType=="database" && !UserInput??>
+			<#if !UserInput??>
 			[=AuthenticationTable?uncap_first]Id: ['', Validators.required],
 			[=AuthenticationTable?uncap_first]DescriptiveField : [{ value: '', disabled: true }],
-			<#elseif AuthenticationType=="database" && UserInput??>
+			<#elseif UserInput??>
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
 			<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -79,13 +79,13 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		this.associations = [
 			{
 				column: [
-					<#if AuthenticationType=="database" && !UserInput??>
+					<#if !UserInput??>
 					{
 						key: '[=AuthenticationTable?uncap_first]Id',
 						value: undefined,
 						referencedkey: 'id'
 					},
-					<#elseif AuthenticationType=="database" && UserInput??>
+					<#elseif UserInput??>
 					<#if PrimaryKeys??>
 					<#list PrimaryKeys as key,value>
 					<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -103,7 +103,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 				table: '[=AuthenticationTable?uncap_first]',
 				type: 'ManyToOne',
 				service: this.[=AuthenticationTable?uncap_first]Service,
-				<#if AuthenticationType=="database" && UserInput??>
+				<#if UserInput??>
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??  && DescriptiveField[AuthenticationTable].description??>
 				descriptiveField: '[=DescriptiveField[AuthenticationTable].description?uncap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
@@ -119,7 +119,7 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
     			</#list>
     			</#if>
 				</#if>
-				<#elseif AuthenticationType=="database" && !UserInput??>
+				<#elseif !UserInput??>
 				descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
 				referencedDescriptiveField: 'userName',
 				</#if>
@@ -155,10 +155,10 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		this.itemForm.patchValue({
 			permissionId: item.permissionId,
 			permissionDescriptiveField: item.permissionDescriptiveField,
-			<#if AuthenticationType=="database" && !UserInput??>
+			<#if !UserInput??>
 			[=AuthenticationTable?uncap_first]Id: item.[=AuthenticationTable?uncap_first]Id,
 			[=AuthenticationTable?uncap_first]DescriptiveField: item.[=AuthenticationTable?uncap_first]DescriptiveField,
-			<#elseif AuthenticationType=="database" && UserInput??>
+			<#elseif UserInput??>
 			<#if PrimaryKeys??>
 			<#list PrimaryKeys as key,value>
 			<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">

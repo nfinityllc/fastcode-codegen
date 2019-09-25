@@ -15,7 +15,7 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 </#if>
 </#list>
 </#if>
-<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import { RoleService} from '../role/role.service';
 </#if>
 <#if AuthenticationType !="none" >
@@ -48,7 +48,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 		</#if>
 		</#list>
 		</#if>
-		<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		public roleService: RoleService,
 		</#if>
 		<#if AuthenticationType !="none" >
@@ -79,7 +79,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#if>
 			</#if>
 			</#list>
-			<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 			confirmPassword: ['', Validators.required],
 			</#if>
 			<#if Relationship?has_content>
@@ -104,7 +104,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 			</#if>
 			</#list>
 			</#if>
-			<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 			roleId: [''],
 			roleDescriptiveField : [{ value: '', disabled: true }],
 			</#if>
@@ -145,7 +145,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				},
 			</#if>
 			</#list>
-			<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 				{
 					column: [
 						{

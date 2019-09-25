@@ -26,7 +26,7 @@
 		</#list>
 		</#if>
 		
-		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
 		<#if AuthenticationFields?? && isJoinColumn == false>
 		<#if AuthenticationFields.Password.fieldName != value.fieldName>
 		<#if value.fieldType?lower_case == "boolean">

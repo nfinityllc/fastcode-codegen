@@ -65,7 +65,7 @@ export interface [=IEntity] {
 </#list>
 </#if>
 </#list>
-<#if AuthenticationType=="database" && ClassName == AuthenticationTable>
+<#if AuthenticationType!="none" && ClassName == AuthenticationTable>
 	roleId?: number;
 	roleDescriptiveField?: String; 
 </#if>
