@@ -8,5 +8,6 @@ public class SecurityConstants {
     public static final String HEADER_STRING = "Authorization";
     public static final String REGISTER = "/users/register";
     public static final String CONFIRM = "/users/confirm";
+    public static final String COOKIE_NAME = "FLOWABLE_REMEMBER_ME";
 
 }

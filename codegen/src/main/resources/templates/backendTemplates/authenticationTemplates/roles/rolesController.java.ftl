@@ -2,7 +2,7 @@ package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
 import [=PackageName].application.Authorization.Rolepermission.Dto.FindRolepermissionByIdOutput;
-<#if AuthenticationType == "database">
+<#if AuthenticationType != "none">
 import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.Find[=AuthenticationTable]ByIdOutput;
 import [=PackageName].application.Authorization.[=AuthenticationTable].[=AuthenticationTable]AppService;
 </#if>
@@ -34,7 +34,7 @@ public class RoleController {
     @Autowired
     private RoleAppService roleAppService;
     
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "none">
     @Autowired
 	private [=AuthenticationTable]AppService  _[=AuthenticationTable?uncap_first]AppService;
 	</#if>
@@ -123,7 +123,7 @@ public class RoleController {
 		List<FindRoleByIdOutput> roles = roleAppService.Find(searchCriteria, Pageable);
  		return ResponseEntity.ok(roles);
 	}
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "none">
   
 	@RequestMapping(value = "/{roleid}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable](@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {

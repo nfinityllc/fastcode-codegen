@@ -7,7 +7,7 @@ public class [=AuthenticationTable]permissionId implements Serializable {
     private Long permissionId;
     <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
     private Long userId;
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
    	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -20,12 +20,12 @@ public class [=AuthenticationTable]permissionId implements Serializable {
     public [=AuthenticationTable]permissionId() {
 
     }
-   
+
     public [=AuthenticationTable]permissionId(Long permissionId,<#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc" >Long userId<#elseif AuthenticationType=="database" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>[=value.fieldType] [=AuthenticationTable?uncap_first][=value.fieldName?cap_first],<#else>[=value.fieldType] [=AuthenticationTable?uncap_first][=value.fieldName?cap_first]</#if></#list></#if>){
   		this.permissionId =permissionId;
   		<#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
    		this.userId =userId;
-  	    <#elseif AuthenticationType=="database" && UserInput??>
+  	    <#elseif AuthenticationType!="none" && UserInput??>
         <#list PrimaryKeys as key,value>
         this.[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]=[=AuthenticationTable?uncap_first][=value.fieldName?cap_first];
         </#list>
@@ -46,7 +46,7 @@ public class [=AuthenticationTable]permissionId implements Serializable {
   	public void setUserId(Long userId){
   		this.userId = userId;
   	}
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
   	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">

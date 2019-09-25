@@ -11,7 +11,7 @@ public class Get[=AuthenticationTable]Output {
    </#list>
 
    	private Long [=AuthenticationTable]permissionPermissionId;
-  
+
    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
    	private Long [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
   

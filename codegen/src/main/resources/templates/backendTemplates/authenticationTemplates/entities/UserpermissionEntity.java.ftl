@@ -18,7 +18,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   private Long permissionId;
   <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   private Long userId;
-  <#elseif AuthenticationType=="database" && UserInput??>
+  <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#list PrimaryKeys as key,value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -50,7 +50,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   public void setPermissionId(Long permissionId){
   this.permissionId = permissionId;
   }
-  
+
   <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   @Id
   @Column(name = "userId", nullable = false)
@@ -61,7 +61,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   public void setUserId(Long userId){
   this.userId = userId;
   }
-  <#elseif AuthenticationType=="database" && UserInput??>
+  <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#list PrimaryKeys as key,value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -82,7 +82,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   @ManyToOne
   <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   @JoinColumn(name = "[=AuthenticationTable?uncap_first]Id", insertable=false, updatable=false)
-  <#elseif AuthenticationType=="database" && UserInput??>
+  <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#assign i=PrimaryKeys?size>
   <#if i==1>
@@ -114,8 +114,3 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
 //  }
 
 }
-
-  
-      
-
-

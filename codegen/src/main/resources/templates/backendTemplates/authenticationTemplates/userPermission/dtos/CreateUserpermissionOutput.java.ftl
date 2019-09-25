@@ -43,7 +43,7 @@ public class Create[=AuthenticationTable]permissionOutput {
      public void setPermissionId(Long permissionId){
     	this.permissionId = permissionId;
      }
-  
+
      <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
   	 public Long get[=AuthenticationTable?cap_first]Id() {
   	 	return [=AuthenticationTable?uncap_first]Id;

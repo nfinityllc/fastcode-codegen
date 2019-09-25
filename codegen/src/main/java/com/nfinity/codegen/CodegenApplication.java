@@ -32,6 +32,9 @@ public class CodegenApplication implements ApplicationRunner {
 		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// /Users/getachew/fc/exer/root
+        input.setUpgrade(root.get("upgrade") == null
+                ? false
+                : (root.get("upgrade").toLowerCase().equals("true") ? true : false));
 		input.setConnectionStr(root.get("c") != null ? root.get("c")
 				: (configProperties.getConnectionStr() != null ? configProperties.getConnectionStr()
 						: GetUserInput.getInput(scanner, "DB Connection String")));
@@ -80,7 +83,7 @@ public class CodegenApplication implements ApplicationRunner {
 			{
 				input.setAudit(true);
 			}
-			System.out.print("\nDo you have your own Authorization Table? (y/n)");
+			System.out.print("\nDo you have your own user table? (y/n)");
 			str= scanner.nextLine();
 			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes"))
 			{
@@ -91,8 +94,8 @@ public class CodegenApplication implements ApplicationRunner {
 					str=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
 				}
 				input.setAuthenticationSchema(str.substring(0, 1).toUpperCase() + str.substring(1));
-                System.out.println(" aa s name " + input.getAuthenticationSchema());
-			}	
+			}
+			
 			input.setAuthenticationType("database");
 		}
 		else if (value == 3) {
@@ -114,6 +117,37 @@ public class CodegenApplication implements ApplicationRunner {
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		UserInput input = composeInput(configProperties);
+
+        GitRepositoryManager.setDestinationPath(input.getDestinationPath());
+        String sourceBranch = "";
+        if(GitRepositoryManager.isGitInstalled()) {
+            if(!GitRepositoryManager.isGitInitialized()) {
+                GitRepositoryManager.initializeGit();
+                System.out.print("Git repository initialized.");
+            }
+            //Clean up old files if needed
+        }
+        else {
+            System.out.print("Git repository could not be initialized, as Git is not installed on your system.");
+            return;
+        }
+        if(input.getUpgrade()) {
+			if(GitRepositoryManager.hasUncommittedChanges()) {
+				System.out.print("\nGit has uncommitted changes. ");
+				return;
+			}
+			else {
+                sourceBranch = GitRepositoryManager.getCurrentBranch();
+                if(!GitRepositoryManager.createUpgradeBranch()) {
+                    System.out.print("Unable to create upgrade branch.");
+                    return;
+                }
+            }
+		}
+        else {
+        	GitRepositoryManager.CopyGitFiles();
+		}
+
 		String groupArtifactId = input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));
@@ -141,13 +175,16 @@ public class CodegenApplication implements ApplicationRunner {
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
 				input.getAudit(),input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
 
-		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory());
+		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory(),input.getFlowable());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
-
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
-        
+		
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
 
+		if(input.getFlowable()) {
+			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema());
+		}
+		
 		if(!input.getAuthenticationType().equals("none"))
 		{
 			AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath(), groupArtifactId, input.getAudit(),
@@ -175,14 +212,10 @@ public class CodegenApplication implements ApplicationRunner {
 			FlowableFrontendCodeGenerator.generate(input.getDestinationPath(), artifactId + "Client");
 		}
 
-		if (configProperties.getUseGit() != null
-				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
-						: false) {
-			GitRepositoryManager.addToGitRepository(input.getDestinationPath());
-		}
+		GitRepositoryManager.addToGitRepository(input.getUpgrade(), sourceBranch);
 
-		System.out.println(" Code generation Completed ...");
-		System.exit(1);
+        System.out.println(" Code generation Completed ...");
+        System.exit(1);
 	}
 
 	@Override
