@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 
 public class PomFileModifier {
 
-	public static void update(String path,String authenticationType,Boolean scheduler,Boolean history) {
+	public static void update(String path,String authenticationType,Boolean scheduler,Boolean history,Boolean flowable) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
 		Dependency mapstruct = new Dependency("org.mapstruct", "mapstruct", "1.2.0.Final");
@@ -36,7 +36,11 @@ public class PomFileModifier {
 		Dependency springFoxSwaggerUI = new Dependency("io.springfox","springfox-swagger-ui","2.7.0");
 		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
 	    Dependency httpComponents = new Dependency("org.apache.httpcomponents","httpclient","4.5");
-	
+
+	    if(flowable) {
+			Dependency flowableRest = new Dependency("org.flowable","flowable-spring-boot-starter-rest","6.4.1");
+			dependencies.add(flowableRest);
+		}
 		if(scheduler)
 		{
 			Dependency hibernate_cp = new Dependency("org.hibernate","hibernate-c3p0","4.3.6.Final");

@@ -97,7 +97,7 @@ public class AuthenticationClassesTemplateGenerator {
 	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
 		String authenticationType =root.get("AuthenticationType").toString();
 		String destFolderBackend;
-		if(authenticationType=="database" && authenticationTable == null)
+		if(authenticationType!="none" && authenticationTable == null)
 		{
 			destFolderBackend = destPath + "/application/Authorization/User" ;
 			new File(destFolderBackend).mkdirs();
@@ -124,7 +124,7 @@ public class AuthenticationClassesTemplateGenerator {
 			generateFiles(getUserPermissionDtoTemplates(authenticationTable), root, destFolderBackend);
 		}
 
-		if(authenticationType=="database" && authenticationTable !=null)
+		if(authenticationType!="none" && authenticationTable !=null)
 		{
 			destFolderBackend = destPath + "/domain/Authorization/"+ authenticationTable +"permission";
 			new File(destFolderBackend).mkdirs();
@@ -446,7 +446,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		if(authenticationType=="database") {
+		if(authenticationType!="none") {
 			if(authenticationTable==null)
 			{
 				backEndTemplate.put("users/userController.java.ftl", "UserController.java");
@@ -471,7 +471,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		if(authenticationType=="database") {
+		if(authenticationType!="none") {
 			if(authenticationTable==null)
 			{
 				backEndTemplate.put("users/iuserRepository.java.ftl", "IUserRepository.java");
@@ -495,7 +495,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
-		if(authenticationType=="database") {
+		if(authenticationType!="none") {
 			if(authenticationTable==null)
 			{
 				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/userEntity.java.ftl", "UserEntity.java");
@@ -563,7 +563,7 @@ public class AuthenticationClassesTemplateGenerator {
 		entityList.add("Permission");
 		entityList.add("Rolepermission");
 		
-		if(authenticationType == "database") {
+		if(authenticationType != "none") {
 			if(authenticationTable == null) {
 				authorizationEntities.add("user");
 				entityList.add("User");

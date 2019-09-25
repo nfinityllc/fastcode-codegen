@@ -81,7 +81,7 @@ public class CodegenApplication implements ApplicationRunner {
 			{
 				input.setAudit(true);
 			}
-			System.out.print("\nDo you have your own Authorization Table? (y/n)");
+			System.out.print("\nDo you have your own user table? (y/n)");
 			str= scanner.nextLine();
 			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes"))
 			{
@@ -166,14 +166,14 @@ public class CodegenApplication implements ApplicationRunner {
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
 				input.getAudit(),input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
 
-		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory());
+		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory(),input.getFlowable());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
 		
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
 
 		if(input.getFlowable()) {
-			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId);
+			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema());
 		}
 		
 		if(!input.getAuthenticationType().equals("none"))

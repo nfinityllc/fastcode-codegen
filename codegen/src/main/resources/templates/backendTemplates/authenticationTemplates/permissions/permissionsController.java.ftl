@@ -2,7 +2,7 @@ package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Permission.PermissionAppService;
 import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
-<#if AuthenticationType == "database">
+<#if AuthenticationType != "none">
 import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
 import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
 </#if>
@@ -37,7 +37,7 @@ public class PermissionController {
     
     @Autowired
 	private RolepermissionAppService  _rolepermissionAppService;
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "none">
     @Autowired
 	private [=AuthenticationTable]permissionAppService  _[=AuthenticationTable?uncap_first]permissionAppService;
     </#if>
@@ -139,7 +139,7 @@ public class PermissionController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}   
 
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "none">
 	@RequestMapping(value = "/{permissionid}/[=AuthenticationTable?uncap_first]permission", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }

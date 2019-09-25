@@ -12,10 +12,10 @@ public class GetRoleOutput {
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
     </#if>
-    <#if AuthenticationType=="database" && !UserInput??>
+    <#if AuthenticationType!="none" && !UserInput??>
     private Long userId;
     private String userName;
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
    	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
@@ -34,7 +34,7 @@ public class GetRoleOutput {
   	</#if>
     </#if>
 
-    <#if AuthenticationType=="database" && !UserInput??>
+    <#if AuthenticationType!="none" && !UserInput??>
   	public Long getUserId() {
   	return userId;
   	}
@@ -50,7 +50,7 @@ public class GetRoleOutput {
   	public void setUserName(String userName){
    		this.userName = userName;
   	}
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
   	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">

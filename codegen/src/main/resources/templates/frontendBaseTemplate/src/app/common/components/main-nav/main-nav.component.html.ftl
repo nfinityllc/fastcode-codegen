@@ -29,10 +29,10 @@
 
         <mat-nav-list class="subnav">
 
-          <#if AuthenticationType == "database" && !UserInput??>
+          <#if AuthenticationType != "none" && !UserInput??>
           <a mat-list-item class="mat-sub-list-item" routerLink="user">Users </a>
           <a mat-list-item class="mat-sub-list-item" routerLink="userpermission">Users Permissions </a>
-          <#elseif AuthenticationType == "database" && UserInput??>
+          <#elseif AuthenticationType != "none" && UserInput??>
           <a mat-list-item class="mat-sub-list-item" routerLink="[=AuthenticationTable?lower_case]">[=AuthenticationTable] </a>
           <a mat-list-item class="mat-sub-list-item" routerLink="[=AuthenticationTable?lower_case]permission">[=AuthenticationTable] Permissions </a>
           </#if>          

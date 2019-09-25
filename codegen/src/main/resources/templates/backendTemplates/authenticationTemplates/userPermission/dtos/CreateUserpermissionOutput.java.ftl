@@ -3,10 +3,10 @@ package [=PackageName].application.Authorization.[=AuthenticationTable]permissio
 public class Create[=AuthenticationTable]permissionOutput {
 
   	private Long permissionId;
-  	<#if AuthenticationType=="database" && !UserInput??>
+  	<#if AuthenticationType!="none" && !UserInput??>
     private Long [=AuthenticationTable?uncap_first]Id;
     private String [=AuthenticationTable?uncap_first]UserDescriptiveField;
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
    	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -46,7 +46,7 @@ public class Create[=AuthenticationTable]permissionOutput {
     	this.permissionId = permissionId;
      }
   
-     <#if AuthenticationType=="database" && !UserInput??>
+     <#if AuthenticationType!="none" && !UserInput??>
   	 public Long get[=AuthenticationTable?cap_first]Id() {
   	 	return [=AuthenticationTable?uncap_first]Id;
   	 }
@@ -62,7 +62,7 @@ public class Create[=AuthenticationTable]permissionOutput {
   	 public void set[=AuthenticationTable?cap_first]UserDescriptiveField(String [=AuthenticationTable?uncap_first]UserDescriptiveField){
    	  	this.[=AuthenticationTable?uncap_first]UserDescriptiveField = [=AuthenticationTable?uncap_first]UserDescriptiveField;
   	 }
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
   	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">

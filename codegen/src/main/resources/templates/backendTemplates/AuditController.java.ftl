@@ -3,7 +3,7 @@ package [=PackageName].RestControllers;
 <#list entitiesMap as entityKey, entityMap>
 import [=entityMap.importPkg];
 </#list>
-<#if AuthenticationType == "database">
+<#if AuthenticationType != "none">
 <#if AuthenticationTable == "User">
 import [=PackageName].domain.model.UserEntity;
 </#if>
@@ -33,7 +33,7 @@ public class AuditController {
     public AuditController(Javers javers) {
         this.javers = javers;
     }
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "none">
     <#if AuthenticationTable == "User">
     @RequestMapping("/user")
     public String getUserChanges() {

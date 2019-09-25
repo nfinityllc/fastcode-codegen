@@ -1,9 +1,11 @@
 package [=PackageName].security;
 
-<#if AuthenticationType == "database">
+<#if AuthenticationType != "none">
 import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.LoginUserInput;
 </#if>
+<#if Flowable!false>
 import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
@@ -42,8 +44,10 @@ import java.util.stream.Collectors;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     IRoleManager _roleManager;
+<#if Flowable!false>
     FlowableIdentityService idmIdentityService;
-
+    private static final String COOKIE_NAME = "FLOWABLE_REMEMBER_ME";
+</#if>
     private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -75,7 +79,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
 
-
+        <#if Flowable!false>
+        String cookieValue = null;
+        </#if>
         // We cannot autowire RolesManager, but need to use the code below to set it
         if(_roleManager==null){
             ServletContext servletContext = req.getServletContext();
@@ -86,27 +92,34 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Claims claims = Jwts.claims();
         claims.put("scopes", (convertToPrivilegeAuthorities(auth.getAuthorities())).stream().map(s -> s.toString()).collect(Collectors.toList()));
         //claims.put("scopes", (auth.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList())));
-
+        <#if Flowable!false>
+        //Flowable IDM Support
+        if(idmIdentityService==null){
+            ServletContext servletContext = req.getServletContext();
+            WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+            idmIdentityService = webApplicationContext.getBean(FlowableIdentityService.class);
+        }
+        </#if>
         if (auth != null) {
-        <#if AuthenticationType == "database">
+            String userId = "";
+            <#if AuthenticationType == "database">
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-                User appUser = (User) auth.getPrincipal();
-                claims.setSubject(appUser.getUsername());
-                //Flowable IDM Support
-                if(idmIdentityService==null){
-                    ServletContext servletContext = req.getServletContext();
-                    WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-                    idmIdentityService = webApplicationContext.getBean(FlowableIdentityService.class);
-                }
-                cookieValue = idmIdentityService.createTokenAndCookie(appUser.getUsername(), req, res);
+                String userId = ((User) auth.getPrincipal()).getUsername();
+                claims.setSubject(userId);
             }
-       </#if>
-       <#if AuthenticationType == "ldap">
-       if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
-                claims.setSubject(((LdapUserDetailsImpl) auth.getPrincipal()).getUsername());
+            </#if>
+            <#if AuthenticationType == "ldap">
+            if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
+                String userId = ((LdapUserDetailsImpl) auth.getPrincipal()).getUsername();
+                claims.setSubject(userId);
             }
-       </#if>
-           
+            </#if>
+            <#if Flowable!false>
+            //Flowable IDM Support
+            if(userId != "") {
+                cookieValue = idmIdentityService.createTokenAndCookie(userId, req, res);
+            }
+            </#if>
         }
 
         claims.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME));
@@ -120,9 +133,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrintWriter out = res.getWriter();
         out.println("{");
         out.println("\"token\":" + "\"" + SecurityConstants.TOKEN_PREFIX + token + "\"");
+        <#if Flowable!false>
         if(cookieValue != null) {
-            out.println(",\"" + SecurityConstants.COOKIE_NAME + "\":" + "\"" + cookieValue + "\"");
+            out.println(",\"" + COOKIE_NAME + "\":" + "\"" + cookieValue + "\"");
         }
+        </#if>
         out.println("}");
         out.close();
 

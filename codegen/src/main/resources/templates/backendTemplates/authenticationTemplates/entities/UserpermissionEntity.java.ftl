@@ -16,9 +16,9 @@ import java.util.Date;
 public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
 
   private Long permissionId;
-  <#if AuthenticationType=="database" && !UserInput??>
+  <#if AuthenticationType!="none" && !UserInput??>
   private Long userId;
-  <#elseif AuthenticationType=="database" && UserInput??>
+  <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#list PrimaryKeys as key,value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -51,7 +51,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   this.permissionId = permissionId;
   }
   
-  <#if AuthenticationType=="database" && !UserInput??>
+  <#if AuthenticationType!="none" && !UserInput??>
   @Id
   @Column(name = "userId", nullable = false)
   public Long getUserId() {
@@ -61,7 +61,7 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   public void setUserId(Long userId){
   this.userId = userId;
   }
-  <#elseif AuthenticationType=="database" && UserInput??>
+  <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#list PrimaryKeys as key,value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -80,9 +80,9 @@ public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends Aud
   </#if>
   
   @ManyToOne
-  <#if AuthenticationType=="database" && !UserInput??>
+  <#if AuthenticationType!="none" && !UserInput??>
   @JoinColumn(name = "[=AuthenticationTable?uncap_first]Id", insertable=false, updatable=false)
-  <#elseif AuthenticationType=="database" && UserInput??>
+  <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#assign i=PrimaryKeys?size>
   <#if i==1>

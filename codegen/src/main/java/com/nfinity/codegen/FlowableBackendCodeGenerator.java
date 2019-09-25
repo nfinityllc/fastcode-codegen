@@ -16,7 +16,7 @@ public class FlowableBackendCodeGenerator {
     static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
     static final String FLOWABLE_BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/flowableTemplates";
 
-    public static void generateFlowableClasses(String destination, String packageName) {
+    public static void generateFlowableClasses(String destination, String packageName, String authenticationType, String authenticationTable) {
         ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FLOWABLE_BACKEND_TEMPLATE_FOLDER + "/");
         TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl};
         MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
@@ -29,58 +29,66 @@ public class FlowableBackendCodeGenerator {
         //root.put("AuditPackage", packageName);
         //packageName = packageName.concat(".CommonModule");
         root.put("PackageName", packageName);
+        root.put("AuthenticationType", authenticationType);
+        if(authenticationTable !=null)
+            root.put("AuthenticationTable", authenticationTable);
+        else
+            root.put("AuthenticationTable", "User");
         //root.put("Audit", audit);
 
-        generateFlowableFiles(root, backendAppFolder);
+        generateFlowableFiles(root, backendAppFolder, authenticationType);
     }
 
-    private static void generateFlowableFiles(Map<String, Object> root, String destPath) {
+    private static void generateFlowableFiles(Map<String, Object> root, String destPath, String authenticationType) {
         String destFolderBackend;
         destFolderBackend = destPath + "/application/Flowable";
         new File(destFolderBackend).mkdirs();
-        generateFiles(getFlowableApplicationTemplates(), root, destFolderBackend);
+        generateFiles(getFlowableApplicationTemplates(authenticationType), root, destFolderBackend);
 
         destFolderBackend = destPath + "/domain";
         new File(destFolderBackend).mkdirs();
         generateFiles(getFlowableCustomSchemaTemplates(), root, destFolderBackend);
 
-        destFolderBackend = destPath + "/domain/Flowable/Users";
-        new File(destFolderBackend).mkdirs();
-        generateFiles(getFlowableDomainUsersTemplates(), root, destFolderBackend);
-
         destFolderBackend = destPath + "/domain/Flowable/Tokens";
         new File(destFolderBackend).mkdirs();
         generateFiles(getFlowableDomainTokensTemplates(), root, destFolderBackend);
 
-        destFolderBackend = destPath + "/domain/Flowable/Privileges";
-        new File(destFolderBackend).mkdirs();
-        generateFiles(getFlowableDomainPrivilegesTemplates(), root, destFolderBackend);
+        if(!authenticationType.equalsIgnoreCase("none")) {
+            destFolderBackend = destPath + "/domain/Flowable/Users";
+            new File(destFolderBackend).mkdirs();
+            generateFiles(getFlowableDomainUsersTemplates(), root, destFolderBackend);
 
-        destFolderBackend = destPath + "/domain/Flowable/PrivilegeMappings";
-        new File(destFolderBackend).mkdirs();
-        generateFiles(getFlowableDomainPrivilegeMappingsTemplates(), root, destFolderBackend);
+            destFolderBackend = destPath + "/domain/Flowable/Groups";
+            new File(destFolderBackend).mkdirs();
+            generateFiles(getFlowableDomainGroupsTemplates(), root, destFolderBackend);
 
-        destFolderBackend = destPath + "/domain/Flowable/Memberships";
-        new File(destFolderBackend).mkdirs();
-        generateFiles(getFlowableDomainMembershipsTemplates(), root, destFolderBackend);
+            destFolderBackend = destPath + "/domain/Flowable/Privileges";
+            new File(destFolderBackend).mkdirs();
+            generateFiles(getFlowableDomainPrivilegesTemplates(), root, destFolderBackend);
 
-        destFolderBackend = destPath + "/domain/Flowable/Groups";
-        new File(destFolderBackend).mkdirs();
-        generateFiles(getFlowableDomainGroupsTemplates(), root, destFolderBackend);
+            destFolderBackend = destPath + "/domain/Flowable/PrivilegeMappings";
+            new File(destFolderBackend).mkdirs();
+            generateFiles(getFlowableDomainPrivilegeMappingsTemplates(), root, destFolderBackend);
 
+            destFolderBackend = destPath + "/domain/Flowable/Memberships";
+            new File(destFolderBackend).mkdirs();
+            generateFiles(getFlowableDomainMembershipsTemplates(), root, destFolderBackend);
+
+        }
         destFolderBackend = destPath + "/domain/IRepository";
         new File(destFolderBackend).mkdirs();
-        generateFiles(getFlowableRepositoryTemplates(), root, destFolderBackend);
+        generateFiles(getFlowableRepositoryTemplates(authenticationType), root, destFolderBackend);
 
     }
 
-    private static Map<String, Object> getFlowableApplicationTemplates() {
+    private static Map<String, Object> getFlowableApplicationTemplates(String authenticationType) {
         Map<String, Object> flowableBackendTemplate = new HashMap<>();
 
         flowableBackendTemplate.put("FlowableIdentityService.java.ftl", "FlowableIdentityService.java");
-        flowableBackendTemplate.put("ActIdUserMapper.java.ftl", "ActIdUserMapper.java");
-        flowableBackendTemplate.put("ActIdGroupMapper.java.ftl", "ActIdGroupMapper.java");
-
+        if(!authenticationType.equalsIgnoreCase("none")) {
+            flowableBackendTemplate.put("ActIdUserMapper.java.ftl", "ActIdUserMapper.java");
+            flowableBackendTemplate.put("ActIdGroupMapper.java.ftl", "ActIdGroupMapper.java");
+        }
         return flowableBackendTemplate;
     }
 
@@ -151,16 +159,17 @@ public class FlowableBackendCodeGenerator {
         return flowableBackendTemplate;
     }
 
-    private static Map<String, Object> getFlowableRepositoryTemplates() {
+    private static Map<String, Object> getFlowableRepositoryTemplates(String authenticationType) {
         Map<String, Object> flowableBackendTemplate = new HashMap<>();
 
-        flowableBackendTemplate.put("Users/IActIdUserRepository.java.ftl", "IActIdUserRepository.java");
         flowableBackendTemplate.put("Tokens/IActIdTokenRepository.java.ftl", "IActIdTokenRepository.java");
-        flowableBackendTemplate.put("Privileges/IActIdPrivRepository.java.ftl", "IActIdPrivRepository.java");
-        flowableBackendTemplate.put("PrivilegeMappings/IActIdPrivMappingRepository.java.ftl", "IActIdPrivMappingRepository.java");
-        flowableBackendTemplate.put("Memberships/IActIdMembershipRepository.java.ftl", "IActIdMembershipRepository.java");
-        flowableBackendTemplate.put("Groups/IActIdGroupRepository.java.ftl", "IActIdGroupRepository.java");
-
+        if(!authenticationType.equalsIgnoreCase("none")) {
+            flowableBackendTemplate.put("Users/IActIdUserRepository.java.ftl", "IActIdUserRepository.java");
+            flowableBackendTemplate.put("Groups/IActIdGroupRepository.java.ftl", "IActIdGroupRepository.java");
+            flowableBackendTemplate.put("Privileges/IActIdPrivRepository.java.ftl", "IActIdPrivRepository.java");
+            flowableBackendTemplate.put("PrivilegeMappings/IActIdPrivMappingRepository.java.ftl", "IActIdPrivMappingRepository.java");
+            flowableBackendTemplate.put("Memberships/IActIdMembershipRepository.java.ftl", "IActIdMembershipRepository.java");
+        }
         return flowableBackendTemplate;
     }
 
