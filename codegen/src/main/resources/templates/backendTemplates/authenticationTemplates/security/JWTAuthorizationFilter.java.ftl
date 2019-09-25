@@ -18,19 +18,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-<#if AuthenticationType == "database" || AuthenticationType == "ldap">
 import java.util.stream.Collectors;
-</#if>
-import java.util.*;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-
-<#if AuthenticationType == "oidc">
 import java.net.URL;
 import org.springframework.security.core.authority.AuthorityUtils;
 import [=PackageName].domain.model.UserpermissionEntity;
@@ -42,16 +30,21 @@ import com.nimbusds.jwt.*;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
-</#if>
+import java.util.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     //@Autowired
     private Environment environment;
 
- <#if AuthenticationType == "oidc">
     private IUserManager _userMgr;
- </#if>
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
@@ -121,8 +114,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (StringUtils.isNotEmpty(token) && token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             String userName = null;
             List<GrantedAuthority> authorities = null;
-            <#if AuthenticationType == "database" || AuthenticationType == "ldap">
-            if(!environment.getProperty("fastCode.auth.method").equals("openid")) {
+            if(!environment.getProperty("fastCode.auth.method").equals("oidc")) {
 
                  claims = Jwts.parser()
                         .setSigningKey(SecurityConstants.SECRET.getBytes())
@@ -134,35 +126,34 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                         .map(authority -> new SimpleGrantedAuthority(authority))
                         .collect(Collectors.toList());
             }
-            </#if>
-            <#if AuthenticationType == "oidc">
+            else{
 
-            SignedJWT accessToken = null;
-            JWTClaimsSet claimSet = null;
-
-            try {
-              
-                accessToken = SignedJWT.parse(token.replace(SecurityConstants.TOKEN_PREFIX, ""));
-            
-                String kid = accessToken.getHeader().getKeyID();
-                
-                JWKSet jwks = null;
-				jwks = JWKSet.load(new URL(environment.getProperty("spring.security.oauth2.client.provider.oidc.issuer-uri") + "/v1/keys"));
-
-                RSAKey jwk = (RSAKey) jwks.getKeyByKeyId(kid);
-
-                JWSVerifier verifier = new RSASSAVerifier(jwk);
-
-                if (accessToken.verify(verifier)) {
-                    System.out.println("valid signature");
-                    claimSet = accessToken.getJWTClaimsSet();
-                    userName = claimSet.getSubject();
-                } else {
-                    System.out.println("invalid signature");
-                }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+	            SignedJWT accessToken = null;
+	            JWTClaimsSet claimSet = null;
+	
+	            try {
+	              
+	                accessToken = SignedJWT.parse(token.replace(SecurityConstants.TOKEN_PREFIX, ""));
+	            
+	                String kid = accessToken.getHeader().getKeyID();
+	                
+	                JWKSet jwks = null;
+					jwks = JWKSet.load(new URL(environment.getProperty("spring.security.oauth2.client.provider.oidc.issuer-uri") + "/v1/keys"));
+	
+	                RSAKey jwk = (RSAKey) jwks.getKeyByKeyId(kid);
+	
+	                JWSVerifier verifier = new RSASSAVerifier(jwk);
+	
+	                if (accessToken.verify(verifier)) {
+	                    System.out.println("valid signature");
+	                    claimSet = accessToken.getJWTClaimsSet();
+	                    userName = claimSet.getSubject();
+	                } else {
+	                    System.out.println("invalid signature");
+	                }
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	            }
                 if(_userMgr==null){
                     ServletContext servletContext = request.getServletContext();
                     WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
@@ -196,11 +187,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 String[] groupsArray = new String[groups.size()];
 
                 authorities = con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray)));
-            </#if>
-
-                if ((userName != null) && StringUtils.isNotEmpty(userName)) {
-                	return new UsernamePasswordAuthenticationToken(userName, null, authorities);
             }
+
+            if ((userName != null) && StringUtils.isNotEmpty(userName)) {
+            	return new UsernamePasswordAuthenticationToken(userName, null, authorities);
+        	}
         }
         return null;
 

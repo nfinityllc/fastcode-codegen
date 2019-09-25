@@ -21,10 +21,8 @@ import { AuthGuard } from './core/auth-guard';
 import { JwtInterceptor } from './core/jwt-interceptor';
 import { JwtErrorInterceptor } from './core/jwt-error-interceptor';
 import { GlobalPermissionService } from './core/global-permission.service';
-<#if AuthenticationType == 'oidc'>
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { CallbackComponent } from './oauth/callback.component';
-</#if>
 
 /** end of core components and filters for authorization and authentication **/
 </#if>
@@ -95,8 +93,6 @@ shouldProcessUrl(url) {
   	DashboardComponent,
   	<#if AuthenticationType != "none">
 	LoginComponent,
-	</#if>
-	<#if AuthenticationType == 'oidc'>
 	CallbackComponent,
 	</#if>
     AppComponent,
@@ -107,7 +103,7 @@ shouldProcessUrl(url) {
     BrowserModule,
     routingModule,
     HttpClientModule,
-    <#if AuthenticationType == 'oidc'>
+    <#if AuthenticationType != 'none'>
     OAuthModule.forRoot(),
 	</#if>
     BrowserAnimationsModule,

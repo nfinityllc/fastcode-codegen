@@ -11,11 +11,9 @@ import { IGlobalPermissionService,ITokenDetail } from 'fastCodeCore';
 //import {AuthOidcConfig} from './oauth/auth-oidc-config'
 const API_URL = environment.apiUrl;
 const helper = new JwtHelperService();
-<#if AuthenticationType == 'oidc'>
 import { AuthOidcConfig} from '../oauth/auth-oidc-config';
 import { OAuthService, JwksValidationHandler, OAuthStorage, OAuthErrorEvent, OAuthSuccessEvent, OAuthInfoEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
-</#if>
 	
 @Injectable()
 export class AuthenticationService  {
@@ -25,21 +23,16 @@ export class AuthenticationService  {
   public loginType = environment.loginType;
   public authUrl = environment.authUrl;
   private userPermissions:IPermission[];
-  <#if AuthenticationType == 'oidc'>
   private oidcPermissions:string[]=[];
-  </#if>
   private decodedToken:ITokenDetail;
   constructor(
   	private http: HttpClient,
-  	<#if AuthenticationType == 'oidc'>
   	private router: Router,
   	private oauthService: OAuthService,
   	private authStorage: OAuthStorage
-	</#if>
   ) {
   }
   
-  <#if AuthenticationType == 'oidc'>
   configure() {
 
     this.oauthService.configure(AuthOidcConfig);
@@ -75,37 +68,34 @@ export class AuthenticationService  {
         }); //with login form
     //this.oauthService.loadDiscoveryDocumentAndLogin()
   }
-  </#if>
   
   getMainUsers(): Observable<any> {    
     return this.http.get<any[]>(this.apiUrl + '/users' ).pipe( catchError(this.handleError));
   }
   
   get token():string {
-    <#if AuthenticationType == 'oidc'>
-    return this.authStorage.getItem('access_token')
-    <#else>
-    return !localStorage.getItem("token") ? null : localStorage.getItem("token");
-    </#if> 
+    if(environment.loginType == 'oidc'){
+      return this.authStorage.getItem('access_token')
+    }
+    else{
+      return !localStorage.getItem("token") ? null : localStorage.getItem("token");
+    }
   }
   decodeToken():ITokenDetail {
     if(this.decodedToken)
     {
-      <#if AuthenticationType == 'oidc'>
-      if(this.decodedToken.scopes.length == 0)
-      {  
+      if(this.loginType == 'oidc' && this.decodedToken.scopes.length == 0){  
         this.decodedToken.scopes =this.oidcPermissions ; 
       }
-      </#if>
       return this.decodedToken;
     }
    else {
       if(this.token)
       { 
         let decodedToken:ITokenDetail = helper.decodeToken(this.token) as ITokenDetail;
-        <#if AuthenticationType == 'oidc'>
-        decodedToken.scopes =this.oidcPermissions || [];
-		</#if>
+        if(this.loginType == 'oidc'){  
+           decodedToken.scopes =this.oidcPermissions || []; 
+        }
         this.decodedToken = decodedToken;
         return this.decodedToken;
       }
@@ -141,17 +131,15 @@ export class AuthenticationService  {
 
   }
 
-  <#if AuthenticationType == 'oidc'>
   AuthLogin() {
     console.log("AuthLogin start ...")
     this.oauthService.initLoginFlow();
   }
-  </#if>
 
   logout() {
-  <#if AuthenticationType == 'oidc'>
-    this.oauthService.logOut();
-  </#if>
+    if(environment.loginType == "oidc"){
+  	  this.oauthService.logOut();
+  	}
     localStorage.removeItem('token');
   }
   

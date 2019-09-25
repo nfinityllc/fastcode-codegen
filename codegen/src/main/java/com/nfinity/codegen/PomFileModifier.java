@@ -50,14 +50,8 @@ public class PomFileModifier {
 		{
 			Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
 			dependencies.add(json_web_token);
-		}
-		if(authenticationType =="ldap")
-		{
 			Dependency ldap_security = new Dependency("org.springframework.security","spring-security-ldap","5.1.1.RELEASE");
 			dependencies.add(ldap_security);
-		}
-		else if(authenticationType == "oidc")
-		{
 			Dependency nimbus= new Dependency("com.nimbusds","nimbus-jose-jwt","7.7");
 			dependencies.add(nimbus);
 		}

@@ -567,26 +567,22 @@ public class AuthenticationClassesTemplateGenerator {
 		entityList.add("Permission");
 		entityList.add("Rolepermission");
 		
-		if(authenticationType == "database" || authenticationType == "oidc") {
-			if(authenticationTable == null) {
-				authorizationEntities.add("user");
-				entityList.add("User");
-				entityList.add("Userpermission");
-			}else {
-				entityList.add(authenticationTable + "permission");
-			}
-			authorizationEntities.add("userpermission");
+		
+		if(authenticationTable == null) {
+			authorizationEntities.add("user");
+			entityList.add("User");
+			entityList.add("Userpermission");
+		}else {
+			entityList.add(authenticationTable + "permission");
 		}
+		authorizationEntities.add("userpermission");
 
 		CodeGenerator.updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
 		CodeGenerator.updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType);
 
 		authorizationEntities.add("login");
 		authorizationEntities.add("core");
-		if(authenticationType == "oidc")
-		{
-			authorizationEntities.add("oauth");
-		}
+		authorizationEntities.add("oauth");
 		
 		for(String entity: authorizationEntities) {
 			if(entity == "userpermission" && authenticationTable != null) {

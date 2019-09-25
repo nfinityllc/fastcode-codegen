@@ -7,8 +7,6 @@ import { Globals } from '../globals';
 import { MatDialogRef } from '@angular/material/dialog';
 <#if AuthenticationType != "none">
 import { AuthenticationService } from '../core/authentication.service';
-</#if>
-<#if AuthenticationType == 'oidc'>
 import { OAuthService } from 'angular-oauth2-oidc';
 </#if>
  
@@ -30,9 +28,7 @@ export class HomeComponent implements OnInit {
     	public router: Router,
 		private global:Globals,
 		<#if AuthenticationType != "none">
-		public Auth: AuthenticationService,
-		</#if>
-		<#if AuthenticationType == 'oidc'>
+		public authService: AuthenticationService,
 		private oauthService: OAuthService,
 		</#if>
        
@@ -50,19 +46,18 @@ export class HomeComponent implements OnInit {
        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
        */
     }
-	<#if AuthenticationType == 'oidc'>
+    
 	logout() {
 		this.oauthService.logOut();
   	}
-	</#if>
+  	
    <#if AuthenticationType != "none">
 	onSubmit() {
-        <#if AuthenticationType == 'oidc'>
-		this.logout();
-		this.oauthService.initLoginFlow();
-  		<#else>          
+        if(this.authService.loginType == 'oidc') {
+			this.logout();
+			this.oauthService.initLoginFlow();
+		}       
 		this.router.navigate(['/login'],{ queryParams: { returnUrl: 'dashboard' } });
-        </#if>
         
     }
     </#if>

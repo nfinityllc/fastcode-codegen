@@ -34,7 +34,7 @@
 	            <p>
 	                    If you already have an account:
 	            </p>
-	            <button mat-flat-button (click)="onSubmit()" >
+	            <button color="primary" mat-flat-button (click)="onSubmit()" >
 	                    Sign in </button>
             </mat-card-content>
         </mat-card>

@@ -4,12 +4,9 @@
 
 export const environment = {
   production: false,
-  //apiUrl: 'http://localhost:3000',
-  //apiUrl: 'https://jsonplaceholder.typicode.com'
   apiUrl:  '/api', //'https://localhost:5555',
   loginType:'database',
   authUrl: '/api', //'http://localhost:5555'
-  //apiUrl: 'http://localhost:3000'
 };
 
 /*

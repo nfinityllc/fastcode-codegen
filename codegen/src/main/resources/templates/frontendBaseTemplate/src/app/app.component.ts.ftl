@@ -11,7 +11,7 @@ import { EmailBuilderTranslateUiService } from 'ip-email-builder';
 import { UpgradeModule } from "@angular/upgrade/static";
 import { TaskAppTranslateUiService } from 'task-app';
 </#if>
-<#if AuthenticationType == 'oidc'>
+<#if AuthenticationType != 'none'>
 import { OAuthService, JwksValidationHandler, OAuthErrorEvent, OAuthSuccessEvent, OAuthInfoEvent } from 'angular-oauth2-oidc';
 import { AuthOidcConfig } from './oauth/auth-oidc-config';
 import { AuthenticationService } from './core/authentication.service';
@@ -34,7 +34,7 @@ export class AppComponent {
     <#if EmailModule!false>
     private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
     </#if>
-	<#if AuthenticationType == 'oidc'>
+	<#if AuthenticationType != 'none'>
     private authService: AuthenticationService,
     private oauthService: OAuthService
     </#if>
@@ -50,8 +50,10 @@ export class AppComponent {
       <#if EmailModule!false>
       this.emailBuilderTranslateUiService.init(browserLang);</#if>
     });
-	<#if AuthenticationType == 'oidc'>
-    this.authService.configure();
+	<#if AuthenticationType != 'none'>
+	if(this.authService.loginType == 'oidc') {
+    	this.authService.configure();
+    }
     </#if>
   }
   
