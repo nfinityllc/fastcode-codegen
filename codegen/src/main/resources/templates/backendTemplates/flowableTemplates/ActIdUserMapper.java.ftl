@@ -12,13 +12,36 @@ public ActIdUserEntity createUsersEntityToActIdUserEntity([=AuthenticationTable]
     }
 
     ActIdUserEntity actIdUser = new ActIdUserEntity();
-    actIdUser.setId(user.getUserName());
+    <#if UserInput??>
+        <#if AuthenticationFields?? >
+            <#list AuthenticationFields as authKey,authValue>
+                <#if authKey == "User Name">
+                    <#assign foundUserNameField = true>
+                    actIdUser.setId(user.get[=authValue.fieldName?cap_first]());
+                </#if>
+            </#list>
+        </#if>
+    <#else>
+        actIdUser.setId(user.getUserName());
+    </#if>
+
     actIdUser.setRev(0L);
     actIdUser.setFirst(user.getFirstName());
     actIdUser.setLast(user.getLastName());
     actIdUser.setDisplayName(null);
     actIdUser.setEmail(user.getEmailAddress());
-    actIdUser.setPwd(user.getPassword());
+    <#if UserInput??>
+        <#if AuthenticationFields??>
+            <#list AuthenticationFields as authKey,authValue>
+                <#if authKey == "Password">
+                    <#assign foundPasswordField = true>
+                    actIdUser.setPwd(user.get[=authValue.fieldName?cap_first]());
+                </#if>
+            </#list>
+        </#if>
+    <#else>
+        actIdUser.setPwd(user.getPassword());
+    </#if>
     actIdUser.setPictureId(null);
     actIdUser.setTenantId(null);
 

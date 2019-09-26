@@ -1,6 +1,5 @@
 package [=PackageName].domain.Flowable.Users;
 
-import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.IRepository.IActIdUserRepository;
 import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.assertj.core.api.Assertions;

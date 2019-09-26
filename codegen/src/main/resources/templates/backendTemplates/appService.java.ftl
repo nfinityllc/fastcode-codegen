@@ -794,7 +794,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#list>
 		<#elseif primaryKeyLength == 1>
 		<#list PrimaryKeys as fieldName,fieldType>
-		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keysString"));
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keysString);
 		</#list>
 		</#if>
 		return joinColumnMap;

@@ -1,6 +1,6 @@
 package [=PackageName].security;
 
-<#if AuthenticationType == "database" || AuthenticationType=="oidc">
+<#if AuthenticationType != "none">
 import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.LoginUserInput;
 </#if>
 <#if Flowable!false>
@@ -14,7 +14,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
-<#if AuthenticationType == "database" || AuthenticationType=="oidc">
+<#if AuthenticationType != "none">
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -53,7 +53,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
- <#if AuthenticationType == "database" || AuthenticationType=="oidc">
+ <#if AuthenticationType != "none">
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
@@ -101,8 +101,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
         </#if>
         if (auth != null) {
-        <#if AuthenticationType == "database" || AuthenticationType=="oidc">
             String userId = "";
+            <#if AuthenticationType == "database" || AuthenticationType=="oidc">
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
                 userId = ((User) auth.getPrincipal()).getUsername();
                 claims.setSubject(userId);

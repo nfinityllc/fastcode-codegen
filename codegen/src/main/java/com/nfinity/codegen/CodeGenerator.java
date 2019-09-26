@@ -160,7 +160,7 @@ public class CodeGenerator {
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames,authenticationTable);
 
-		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName, connectionString, schema,authenticationType,email);
+		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName, connectionString, schema,authenticationType,email, flowable);
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 		generateBeanConfig(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
 
@@ -190,7 +190,7 @@ public class CodeGenerator {
 
 	}
 
-	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema,String authenticationType,Boolean email){
+	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema,String authenticationType,Boolean email, Boolean flowable){
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
@@ -199,6 +199,8 @@ public class CodeGenerator {
 		propertyInfo.put("EmailModule",email);
 		propertyInfo.put("AuthenticationType",authenticationType);
 		propertyInfo.put("packageName",appName.replace(".", "/"));
+		propertyInfo.put("Flowable", flowable);
+		propertyInfo.put("packagePath", appName);
 
 		return propertyInfo;
 	}

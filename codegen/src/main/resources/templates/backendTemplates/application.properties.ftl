@@ -12,7 +12,7 @@ spring.jpa.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
 <#if Flowable!false>
-spring.jpa.properties.hibernate.hbm2ddl.schema_filter_provider=[=appName].domain.CustomSchemaFilterProvider
+spring.jpa.properties.hibernate.hbm2ddl.schema_filter_provider=[=packagePath].domain.CustomSchemaFilterProvider
 </#if>
 spring.application.name=[=appName]
 server.port=5555

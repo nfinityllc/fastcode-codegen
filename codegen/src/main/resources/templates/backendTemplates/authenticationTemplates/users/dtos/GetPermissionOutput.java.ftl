@@ -11,10 +11,10 @@ public class GetPermissionOutput {
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
     </#if>
-    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
+    <#if AuthenticationType!="none" && !UserInput??>
     private Long userId;
     private String userDescriptiveField;
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
    	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
@@ -33,7 +33,7 @@ public class GetPermissionOutput {
   	</#if>
     </#if>
 
-    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc">
+    <#if AuthenticationType!="none" && !UserInput??>
   	public Long getUserId() {
   	return userid;
   	}
@@ -49,7 +49,7 @@ public class GetPermissionOutput {
   	public void setUsername(String userDescriptiveField){
    		this.userDescriptiveField = userDescriptiveField;
   	}
-  	<#elseif AuthenticationType=="database" && UserInput??>
+  	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
   	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
