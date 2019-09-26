@@ -19,7 +19,7 @@ public class ActIdUserMapper {
 		actIdUser.setEmail(user.get[=AuthenticationFields.EmailAddress.fieldName?cap_first]());
 		actIdUser.setPwd(user.get[=AuthenticationFields.Password.fieldName?cap_first]());
 	   <#else>
-		actIdUser.setId(user.getUsername());
+		actIdUser.setId(user.getUserName());
 		actIdUser.setFirst(user.getFirstName());
 		actIdUser.setLast(user.getLastName());
 		actIdUser.setEmail(user.getEmailAddress());

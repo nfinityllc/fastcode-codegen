@@ -195,7 +195,7 @@ public class CodeGenerator {
 
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
 		propertyInfo.put("appName", appName.substring(appName.lastIndexOf(".") + 1));
-		propertyInfo.put("schema", schema);
+		propertyInfo.put("Schema", schema);
 		propertyInfo.put("EmailModule",email);
 		propertyInfo.put("AuthenticationType",authenticationType);
 		propertyInfo.put("packageName",appName.replace(".", "/"));

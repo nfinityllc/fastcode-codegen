@@ -2,7 +2,6 @@ package [=PackageName].domain.IRepository;
 
 import [=PackageName].domain.Flowable.Memberships.ActIdMembershipEntity;
 import [=PackageName].domain.Flowable.Memberships.MembershipId;
-import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -10,7 +9,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
+<#if History!false>
+import org.javers.spring.annotation.JaversSpringDataAuditable;
+
 @JaversSpringDataAuditable
+</#if>
 @RepositoryRestResource(collectionResourceRel = "memberships", path = "memberships")
 public interface IActIdMembershipRepository extends JpaRepository<ActIdMembershipEntity, String>, QuerydslPredicateExecutor<ActIdMembershipEntity> {
 

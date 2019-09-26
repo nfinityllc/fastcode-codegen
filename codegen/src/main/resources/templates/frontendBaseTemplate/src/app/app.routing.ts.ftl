@@ -10,7 +10,7 @@ import { AuthGuard } from './core/auth-guard';
 import { CallbackComponent } from './oauth/callback.component';
 </#if>
 <#if FlowableModule!false>
-import { TaskRoutes } from ‘task’';
+import { TaskRoutes } from 'task-app';
 </#if>
 
 const routes: Routes = [

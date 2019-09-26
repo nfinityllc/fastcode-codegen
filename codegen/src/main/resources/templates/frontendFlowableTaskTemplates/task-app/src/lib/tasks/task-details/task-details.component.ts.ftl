@@ -27,7 +27,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   @Output() onOpenTask: EventEmitter<any> = new EventEmitter();
   @Output() onCreateTask: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('fileInput') fileInput: ElementRef;
+  @ViewChild('fileInput', { read: ElementRef, static: false }) fileInput: ElementRef;
 
   formData: any;
 
