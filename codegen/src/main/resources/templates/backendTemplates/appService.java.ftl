@@ -1,7 +1,7 @@
-package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
-import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
-import [=PackageName].domain<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].I[=ClassName]Manager;
+import [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].domain<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].I[=ClassName]Manager;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
 <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import java.util.Set;
 
 import [=PackageName].domain.model.RoleEntity;
@@ -67,7 +67,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	@Autowired
 	private I[=ClassName]Manager _[=ClassName?uncap_first]Manager;
 	
-	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	@Autowired
 	private RoleManager _roleManager;
     
@@ -133,7 +133,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
         </#if>
 		</#list>
-		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		if(input.getRoleId()!=null)
 		{
 		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
@@ -227,7 +227,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
 		</#if>
 		</#list>
-		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		if(input.getRoleId()!=null) {
 			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
 			if(foundRole!=null)
@@ -254,7 +254,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		<#if Flowable!false>
 		<#if AuthenticationFields??>
 		<#list AuthenticationFields as authKey,authValue>
-		<#if authKey == "User Name">
+		<#if authKey == "UserName">
 			idmIdentityService.deleteUser(existing.get[=authValue.fieldName?cap_first]());
 		</#if>
 		</#list>
@@ -274,7 +274,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
  	    Find[=ClassName]ByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]); 
 		return output;
 	}
-	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
 	public Find[=ClassName]WithAllFieldsByIdOutput FindWithAllFieldsById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
@@ -288,7 +288,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	<#if AuthenticationFields??>
 	<#list AuthenticationFields as authKey,authValue>
-	<#if authKey== "User Name">
+	<#if authKey== "UserName">
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=authValue.fieldName?uncap_first]")
@@ -765,7 +765,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     </#if>
     </#list>
     
-    <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
     public Map<String,String> parse[=AuthenticationTable]permissionJoinColumn(String keysString) {
     	Map<String,String> joinColumnMap = new HashMap<String,String>();
     	<#assign primaryKeyLength=PrimaryKeys?size>

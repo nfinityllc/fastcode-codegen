@@ -10,7 +10,7 @@ public class GetPermissionOutput {
     private java.util.Date creationTime;
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
-</#if>
+	</#if>
     private Long roleId;
     private String roleDescriptiveField;
 
@@ -88,5 +88,5 @@ public class GetPermissionOutput {
     public void setCreatorUserId(String creatorUserId) {
       	this.creatorUserId = creatorUserId;
     }
-</#if>
+	</#if>
 }

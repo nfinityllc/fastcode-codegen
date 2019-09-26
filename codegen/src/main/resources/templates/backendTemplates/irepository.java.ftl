@@ -41,12 +41,14 @@ public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName
   </#if>
 </#list>
 </#if>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-<#list AuthenticationFields as authKey,authValue>
-	<#if authKey== "User Name">
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+<#if AuthenticationFields??>
+	<#list AuthenticationFields as authKey,authValue>
+	<#if authKey== "UserName">
     @Query("select u from [=EntityClassName] u where u.[=authValue.fieldName?uncap_first] = ?1")
     [=EntityClassName] findBy[=authValue.fieldName?cap_first](String value);  
     </#if>
     </#list> 
+</#if>
 </#if>
 }

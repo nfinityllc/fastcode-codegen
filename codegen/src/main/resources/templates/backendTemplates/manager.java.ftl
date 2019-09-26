@@ -1,4 +1,4 @@
-package [=PackageName].domain<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].domain<#if AuthenticationType != "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +65,10 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
      //  return _[=InstanceName]Repository.findById(<#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">[=ClassName?uncap_first]Id.longValue());<#elseif value.fieldType?lower_case == "integer">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "short">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "double">[=ClassName?uncap_first]Id );<#elseif value.fieldType?lower_case == "string">[=ClassName?uncap_first]Id);</#if></#if></#list></#if>
 
 	}
-	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	<#if AuthenticationFields??>
 	<#list AuthenticationFields as authKey,authValue>
-	<#if authKey== "User Name">
+	<#if authKey== "UserName">
 	public [=EntityClassName] FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
 		return  _[=InstanceName]Repository.findBy[=authValue.fieldName?cap_first]([=authValue.fieldName?uncap_first]);
 	}

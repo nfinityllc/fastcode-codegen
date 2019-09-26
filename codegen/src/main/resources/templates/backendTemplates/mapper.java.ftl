@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import org.mapstruct.Mapper;
 <#list Relationship as relationKey, relationValue>
@@ -8,7 +8,7 @@ import org.mapstruct.Mappings;
 <#break>
 </#if>
 </#list>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 </#if>
@@ -17,7 +17,7 @@ import org.mapstruct.Mappings;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
-import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
 
 @Mapper(componentModel = "spring")
@@ -145,10 +145,10 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if> 
    </#list> 
-   <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+   <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
-   <#if authKey== "User Name">
+   <#if authKey== "UserName">
    @Mappings({ 
    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
@@ -159,7 +159,7 @@ public interface [=ClassName]Mapper {
    </#if>
    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
    @Mappings({ 
    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
    @Mapping(source = "role.id", target = "roleId"),                   
@@ -167,7 +167,7 @@ public interface [=ClassName]Mapper {
    Find[=ClassName]WithAllFieldsByIdOutput [=ClassName]EntityToFind[=ClassName]WithAllFieldsByIdOutput([=ClassName]Entity entity);
 <#if AuthenticationFields??>
 <#list AuthenticationFields as authKey,authValue>
-<#if authKey== "User Name">
+<#if authKey== "UserName">
    @Mappings({ 
    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
    @Mapping(source = "role.id", target = "roleId"),                   

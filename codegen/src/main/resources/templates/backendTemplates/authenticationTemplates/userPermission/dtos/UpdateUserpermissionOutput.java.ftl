@@ -21,7 +21,7 @@ public class Update[=AuthenticationTable]permissionOutput {
     <#else>
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "User Name">
+  	<#if authKey== "UserName">
   	private [=authValue.fieldType] [=AuthenticationTable?uncap_first]DescriptiveField;
     </#if>
     </#list>
@@ -88,7 +88,7 @@ public class Update[=AuthenticationTable]permissionOutput {
     <#else>
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "User Name">
+  	<#if authKey== "UserName">
   	public String get[=AuthenticationTable?cap_first]DescriptiveField() {
    	  	return [=AuthenticationTable?uncap_first]DescriptiveField;
   	}

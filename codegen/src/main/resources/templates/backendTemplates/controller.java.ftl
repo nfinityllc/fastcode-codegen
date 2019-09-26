@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 <#if AuthenticationType != "none">
 import org.springframework.security.access.prepost.PreAuthorize;
 </#if>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import org.springframework.security.crypto.password.PasswordEncoder;
 import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
 import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
@@ -34,14 +34,14 @@ import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=CommonModulePackage].domain.EmptyJsonResponse;
-import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].[=ClassName]AppService;
-import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].[=ClassName]AppService;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].application<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]AppService;
+import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]AppService;
 </#if>
 <#if relationValue.relation == "OneToMany">
-import [=PackageName].application<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#list>
 import java.util.List;
@@ -67,7 +67,7 @@ public class [=ClassName]Controller {
 
 	@Autowired
 	private Environment env;
-	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	
 	@Autowired
     private PasswordEncoder pEncoder;
@@ -81,10 +81,10 @@ public class [=ClassName]Controller {
     </#if>
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?uncap_first]) {
-		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		<#if AuthenticationFields??>
 		<#list AuthenticationFields as authKey,authValue>
-        <#if authKey== "User Name">
+        <#if authKey== "UserName">
 		Find[=ClassName]By[=authValue.fieldName?cap_first]Output found[=ClassName] = _[=ClassName?uncap_first]AppService.FindBy[=authValue.fieldName?cap_first]([=ClassName?uncap_first].get[=authValue.fieldName?cap_first]());
 
 	        if (found[=ClassName] != null) {
@@ -171,7 +171,7 @@ public class [=ClassName]Controller {
 			throw new EntityNotFoundException(
 					String.format("Invalid id=%s", id));
 		}
-		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		Find[=ClassName]WithAllFieldsByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindWithAllFieldsById([=ClassName?lower_case]Id);
 		<#else>
 		Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById([=ClassName?lower_case]Id);
@@ -180,13 +180,13 @@ public class [=ClassName]Controller {
 	    <#list Fields as key,value>
 	    <#if value.isPrimaryKey!false>
 	    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
-	    <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	    Find[=ClassName]WithAllFieldsByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindWithAllFieldsById([=value.fieldType?cap_first].valueOf(id));
 		<#else>
 	    Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById([=value.fieldType?cap_first].valueOf(id));
 		</#if>
 	    <#elseif value.fieldType?lower_case == "string">
-	    <#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	    Find[=ClassName]WithAllFieldsByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindWithAllFieldsById(id);
 		<#else>
 	    Find[=ClassName]ByIdOutput current[=ClassName] = _[=ClassName?uncap_first]AppService.FindById(id);
@@ -200,8 +200,14 @@ public class [=ClassName]Controller {
 			logHelper.getLogger().error("Unable to update. [=ClassName] with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
-		<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
-	    [=ClassName?uncap_first].setPassword(current[=ClassName].getPassword());
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		<#if AuthenticationFields??>
+		<#list AuthenticationFields as authKey,authValue>
+        <#if authKey== "Password">
+	    [=ClassName?uncap_first].set[=authValue.fieldName?cap_first](pEncoder.encode([=ClassName?uncap_first].get[=authValue.fieldName?cap_first]()));
+	    </#if>
+	    </#list>
+        </#if>
 		</#if>
 		<#if CompositeKeyClasses?seq_contains(ClassName)>
 		return new ResponseEntity(_[=ClassName?uncap_first]AppService.Update([=ClassName?lower_case]Id,[=ClassName?uncap_first]), HttpStatus.OK);
@@ -327,7 +333,7 @@ public class [=ClassName]Controller {
 	}   
  
    </#if>
-	<#if AuthenticationType== "database" && ClassName == AuthenticationTable>
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
    	@RequestMapping(value = "/{id}/[=AuthenticationTable?uncap_first]permission", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }

@@ -27,7 +27,7 @@
         </div>
             
    		<#if AuthenticationType != "none">
-        <mat-card *ngIf="!Auth.token" class="item-card">       
+        <mat-card *ngIf="!authService.token" class="item-card">       
             <mat-card-content>
 	            <h2>Authentication</h2>
 	            <h4>Sign in</h4>
@@ -38,7 +38,7 @@
 	                    Sign in </button>
             </mat-card-content>
         </mat-card>
-        <mat-card *ngIf="Auth.token" class="item-card">       
+        <mat-card *ngIf="authService.token" class="item-card">       
 			<mat-card-content>
 				<p>Login to Dashboard:</p>
 				<a  routerLink="dashboard">Dashboard</a>

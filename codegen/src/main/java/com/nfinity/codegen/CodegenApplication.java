@@ -75,7 +75,7 @@ public class CodegenApplication implements ApplicationRunner {
 		if (value == 1) {
 			input.setAuthenticationType("none");
 		} 
-		else if (value == 2) {
+		else if (value>1) {
 			scanner.nextLine();
 			System.out.print("\nDo you want to enable auditing ? (y/n)");
 			String str= scanner.nextLine();
@@ -96,13 +96,15 @@ public class CodegenApplication implements ApplicationRunner {
 				input.setAuthenticationSchema(str.substring(0, 1).toUpperCase() + str.substring(1));
 			}
 			
+			if (value == 2) {
 			input.setAuthenticationType("database");
-		}
-		else if (value == 3) {
+		    }
+		    else if (value == 3) {
 			input.setAuthenticationType("ldap");
-		}
-		else if (value == 4) {
+		    }
+		    else if (value == 4) {
 			input.setAuthenticationType("oidc");
+		    }
 		}
 
 		//		input.setDatabaseAuthentication(root.get("db-autentication") == null

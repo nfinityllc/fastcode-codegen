@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
+package [=PackageName].application<#if AuthenticationType !="none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
 
 import java.util.Date;
 public class Find[=ClassName]WithAllFieldsByIdOutput {
@@ -42,7 +42,7 @@ public class Find[=ClassName]WithAllFieldsByIdOutput {
   </#if>
   </#if>
 </#list>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+<#if AuthenticationType !="none" && ClassName == AuthenticationTable>  
   private Long roleId;       
   private String roleDescriptiveField;
     

@@ -162,17 +162,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
                 // Add all the roles and permissions in a list and then convert the list into all permissions, removing duplicates
 
-            <#if UserInput??>
-                <#if AuthenticationFields??>
-                    <#list AuthenticationFields as authKey,authValue>
-                        <#if authKey == "User Name">
-                            [=AuthenticationTable]Entity userEntity = _userMgr.FindBy[=authValue.fieldName?cap_first](userName);
-                        </#if>
-                    </#list>
-                </#if>
-            <#else>
+            	<#if UserInput?? && AuthenticationFields??>
+                [=AuthenticationTable]Entity userEntity = _userMgr.FindBy[=AuthenticationFields.UserName.fieldName?cap_first](userName);       
+            	<#else>
                 [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName);
-            </#if>
+            	</#if>
 
                 Set<[=AuthenticationTable]permissionEntity> spe = userEntity.get[=AuthenticationTable]permissionSet();
                 

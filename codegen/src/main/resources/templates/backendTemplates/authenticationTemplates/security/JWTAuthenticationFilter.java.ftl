@@ -18,14 +18,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 </#if>
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-<#if AuthenticationType == "ldap">
-import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
-</#if>
+
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -102,18 +101,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         </#if>
         if (auth != null) {
             String userId = "";
-            <#if AuthenticationType == "database" || AuthenticationType=="oidc">
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
                 userId = ((User) auth.getPrincipal()).getUsername();
                 claims.setSubject(userId);
             }
-            </#if>
-            <#if AuthenticationType == "ldap">
-            if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
+            else if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
                 userId = ((LdapUserDetailsImpl) auth.getPrincipal()).getUsername();
                 claims.setSubject(userId);
             }
-            </#if>
             <#if Flowable!false>
             //Flowable IDM Support
             if(userId != "") {

@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import java.util.List;
 import javax.validation.constraints.Positive;
@@ -8,7 +8,7 @@ import [=PackageName].domain.model.[=ClassName]Id;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import [=CommonModulePackage].Search.SearchCriteria;
-import [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 
 @Service
 public interface I[=ClassName]AppService {

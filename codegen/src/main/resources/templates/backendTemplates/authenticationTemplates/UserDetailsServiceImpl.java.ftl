@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
      
-		[=AuthenticationTable]Entity applicationUser = usersRepository.findBy<#if AuthenticationType!= "none"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "User Name">[=authValue.fieldName?cap_first]</#if></#list><#else>UserName</#if></#if>(username);
+		[=AuthenticationTable]Entity applicationUser = usersRepository.findBy<#if AuthenticationType!= "none"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "UserName">[=authValue.fieldName?cap_first]</#if></#list><#else>UserName</#if></#if>(username);
 
 		if (applicationUser == null) {
 			throw new UsernameNotFoundException(username);
@@ -42,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		List<String> permissions = getAllPermissions(applicationUser);
 		List<GrantedAuthority> authorities = getGrantedAuthorities(permissions);
 
-		return new User(applicationUser.get<#if AuthenticationType!= "none"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "User Name">[=authValue.fieldName?cap_first]</#if></#list><#else>UserName</#if></#if>(), applicationUser.get<#if AuthenticationType!= "none"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "Password">[=authValue.fieldName?cap_first]</#if></#list><#else>Password</#if></#if>(), authorities); // User class implements UserDetails Interface
+		return new User(applicationUser.get<#if AuthenticationType!= "none"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "UserName">[=authValue.fieldName?cap_first]</#if></#list><#else>UserName</#if></#if>(), applicationUser.get<#if AuthenticationType!= "none"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "Password">[=authValue.fieldName?cap_first]</#if></#list><#else>Password</#if></#if>(), authorities); // User class implements UserDetails Interface
 	
 	}
 

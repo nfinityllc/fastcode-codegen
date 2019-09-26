@@ -597,7 +597,7 @@ public class CodeGenerator {
 			{
 				for(Map.Entry<String, FieldDetails> map : authFields.entrySet())
 				{
-					if(map.getKey()=="User Name")
+					if(map.getKey()=="UserName")
 						backEndTemplate.put("authenticationTemplates/users/dtos/FindCustomUserByNameOutput.java.ftl", "Find"+authenticationTable+"By"+map.getValue().getFieldName().substring(0, 1).toUpperCase() + map.getValue().getFieldName().substring(1)+"Output.java");
 				}
 			}

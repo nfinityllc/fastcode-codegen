@@ -112,7 +112,7 @@ public class EntityGenerator {
 				}
 			}
 
-			if(authenticationTable !=null  && authenticationType=="database")
+			if(authenticationTable !=null  && authenticationType != "none")
 			{
 				entityDetailsMap=validateAuthenticationTable(entityDetailsMap, authenticationTable, flowable);
 			}

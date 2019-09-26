@@ -19,15 +19,15 @@ public class GetRoleOutput {
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
    	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-    private [=value] [=key?uncap_first];
+    private [=value] [=AuthenticationTable?uncap_first][=key?cap_first];
   	</#if> 
   	</#list>
   	</#if>
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "User Name">
+  	<#if authKey== "UserName">
   	<#if !PrimaryKeys[authValue.fieldName]??>
-  	private [=authValue.fieldType] [=authValue.fieldName?uncap_first];
+  	private [=authValue.fieldType] [=AuthenticationTable?uncap_first][=authValue.fieldName?uncap_first];
     </#if>
     </#if>
     </#list>
@@ -54,26 +54,26 @@ public class GetRoleOutput {
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
   	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-    public [=value] get[=key?cap_first]() {
-  	return [=key?uncap_first];
+    public [=value] get[=AuthenticationTable?cap_first][=key?cap_first]() {
+  	return [=AuthenticationTable?uncap_first][=key?cap_first];
   	}
 
-  	public void set[=key?cap_first]([=value] [=key?uncap_first]){
-  	this.[=key?uncap_first] = [=key?uncap_first];
+  	public void set[=AuthenticationTable?cap_first][=key?cap_first]([=value] [=AuthenticationTable?uncap_first][=key?cap_first]){
+  	this.[=AuthenticationTable?uncap_first][=key?cap_first] = [=AuthenticationTable?uncap_first][=key?cap_first];
   	}
   	</#if> 
   	</#list>
   	</#if>
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "User Name">
+  	<#if authKey== "UserName">
   	<#if !PrimaryKeys[authValue.fieldName]??>
-  	public [=authValue.fieldType] get[=authValue.fieldName?cap_first]() {
-   		return [=authValue.fieldName?uncap_first];
+  	public [=authValue.fieldType] get[=AuthenticationTable?cap_first][=authValue.fieldName?cap_first]() {
+   		return [=AuthenticationTable?cap_first][=authValue.fieldName?uncap_first];
   	}
 
-  	public void set[=authValue.fieldName?cap_first]([=authValue.fieldType] [=authValue.fieldName?uncap_first]){
-   		this.[=authValue.fieldName?uncap_first] = [=authValue.fieldName?uncap_first];
+  	public void set[=AuthenticationTable?cap_first][=authValue.fieldName?cap_first]([=authValue.fieldType] [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]){
+   		this.[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first] = [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first];
   	}
   	</#if>
     </#if>

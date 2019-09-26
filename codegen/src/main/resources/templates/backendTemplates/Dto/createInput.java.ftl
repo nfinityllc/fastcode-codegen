@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
 
 import java.util.Date;
 import javax.validation.constraints.NotNull;
@@ -72,7 +72,7 @@ public class Create[=ClassName]Input {
   </#if> 
   </#if>
 </#list>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
   private Long roleId;
     
   public Long getRoleId() {

@@ -41,7 +41,9 @@ public class CreateUserInput {
   
   private Date lockoutEndDateUtc;
   
+  <#if AuthenticationType =="database">
   @NotNull(message = "password Should not be null")
+  </#if>
   @Length(max = 128, message = "password must be less than 128 characters")
   private String password;
   

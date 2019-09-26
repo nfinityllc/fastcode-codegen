@@ -1,11 +1,11 @@
-package [=PackageName].application<#if AuthenticationType== "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
 
 import java.util.Date;
 public class Create[=ClassName]Output {
 
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-    <#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+    <#if AuthenticationType == "database" && ClassName == AuthenticationTable>  
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "Password">
@@ -44,7 +44,7 @@ public class Create[=ClassName]Output {
   </#if>
   </#if>
 </#list>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
   private Long roleId;       
   private String roleDescriptiveField;
     

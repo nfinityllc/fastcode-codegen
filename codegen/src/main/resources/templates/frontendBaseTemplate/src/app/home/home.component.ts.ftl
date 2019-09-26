@@ -53,12 +53,11 @@ export class HomeComponent implements OnInit {
   	
    <#if AuthenticationType != "none">
 	onSubmit() {
-        if(this.authService.loginType == 'oidc') {
+		if(this.authService.loginType == 'oidc') {
 			this.logout();
 			this.oauthService.initLoginFlow();
 		}       
 		this.router.navigate(['/login'],{ queryParams: { returnUrl: 'dashboard' } });
-        
     }
     </#if>
     onBack(): void {
