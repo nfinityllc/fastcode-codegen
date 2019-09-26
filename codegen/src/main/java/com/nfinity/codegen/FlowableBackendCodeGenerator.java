@@ -3,23 +3,26 @@ package com.nfinity.codegen;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.FieldDetails;
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+import static java.util.Map.Entry.comparingByKey;
+import static java.util.stream.Collectors.toMap;
+
 public class FlowableBackendCodeGenerator {
     static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
     static final String FLOWABLE_BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/flowableTemplates";
 
-    public static void generateFlowableClasses(Map<String, EntityDetails> details, String destination, String packageName, String authenticationType, String authenticationTable) {
+    public static void generateFlowableClasses(String destination, String packageName, String authenticationType, String authenticationTable, Map<String, EntityDetails> details) {
         ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FLOWABLE_BACKEND_TEMPLATE_FOLDER + "/");
         TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl};
         MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
@@ -36,10 +39,48 @@ public class FlowableBackendCodeGenerator {
         root.put("AuthenticationType", authenticationType);
         if(authenticationTable !=null) {
         	root.put("AuthenticationTable", authenticationTable);
-        	root.put("AuthenticationFields", getCustomUserAuthFieldsMap(details, authenticationTable));;
+        	root.put("AuthenticationFields", getCustomUserAuthFieldsMap(details, authenticationTable));
+            root.put("UserInput","true");
         }
         else
+        {
+            root.put("UserInput",null);
             root.put("AuthenticationTable", "User");
+        }
+        for(Map.Entry<String,EntityDetails> entry : details.entrySet())
+        {
+            Map<String, FieldDetails> primaryKeys= new HashMap<>();
+            String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
+            if(authenticationTable!=null)
+            {
+                if(className.equalsIgnoreCase(authenticationTable))
+                {
+                    root.put("ClassName", className);
+                    root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
+                    root.put("Fields", entry.getValue().getFieldsMap());
+                    root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
+                    root.put("DescriptiveField", entry.getValue().getEntitiesDescriptiveFieldMap());
+                    for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
+                        if(entryFields.getValue().getIsPrimaryKey())
+                        {
+                            primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
+
+                        }
+                    }
+                    Map<String, FieldDetails> sorted =primaryKeys
+                            .entrySet()
+                            .stream()
+                            .sorted(comparingByKey())
+                            .collect(
+                                    toMap(e -> e.getKey(), e -> e.getValue(),
+                                            (e1, e2) -> e2, LinkedHashMap::new));
+
+                    root.put("PrimaryKeys", sorted);
+                    //	root.put("PrimaryKeys", primaryKeys);
+                }
+            }
+
+        }
         //root.put("Audit", audit);
 
         generateFlowableFiles(root, backendAppFolder, authenticationType);

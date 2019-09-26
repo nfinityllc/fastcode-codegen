@@ -77,7 +77,7 @@ public class RoleEntity<#if Audit!false> extends AuditedEntity<String></#if> imp
  
     private Set<RolepermissionEntity> rolepermissionSet = new HashSet<RolepermissionEntity>(); 
   
-<#if AuthenticationType == "database" || AuthenticationType=="oidc">
+<#if AuthenticationType != "none">
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<[=AuthenticationTable]Entity> get[=AuthenticationTable]Set() { 

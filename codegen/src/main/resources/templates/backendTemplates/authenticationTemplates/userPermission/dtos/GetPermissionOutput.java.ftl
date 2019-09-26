@@ -15,7 +15,7 @@ public class GetPermissionOutput {
    		this.[=AuthenticationTable?uncap_first]permissionPermissionId = [=AuthenticationTable?uncap_first]permissionPermissionId;
    	}
   
-    <#if (AuthenticationType=="database" && !UserInput??) || AuthenticationType=="oidc" >
+    <#if AuthenticationType!="none" && !UserInput?? >
     private Long [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
   
     public Long get[=AuthenticationTable]permission[=AuthenticationTable]Id() {
@@ -25,7 +25,7 @@ public class GetPermissionOutput {
     public void set[=AuthenticationTable]permission[=AuthenticationTable]Id(Long [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id){
    		this.[=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id = [=AuthenticationTable?uncap_first]permission[=AuthenticationTable]Id;
     }
-    <#elseif AuthenticationType=="database" && UserInput??>
+    <#elseif AuthenticationType!="none" && UserInput??>
     <#if PrimaryKeys??>
     <#list PrimaryKeys as key,value>
     <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">

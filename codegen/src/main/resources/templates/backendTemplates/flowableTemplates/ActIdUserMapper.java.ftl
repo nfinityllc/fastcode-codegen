@@ -32,4 +32,5 @@ public class ActIdUserMapper {
 		
 		return actIdUser;
 	}
+
 }

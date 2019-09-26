@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-<#if AuthenticationType == "database" || AuthenticationType=="oidc">
+<#if AuthenticationType != "none">
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 </#if> 
 import [=PackageName].security.JWTAuthenticationFilter;
@@ -26,7 +26,7 @@ import static [=PackageName].security.SecurityConstants.REGISTER;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-<#if AuthenticationType == "database" || AuthenticationType=="oidc">
+<#if AuthenticationType != "none">
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 </#if>   
@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-<#if AuthenticationType == "database" || AuthenticationType == "oidc">
+<#if AuthenticationType != "none">
             auth
                     .userDetailsService(userDetailsService)
                     .passwordEncoder(new BCryptPasswordEncoder());

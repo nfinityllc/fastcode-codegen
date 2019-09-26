@@ -21,10 +21,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.stream.Collectors;
 import java.net.URL;
 import org.springframework.security.core.authority.AuthorityUtils;
-import [=PackageName].domain.model.UserpermissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.User.IUserManager;
-import [=PackageName].domain.model.UserEntity;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import com.nimbusds.jose.*;
 import com.nimbusds.jwt.*;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
@@ -44,7 +44,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     //@Autowired
     private Environment environment;
 
-    private IUserManager _userMgr;
+    private I[=AuthenticationTable]Manager _userMgr;
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
@@ -157,14 +157,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 if(_userMgr==null){
                     ServletContext servletContext = request.getServletContext();
                     WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-                    _userMgr = webApplicationContext.getBean(IUserManager.class);
+                    _userMgr = webApplicationContext.getBean(I[=AuthenticationTable]Manager.class);
                 }
 
                 // Add all the roles and permissions in a list and then convert the list into all permissions, removing duplicates
 
-                UserEntity userEntity = _userMgr.FindByUserName(userName);
+            <#if UserInput??>
+                <#if AuthenticationFields??>
+                    <#list AuthenticationFields as authKey,authValue>
+                        <#if authKey == "User Name">
+                            [=AuthenticationTable]Entity userEntity = _userMgr.FindBy[=authValue.fieldName?cap_first](userName);
+                        </#if>
+                    </#list>
+                </#if>
+            <#else>
+                [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName);
+            </#if>
 
-                Set<UserpermissionEntity> spe = userEntity.getUserpermissionSet();
+                Set<[=AuthenticationTable]permissionEntity> spe = userEntity.get[=AuthenticationTable]permissionSet();
                 
 //              Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
 //              for (PermissionEntity item: permissions) { 
@@ -172,12 +182,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 //              } 
                 List<String> pList = new ArrayList<String>(); 
                 Iterator pIterator = spe.iterator();
-        		while (pIterator.hasNext()) { 
-        			UserpermissionEntity pe = (UserpermissionEntity) pIterator.next();
+        		while (pIterator.hasNext()) {
+                    [=AuthenticationTable]permissionEntity pe = ([=AuthenticationTable]permissionEntity) pIterator.next();
         			pList.add(pe.getPermission().getName());
         		}
-         
-                RoleEntity role = _userMgr.GetRole(userEntity.getId());
+
+                RoleEntity role = userEntity.getRole();
                 List<String> groups = new ArrayList<String>();
 
                 groups.add(role.getName());
