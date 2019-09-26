@@ -182,7 +182,7 @@ public class CodegenApplication implements ApplicationRunner {
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
 
 		if(input.getFlowable()) {
-			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema());
+			FlowableBackendCodeGenerator.generateFlowableClasses(details, input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema());
 		}
 		
 		if(!input.getAuthenticationType().equals("none"))

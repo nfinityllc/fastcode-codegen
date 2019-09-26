@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.nfinity.entitycodegen.EntityDetails;
+import com.nfinity.entitycodegen.FieldDetails;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -16,7 +19,7 @@ public class FlowableBackendCodeGenerator {
     static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
     static final String FLOWABLE_BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/flowableTemplates";
 
-    public static void generateFlowableClasses(String destination, String packageName, String authenticationType, String authenticationTable) {
+    public static void generateFlowableClasses(Map<String, EntityDetails> details, String destination, String packageName, String authenticationType, String authenticationTable) {
         ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FLOWABLE_BACKEND_TEMPLATE_FOLDER + "/");
         TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl};
         MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
@@ -28,10 +31,13 @@ public class FlowableBackendCodeGenerator {
         Map<String, Object> root = new HashMap<>();
         //root.put("AuditPackage", packageName);
         //packageName = packageName.concat(".CommonModule");
+        
         root.put("PackageName", packageName);
         root.put("AuthenticationType", authenticationType);
-        if(authenticationTable !=null)
-            root.put("AuthenticationTable", authenticationTable);
+        if(authenticationTable !=null) {
+        	root.put("AuthenticationTable", authenticationTable);
+        	root.put("AuthenticationFields", getCustomUserAuthFieldsMap(details, authenticationTable));;
+        }
         else
             root.put("AuthenticationTable", "User");
         //root.put("Audit", audit);
@@ -209,6 +215,17 @@ public class FlowableBackendCodeGenerator {
 
             }
         }
+    }
+    
+    private static Map<String, FieldDetails> getCustomUserAuthFieldsMap(Map<String, EntityDetails> details, String authenticationTable) {
+    	
+    	for(Map.Entry<String, EntityDetails> entityDetail: details.entrySet()) {
+    		if( entityDetail.getKey().contentEquals(authenticationTable)) {
+    			return entityDetail.getValue().getAuthenticationFieldsMap();
+    		}
+    	}
+    	
+    	return null;
     }
 
 }

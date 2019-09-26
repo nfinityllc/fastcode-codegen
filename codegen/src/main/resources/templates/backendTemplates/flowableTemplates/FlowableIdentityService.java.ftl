@@ -145,7 +145,11 @@ public class FlowableIdentityService {
             if(actIdGroup == null) {
                 createGroup(role.getName());
             }
-            createMembership(role.getName(), createdUser.getUserName());
+            <#if AuthenticationTable?? && AuthenticationFields??>
+            createMembership(role.getName(), createdUser.get[=AuthenticationFields.UserName.fieldName?cap_first]());
+		   <#else>
+			createMembership(role.getName(), createdUser.getUserName());
+		   </#if>
         }
     }
 
