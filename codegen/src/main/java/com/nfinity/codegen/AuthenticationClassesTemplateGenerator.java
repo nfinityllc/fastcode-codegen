@@ -92,7 +92,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		}
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
-		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root);
+		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root, flowable);
 		generateAppStartupRunner(details, packageName, backendAppFolder, authenticationTable);
 	}
 
@@ -550,7 +550,23 @@ public class AuthenticationClassesTemplateGenerator {
 		return backEndTemplate;
 	}
 	
-	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType, String authenticationTable, Map<String, Object> root) {
+	//add method to generate cookie service
+	
+	private static void generateFlowableFiles(String destPath, String appName) {
+		String authorizationPath = CodeGenerator.TEMPLATE_FOLDER + "/frontendAuthorization/";
+		Map<String, Object> templates = new HashMap<>();
+		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, authorizationPath);
+		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
+		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+		cfg.setTemplateLoader(mtl);
+		
+		templates.put("cookie.service.ts.ftl", "cookie.service.ts");
+		generateFiles(templates, null, destPath + "/core/");
+	}
+	
+	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType, String authenticationTable, Map<String, Object> root, Boolean flowable) {
 
 		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 		List<String> authorizationEntities = new ArrayList<String>();
@@ -589,6 +605,10 @@ public class AuthenticationClassesTemplateGenerator {
 				generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType, authenticationTable, root);
 			}
 			
+		}
+		
+		if(flowable) {
+			generateFlowableFiles(appFolderPath, appName);
 		}
 
 	}

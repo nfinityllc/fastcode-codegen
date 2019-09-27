@@ -40,7 +40,11 @@
     "quill": "^1.3.6", 
     "reflect-metadata": "^0.1.13", 
     "rxjs": "^6.5.2", 
-    "zone.js": "~0.10.1" 
+    <#if Flowable!false>
+    "ngx-cookie-service": "^2.2.0",
+    </#if>
+    "zone.js": "~0.10.1"
+    
   }, 
   "devDependencies": { 
     "@angular-devkit/build-angular": "~0.802.0", 
