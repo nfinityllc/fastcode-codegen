@@ -188,6 +188,7 @@ public class FronendBaseTemplateGenerator {
 			JSONObject build = (JSONObject) architect.get("build");
 			JSONObject options = (JSONObject) build.get("options");
 			JSONArray styles = (JSONArray) options.get("styles");
+			JSONArray assets = (JSONArray) options.get("assets");
 			styles.clear();
 
 			JSONObject input = new JSONObject();
@@ -201,6 +202,7 @@ public class FronendBaseTemplateGenerator {
 
 			if(flowable)
 			{
+				assets.add("src/flowable_admin");
 				projects.put("task-app",getFlowableTaskProjectNode());
 			}
 			projects.put("fastCodeCore",getFastCodeCoreProjectNode());
@@ -424,7 +426,7 @@ public class FronendBaseTemplateGenerator {
 				JSONArray flowable_task1 = new JSONArray();
 				flowable_task1.add("dist/task-app/*");
 
-				paths.put("task-app/",flowable_task);
+				paths.put("task-app",flowable_task);
 				paths.put("task-app/*",flowable_task1);
 			}
 

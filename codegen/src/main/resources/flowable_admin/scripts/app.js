@@ -298,7 +298,7 @@ flowableAdminApp
 
             // Initialize angular-translate
             $translateProvider.useStaticFilesLoader({
-                prefix: 'src/flowable_admin/i18n/',
+                prefix: './flowable_admin/i18n/',
                 suffix: '.json'
             })
             /*
