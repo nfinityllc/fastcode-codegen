@@ -93,7 +93,7 @@ public class AuthenticationClassesTemplateGenerator {
 		}
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
 		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root);
-		generateAppStartupRunner(details, packageName, backendAppFolder, authenticationTable);
+		generateAppStartupRunner(details, packageName, backendAppFolder, authenticationTable, flowable);
 	}
 
 	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
@@ -625,7 +625,7 @@ public class AuthenticationClassesTemplateGenerator {
 		generateFiles(templates, root, destination);
 	}
 	
-	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String packageName, String backEndRootFolder, String authenticationTable){
+	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String packageName, String backEndRootFolder, String authenticationTable, Boolean flowable){
 		
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
@@ -652,6 +652,7 @@ public class AuthenticationClassesTemplateGenerator {
 		root.put("entitiesMap", entitiesMap);
 		root.put("PackageName", packageName);
 		root.put("authenticationTable" , authenticationTable);
+		root.put("Flowable", flowable);
 		Map<String, Object> template = new HashMap<>();
 		template.put("AppStartupRunner.java.ftl", "AppStartupRunner.java");
 

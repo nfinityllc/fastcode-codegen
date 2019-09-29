@@ -29,6 +29,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+<#if Flowable!false>
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 
 @Service
 @Validated
@@ -53,6 +56,11 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	@Autowired
 	private RolepermissionMapper mapper;
 
+<#if Flowable!false>
+	@Autowired
+	private FlowableIdentityService idmIdentityService;
+</#if>
+
     @Transactional(propagation = Propagation.REQUIRED)
 	public CreateRolepermissionOutput Create(CreateRolepermissionInput input) {
 
@@ -70,6 +78,9 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 		rolepermission.setRole(foundRole);
 		}
 		RolepermissionEntity createdRolepermission = _rolepermissionManager.Create(rolepermission);
+<#if Flowable!false>
+		idmIdentityService.addGroupPrivilegeMapping(foundRole.getName(), foundPermission.getName());
+</#if>
 		return mapper.RolepermissionEntityToCreateRolepermissionOutput(createdRolepermission);
 	}
 	
@@ -91,6 +102,7 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 		rolepermission.setRole(foundRole);
 		}
 		RolepermissionEntity updatedRolepermission = _rolepermissionManager.Update(rolepermission);
+
 		return mapper.RolepermissionEntityToUpdateRolepermissionOutput(updatedRolepermission);
 	}
 	
@@ -101,6 +113,11 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 
 		RolepermissionEntity existing = _rolepermissionManager.FindById(rolepermissionId) ; 
 		_rolepermissionManager.Delete(existing);
+		<#if Flowable!false>
+		RoleEntity foundRole = _roleManager.FindById(existing.getRoleId());
+		PermissionEntity foundPermission = _permissionManager.FindById(existing.getPermissionId());
+		idmIdentityService.deleteGroupPrivilegeMapping(foundRole.getName(), foundPermission.getName());
+		</#if>
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)

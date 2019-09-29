@@ -35,6 +35,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+<#if Flowable!false>
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 
 @Service
 @Validated
@@ -59,6 +62,10 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	@Autowired
 	private [=AuthenticationTable]permissionMapper mapper;
 
+<#if Flowable!false>
+	@Autowired
+	private FlowableIdentityService idmIdentityService;
+</#if>
     @Transactional(propagation = Propagation.REQUIRED)
 	public Create[=AuthenticationTable]permissionOutput Create(Create[=AuthenticationTable]permissionInput input) {
 
@@ -83,6 +90,12 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		else return null;
 		
 		[=AuthenticationTable]permissionEntity created[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Create([=AuthenticationTable?uncap_first]permission);
+
+		<#if Flowable!false>
+		<#if AuthenticationTable?? && AuthenticationFields??>
+		idmIdentityService.addUserPrivilegeMapping(found[=AuthenticationTable].get[=AuthenticationFields.UserName.fieldName?cap_first](), foundPermission.getName());
+		</#if>
+		</#if>
 		return mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput(created[=AuthenticationTable]permission);
 	}
 	
@@ -149,6 +162,12 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 
 		[=AuthenticationTable]permissionEntity existing = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId) ; 
 		_[=AuthenticationTable?uncap_first]permissionManager.Delete(existing);
+		<#if Flowable!false>
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(existing.getUserId);
+		PermissionEntity foundPermission = _permissionManager.FindById(existing.getPermissionId());
+
+		idmIdentityService.deleteUserPrivilegeMapping(found[=AuthenticationTable].get[=AuthenticationFields.UserName.fieldName?cap_first](), foundPermission.getName());
+		</#if>
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
