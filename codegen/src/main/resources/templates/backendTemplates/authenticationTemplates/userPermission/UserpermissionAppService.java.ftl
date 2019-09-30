@@ -93,7 +93,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 
 		<#if Flowable!false>
 		<#if AuthenticationTable?? && AuthenticationFields??>
-		idmIdentityService.addUserPrivilegeMapping(found[=AuthenticationTable].get[=AuthenticationFields.UserName.fieldName?cap_first](), foundPermission.getName());
+		idmIdentityService.addUserPrivilegeMapping([=AuthenticationTable?uncap_first]permission.get[=AuthenticationTable?cap_first]().get[=AuthenticationFields.UserName.fieldName?cap_first](), [=AuthenticationTable?uncap_first]permission.getPermission().getName());
 		</#if>
 		</#if>
 		return mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput(created[=AuthenticationTable]permission);
@@ -167,7 +167,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		[=AuthenticationTable]permissionEntity existing = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId) ; 
 		_[=AuthenticationTable?uncap_first]permissionManager.Delete(existing);
 		<#if Flowable!false>
-		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(existing.getUserId);
+		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if (AuthenticationType!="none" && !UserInput??)>existing.get[=AuthenticationTable]Id()<#elseif AuthenticationType!="none" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>existing.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>existing.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
 		PermissionEntity foundPermission = _permissionManager.FindById(existing.getPermissionId());
 
 		idmIdentityService.deleteUserPrivilegeMapping(found[=AuthenticationTable].get[=AuthenticationFields.UserName.fieldName?cap_first](), foundPermission.getName());

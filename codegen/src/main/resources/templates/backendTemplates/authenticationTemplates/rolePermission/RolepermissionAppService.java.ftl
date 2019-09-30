@@ -65,22 +65,25 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	public CreateRolepermissionOutput Create(CreateRolepermissionInput input) {
 
 		RolepermissionEntity rolepermission = mapper.CreateRolepermissionInputToRolepermissionEntity(input);
-	  	if(input.getPermissionId()!=null)
-		{
-		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
-		if(foundPermission!=null)
-		rolepermission.setPermission(foundPermission);
+		if(input.getPermissionId()!=null && input.getRoleId()!=null){
+			PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
+			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+			
+			if(foundPermission!=null && foundRole!=null) {
+				rolepermission.setPermission(foundPermission);
+				rolepermission.setRole(foundRole);
+			}
+			else {
+				return null;
+			}
 		}
-	  	if(input.getRoleId()!=null)
-		{
-		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-		if(foundRole!=null)
-		rolepermission.setRole(foundRole);
+		else {
+			return null;
 		}
 		RolepermissionEntity createdRolepermission = _rolepermissionManager.Create(rolepermission);
-<#if Flowable!false>
-		idmIdentityService.addGroupPrivilegeMapping(foundRole.getName(), foundPermission.getName());
-</#if>
+		<#if Flowable!false>
+		idmIdentityService.addGroupPrivilegeMapping(rolepermission.getRole().getName(), rolepermission.getPermission().getName());
+		</#if>
 		return mapper.RolepermissionEntityToCreateRolepermissionOutput(createdRolepermission);
 	}
 	

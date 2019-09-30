@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 <#if Flowable!false>
-import com.nfinity.fastcode.application.Flowable.FlowableIdentityService;
+import [=PackageName].application.Flowable.FlowableIdentityService;
 </#if>
 
 @Service
@@ -58,7 +58,7 @@ public class PermissionAppService implements IPermissionAppService {
 	public UpdatePermissionOutput Update(Long permissionId, UpdatePermissionInput input) {
 	<#if Flowable!false>
 		String oldPermissionName = null;
-		PermissionEntity oldPermission = _permissionsManager.FindById(permission.getId());
+		PermissionEntity oldPermission = _permissionManager.FindById(permissionId);
 		if(oldPermission != null) {
 			oldPermissionName = oldPermission.getName();
 		}
