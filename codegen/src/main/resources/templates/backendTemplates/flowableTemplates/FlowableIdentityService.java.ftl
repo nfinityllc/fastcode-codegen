@@ -319,6 +319,14 @@ public class FlowableIdentityService {
             _actIdPrivMappingManager.create(actIdPrivMapping);
         }
     }
+    
+    public void updateUserPrivilegeMapping(String userId, String privName) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByUserPrivilege(userId, privName);
+			_actIdPrivMappingManager.update(actIdPrivMapping);
+		}
+	}
 
     public void deleteUserPrivilegeMapping(String userId, String privName) {
         boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
@@ -346,6 +354,14 @@ public class FlowableIdentityService {
             _actIdPrivMappingManager.create(actIdPrivMapping);
         }
     }
+    
+    public void updateGroupPrivilegeMapping(String groupId, String privName) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByGroupPrivilege(groupId, privName);
+			_actIdPrivMappingManager.update(actIdPrivMapping);
+		}
+	}
 
     private ActIdPrivMappingEntity newPrivMapping(String privName) {
         ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(privName);

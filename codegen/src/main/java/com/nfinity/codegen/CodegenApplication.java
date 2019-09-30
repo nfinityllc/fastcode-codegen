@@ -119,6 +119,11 @@ public class CodegenApplication implements ApplicationRunner {
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		UserInput input = composeInput(configProperties);
+		
+		File dir = new File(input.getDestinationPath());
+		if(!dir.exists()) {
+			dir.mkdirs();
+		};
 
         GitRepositoryManager.setDestinationPath(input.getDestinationPath());
         String sourceBranch = "";
@@ -166,11 +171,6 @@ public class CodegenApplication implements ApplicationRunner {
 			dependencies = dependencies.concat(",mail");
 		}
 
-		File dir = new File(input.getDestinationPath());
-		if(!dir.exists()) {
-			dir.mkdirs();
-		};
-
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
@@ -184,7 +184,7 @@ public class CodegenApplication implements ApplicationRunner {
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
 
 		if(input.getFlowable()) {
-			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema(), details, input.getHistory());
+			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema(),input.getSchemaName(), details, input.getHistory());
 		}
 		
 		if(!input.getAuthenticationType().equals("none"))
@@ -216,7 +216,7 @@ public class CodegenApplication implements ApplicationRunner {
 
 		GitRepositoryManager.addToGitRepository(input.getUpgrade(), sourceBranch);
 
-        System.out.println(" Code generation Completed ...");
+        System.out.println("\n Code generation Completed ...");
         System.exit(1);
 	}
 

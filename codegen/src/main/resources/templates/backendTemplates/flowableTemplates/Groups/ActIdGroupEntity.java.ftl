@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.Date;
 
 @Entity
-@Table(name = "act_id_group", schema = "dbo")
+@Table(name = "act_id_group", schema = "[=SchemaName]")
 public class ActIdGroupEntity  implements Serializable {
 
 private String id;

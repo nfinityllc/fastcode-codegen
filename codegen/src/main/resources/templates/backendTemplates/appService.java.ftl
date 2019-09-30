@@ -9,7 +9,7 @@ import [=PackageName].domain.model.[=ClassName]Id;
 </#if>
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
-import [=PackageName].domain<#if AuthenticationType== "database" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
+import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;

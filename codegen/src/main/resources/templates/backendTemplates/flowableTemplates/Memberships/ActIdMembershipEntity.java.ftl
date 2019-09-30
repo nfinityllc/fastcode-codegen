@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.Date;
 
 @Entity
-@Table(name = "act_id_membership", schema = "dbo")
+@Table(name = "act_id_membership", schema = "[=SchemaName]")
 @IdClass(MembershipId.class)
 public class ActIdMembershipEntity {
 

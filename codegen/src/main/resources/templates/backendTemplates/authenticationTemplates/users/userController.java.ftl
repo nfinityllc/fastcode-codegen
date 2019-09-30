@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-<#if AuthenticationType == "oidc">
+<#if AuthenticationType != "none">
 import [=PackageName].domain.model.UserpermissionEntity;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.User.IUserManager;
@@ -57,7 +57,7 @@ public class UserController {
 
 	@Autowired
 	private Environment env;
-<#if AuthenticationType == "oidc">
+<#if AuthenticationType != "none">
 
     @Autowired
  	private IUserManager _userMgr;
@@ -68,7 +68,7 @@ public class UserController {
     public ResponseEntity GetMeInfo() throws Exception{ 
  
         String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
-        UserEntity userEntity = _userMgr.FindByUserName(userName); 
+        [=AuthenticationTable] userEntity = _userMgr.FindByUserName(userName); 
         Set<UserpermissionEntity> spe = userEntity.getUserpermissionSet();
         
 //      Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
@@ -82,7 +82,7 @@ public class UserController {
 			pList.add(pe.getPermission().getName());
 		}
  
-        RoleEntity role = _userMgr.GetRole(userEntity.getId()); 
+        RoleEntity role = userEntity.getRole();
         List<String> groups = new ArrayList<String>(); 
  
         groups.add(role.getName()); 
@@ -108,11 +108,11 @@ public class UserController {
 	public ResponseEntity<CreateUserOutput> Create(@RequestBody @Valid CreateUserInput user) {
 		 FindUserByNameOutput foundUser = _userAppService.FindByUserName(user.getUserName());
 
-	        if (foundUser != null) {
-	            logHelper.getLogger().error("There already exists a user with a name=%s", user.getUserName());
-	            throw new EntityExistsException(
-	                    String.format("There already exists a user with email address=%s", user.getUserName()));
-	        }
+	     if (foundUser != null) {
+	     	logHelper.getLogger().error("There already exists a user with a name=%s", user.getUserName());
+	        throw new EntityExistsException(
+	        	String.format("There already exists a user with email address=%s", user.getUserName()));
+	    }
 	        
 	    user.setPassword(pEncoder.encode(user.getPassword()));
 	    CreateUserOutput output=_userAppService.Create(user);
@@ -120,7 +120,7 @@ public class UserController {
 		{
 			logHelper.getLogger().error("No record found");
 		throw new EntityNotFoundException(
-				String.format("No record found"));
+			String.format("No record found"));
 	    }
 		
 		return new ResponseEntity(output, HttpStatus.OK);
@@ -134,8 +134,8 @@ public class UserController {
 
         if (existing == null) {
         	logHelper.getLogger().error("There does not exist a user with a id=%s", id);
-        	 throw new EntityNotFoundException(
-	                    String.format("There does not exist a user with a id=%s", id));
+        	throw new EntityNotFoundException(
+	        	String.format("There does not exist a user with a id=%s", id));
 	     
         }
     	

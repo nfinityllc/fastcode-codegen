@@ -1,4 +1,4 @@
-package [=PackageName].domain<#if AuthenticationType != "database" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
