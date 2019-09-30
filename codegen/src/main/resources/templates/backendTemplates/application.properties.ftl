@@ -65,7 +65,6 @@ server.ssl.key-alias=tomcat
 fastCode.auth.method=[=AuthenticationType]
 
 # LDAP Server Setup - /login
-fastCode.auth.method=ldap
 fastCode.ldap.contextsourceurl=ldap://localhost:10389/dc=nfinityllc,dc=com
 fastCode.ldap.manager.dn=uid=admin,ou=system
 fastCode.ldap.manager.password=secret

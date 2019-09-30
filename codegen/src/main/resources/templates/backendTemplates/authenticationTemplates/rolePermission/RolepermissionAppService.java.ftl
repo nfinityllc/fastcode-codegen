@@ -92,20 +92,28 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	public UpdateRolepermissionOutput Update(RolepermissionId rolepermissionId , UpdateRolepermissionInput input) {
 
 		RolepermissionEntity rolepermission = mapper.UpdateRolepermissionInputToRolepermissionEntity(input);
-	  	if(input.getPermissionId()!=null)
-		{
-		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
-		if(foundPermission!=null)
-		rolepermission.setPermission(foundPermission);
-		}
-	  	if(input.getRoleId()!=null)
-		{
-		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-		if(foundRole!=null)
-		rolepermission.setRole(foundRole);
-		}
-		RolepermissionEntity updatedRolepermission = _rolepermissionManager.Update(rolepermission);
 
+		if(input.getPermissionId()!=null && input.getRoleId()!=null){
+			PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
+			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+
+			if(foundPermission!=null && foundRole!=null) {
+				rolepermission.setPermission(foundPermission);
+				rolepermission.setRole(foundRole);
+			}
+			else {
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		
+		RolepermissionEntity updatedRolepermission = _rolepermissionManager.Update(rolepermission);
+		<#if Flowable!false>
+		idmIdentityService.updateGroupPrivilegeMapping(updatedRolepermission.getRole().getName(), updatedRolepermission.getPermission().getName());
+        </#if>
+        
 		return mapper.RolepermissionEntityToUpdateRolepermissionOutput(updatedRolepermission);
 	}
 	
