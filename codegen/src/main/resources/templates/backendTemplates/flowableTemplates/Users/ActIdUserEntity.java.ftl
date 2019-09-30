@@ -10,7 +10,7 @@ import java.util.Date;
 import [=PackageName].domain.Flowable.Groups.ActIdGroupEntity;
 
 @Entity
-@Table(name = "act_id_user", schema = "dbo")
+@Table(name = "act_id_user", schema = "[=SchemaName]")
 public class ActIdUserEntity  implements Serializable {
 
 private String displayName;
@@ -24,7 +24,7 @@ private Long rev;
 private String tenantId;
 
 @ManyToMany(cascade = {CascadeType.ALL})
-@JoinTable(name = "act_id_membership", schema = "dbo",
+@JoinTable(name = "act_id_membership", schema = "[=SchemaName]",
 joinColumns = {@JoinColumn(name = "user_id_", referencedColumnName = "id_")},
 inverseJoinColumns = {@JoinColumn(name = "group_id_", referencedColumnName = "id_")})
 public Set<ActIdGroupEntity> getActIdGroup() {

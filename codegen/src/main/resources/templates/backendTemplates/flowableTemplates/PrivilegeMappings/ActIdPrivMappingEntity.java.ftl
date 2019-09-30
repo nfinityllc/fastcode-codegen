@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.Date;
 
 @Entity
-@Table(name = "act_id_priv_mapping", schema = "dbo")
+@Table(name = "act_id_priv_mapping", schema = "[=SchemaName]")
 public class ActIdPrivMappingEntity  implements Serializable {
 
 private String groupId;

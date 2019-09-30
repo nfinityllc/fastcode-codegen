@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.Date;
 
 @Entity
-@Table(name = "act_id_priv", schema = "dbo")
+@Table(name = "act_id_priv", schema = "[=SchemaName]")
 public class ActIdPrivEntity  implements Serializable {
 
 private String id;
