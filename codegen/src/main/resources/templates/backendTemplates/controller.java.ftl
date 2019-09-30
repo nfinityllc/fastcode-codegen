@@ -44,6 +44,20 @@ import [=PackageName].application<#if AuthenticationType != "none" && relationVa
 import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#list>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]rManager;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
+import [=PackageName].security.ConvertToPrivilegeAuthorities;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Iterator;
+</#if>
 import java.util.List;
 import java.util.Map;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -75,6 +89,54 @@ public class [=ClassName]Controller {
 	@Autowired
     private [=AuthenticationTable]permissionAppService _[=AuthenticationTable?uncap_first]permissionAppService;
     </#if>
+    
+    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+
+    @Autowired
+ 	private I[=AuthenticationTable]Manager _userMgr;
+ 	
+    //current login user info 
+ 
+    @RequestMapping(value = "/me", method = RequestMethod.GET) 
+    public ResponseEntity GetMeInfo() throws Exception{ 
+ 
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
+        <#if UserInput?? && AuthenticationFields??>
+        [=AuthenticationTable]Entity userEntity = _userMgr.FindBy[=AuthenticationFields.UserName.fieldName?cap_first](userName);       
+        <#else>
+        [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName);
+        </#if>
+        Set<[=AuthenticationTable]permissionEntity> spe = userEntity.get[=AuthenticationTable]permissionSet();
+        
+//      Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
+//      for (PermissionEntity item: permissions) { 
+//      	pList.add(item.getName()); 
+//      } 
+        List<String> pList = new ArrayList<String>(); 
+        Iterator pIterator = spe.iterator();
+		while (pIterator.hasNext()) { 
+			[=AuthenticationTable]permissionEntity pe = ([=AuthenticationTable]permissionEntity) pIterator.next();
+			pList.add(pe.getPermission().getName());
+		}
+ 
+        RoleEntity role = userEntity.getRole();
+        List<String> groups = new ArrayList<String>(); 
+ 
+        groups.add(role.getName()); 
+        groups.addAll(pList); 
+        ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities(); 
+        String[] groupsArray = new String[groups.size()]; 
+ 
+        List<GrantedAuthority> authorities =  con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray))); 
+        //AuthorityUtils.authorityListToSet(authorities); 
+        List<String> resultingPermissions = new ArrayList<String>(); 
+        for (GrantedAuthority item: authorities) { 
+            resultingPermissions.add(item.getAuthority()); 
+        } 
+ 
+        return new ResponseEntity(resultingPermissions, HttpStatus.OK); 
+    } 
+  </#if>  
 
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_CREATE')")

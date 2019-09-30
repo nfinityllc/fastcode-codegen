@@ -119,6 +119,13 @@ public class CodegenApplication implements ApplicationRunner {
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		UserInput input = composeInput(configProperties);
+		
+		File dir = new File(input.getDestinationPath());
+		System.out.println(" des " + input.getDestinationPath());
+		if(!dir.exists()) {
+			System.out.println("dir ");
+			dir.mkdirs();
+		};
 
         GitRepositoryManager.setDestinationPath(input.getDestinationPath());
         String sourceBranch = "";
@@ -165,11 +172,6 @@ public class CodegenApplication implements ApplicationRunner {
 		{
 			dependencies = dependencies.concat(",mail");
 		}
-
-		File dir = new File(input.getDestinationPath());
-		if(!dir.exists()) {
-			dir.mkdirs();
-		};
 
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");

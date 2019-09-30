@@ -107,23 +107,27 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	  	
 		if(<#if (AuthenticationType!="none" && !UserInput??) >input.get[=AuthenticationTable]Id()!=null<#elseif AuthenticationType!="none" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null && <#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()!=null</#if></#list></#if> || input.getPermissionId()!=null)
 		{
-		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if (AuthenticationType!="none" && !UserInput??)>input.get[=AuthenticationTable]Id()<#elseif AuthenticationType!="none" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
-		PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
+			[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if (AuthenticationType!="none" && !UserInput??)>input.get[=AuthenticationTable]Id()<#elseif AuthenticationType!="none" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>input.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>input.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
+			PermissionEntity foundPermission = _permissionManager.FindById(input.getPermissionId());
 		
-		if(found[=AuthenticationTable]!=null || foundPermission!=null)
-		{			
+			if(found[=AuthenticationTable]!=null || foundPermission!=null)
+			{			
 				if(!checkIfPermissionAlreadyAssigned(found[=AuthenticationTable], foundPermission))
 				{
 					[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
 					[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
 				}
 				else return null;
-		}
-		else return null;
+			}
+			else return null;
 		}
 		else return null;
 		
 		[=AuthenticationTable]permissionEntity updated[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Update([=AuthenticationTable?uncap_first]permission);
+		<#if Flowable!false>
+		<#if AuthenticationTable?? && AuthenticationFields??>
+		idmIdentityService.updateUserPrivilegeMapping(updated[=AuthenticationTable]permission.get[=AuthenticationTable]().get[=AuthenticationFields.UserName.fieldName?cap_first](), updated[=AuthenticationTable]permission.getPermission().getName());
+		</#if>
 		return mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput(updated[=AuthenticationTable]permission);
 	}
 	
