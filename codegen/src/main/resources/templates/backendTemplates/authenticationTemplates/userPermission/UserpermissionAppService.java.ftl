@@ -128,6 +128,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		<#if AuthenticationTable?? && AuthenticationFields??>
 		idmIdentityService.updateUserPrivilegeMapping(updated[=AuthenticationTable]permission.get[=AuthenticationTable]().get[=AuthenticationFields.UserName.fieldName?cap_first](), updated[=AuthenticationTable]permission.getPermission().getName());
 		</#if>
+		</#if>
 		return mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput(updated[=AuthenticationTable]permission);
 	}
 	

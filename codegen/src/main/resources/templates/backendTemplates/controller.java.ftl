@@ -47,7 +47,7 @@ import [=PackageName].application<#if AuthenticationType != "none" && relationVa
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]rManager;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].security.ConvertToPrivilegeAuthorities;
 import org.springframework.security.core.GrantedAuthority;

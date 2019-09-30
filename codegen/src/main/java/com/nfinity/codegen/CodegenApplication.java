@@ -121,9 +121,7 @@ public class CodegenApplication implements ApplicationRunner {
 		UserInput input = composeInput(configProperties);
 		
 		File dir = new File(input.getDestinationPath());
-		System.out.println(" des " + input.getDestinationPath());
 		if(!dir.exists()) {
-			System.out.println("dir ");
 			dir.mkdirs();
 		};
 
@@ -186,7 +184,7 @@ public class CodegenApplication implements ApplicationRunner {
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
 
 		if(input.getFlowable()) {
-			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema(), details, input.getHistory());
+			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema(),input.getSchemaName(), details, input.getHistory());
 		}
 		
 		if(!input.getAuthenticationType().equals("none"))
@@ -218,7 +216,7 @@ public class CodegenApplication implements ApplicationRunner {
 
 		GitRepositoryManager.addToGitRepository(input.getUpgrade(), sourceBranch);
 
-        System.out.println(" Code generation Completed ...");
+        System.out.println("\n Code generation Completed ...");
         System.exit(1);
 	}
 

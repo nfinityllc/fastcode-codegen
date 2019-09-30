@@ -22,7 +22,7 @@ public class FlowableBackendCodeGenerator {
     static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
     static final String FLOWABLE_BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/flowableTemplates";
 
-    public static void generateFlowableClasses(String destination, String packageName, String authenticationType, String authenticationTable, Map<String, EntityDetails> details, Boolean history) {
+    public static void generateFlowableClasses(String destination, String packageName, String authenticationType, String authenticationTable,String schemaName, Map<String, EntityDetails> details, Boolean history) {
         ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, FLOWABLE_BACKEND_TEMPLATE_FOLDER + "/");
         TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl};
         MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
@@ -38,6 +38,7 @@ public class FlowableBackendCodeGenerator {
         root.put("PackageName", packageName);
         root.put("AuthenticationType", authenticationType);
         root.put("History", history);
+        root.put("SchemaName", schemaName);
         if(authenticationTable !=null) {
         	root.put("AuthenticationTable", authenticationTable);
         	root.put("AuthenticationFields", getCustomUserAuthFieldsMap(details, authenticationTable));
