@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 <#if Flowable!false>
-import com.nfinity.fastcode.application.Flowable.ActIdUserMapper;
-import com.nfinity.fastcode.application.Flowable.FlowableIdentityService;
-import com.nfinity.fastcode.domain.Flowable.Users.ActIdUserEntity;
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 </#if>
 
 @Component
