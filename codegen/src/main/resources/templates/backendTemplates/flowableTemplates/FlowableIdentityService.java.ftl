@@ -51,6 +51,8 @@ public class FlowableIdentityService {
 
     protected static final String DELIMITER = ":";
 
+    private String[] flowablePrivileges = new String[]{"access-idm", "access-admin", "access-modeler", "access-task", "access-rest-api"};
+
     public FlowableIdentityService() {
         random = new SecureRandom();
     }
@@ -300,31 +302,49 @@ public class FlowableIdentityService {
     }
 
     public void createPrivilege(String name) {
-        ActIdPrivEntity actIdPrivilege = new ActIdPrivEntity();
-        actIdPrivilege.setId(RandomStringUUID());
-        actIdPrivilege.setName(name);
-        _actIdPrivManager.create(actIdPrivilege);
+        boolean result = Arrays.stream(flowablePrivileges).anyMatch(name::equalsIgnoreCase);
+        if (result) {
+            ActIdPrivEntity actIdPrivilege = new ActIdPrivEntity();
+            actIdPrivilege.setId(RandomStringUUID());
+            actIdPrivilege.setName(name);
+            _actIdPrivManager.create(actIdPrivilege);
+        }
     }
 
     public void addUserPrivilegeMapping(String userId, String privName) {
-        ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
-        actIdPrivMapping.setUserId(userId);
-        _actIdPrivMappingManager.create(actIdPrivMapping);
+        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+        if (result) {
+            ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
+            actIdPrivMapping.setUserId(userId);
+            _actIdPrivMappingManager.create(actIdPrivMapping);
+        }
     }
 
     public void deleteUserPrivilegeMapping(String userId, String privName) {
-        ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByUserPrivilege(userId, privName);
-        _actIdPrivMappingManager.delete(actIdPrivMapping);
+        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+        if (result) {
+            ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByUserPrivilege(userId, privName);
+            _actIdPrivMappingManager.delete(actIdPrivMapping);
+        }
     }
 
     public void updatePrivilegeMapping(ActIdPrivMappingEntity actIdPrivMapping) {
-        _actIdPrivMappingManager.update(actIdPrivMapping);
+        ActIdPrivEntity actIdPrivilege = actIdPrivMapping.getActIdPriv();
+        if (actIdPrivilege != null) {
+            boolean result = Arrays.stream(flowablePrivileges).anyMatch(actIdPrivilege.getName()::equalsIgnoreCase);
+            if (result) {
+                _actIdPrivMappingManager.update(actIdPrivMapping);
+            }
+        }
     }
 
     public void addGroupPrivilegeMapping(String groupId, String privName) {
-        ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
-        actIdPrivMapping.setGroupId(groupId);
-        _actIdPrivMappingManager.create(actIdPrivMapping);
+        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+        if (result) {
+            ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
+            actIdPrivMapping.setGroupId(groupId);
+            _actIdPrivMappingManager.create(actIdPrivMapping);
+        }
     }
 
     private ActIdPrivMappingEntity newPrivMapping(String privName) {
@@ -341,19 +361,28 @@ public class FlowableIdentityService {
     }
 
     public void deleteGroupPrivilegeMapping(String groupId, String privName) {
-        ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByGroupPrivilege(groupId, privName);
-        _actIdPrivMappingManager.delete(actIdPrivMapping);
+        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+        if (result) {
+            ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByGroupPrivilege(groupId, privName);
+            _actIdPrivMappingManager.delete(actIdPrivMapping);
+        }
     }
 
     public void deletePrivilege(String name) {
-        ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(name);
-        _actIdPrivManager.delete(actIdPrivilege);
+        boolean result = Arrays.stream(flowablePrivileges).anyMatch(name::equalsIgnoreCase);
+        if (result) {
+            ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(name);
+            _actIdPrivManager.delete(actIdPrivilege);
+        }
     }
 
     public void updatePrivilege(String oldName, String newName) {
-        ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(oldName);
-        actIdPrivilege.setName(newName);
-        _actIdPrivManager.update(actIdPrivilege);
+        boolean result = Arrays.stream(flowablePrivileges).anyMatch(newName::equalsIgnoreCase);
+        if (result) {
+            ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(oldName);
+            actIdPrivilege.setName(newName);
+            _actIdPrivManager.update(actIdPrivilege);
+        }
     }
     </#if>
     public String createTokenAndCookie (String userId, HttpServletRequest request, HttpServletResponse response) {

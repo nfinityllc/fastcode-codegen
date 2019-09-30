@@ -138,6 +138,7 @@ class GitRepositoryManager {
         CommandUtils.runGitProcess(command, destinationPath);
         //Unable to add resources in git:
 
+        //TODO: Add version dynamically
         String commitMsg = "Generated with fastCode-1.0";
         command = "commit -q -m \"" + commitMsg + "\" -a --allow-empty --no-verify";
         CommandUtils.runGitProcess(command, destinationPath);

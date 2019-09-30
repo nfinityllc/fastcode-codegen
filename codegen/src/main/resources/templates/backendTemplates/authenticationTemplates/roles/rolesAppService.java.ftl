@@ -29,6 +29,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.*;
 import org.apache.commons.lang3.StringUtils;
+<#if Flowable!false>
+	import [=PackageName].application.Flowable.ActIdGroupMapper;
+	import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 
 @Service
 @Validated
@@ -44,11 +48,22 @@ public class RoleAppService implements IRoleAppService{
 	@Autowired
 	private RoleMapper mapper;
 
+	<#if Flowable!false>
+		@Autowired
+		private FlowableIdentityService idmIdentityService;
+	</#if>
+
     @Transactional(propagation = Propagation.REQUIRED)
 	public CreateRoleOutput Create(CreateRoleInput input) {
 
 		RoleEntity role = mapper.CreateRoleInputToRoleEntity(input);
 		RoleEntity createdRole = _roleManager.Create(role);
+
+		<#if Flowable!false>
+		//Map and create flowable groupS
+		idmIdentityService.createGroup(createdRole.getName());
+		</#if>
+
 		return mapper.RoleEntityToCreateRoleOutput(createdRole);
 	}
 	
@@ -56,8 +71,19 @@ public class RoleAppService implements IRoleAppService{
 	@CacheEvict(value="Role", key = "#roleId")
 	public UpdateRoleOutput Update(Long  roleId, UpdateRoleInput input) {
 
+		<#if Flowable!false>
+		String oldRoleName = null;
+		RoleEntity oldUserRole = _roleManager.FindById(roleId);
+		if(oldUserRole != null) {
+			oldRoleName = oldUserRole.getName();
+		}
+		</#if>
 		RoleEntity role = mapper.UpdateRoleInputToRoleEntity(input);
 		RoleEntity updatedRole = _roleManager.Update(role);
+		<#if Flowable!false>
+		//Map and delete flowable groupS
+		idmIdentityService.updateGroup(updatedRole.getName(), oldRoleName);
+		</#if>
 		return mapper.RoleEntityToUpdateRoleOutput(updatedRole);
 	}
 	
@@ -68,6 +94,10 @@ public class RoleAppService implements IRoleAppService{
 
 		RoleEntity existing = _roleManager.FindById(roleId) ; 
 		_roleManager.Delete(existing);
+		<#if Flowable!false>
+		//Map and delete flowable groupS
+		idmIdentityService.deleteGroup(existing.getName());
+		</#if>
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)

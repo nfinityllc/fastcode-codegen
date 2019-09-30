@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+<#if Flowable!false>
+import com.nfinity.fastcode.application.Flowable.FlowableIdentityService;
+</#if>
 
 @Service
 @Validated
@@ -34,20 +37,37 @@ public class PermissionAppService implements IPermissionAppService {
 	@Autowired
 	private PermissionMapper mapper;
 
+<#if Flowable!false>
+	@Autowired
+	private FlowableIdentityService idmIdentityService;
+</#if>
+
     @Transactional(propagation = Propagation.REQUIRED)
 	public CreatePermissionOutput Create(CreatePermissionInput input) {
 
 		PermissionEntity permission = mapper.CreatePermissionInputToPermissionEntity(input);
 		PermissionEntity createdPermission = _permissionManager.Create(permission);
+<#if Flowable!false>
+		idmIdentityService.createPrivilege(createdPermission.getName());
+</#if>
 		return mapper.PermissionEntityToCreatePermissionOutput(createdPermission);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(value="Permission", key = "#permissionId")
 	public UpdatePermissionOutput Update(Long permissionId, UpdatePermissionInput input) {
-
+	<#if Flowable!false>
+		String oldPermissionName = null;
+		PermissionEntity oldPermission = _permissionsManager.FindById(permission.getId());
+		if(oldPermission != null) {
+			oldPermissionName = oldPermission.getName();
+		}
+	</#if>
 		PermissionEntity permission = mapper.UpdatePermissionInputToPermissionEntity(input);
 		PermissionEntity updatedPermission = _permissionManager.Update(permission);
+<#if Flowable!false>
+		idmIdentityService.updatePrivilege(oldPermissionName, updatedPermission.getName());
+</#if>
 		return mapper.PermissionEntityToUpdatePermissionOutput(updatedPermission);
 	}
 	
@@ -58,6 +78,9 @@ public class PermissionAppService implements IPermissionAppService {
 
 		PermissionEntity existing = _permissionManager.FindById(permissionId) ; 
 		_permissionManager.Delete(existing);
+		<#if Flowable!false>
+		idmIdentityService.deletePrivilege(existing.getName());
+		</#if>
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
