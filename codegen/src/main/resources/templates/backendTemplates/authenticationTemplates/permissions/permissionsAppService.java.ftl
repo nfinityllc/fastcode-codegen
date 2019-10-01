@@ -242,7 +242,7 @@ public class PermissionAppService implements IPermissionAppService {
 	public Map<String,String> parseRolepermissionJoinColumn(String keysString) {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
-		joinColumnMap.put("roleId", keysString);
+		joinColumnMap.put("permissionId", keysString);
 		return joinColumnMap;
 		
 	}
@@ -251,7 +251,7 @@ public class PermissionAppService implements IPermissionAppService {
 	public Map<String,String> parse[=AuthenticationTable]permissionJoinColumn(String keysString) {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
-		joinColumnMap.put("userid", keysString);
+		joinColumnMap.put("permissionId", keysString);
 		return joinColumnMap;
 		
 	}

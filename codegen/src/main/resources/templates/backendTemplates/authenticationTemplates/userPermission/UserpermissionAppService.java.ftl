@@ -170,8 +170,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		<#if Flowable!false>
 		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if (AuthenticationType!="none" && !UserInput??)>existing.get[=AuthenticationTable]Id()<#elseif AuthenticationType!="none" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>existing.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>existing.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
 		PermissionEntity foundPermission = _permissionManager.FindById(existing.getPermissionId());
-
+        <#if AuthenticationTable?? && AuthenticationFields??>
 		idmIdentityService.deleteUserPrivilegeMapping(found[=AuthenticationTable].get[=AuthenticationFields.UserName.fieldName?cap_first](), foundPermission.getName());
+		</#if>
 		</#if>
 	}
 	

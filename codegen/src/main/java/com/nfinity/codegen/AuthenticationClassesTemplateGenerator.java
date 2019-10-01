@@ -235,7 +235,7 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("users/iuserAppService.java.ftl", "IUserAppService.java");
 		backEndTemplate.put("users/userAppService.java.ftl", "UserAppService.java");
 		backEndTemplate.put("users/userMapper.java.ftl", "UserMapper.java");
-		//	backEndTemplate.put("users/userAppServiceTest.java.ftl", "UserAppServiceTest.java");
+		backEndTemplate.put("users/userAppServiceTest.java.ftl", "UserAppServiceTest.java");
 
 		return backEndTemplate;
 	}
@@ -246,7 +246,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		backEndTemplate.put("users/iuserManager.java.ftl", "IUserManager.java");
 		backEndTemplate.put("users/userManager.java.ftl", "UserManager.java");
-		//	backEndTemplate.put("users/userManagerTest.java.ftl", "UserManagerTest.java");
+		backEndTemplate.put("users/userManagerTest.java.ftl", "UserManagerTest.java");
 
 		return backEndTemplate;
 	}
@@ -259,14 +259,14 @@ public class AuthenticationClassesTemplateGenerator {
 			backEndTemplate.put("userPermission/IUserpermissionAppService.java.ftl", "I"+authenticationTable+"permissionAppService.java");
 			backEndTemplate.put("userPermission/UserpermissionAppService.java.ftl", authenticationTable+"permissionAppService.java");
 			backEndTemplate.put("userPermission/UserpermissionMapper.java.ftl", authenticationTable+"permissionMapper.java");
-			//	backEndTemplate.put("userPermission/UserPermissionAppServiceTest.java.ftl", "UserPermissionAppServiceTest.java");
+			backEndTemplate.put("userPermission/UserpermissionAppServiceTest.java.ftl", authenticationTable+"permissionAppServiceTest.java");
 		}
 		else
 		{
 			backEndTemplate.put("userPermission/IUserpermissionAppService.java.ftl", "IUserpermissionAppService.java");
 			backEndTemplate.put("userPermission/UserpermissionAppService.java.ftl", "UserpermissionAppService.java");
 			backEndTemplate.put("userPermission/UserpermissionMapper.java.ftl", "UserpermissionMapper.java");
-			//	backEndTemplate.put("userPermission/UserPermissionAppServiceTest.java.ftl", "UserPermissionAppServiceTest.java");
+			backEndTemplate.put("userPermission/UserpermissionAppServiceTest.java.ftl", "UserpermissionAppServiceTest.java");
 		}
 		return backEndTemplate;
 	}
@@ -278,13 +278,13 @@ public class AuthenticationClassesTemplateGenerator {
 		{
 			backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "I"+authenticationTable+"permissionManager.java");
 			backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", authenticationTable+"permissionManager.java");
-			//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
+			backEndTemplate.put("userPermission/UserpermissionManagerTest.java.ftl",  authenticationTable+"permissionManagerTest.java");
 		}
 		else
 		{
 			backEndTemplate.put("userPermission/IUserpermissionManager.java.ftl", "IUserpermissionManager.java");
 			backEndTemplate.put("userPermission/UserpermissionManager.java.ftl", "UserpermissionManager.java");
-			//	backEndTemplate.put("userPermission/UserPermissionManagerTest.java.ftl", "UserPermissionManagerTest.java");
+			backEndTemplate.put("userPermission/UserpermissionManagerTest.java.ftl", "UserpermissionManagerTest.java");
 		}
 		return backEndTemplate;
 	}
@@ -296,7 +296,7 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("permissions/ipermissionsAppService.java.ftl", "IPermissionAppService.java");
 		backEndTemplate.put("permissions/permissionsAppService.java.ftl", "PermissionAppService.java");
 		backEndTemplate.put("permissions/permissionsMapper.java.ftl", "PermissionMapper.java");
-		//		backEndTemplate.put("permissions/permissionsAppServiceTest.java.ftl", "PermissionAppServiceTest.java");
+		backEndTemplate.put("permissions/permissionsAppServiceTest.java.ftl", "PermissionAppServiceTest.java");
 
 		return backEndTemplate;
 	}
@@ -307,7 +307,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		backEndTemplate.put("permissions/ipermissionsManager.java.ftl", "IPermissionManager.java");
 		backEndTemplate.put("permissions/permissionsManager.java.ftl", "PermissionManager.java");
-		//		backEndTemplate.put("permissions/permissionsManagerTest.java.ftl", "PermissionManagerTest.java");
+		backEndTemplate.put("permissions/permissionsManagerTest.java.ftl", "PermissionManagerTest.java");
 
 		return backEndTemplate;
 	}
@@ -319,7 +319,7 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("roles/irolesAppService.java.ftl", "IRoleAppService.java");
 		backEndTemplate.put("roles/rolesAppService.java.ftl", "RoleAppService.java");
 		backEndTemplate.put("roles/rolesMapper.java.ftl", "RoleMapper.java");
-		//		backEndTemplate.put("roles/rolesAppServiceTest.java.ftl", "RoleAppServiceTest.java");
+		backEndTemplate.put("roles/rolesAppServiceTest.java.ftl", "RoleAppServiceTest.java");
 
 		return backEndTemplate;
 	}
@@ -330,7 +330,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		backEndTemplate.put("roles/irolesManager.java.ftl", "IRoleManager.java");
 		backEndTemplate.put("roles/rolesManager.java.ftl", "RoleManager.java");
-		//		backEndTemplate.put("roles/rolesManagerTest.java.ftl", "RoleManagerTest.java");
+		backEndTemplate.put("roles/rolesManagerTest.java.ftl", "RoleManagerTest.java");
 
 		return backEndTemplate;
 	}
@@ -342,7 +342,7 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("rolePermission/IRolepermissionAppService.java.ftl", "IRolepermissionAppService.java");
 		backEndTemplate.put("rolePermission/RolepermissionAppService.java.ftl", "RolepermissionAppService.java");
 		backEndTemplate.put("rolePermission/RolepermissionMapper.java.ftl", "RolepermissionMapper.java");
-		//		backEndTemplate.put("rolePermission/RolepermissionAppServiceTest.java.ftl", "RolepermissionAppServiceTest.java");
+		backEndTemplate.put("rolePermission/RolepermissionAppServiceTest.java.ftl", "RolepermissionAppServiceTest.java");
 
 		return backEndTemplate;
 	}
@@ -353,7 +353,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		backEndTemplate.put("rolePermission/IRolepermissionManager.java.ftl", "IRolepermissionManager.java");
 		backEndTemplate.put("rolePermission/RolepermissionManager.java.ftl", "RolepermissionManager.java");
-		//		backEndTemplate.put("rolePermission/RolepermissionManagerTest.java.ftl", "RolepermissionManagerTest.java");
+		backEndTemplate.put("rolePermission/RolepermissionManagerTest.java.ftl", "RolepermissionManagerTest.java");
 
 		return backEndTemplate;
 	}

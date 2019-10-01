@@ -532,7 +532,7 @@ public class CodeGenerator {
 		backEndTemplate.put("iappService.java.ftl", "I" + className + "AppService.java");
 		backEndTemplate.put("appService.java.ftl", className + "AppService.java");
 		backEndTemplate.put("mapper.java.ftl", className + "Mapper.java");
-		//		backEndTemplate.put("appServiceTest.java.ftl", className + "AppServiceTest.java");
+		backEndTemplate.put("appServiceTest.java.ftl", className + "AppServiceTest.java");
 
 		return backEndTemplate;
 	}
@@ -577,7 +577,7 @@ public class CodeGenerator {
 
 		backEndTemplate.put("manager.java.ftl", className + "Manager.java");
 		backEndTemplate.put("imanager.java.ftl", "I" + className + "Manager.java");
-		//		backEndTemplate.put("managerTest.java.ftl", className + "ManagerTest.java");
+		backEndTemplate.put("managerTest.java.ftl", className + "ManagerTest.java");
 
 		return backEndTemplate;
 	}
