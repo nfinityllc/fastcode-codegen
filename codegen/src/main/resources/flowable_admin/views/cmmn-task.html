@@ -28,7 +28,7 @@
 							<td class="property-name" translate="TASK.FORM-KEY"></td>
 							<td ng-if="task.formKey && task.endTime"> {{task.formKey | empty}} <a ng-click="showTaskForm()"><i class="glyphicon glyphicon-zoom-in"></i> {{'TASK.ACTION.SHOW-SUBMITTED-FORM' | translate}}</a></td>
 							<td ng-if="!task.endTime && task.formKey">
-								<a ng-href="#/form/{{task.formKey}}"><i class="glyphicon glyphicon-zoom-in"></i> {{task.formKey}}</a>
+								<a ng-href="#/flowable-admin/form/{{task.formKey}}"><i class="glyphicon glyphicon-zoom-in"></i> {{task.formKey}}</a>
 							</td>
 						</tr>
 						<tr class="property">

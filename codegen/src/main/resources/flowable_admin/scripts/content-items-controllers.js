@@ -62,7 +62,7 @@ flowableAdminApp.controller('ContentItemsController', ['$rootScope', '$scope', '
 
         $scope.itemSelected = function (contentItem) {
             if (contentItem && contentItem.getProperty('id')) {
-                $location.path('/content-item/' + contentItem.getProperty('id'));
+                $location.path('/flowable-admin/content-item/' + contentItem.getProperty('id'));
             }
         };
 

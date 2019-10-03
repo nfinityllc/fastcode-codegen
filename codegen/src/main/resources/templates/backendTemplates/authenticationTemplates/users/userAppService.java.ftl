@@ -81,9 +81,9 @@ public class UserAppService implements IUserAppService {
 	public UpdateUserOutput Update(Long userId, UpdateUserInput input) {
 		<#if Flowable!false>
 			String oldRoleName = null;
-			UserEntity oldUserRole = _userManager.FindById(input.getId());
-			if(oldUserRole.getRole() != null) {
-				oldRoleName = oldUserRole.getRole().getName();
+			UserEntity oldUser = _userManager.FindById(input.getId());
+			if(oldUser.getRole() != null) {
+				oldRoleName = oldUser.getRole().getName();
 			}
 		</#if>
 		UserEntity user = mapper.UpdateUserInputToUserEntity(input);

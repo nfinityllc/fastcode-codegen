@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { Globals } from '../../../globals';
 <#if AuthenticationType != "none">
 import { AuthenticationService } from '../../../core/authentication.service';
 import { GlobalPermissionService } from '../../../core/global-permission.service';
 </#if>
-import { ActivatedRoute, Router, Event } from '@angular/router';
+import { Router, Event } from '@angular/router';
 import entities from './entities.json';
 
 @Component({
@@ -19,21 +17,14 @@ import entities from './entities.json';
 export class MainNavComponent {
 	selectedLanguage = "en";
 	entityList = entities;
-	
-	/*isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset) 
-	  .pipe( 
-		map(result => result.matches) 
-	  ); 
-	  isHandset$: Observable<boolean> = this.breakpointObserver.observe(['(max-width: 768px)']) 
-	  .pipe( 
-		map(result => result.matches) 
-	  );*/
+
+	hasTaskAppPermission: boolean = false;
+	hasAdminAppPermission: boolean = false;
 
 	isSmallDevice$: Observable<boolean>;
 	isMediumDevice$: Observable<boolean>;
 	isCurrentRootRoute: boolean = false;
 	constructor(
-		private breakpointObserver: BreakpointObserver,
 		private router: Router,
 		public translate: TranslateService,
 		public Global: Globals,
@@ -48,7 +39,7 @@ export class MainNavComponent {
 
 		this.router.events.subscribe((event: Event) => {
 			this.isCurrentRootRoute = (this.router.url == '/') ? true : false;
-		})
+		});
 	}
 
 	switchLanguage(language: string) {
@@ -60,7 +51,7 @@ export class MainNavComponent {
 	}
 	<#if AuthenticationType != "none">
 	isMenuVisible(entityName:string){
-		return  this.Auth.token? this.globalPermissionService.hasPermissionOnEntity(entityName,"READ"):false;
+		return  this.Auth.token? this.globalPermissionService.hasPermissionOnEntity(entityName,"READ"): false;
 	}
 	
 	login() {
@@ -71,6 +62,13 @@ export class MainNavComponent {
 		this.Auth.logout();
 		this.router.navigate(['/']);
 	}
+	
+	<#if FlowableModule!false>
+	isFlowableMenuVisible(app: string){
+		return this.Auth.token? this.globalPermissionService.hasPermission(app): false;
+	}
+	</#if>
+
 	</#if>
 	
 }

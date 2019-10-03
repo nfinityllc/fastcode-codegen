@@ -30,24 +30,24 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 		$scope.tabData.activeTab = $scope.tabData.tabs[0].id;
 
 		$scope.returnToList = function() {
-			$location.path("/tasks");
+			$location.path("/flowable-admin/tasks");
 		};
 
 		$scope.openTask = function(taskId) {
 			if (taskId) {
-				$location.path("/task/" + taskId);
+				$location.path("/flowable-admin/task/" + taskId);
 			}
 		};
 
 		$scope.openCaseInstance = function(caseInstanceId) {
 			if (caseInstanceId) {
-				$location.path("/case-instance/" + caseInstanceId);
+				$location.path("/flowable-admin/case-instance/" + caseInstanceId);
 			}
 		};
 
 		$scope.openCaseDefinition = function(caseDefinitionId) {
 			if (caseDefinitionId) {
-				$location.path("/case-definition/" + caseDefinitionId);
+				$location.path("/flowable-admin/case-definition/" + caseDefinitionId);
 			}
 		};
 
@@ -213,7 +213,7 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 		        $http({method: 'GET', url: FlowableAdmin.Config.baseUrl + '/app/rest/admin/task-form-instance/' + $scope.task.id}).
 	            success(function(data, status, headers, config) {
 	                $rootScope.submittedForm = data.data[0]; // saving fetched submitted form in root scope to avoid another fetch in submitted form controller
-	                $location.path("/form-instance/" + data.data[0].id);
+	                $location.path("/flowable-admin/form-instance/" + data.data[0].id);
 	            });
 		    }
 		};
@@ -235,7 +235,7 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 
 		$scope.deleteTask = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/task-delete-popup.html',
+				templateUrl: 'flowable_admin/views/task-delete-popup.html',
 				controller: 'CmmnDeleteTaskModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -250,7 +250,7 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 
 		$scope.completeTask = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/task-complete-popup.html',
+				templateUrl: 'flowable_admin/views/task-complete-popup.html',
 				controller: 'CmmnCompleteModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -265,7 +265,7 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 
 		$scope.delegateTask = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/task-delegate-popup.html',
+				templateUrl: 'flowable_admin/views/task-delegate-popup.html',
 				controller: 'CmmnDelegateModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -280,7 +280,7 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 
 		$scope.resolveTask = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/task-resolve-popup.html',
+				templateUrl: 'flowable_admin/views/task-resolve-popup.html',
 				controller: 'CmmnResolveTaskModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -295,7 +295,7 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 
 		$scope.assignTask = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/task-assign-popup.html',
+				templateUrl: 'flowable_admin/views/task-assign-popup.html',
 				controller: 'CmmnAssignModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -314,7 +314,7 @@ flowableAdminApp.controller('CmmnTaskController', ['$scope', '$rootScope', '$htt
 
 		$scope.editTask = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/task-edit-popup.html',
+				templateUrl: 'flowable_admin/views/task-edit-popup.html',
 				controller: 'CmmnEditTaskModalInstanceCtrl',
 				resolve: resolve
 			});

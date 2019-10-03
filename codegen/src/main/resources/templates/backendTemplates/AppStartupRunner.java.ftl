@@ -112,10 +112,10 @@ public class AppStartupRunner implements ApplicationRunner {
         pe9 = permissionManager.Create(pe9);
         
         RolepermissionEntity pe5RP = new RolepermissionEntity(pe5.getId(), roleId);
-        RolepermissionEntity pe6RP = new RolepermissionEntity(pe5.getId(), roleId);
-        RolepermissionEntity pe7RP = new RolepermissionEntity(pe5.getId(), roleId);
-        RolepermissionEntity pe8RP = new RolepermissionEntity(pe5.getId(), roleId);
-        RolepermissionEntity pe9RP = new RolepermissionEntity(pe5.getId(), roleId);
+        RolepermissionEntity pe6RP = new RolepermissionEntity(pe6.getId(), roleId);
+        RolepermissionEntity pe7RP = new RolepermissionEntity(pe7.getId(), roleId);
+        RolepermissionEntity pe8RP = new RolepermissionEntity(pe8.getId(), roleId);
+        RolepermissionEntity pe9RP = new RolepermissionEntity(pe9.getId(), roleId);
         
         rolepermissionManager.Create(pe5RP);
         rolepermissionManager.Create(pe6RP);

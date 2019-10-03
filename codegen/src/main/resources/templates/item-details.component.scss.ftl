@@ -17,7 +17,7 @@
 }
 
 
-.container{
+.details-container{
     height: 100%;
 }
 

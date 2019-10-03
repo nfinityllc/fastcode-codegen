@@ -62,7 +62,7 @@ flowableAdminApp.controller('FormInstancesController', ['$rootScope', '$scope', 
 
         $scope.formSelected = function (form) {
             if (form && form.getProperty('id')) {
-                $location.path('/form-instance/' + form.getProperty('id'));
+                $location.path('/flowable-admin/form-instance/' + form.getProperty('id'));
             }
         };
 

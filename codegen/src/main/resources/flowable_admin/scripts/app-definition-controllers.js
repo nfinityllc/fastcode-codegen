@@ -30,43 +30,43 @@ flowableAdminApp.controller('AppDefinitionController', ['$scope', '$rootScope', 
 		$scope.tabData.activeTab = $scope.tabData.tabs[0].id;
 
 		$scope.returnToList = function() {
-			$location.path("/app-definitions");
+			$location.path("/flowable-admin/app-definitions");
 		};
 
 		$scope.openDefinition = function(definitionId) {
 			if (definitionId) {
-				$location.path("/app-definition/" + definitionId);
+				$location.path("/flowable-admin/app-definition/" + definitionId);
 			}
 		};
 
 
 		$scope.openDeployment = function(deploymentId) {
 		    if (deploymentId) {
-		        $location.path("/app-deployment/" + deploymentId);
+		        $location.path("/flowable-admin/app-deployment/" + deploymentId);
 		    }
 		};
 
         $scope.openProcessDefinition = function(processDefinition) {
           if (processDefinition && processDefinition.getProperty('id')) {
-            $location.path("/process-definition/" + processDefinition.getProperty('id'));
+            $location.path("/flowable-admin/process-definition/" + processDefinition.getProperty('id'));
           }
         };
         
         $scope.openCaseDefinition = function(caseDefinition) {
           if (caseDefinition && caseDefinition.getProperty('id')) {
-            $location.path("/case-definition/" + caseDefinition.getProperty('id'));
+            $location.path("/flowable-admin/case-definition/" + caseDefinition.getProperty('id'));
           }
         };
     
         $scope.openFormDefinition = function (formDefinition) {
             if (formDefinition && formDefinition.getProperty('id')) {
-                $location.path("/form-definition/" + formDefinition.getProperty('id'));
+                $location.path("/flowable-admin/form-definition/" + formDefinition.getProperty('id'));
             }
         };
         
         $scope.openDecisionTable = function (decisionTable) {
             if (decisionTable && decisionTable.getProperty('id')) {
-                $location.path("/decision-table/" + decisionTable.getProperty('id'));
+                $location.path("/flowable-admin/decision-table/" + decisionTable.getProperty('id'));
             }
         };
         

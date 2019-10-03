@@ -13,9 +13,9 @@
 					<table>
 						<tr class="property">
 							<td class="property-name" translate="DECISION-TABLE-EXECUTION.DEFINITION-ID"></td>
-							<td><a ng-href="#/decision-table/{{execution.decisionDefinitionId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.decisionDefinitionId}}</a></td>
+							<td><a ng-href="#/flowable-admin/decision-table/{{execution.decisionDefinitionId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.decisionDefinitionId}}</a></td>
 							<td class="property-name" translate="DECISION-TABLE-EXECUTION.DEPLOYMENT-ID"></td>
-							<td><a ng-href="#/decision-table-deployment/{{execution.deploymentId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.deploymentId}}</a></td>
+							<td><a ng-href="#/flowable-admin/decision-table-deployment/{{execution.deploymentId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.deploymentId}}</a></td>
 						</tr>
 						<tr class="property">
 							<td class="property-name" translate="DECISION-TABLE-EXECUTION.DEFINITION-KEY"></td>
@@ -27,9 +27,9 @@
 							<td class="property-name" translate="DECISION-TABLE-EXECUTION.DEFINITION-NAME"></td>
 							<td>{{execution.decisionName}}</td>
 							<td class="property-name" ng-if="!execution.scopeType || execution.scopeType != 'cmmn'" translate="DECISION-TABLE-EXECUTION.PROCESS-INSTANCE-ID"></td>
-							<td ng-if="!execution.scopeType || execution.scopeType != 'cmmn'"><a ng-href="#/process-instance/{{execution.instanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.instanceId}}</a></td>
+							<td ng-if="!execution.scopeType || execution.scopeType != 'cmmn'"><a ng-href="#/flowable-admin/process-instance/{{execution.instanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.instanceId}}</a></td>
 							<td class="property-name" ng-if="execution.scopeType && execution.scopeType == 'cmmn'" translate="DECISION-TABLE-EXECUTION.CASE-INSTANCE-ID"></td>
-                            <td ng-if="execution.scopeType && execution.scopeType == 'cmmn'"><a ng-href="#/case-instance/{{execution.instanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.instanceId}}</a></td>
+                            <td ng-if="execution.scopeType && execution.scopeType == 'cmmn'"><a ng-href="#/flowable-admin/case-instance/{{execution.instanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{execution.instanceId}}</a></td>
 						</tr>
 						<tr class="property">
 							<td class="property-name" translate="DECISION-TABLE-EXECUTION.FAILED"></td>

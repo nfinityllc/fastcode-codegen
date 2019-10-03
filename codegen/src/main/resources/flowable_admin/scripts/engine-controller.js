@@ -92,7 +92,7 @@ flowableAdminApp.controller('EngineController', ['$rootScope', '$scope', '$http'
                 }
 
                 var modalInstance = $modal.open({
-                    templateUrl: 'src/flowable_admin/views/engine-edit-endpoint-popup.html',
+                    templateUrl: 'flowable_admin/views/engine-edit-endpoint-popup.html',
                     controller: 'EditEndpointConfigModalInstanceCtrl',
                     resolve: {
                         server: function () {

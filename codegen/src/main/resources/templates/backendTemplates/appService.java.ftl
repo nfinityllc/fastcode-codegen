@@ -71,6 +71,14 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	@Autowired
 	private RoleManager _roleManager;
     
+    <#if Flowable!false>
+	@Autowired
+	private FlowableIdentityService idmIdentityService;
+		
+	@Autowired
+	private ActIdUserMapper actIdUserMapper;
+		
+	</#if>
     </#if>
     <#list Relationship as relationKey,relationValue>
     <#if ClassName != relationValue.eName && relationValue.relation !="OneToMany">
@@ -162,7 +170,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			<#if Flowable!false>
 				//Map and create flowable user
 				ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(created[=ClassName]);
-				idmIdentityService.createUser(createdUser, actIdUser);
+				idmIdentityService.createUser(created[=ClassName], actIdUser);
 			</#if>
 		</#if>
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
@@ -176,9 +184,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 			<#if Flowable!false>
 				String oldRoleName = null;
 				//TODO: how to map Role in custom User table?
-				[=EntityClassName] oldUserRole = _[=ClassName?uncap_first]Manager.FindById(input.get[=ClassName?uncap_first]Id());
-				if(oldUserRole.getRole() != null) {
-				oldRoleName = oldUserRole.getRole().getName();
+				[=EntityClassName] oldUser = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+				if(oldUser.getRole() != null) {
+					oldRoleName = oldUser.getRole().getName();
 				}
 			</#if>
 		</#if>

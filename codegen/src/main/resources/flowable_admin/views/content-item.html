@@ -16,12 +16,12 @@
                             <td class="property-name" translate="CONTENT-ITEM.HEADER.ID"></td>
                             <td>{{contentItem.id}}</td>
                             <td class="property-name" translate="CONTENT-ITEM.HEADER.TASK-ID"></td>
-                            <td ng-if="contentItem.taskId"><a ng-href="#/task/{{contentItem.taskId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{contentItem.taskId}}</a></td>
+                            <td ng-if="contentItem.taskId"><a ng-href="#/flowable-admin/task/{{contentItem.taskId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{contentItem.taskId}}</a></td>
                             <td ng-if="!contentItem.taskId">{{contentItem.taskId | empty}}</td>
                         </tr>
                         <tr class="property">
                         	<td class="property-name" translate="CONTENT-ITEM.HEADER.PROCESS-INSTANCE-ID"></td>
-                            <td ng-if="contentItem.processInstanceId"><a ng-href="#/process-instance/{{contentItem.processInstanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{contentItem.processInstanceId}}</a></td>
+                            <td ng-if="contentItem.processInstanceId"><a ng-href="#/flowable-admin/process-instance/{{contentItem.processInstanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{contentItem.processInstanceId}}</a></td>
                             <td ng-if="!contentItem.processInstanceId">{{contentItem.processInstanceId | empty}}</td>
                             <td class="property-name" translate="CONTENT-ITEM.HEADER.CREATED-ON"></td>
                             <td>{{contentItem.created | dateformat}}</td>

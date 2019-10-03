@@ -35,7 +35,7 @@ import { IP_CONFIG } from './tokens';
 import { IForRootConf } from './IForRootConf';
 import { Globals } from './globals';
 import { CanDeactivateGuard } from './common/core/can-deactivate.guard';
-import {IGlobalPermissionService} from './common/core/iglobal-permission.service';
+import { GlobalPermissionService } from './common/core/global-permission.service';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -126,7 +126,8 @@ export class FastCodeCoreModule {
           useValue: config
         },
         Globals,
-        CanDeactivateGuard
+        CanDeactivateGuard,
+        GlobalPermissionService
       ]
     };
   }

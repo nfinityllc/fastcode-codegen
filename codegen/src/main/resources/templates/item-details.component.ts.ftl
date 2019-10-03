@@ -60,9 +60,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
   }
 
 	ngOnInit() {
-		<#if Relationship?has_content>
 		this.setAssociations();
-		</#if>
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({
 			<#list Fields as key,value>
@@ -124,10 +122,11 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 	    }
   }
   
-  <#if Relationship?has_content> 
+  
 	setAssociations(){
   	
 		this.associations = [
+		<#if Relationship?has_content> 
 		<#list Relationship as relationKey, relationValue>
 			{
 				column: [
@@ -167,6 +166,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
                 </#if>
 			},
 		</#list>
+		</#if>
 		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 			{
 				column: [
@@ -196,7 +196,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 				service: this.roleService,
 				descriptiveField: 'roleDescriptiveField',
 				referencedDescriptiveField: 'name',
-			},	
+			},
 		</#if>
 		];
 		
@@ -208,7 +208,6 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			return (!association.isParent);
 		});
 	}
-  </#if>
 
 	onItemFetched(item:[=IEntity]) {
 		this.item = item;

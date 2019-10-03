@@ -59,9 +59,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 	}
  
 	ngOnInit() {
-      	<#if Relationship?has_content>
 		this.setAssociations();
-		</#if>
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({
 			<#list Fields as key,value>
@@ -112,10 +110,11 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 		this.checkPassedData();
     }
  		
-	<#if Relationship?has_content> 
+	 
 		setAssociations(){
 	  	
 			this.associations = [
+			<#if Relationship?has_content>
 			<#list Relationship as relationKey, relationValue>
 			<#if (relationValue.relation == "OneToOne" && relationValue.isParent == false) || relationValue.relation == "ManyToOne">
 				{
@@ -145,6 +144,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				},
 			</#if>
 			</#list>
+			</#if>
 			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 				{
 					column: [
@@ -167,7 +167,6 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 				return (!association.isParent);
 			});
 	
-		}
-	  </#if>   
+		}  
     
 }

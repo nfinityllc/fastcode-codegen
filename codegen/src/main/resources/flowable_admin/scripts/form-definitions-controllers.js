@@ -66,7 +66,7 @@ flowableAdminApp.controller('FormDefinitionsController', ['$rootScope', '$scope'
 
         $scope.formSelected = function (form) {
             if (form && form.getProperty('id')) {
-                $location.path('/form-definition/' + form.getProperty('id'));
+                $location.path('/flowable-admin/form-definition/' + form.getProperty('id'));
             }
         };
 

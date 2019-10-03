@@ -18,12 +18,12 @@ flowableAdminApp.controller('DecisionTableDeploymentController', ['$scope', '$ro
         $rootScope.navigation = {main: 'dmn-engine', sub: 'deployments'};
         
 		$scope.returnToList = function() {
-			$location.path("/decision-table-deployments");
+			$location.path("/flowable-admin/decision-table-deployments");
 		};
 		
 		$scope.openDecisionTable = function(definition) {
 			if (definition && definition.getProperty('id')) {
-				$location.path("/decision-table/" + definition.getProperty('id'));
+				$location.path("/flowable-admin/decision-table/" + definition.getProperty('id'));
 			}
 		};
 		
@@ -32,7 +32,7 @@ flowableAdminApp.controller('DecisionTableDeploymentController', ['$scope', '$ro
 		    $rootScope.filters.forced.decisionTablesFilter = {
 		            deploymentId: $scope.deployment.id
 		    };
-		    $location.path("/decision-tables");
+		    $location.path("/flowable-admin/decision-tables");
 		};
 		
 		$q.all([$translate('DECISION-TABLES.HEADER.ID'),
@@ -60,7 +60,7 @@ flowableAdminApp.controller('DecisionTableDeploymentController', ['$scope', '$ro
 		
 		$scope.deleteDeployment = function() {
 		    var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/confirm-popup.html',
+                templateUrl: 'flowable_admin/views/confirm-popup.html',
                 controller: 'ConfirmPopupCtrl',
                 resolve: {
                     model: function () {

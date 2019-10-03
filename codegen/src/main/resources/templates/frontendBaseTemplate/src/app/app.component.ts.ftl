@@ -12,8 +12,6 @@ import { UpgradeModule } from "@angular/upgrade/static";
 import { TaskAppTranslateUiService } from 'task-app';
 </#if>
 <#if AuthenticationType != 'none'>
-import { OAuthService, JwksValidationHandler, OAuthErrorEvent, OAuthSuccessEvent, OAuthInfoEvent } from 'angular-oauth2-oidc';
-import { AuthOidcConfig } from './oauth/auth-oidc-config';
 import { AuthenticationService } from './core/authentication.service';
 </#if>
 
@@ -36,7 +34,6 @@ export class AppComponent {
     </#if>
 	<#if AuthenticationType != 'none'>
     private authService: AuthenticationService,
-    private oauthService: OAuthService
     </#if>
  ) {
     translate.addLangs(["en", "fr"]);
@@ -44,23 +41,24 @@ export class AppComponent {
 
     let browserLang = translate.getBrowserLang();
     translate.use(browserLang.match(/en|fr/) ? browserLang : 'en').subscribe(() => {
-      this.fastCodeCoreTranslateUiService.init(browserLang);
+      this.fastCodeCoreTranslateUiService.init();
       <#if SchedulerModule!false>
       this.schedulerTranslateUiService.init(browserLang);</#if>
       <#if EmailModule!false>
       this.emailBuilderTranslateUiService.init(browserLang);</#if>
+      <#if FlowableModule!false>
+      this.taskAppTranslateUiService.init();</#if>
     });
 	<#if AuthenticationType != 'none'>
 	if(this.authService.loginType == 'oidc') {
-    	this.authService.configure();
+      this.authService.configure();
     }
     </#if>
   }
   
   <#if FlowableModule!false>
-  ngOnInit()
-  {
-  this.upgrade.bootstrap(document.body, ['flowableAdminApp']);
+  ngOnInit(){
+  	this.upgrade.bootstrap(document.body, ['flowableAdminApp']);
   }
   </#if>
 }

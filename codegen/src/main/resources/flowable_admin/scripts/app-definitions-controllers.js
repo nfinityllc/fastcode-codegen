@@ -84,7 +84,7 @@ flowableAdminApp.controller('AppDefinitionsController', ['$rootScope', '$scope',
 
 	    $scope.definitionSelected = function(definition) {
 	    	if (definition && definition.getProperty('id')) {
-	    		$location.path('/app-definition/' + definition.getProperty('id'));
+	    		$location.path('/flowable-admin/app-definition/' + definition.getProperty('id'));
 	    	}
 	    };
 

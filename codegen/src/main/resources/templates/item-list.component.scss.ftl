@@ -1,5 +1,5 @@
 @import 'src/styles/base.scss';
-.container {
+.list-container {
     margin:$fc-margin3;
     height: 100%;
 }

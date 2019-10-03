@@ -86,7 +86,7 @@ flowableAdminApp.controller('EventSubscriptionsController', ['$scope', '$rootSco
 	    
 	    $scope.eventSubscriptionSelected = function(event) {
 	    	if (event && event.getProperty('id')) {
-	    		$location.path('/event-subscriptions/' + event.getProperty('id'));
+	    		$location.path('/flowable-admin/event-subscriptions/' + event.getProperty('id'));
 	    	}
 	    };
 	    

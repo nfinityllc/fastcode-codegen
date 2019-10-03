@@ -16,15 +16,15 @@
                             <td class="property-name" translate="FORM-INSTANCE.HEADER.ID"></td>
                             <td>{{formInstance.id}}</td>
                             <td class="property-name" translate="FORM-INSTANCE.HEADER.TASK-ID"></td>
-                            <td ng-if="formInstance.taskId"><a ng-href="#/task/{{formInstance.taskId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.taskId}}</a></td>
+                            <td ng-if="formInstance.taskId"><a ng-href="#/flowable-admin/task/{{formInstance.taskId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.taskId}}</a></td>
                             <td ng-if="!formInstance.taskId">{{formInstance.taskId | empty}}</td>
                         </tr>
                         <tr class="property">
                         	<td class="property-name" ng-if="!formInstance.scopeType || formInstance.scopeType != 'cmmn'" translate="FORM-INSTANCE.HEADER.PROCESS-ID"></td>
-                            <td ng-if="(!formInstance.scopeType || formInstance.scopeType != 'cmmn') && formInstance.processInstanceId"><a ng-href="#/process-instance/{{formInstance.processInstanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.processInstanceId}}</a></td>
+                            <td ng-if="(!formInstance.scopeType || formInstance.scopeType != 'cmmn') && formInstance.processInstanceId"><a ng-href="#/flowable-admin/process-instance/{{formInstance.processInstanceId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.processInstanceId}}</a></td>
                             <td ng-if="(!formInstance.scopeType || formInstance.scopeType != 'cmmn') && !formInstance.processInstanceId">{{formInstance.processInstanceId | empty}}</td>
                             <td class="property-name" ng-if="formInstance.scopeType && formInstance.scopeType == 'cmmn'" translate="FORM-INSTANCE.HEADER.CASE-INSTANCE-ID"></td>
-                            <td ng-if="formInstance.scopeType && formInstance.scopeType == 'cmmn' && formInstance.scopeId"><a ng-href="#/case-instance/{{formInstance.scopeId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.scopeId}}</a></td>
+                            <td ng-if="formInstance.scopeType && formInstance.scopeType == 'cmmn' && formInstance.scopeId"><a ng-href="#/flowable-admin/case-instance/{{formInstance.scopeId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.scopeId}}</a></td>
                             <td ng-if="formInstance.scopeType && formInstance.scopeType == 'cmmn' && !formInstance.scopeId">{{formInstance.scopeId | empty}}</td>
                             <td class="property-name" translate="FORM-INSTANCE.HEADER.SUBMITTED"></td>
                             <td>{{formInstance.submittedDate | date}}</td>
@@ -33,7 +33,7 @@
                             <td class="property-name" translate="FORM-INSTANCE.HEADER.SUBMITTED-BY"></td>
                             <td user="formInstance.submittedBy"></td>
                             <td class="property-name" translate="FORM-INSTANCE.HEADER.FORM-DEFINITION-ID"></td>
-                            <td><a ng-href="#/form-definition/{{formInstance.formDefinitionId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.formDefinitionId}}</a></td>
+                            <td><a ng-href="#/flowable-admin/form-definition/{{formInstance.formDefinitionId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{formInstance.formDefinitionId}}</a></td>
                         </tr>
                     </table>
                 </div>

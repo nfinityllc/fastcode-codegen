@@ -71,16 +71,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
-    this.account = {
-      "id": "admin",
-      "firstName": "Test",
-      "lastName": "Administrator",
-      "email": "admin@flowable.org",
-      "fullName": "Test Administrator",
-      "groups": [],
-      "privileges": ["access-idm", "access-rest-api", "access-task", "access-modeler", "access-admin"]
-    }
-
+    this.setCurrentUser();
     // this.loadAllDetails();
     if (this.task && this.task.id)
       this.getTask(this.task.id);
@@ -111,7 +102,13 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
       }
     }
   }
-
+  
+  setCurrentUser(){
+    this.userService.getAccount().subscribe(account => {
+      this.account = account;
+    })
+  }
+  
   loadAllDetails() {
     this.getProcessInstance();
     this.refreshInvolvmentSummary();

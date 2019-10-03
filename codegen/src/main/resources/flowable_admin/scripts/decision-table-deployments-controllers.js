@@ -63,7 +63,7 @@ flowableAdminApp.controller('DecisionTableDeploymentsController', ['$rootScope',
 
         $scope.deploymentSelected = function (deployment) {
             if (deployment && deployment.getProperty('id')) {
-                $location.path('/decision-table-deployment/' + deployment.getProperty('id'));
+                $location.path('/flowable-admin/decision-table-deployment/' + deployment.getProperty('id'));
             }
         };
 
@@ -101,7 +101,7 @@ flowableAdminApp.controller('DecisionTableDeploymentsController', ['$rootScope',
 
         $scope.uploadDeployment = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/upload-dmn-deployment.html',
+                templateUrl: 'flowable_admin/views/upload-dmn-deployment.html',
                 controller: 'UploadDecisionDeploymentCtrl'
             });
             modalInstance.result.then(function (result) {

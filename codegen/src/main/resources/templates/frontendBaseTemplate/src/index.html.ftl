@@ -26,6 +26,7 @@
 	<link href="./flowable_admin/additional_components/ui-grid/ui-grid.min.css" rel="stylesheet" >
 	<link href="./flowable_admin/bower_components/json-formatter/json-formatter.min.css" rel="stylesheet" >
 	<link href="./flowable_admin/styles/style.css" rel="stylesheet" >
+	<link href="./flowable_admin/styles/style-modeler.css" rel="stylesheet" >
 	
 	<!-- end admin stylesheets -->
 	

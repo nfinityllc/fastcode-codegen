@@ -102,7 +102,7 @@ flowableAdminApp.controller('CaseInstancesController', ['$rootScope', '$scope', 
 
 	    $scope.caseInstanceSelected = function(caseInstance) {
             if (caseInstance && caseInstance.getProperty('id')) {
-                $location.path('/case-instance/' + caseInstance.getProperty('id'));
+                $location.path('/flowable-admin/case-instance/' + caseInstance.getProperty('id'));
             }
         };
 

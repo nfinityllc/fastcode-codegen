@@ -22,12 +22,12 @@ flowableAdminApp.controller('CmmnJobController', ['$scope', '$rootScope', '$http
 		}
 		
 		$scope.returnToList = function() {
-			$location.path("/cmmn-jobs").search({jobType: $scope.jobType.param});
+			$location.path("/flowable-admin/cmmn-jobs").search({jobType: $scope.jobType.param});
 		};
 
 		$scope.openDefinition = function(definitionId) {
 			if (definitionId) {
-				$location.path("/case-definition/" + definitionId);
+				$location.path("/flowable-admin/case-definition/" + definitionId);
 			}
 		};
 
@@ -55,7 +55,7 @@ flowableAdminApp.controller('CmmnJobController', ['$scope', '$rootScope', '$http
 
 		$scope.deleteJob = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/job-delete-popup.html',
+				templateUrl: 'flowable_admin/views/job-delete-popup.html',
 				controller: 'DeleteCmmnJobModalInstanceCtrl',
 				resolve: {
 					job: function() {
@@ -77,13 +77,13 @@ flowableAdminApp.controller('CmmnJobController', ['$scope', '$rootScope', '$http
 
 		$scope.openCaseInstance = function(caseInstanceId) {
 			if (processInstanceId) {
-				$location.path("/case-instance/" + caseInstanceId);
+				$location.path("/flowable-admin/case-instance/" + caseInstanceId);
 			}
 		};
 
 		$scope.openCaseDefinition = function(caseDefinitionId) {
 			if (processDefinitionId) {
-				$location.path("/case-definition/" + caseDefinitionId);
+				$location.path("/flowable-admin/case-definition/" + caseDefinitionId);
 			}
 		};
 

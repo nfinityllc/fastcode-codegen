@@ -11,7 +11,7 @@
       <div class="full-width">
         <mat-form-field class="full-width">
           <input formControlName="name" matInput placeholder="Enter username">
-          <mat-error *ngIf="userForm.get('name').errors && userForm.get('name').errors['required'] && userForm.get('name').touched">Name cannot be empty</mat-error>
+          <mat-error *ngIf="userForm.get('name').errors && userForm.get('name').errors['required'] && userForm.get('name').touched">{{'GENERAL.ERROR.REQUIRED' | translate}}</mat-error>
         </mat-form-field>
       </div>
     </form>
