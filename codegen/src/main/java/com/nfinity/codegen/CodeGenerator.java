@@ -151,12 +151,12 @@ public class CodeGenerator {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 			generateEntityHistoryComponent(appFolderPath);
 			addhistoryComponentsToAppModule(appFolderPath);
-			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType);
+			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType, flowable);
 			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType,authenticationTable);
 
 		}
 
-		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType);
+		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType, flowable);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames,authenticationTable);
@@ -318,7 +318,7 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void addhistoryComponentsToAppRoutingModule(String destPath, String authenticationType)
+	public static void addhistoryComponentsToAppRoutingModule(String destPath, String authenticationType, Boolean flowable)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
@@ -343,6 +343,10 @@ public class CodeGenerator {
 			builder.append(data);
 
 			int index = builder.lastIndexOf("{");
+			if(flowable) {
+				final String output = builder.substring(0, index);
+				index = output.lastIndexOf("{");
+			}
 			builder.insert(index - 1, sourceBuilder.toString());
 			File fileName = new File(destPath + "/app.routing.ts");
 
@@ -695,9 +699,9 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void updateAppRouting(String destPath,String appName, List<String> entityName, String authenticationType)
+	public static void updateAppRouting(String destPath,String appName, List<String> entityName, String authenticationType, Boolean flowable)
 	{
-		StringBuilder sourceBuilder=new StringBuilder();
+		StringBuilder sourceBuilder = new StringBuilder();
 
 		for(String str: entityName)
 		{
@@ -725,6 +729,12 @@ public class CodeGenerator {
 
 			builder.append(data);
 			int index = builder.lastIndexOf("{");
+			
+			if(flowable) {
+				final String output = builder.substring(0, index);
+				index = output.lastIndexOf("{");
+			}
+			
 			builder.insert(index - 1, sourceBuilder.toString());
 			File fileName = new File(destPath + "/" + appName + "Client/src/app/app.routing.ts");
 
