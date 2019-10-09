@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import [=PackageName].domain.Authorization.Rolepermission.*;
 import [=CommonModulePackage].Search.*;
-import [=PackageName].application.Rolepermission.Dto.*;
+import [=PackageName].application.Authorization.Rolepermission.Dto.*;
 import [=PackageName].domain.model.QRolepermissionEntity;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.PermissionEntity;

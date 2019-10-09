@@ -541,7 +541,7 @@ public class AuthenticationClassesTemplateGenerator {
 		if(authenticationType != "none") {
 
 			//	backEndTemplate.put("BeanConfig.java.ftl", "BeanConfig.java");
-			backEndTemplate.put("AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");
+			//backEndTemplate.put("AuditorAwareImpl.java.ftl", "domain/BaseClasses/AuditorAwareImpl.java");
 			backEndTemplate.put("UserDetailsServiceImpl.java.ftl", "UserDetailsServiceImpl.java");
 			backEndTemplate.put("SecurityConfig.java.ftl", "SecurityConfig.java");
 		}

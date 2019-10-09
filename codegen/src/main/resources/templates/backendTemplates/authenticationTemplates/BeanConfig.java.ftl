@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 </#if>
+<#if Audit!false>
+import [=PackageName].domain.BaseClasses.AuditorAwareImpl;
+</#if>
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
@@ -25,12 +28,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 </#if>
 public class BeanConfig {
 <#if AuthenticationType != "none">
-    
+    <#if Audit!false>
     @Bean
     AuditorAware<String> auditorProvider() {
         return new AuditorAwareImpl();
     }
-    
+    </#if>
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -3,7 +3,7 @@ package [=PackageName].domain.model;
 import [=PackageName].domain.model.RoleEntity;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=PackageName].Audit.AuditedEntity;
+import [=PackageName].domain.BaseClasses.AuditedEntity;
 </#if>
 
 import javax.persistence.*;

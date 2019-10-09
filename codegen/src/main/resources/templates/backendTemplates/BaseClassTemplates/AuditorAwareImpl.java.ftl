@@ -1,4 +1,4 @@
-package [=PackageName];
+package [=PackageName].domain.BaseClasses;
 
 import org.springframework.data.domain.AuditorAware;
 //import org.springframework.beans.factory.annotation.Autowired;

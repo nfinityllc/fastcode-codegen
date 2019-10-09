@@ -162,11 +162,11 @@ public class CodeGenerator {
 
 		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName, connectionString, schema,authenticationType,email, flowable);
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
-		generateBeanConfig(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType);
+		generateBeanConfig(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType,audit);
 
 	}
 
-	private static void generateBeanConfig(String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType){
+	private static void generateBeanConfig(String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType,Boolean audit){
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 
@@ -181,6 +181,7 @@ public class CodeGenerator {
 
 		root.put("PackageName", packageName);
 		root.put("AuthenticationType", authenticationType);
+		root.put("Audit",audit);
 		Map<String, Object> template = new HashMap<>();
 		template.put("BeanConfig.java.ftl", "BeanConfig.java");
 		//	template.put("AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");

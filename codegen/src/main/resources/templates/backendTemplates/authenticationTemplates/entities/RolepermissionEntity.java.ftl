@@ -6,6 +6,10 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Date;
+<#if Audit!false>
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import [=PackageName].domain.BaseClasses.AuditedEntity;
+</#if>
 
 @Entity
 @Table(name = "Rolepermission", schema = "[=SchemaName]")

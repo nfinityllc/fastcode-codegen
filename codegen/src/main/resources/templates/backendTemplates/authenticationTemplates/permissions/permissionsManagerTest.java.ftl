@@ -1,4 +1,4 @@
-package [=PackageName].domain.Authorization.Permissions;
+package [=PackageName].domain.Authorization.Permission;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -7,6 +7,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -23,22 +25,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import [=PackageName].domain.IRepository.IPermissionsRepository;
-import [=PackageName].domain.model.PermissionsEntity;
+import [=PackageName].domain.IRepository.IPermissionRepository;
+import [=PackageName].domain.model.PermissionEntity;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 
 @Component
 @RunWith(SpringJUnit4ClassRunner.class)
-public class PermissionsManagerTest {
+public class PermissionManagerTest {
 
 	@InjectMocks
-	PermissionsManager permissionsManager;
+	PermissionManager permissionManager;
 
 	@Mock
-	private IPermissionsRepository _permissionsRepository;
+	private IPermissionRepository _permissionRepository;
 
-	
 	@Mock
     private Logger loggerMock;
    
@@ -49,7 +50,7 @@ public class PermissionsManagerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(permissionsManager);
+		MockitoAnnotations.initMocks(permissionManager);
 		when(logHelper.getLogger()).thenReturn(loggerMock);
 		doNothing().when(loggerMock).error(anyString());
 
@@ -61,68 +62,69 @@ public class PermissionsManagerTest {
 	
 	@Test
 	public void findPermissionById_IdIsNotNullAndIdExists_ReturnAPermission() {
-		PermissionsEntity permission =mock(PermissionsEntity.class);
-
-		Mockito.when(_permissionsRepository.findById(anyLong())).thenReturn(permission);
-		Assertions.assertThat(permissionsManager.FindById(ID)).isEqualTo(permission);
+		PermissionEntity permission =mock(PermissionEntity.class);
+		
+		Optional<PermissionEntity> dbPermission = Optional.of((PermissionEntity) permission);
+		Mockito.<Optional<PermissionEntity>>when(_permissionRepository.findById(anyLong())).thenReturn(dbPermission);
+		Assertions.assertThat(permissionManager.FindById(ID)).isEqualTo(permission);
 	}
-
+ 
 	@Test 
 	public void findPermissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
-
-	Mockito.when(_permissionsRepository.findById(anyLong())).thenReturn(null);
-	Assertions.assertThat(permissionsManager.FindById(ID)).isEqualTo(null);
+	 
+	 Mockito.<Optional<PermissionEntity>>when(_permissionRepository.findById(anyLong())).thenReturn(Optional.empty());
+	 Assertions.assertThat(permissionManager.FindById(ID)).isEqualTo(null);
 	}
 	
 	@Test
 	public void findPermissionByName_NameIsNotNullAndNameExists_ReturnAPermission() {
-		PermissionsEntity permission =mock(PermissionsEntity.class);
+		PermissionEntity permission =mock(PermissionEntity.class);
 
-		Mockito.when(_permissionsRepository.findByPermissionName(anyString())).thenReturn(permission);
-		Assertions.assertThat(permissionsManager.FindByPermissionName("permission1")).isEqualTo(permission);
+		Mockito.when(_permissionRepository.findByPermissionName(anyString())).thenReturn(permission);
+		Assertions.assertThat(permissionManager.FindByPermissionName("permission1")).isEqualTo(permission);
 	}
 
 	@Test 
 	public void findPermissionByName_NameIsNotNullAndNameDoesNotExist_ReturnNull() {
 
-		Mockito.when(_permissionsRepository.findByPermissionName(anyString())).thenReturn(null);
-		Assertions.assertThat(permissionsManager.FindByPermissionName("permission1")).isEqualTo(null);
+		Mockito.when(_permissionRepository.findByPermissionName(anyString())).thenReturn(null);
+		Assertions.assertThat(permissionManager.FindByPermissionName("permission1")).isEqualTo(null);
 	
 	}
 	
 	@Test
 	public void createPermission_PermissionIsNotNullAndPermissionDoesNotExist_StoreAPermission() {
 
-		PermissionsEntity permission =mock(PermissionsEntity.class);
-		Mockito.when(_permissionsRepository.save(any(PermissionsEntity.class))).thenReturn(permission);
-		Assertions.assertThat(permissionsManager.Create(permission)).isEqualTo(permission);
+		PermissionEntity permission =mock(PermissionEntity.class);
+		Mockito.when(_permissionRepository.save(any(PermissionEntity.class))).thenReturn(permission);
+		Assertions.assertThat(permissionManager.Create(permission)).isEqualTo(permission);
 	}
 
 	@Test
 	public void deletePermission_PermissionExists_RemoveAPermission() {
 
-		PermissionsEntity permission =mock(PermissionsEntity.class);
-		permissionsManager.Delete(permission);
-		verify(_permissionsRepository).delete(permission);
+		PermissionEntity permission =mock(PermissionEntity.class);
+		permissionManager.Delete(permission);
+		verify(_permissionRepository).delete(permission);
 	}
 
 	@Test
 	public void updatePermission_PermissionIsNotNullAndPermissionExists_UpdateAPermission() {
 		
-		PermissionsEntity permission =mock(PermissionsEntity.class);
-		Mockito.when(_permissionsRepository.save(any(PermissionsEntity.class))).thenReturn(permission);
-		Assertions.assertThat(permissionsManager.Update(permission)).isEqualTo(permission);
+		PermissionEntity permission =mock(PermissionEntity.class);
+		Mockito.when(_permissionRepository.save(any(PermissionEntity.class))).thenReturn(permission);
+		Assertions.assertThat(permissionManager.Update(permission)).isEqualTo(permission);
 		
 	}
 
 	@Test
 	public void findAll_PageableIsNotNull_ReturnPage() {
-		Page<PermissionsEntity> permission = mock(Page.class);
+		Page<PermissionEntity> permission = mock(Page.class);
 		Pageable pageable = mock(Pageable.class);
 		Predicate predicate = mock(Predicate.class);
 
-		Mockito.when(_permissionsRepository.findAll(any(Predicate.class),any(Pageable.class))).thenReturn(permission);
-		Assertions.assertThat(permissionsManager.FindAll(predicate,pageable)).isEqualTo(permission);
+		Mockito.when(_permissionRepository.findAll(any(Predicate.class),any(Pageable.class))).thenReturn(permission);
+		Assertions.assertThat(permissionManager.FindAll(predicate,pageable)).isEqualTo(permission);
 	}
 	
 }

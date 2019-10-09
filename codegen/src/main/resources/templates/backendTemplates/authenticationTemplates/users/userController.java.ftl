@@ -68,7 +68,7 @@ public class UserController {
     public ResponseEntity GetMeInfo() throws Exception{ 
  
         String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
-        [=AuthenticationTable] userEntity = _userMgr.FindByUserName(userName); 
+        [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName); 
         Set<UserpermissionEntity> spe = userEntity.getUserpermissionSet();
         
 //      Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 

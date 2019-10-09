@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.Date;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=CommonModulePackage].domain.BaseClasses.AuditedEntity;
+import [=PackageName].domain.BaseClasses.AuditedEntity;
 </#if>
 <#if ClassName == AuthenticationTable>
 import [=PackageName].domain.model.RoleEntity;

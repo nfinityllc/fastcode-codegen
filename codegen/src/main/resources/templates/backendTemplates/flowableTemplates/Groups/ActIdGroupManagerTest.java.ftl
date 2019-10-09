@@ -24,7 +24,7 @@ public class ActIdGroupManagerTest {
 ActIdGroupManager groupManager;
 
 @Mock
-IActIdGroupManager _groupRepository;
+IActIdGroupRepository _groupRepository;
 
 @Mock
 private Logger loggerMock;

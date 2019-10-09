@@ -45,6 +45,11 @@ public class PomFileModifier {
 
 		if(scheduler)
 		{
+			if(!history)
+			{
+				Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
+				dependencies.add(javersSql);
+			}
 			Dependency hibernate_cp = new Dependency("org.hibernate","hibernate-c3p0","4.3.6.Final");
 			dependencies.add(hibernate_cp);
 			Dependency apache_directory_server = new Dependency("org.apache.directory.server","apacheds-server-jndi","1.5.5");

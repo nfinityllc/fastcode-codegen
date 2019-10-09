@@ -28,7 +28,7 @@ public class CodegenApplication implements ApplicationRunner {
 	public static UserInput composeInput(FastCodeProperties configProperties) {
 		UserInput input = new UserInput();
 		Scanner scanner = new Scanner(System.in);
-		System.out.println(" v " + root.get("c") + "\n ss " + root.get("s"));
+		//System.out.println(" v " + root.get("c") + "\n ss " + root.get("s"));
 		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// /Users/getachew/fc/exer/root

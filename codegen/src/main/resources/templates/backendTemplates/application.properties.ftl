@@ -77,8 +77,10 @@ fastCode.ldap.groupsearchfilter=(member={0})
 
 spring.security.oauth2.client.registration.oidc.client-id=0oa1dpe6xa5SKvHR0357
 spring.security.oauth2.client.provider.oidc.issuer-uri=https://nfinityllc-usman.okta.com/oauth2/default
-spring.main.allow-bean-definition-overriding=true
+#spring.security.oauth2.client.registration.oidc.client-secret=tS23X8Cipe9G7XmfZk-VesHqdXzJRiGmz4DtXP5a
 </#if>
+
+spring.main.allow-bean-definition-overriding=true
 
 fastCode.offset.default=0
 fastCode.limit.default=10

@@ -1,4 +1,4 @@
-package [=PackageName].domain.Authorization.Roles;
+package [=PackageName].domain.Authorization.Role;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -8,8 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Set;
-import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -23,27 +22,23 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import [=CommonModulePackage].Search.SearchFields;
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.IRepository.IPermissionsRepository;
-import [=PackageName].domain.IRepository.IRolesRepository;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.IRepository.IRoleRepository;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 
+@Component
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RoleManagerTest {
 	
 	@InjectMocks
-	RolesManager roleManager;
+	RoleManager roleManager;
 	
 	@Mock
-	IRolesRepository _rolesRepository;
-	
-	@Mock
-	IPermissionsRepository _permissionsRepository;
+	IRoleRepository _roleRepository;
 
 	@Mock
     private Logger loggerMock;
@@ -66,137 +61,70 @@ public class RoleManagerTest {
 
 	@Test
 	public void findRoleById_IdIsNotNullAndIdExists_ReturnARole() {
-		RolesEntity rolesEntity = mock(RolesEntity.class);
-		Mockito.when(_rolesRepository.findById(anyLong())).thenReturn(rolesEntity);
-		Assertions.assertThat(roleManager.FindById(ID)).isEqualTo(rolesEntity);
+	
+		RoleEntity roleEntity = mock(RoleEntity.class);
+		Optional<RoleEntity> dbRole = Optional.of((RoleEntity) roleEntity);
+		Mockito.<Optional<RoleEntity>>when(_roleRepository.findById(anyLong())).thenReturn(dbRole);
+		Assertions.assertThat(roleManager.FindById(ID)).isEqualTo(roleEntity);
 	}
 
 	@Test 
 	public void findRoleById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
 
-		Mockito.when(_rolesRepository.findById(anyLong())).thenReturn(null);
+		Mockito.<Optional<RoleEntity>>when(_roleRepository.findById(anyLong())).thenReturn(Optional.empty());
 		Assertions.assertThat(roleManager.FindById(ID)).isEqualTo(null);
 	}
 	
 	@Test
 	public void findRoleByName_NameIsNotNullAndNameExists_ReturnARole() {
-		RolesEntity rolesEntity = mock(RolesEntity.class);
+		RoleEntity roleEntity = mock(RoleEntity.class);
 
-		Mockito.when(_rolesRepository.findByRoleName(anyString())).thenReturn(rolesEntity);
-		Assertions.assertThat(roleManager.FindByRoleName("Permission1")).isEqualTo(rolesEntity);
+		Mockito.when(_roleRepository.findByRoleName(anyString())).thenReturn(roleEntity);
+		Assertions.assertThat(roleManager.FindByRoleName("Permission1")).isEqualTo(roleEntity);
 	}
 
 	@Test 
 	public void findRoleByName_NameIsNotNullAndNameDoesNotExist_ReturnNull() {
 
-		Mockito.when(_rolesRepository.findByRoleName(anyString())).thenReturn(null);
+		Mockito.when(_roleRepository.findByRoleName(anyString())).thenReturn(null);
 		Assertions.assertThat(roleManager.FindByRoleName("Permission")).isEqualTo(null);
 	
 	}
 	@Test
 	public void createRole_RoleIsNotNullAndRoleDoesNotExist_StoreARole() {
 
-		RolesEntity rolesEntity = mock(RolesEntity.class);
-		Mockito.when(_rolesRepository.save(any(RolesEntity.class))).thenReturn(rolesEntity);
-		Assertions.assertThat(roleManager.Create(rolesEntity)).isEqualTo(rolesEntity);
+		RoleEntity roleEntity = mock(RoleEntity.class);
+		Mockito.when(_roleRepository.save(any(RoleEntity.class))).thenReturn(roleEntity);
+		Assertions.assertThat(roleManager.Create(roleEntity)).isEqualTo(roleEntity);
 	}
 
 	@Test
 	public void deleteRole_RoleExists_RemoveARole() {
 
-		RolesEntity rolesEntity = mock(RolesEntity.class);
-		roleManager.Delete(rolesEntity);
-		verify(_rolesRepository).delete(rolesEntity);
+		RoleEntity roleEntity = mock(RoleEntity.class);
+		roleManager.Delete(roleEntity);
+		verify(_roleRepository).delete(roleEntity);
 	}
 
 	@Test
 	public void updateRole_RoleIsNotNullAndRoleExists_UpdateARole() {
 		
-		RolesEntity rolesEntity = mock(RolesEntity.class);
-		Mockito.when(_rolesRepository.save(any(RolesEntity.class))).thenReturn(rolesEntity);
-		Assertions.assertThat(roleManager.Update(rolesEntity)).isEqualTo(rolesEntity);
+		RoleEntity roleEntity = mock(RoleEntity.class);
+		Mockito.when(_roleRepository.save(any(RoleEntity.class))).thenReturn(roleEntity);
+		Assertions.assertThat(roleManager.Update(roleEntity)).isEqualTo(roleEntity);
 		
 	}
 
 	@Test
 	public void findAll_PageableIsNotNull_ReturnPage() {
-		Page<RolesEntity> role = mock(Page.class);
+		Page<RoleEntity> role = mock(Page.class);
 		Pageable pageable = mock(Pageable.class);
 		Predicate predicate = mock(Predicate.class);
 
-		Mockito.when(_rolesRepository.findAll(any(Predicate.class),any(Pageable.class))).thenReturn(role);
+		Mockito.when(_roleRepository.findAll(any(Predicate.class),any(Pageable.class))).thenReturn(role);
 		Assertions.assertThat(roleManager.FindAll(predicate,pageable)).isEqualTo(role);
 
 	}
-
-	 //Permissions
-    @Test
-	public void addPermissions_ifRolesAndPermissionsIsNotNull_PermissionsAssigned() {
-		RolesEntity roles = mock(RolesEntity.class);
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-		
-		Set<PermissionsEntity> sp = roles.getPermissions();
-		Mockito.when(roles.getPermissions()).thenReturn(sp);
-        Assertions.assertThat(roleManager.AddPermission(roles, permissions)).isEqualTo(true);
-
-	}
-
-	@Test
-	public void addPermissions_ifRolesAndPermissionsIsNotNullAndPermissionsAlreadyAssigned_ReturnFalse() {
-		
-		RolesEntity roles = mock(RolesEntity.class);
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-		Set<PermissionsEntity> sp = roles.getPermissions();
-		sp.add(permissions);
-		
-		Mockito.when(roles.getPermissions()).thenReturn(sp);
-		Assertions.assertThat(roleManager.AddPermission(roles, permissions)).isEqualTo(false);
-
-	}
-
-	@Test
-	public void RemovePermissions_ifRolesAndPermissionsIsNotNull_PermissionsRemoved() {
-		RolesEntity roles = mock(RolesEntity.class);
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-
-		roleManager.RemovePermission(roles, permissions);
-		verify(_rolesRepository).save(roles);
-	}
-
-
-	@Test 
-	public void GetPermissions_ifRolesIdAndPermissionsIdIsNotNullAndPermissionsDoesNotExist_ReturnNull() {
-		RolesEntity roles = mock(RolesEntity.class);
-		
-		Mockito.when(_rolesRepository.findById(anyLong())).thenReturn(roles);
-        Assertions.assertThat(roleManager.GetPermissions(ID,ID)).isEqualTo(null);
-	}
-
-	@Test
-	public void GetPermissions_ifRolesIdAndPermissionsIdIsNotNullAndRecordExists_ReturnPermissions() {
-		RolesEntity roles = mock(RolesEntity.class);
-		PermissionsEntity permissions = new PermissionsEntity();
-		permissions.setId(ID);
-	
-		Set<PermissionsEntity> permissionsList = roles.getPermissions();
-		permissionsList.add(permissions);
-
-		Mockito.when(_rolesRepository.findById(ID)).thenReturn(roles);
-		Mockito.when(roles.getPermissions()).thenReturn(permissionsList);
-
-		Assertions.assertThat(roleManager.GetPermissions(ID,ID)).isEqualTo(permissions);
-
-	}
-	
-    @Test
-	public void FindPermissions_RolesIdIsNotNull_ReturnPermissions() {
-	    Page<PermissionsEntity> permissions = mock(Page.class);
-		Pageable pageable = mock(Pageable.class);
-		List<SearchFields> list = mock(List.class);
-		String value="equals";
-
-		Mockito.when(_rolesRepository.getAllPermissions(anyLong(),any(List.class),anyString(),any(Pageable.class))).thenReturn(permissions);
-		Assertions.assertThat(_rolesRepository.getAllPermissions(ID,list,value,pageable)).isEqualTo(permissions);
-	}
 	
 }
+

@@ -57,21 +57,26 @@ public class UserAppService implements IUserAppService {
 	private FlowableIdentityService idmIdentityService;
     </#if>
 
-     @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
 	public CreateUserOutput Create(CreateUserInput input) {
 
 		UserEntity user = mapper.CreateUserInputToUserEntity(input);
-	  	if(input.getRoleId()!=null)
-		{
-		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-		if(foundRole!=null)
-		user.setRole(foundRole);
+		if(input.getRoleId()!=null) {
+			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+		if(foundRole!=null) {
+			user.setRole(foundRole);
 		}
+		else 
+			return null;
+		}
+		else 
+			return null;
+			
 		UserEntity createdUser = _userManager.Create(user);
 		<#if Flowable!false>
-			//Map and create flowable user
-			ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(createdUser);
-			idmIdentityService.createUser(createdUser, actIdUser);
+		//Map and create flowable user
+		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(createdUser);
+		idmIdentityService.createUser(createdUser, actIdUser);
 		</#if>
 		return mapper.UserEntityToCreateUserOutput(createdUser);
 	}
@@ -79,26 +84,17 @@ public class UserAppService implements IUserAppService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(value="User", key = "#userId")
 	public UpdateUserOutput Update(Long userId, UpdateUserInput input) {
-		<#if Flowable!false>
-			String oldRoleName = null;
-			UserEntity oldUserRole = _userManager.FindById(input.getId());
-			if(oldUserRole.getRole() != null) {
-				oldRoleName = oldUserRole.getRole().getName();
-			}
-		</#if>
+	
 		UserEntity user = mapper.UpdateUserInputToUserEntity(input);
-	  	if(input.getRoleId()!=null)
-		{
+	  	if(input.getRoleId()!=null) {
 		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-		if(foundRole!=null)
-		{
+		if(foundRole!=null) {
 			Set<UserpermissionEntity> userPermission = user.getUserpermissionSet();
 			Set<RolepermissionEntity> rolePermission = foundRole.getRolepermissionSet();
 			
 			Iterator pIterator = userPermission.iterator();
 			Iterator rIterator = rolePermission.iterator();
 				while (pIterator.hasNext()) { 
-					System.out.println(" in up iterartor");
 					UserpermissionEntity up = (UserpermissionEntity) pIterator.next();
 					while(rIterator.hasNext()) {
 						RolepermissionEntity rp = (RolepermissionEntity) pIterator.next();
@@ -109,9 +105,18 @@ public class UserAppService implements IUserAppService {
 				}
 		    user.setRole(foundRole);
 		}
+		else 
+			return null;
 		}
+		else 
+			return null;
 		UserEntity updatedUser = _userManager.Update(user);
 		<#if Flowable!false>
+		String oldRoleName = null;
+		UserEntity oldUserRole = _userManager.FindById(input.getId());
+		if(oldUserRole.getRole() != null) {
+			oldRoleName = oldUserRole.getRole().getName();
+		}
 		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(updatedUser);
 		idmIdentityService.updateUser(updatedUser, actIdUser, oldRoleName);
 		</#if>
