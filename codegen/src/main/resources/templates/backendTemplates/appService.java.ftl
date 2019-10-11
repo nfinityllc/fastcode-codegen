@@ -22,11 +22,11 @@ import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#list>
 <#if ClassName == AuthenticationTable>
-	<#if Flowable!false>
-		import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
-		import [=PackageName].application.Flowable.ActIdUserMapper;
-		import [=PackageName].application.Flowable.FlowableIdentityService;
-	</#if>
+<#if Flowable!false>
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 </#if>
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -80,10 +80,10 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     </#if>
     </#list>
 	@Autowired
-	private LoggingHelper logHelper;
-
-	@Autowired
 	private [=ClassName]Mapper mapper;
+	
+	@Autowired
+	private LoggingHelper logHelper;
 
     @Transactional(propagation = Propagation.REQUIRED)
 	public Create[=ClassName]Output Create(Create[=ClassName]Input input) {
@@ -377,9 +377,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
-		<#list SearchFields as fields>
-			builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ value + "%"));
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        	builder.or([=ClassName?uncap_first].[=value.fieldName].eq(value));
+		</#if> 
+		</#if> 
+        </#list>
 		}
 		else if(operator.equals("equals"))
 		{

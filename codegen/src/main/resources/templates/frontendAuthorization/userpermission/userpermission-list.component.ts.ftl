@@ -79,7 +79,7 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
                 <#else>
                 <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
-  				<#if authKey== "User Name">
+  				<#if authKey== "UserName">
   				descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
 				referencedDescriptiveField: '[=authValue.fieldName]',
     			</#if>

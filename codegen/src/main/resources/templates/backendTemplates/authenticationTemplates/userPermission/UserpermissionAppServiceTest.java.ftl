@@ -28,13 +28,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import [=PackageName].domain.Authorization.Userpermission.*;
+import [=PackageName].domain.Authorization.[=AuthenticationTable]permission.*;
 import [=CommonModulePackage].Search.*;
-import [=PackageName].application.Authorization.Userpermission.Dto.*;
-import [=PackageName].domain.model.QUserpermissionEntity;
-import [=PackageName].domain.model.UserpermissionEntity;
-import [=PackageName].domain.model.UserEntity;
-import [=PackageName].domain.Authorization.User.UserManager;
+import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.*;
+import [=PackageName].domain.model.Q[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].[=AuthenticationTable]Manager;
 import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.Authorization.Permission.PermissionManager;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -45,19 +45,19 @@ import com.querydsl.core.types.Predicate;
 public class [=AuthenticationTable]permissionAppServiceTest {
 
 	@InjectMocks
-	UserpermissionAppService _appService;
+	[=AuthenticationTable]permissionAppService _appService;
 
 	@Mock
-	private UserpermissionManager _userpermissionManager;
+	private [=AuthenticationTable]permissionManager _[=AuthenticationTable?uncap_first]permissionManager;
 	
     @Mock
-	private UserManager  _userManager;
+	private [=AuthenticationTable]Manager  _[=AuthenticationTable?uncap_first]Manager;
 	
     @Mock
 	private PermissionManager  _permissionManager;
 	
 	@Mock
-	private UserpermissionMapper _mapper;
+	private [=AuthenticationTable]permissionMapper _mapper;
 
 	@Mock
 	private Logger loggerMock;
@@ -79,166 +79,166 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 	}
 	
 //	@Test
-//	public void findUserpermissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
+//	public void find[=AuthenticationTable]permissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
 //
-//		Mockito.when(_userpermissionManager.FindById(anyLong())).thenReturn(null);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindById(anyLong())).thenReturn(null);
 //		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(null);
 //	}
 //	
 //	@Test
-//	public void findUserpermissionById_IdIsNotNullAndIdExists_ReturnUserpermission() {
+//	public void find[=AuthenticationTable]permissionById_IdIsNotNullAndIdExists_Return[=AuthenticationTable]permission() {
 //
-//		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
-//		Mockito.when(_userpermissionManager.FindById(anyLong())).thenReturn(userpermission);
-//		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(_mapper.UserpermissionEntityToFindUserpermissionByIdOutput(userpermission));
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindById(anyLong())).thenReturn([=AuthenticationTable?uncap_first]permission);
+//		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(_mapper.[=AuthenticationTable]permissionEntityToFind[=AuthenticationTable]permissionByIdOutput([=AuthenticationTable?uncap_first]permission));
 //	}
 	
 //	 @Test 
-//    public void createUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExist_StoreUserpermission() { 
+//    public void create[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExist_Store[=AuthenticationTable]permission() { 
 // 
-//       UserpermissionEntity userpermissionEntity = mock(UserpermissionEntity.class); 
-//        CreateUserpermissionInput userpermission = mock(CreateUserpermissionInput.class); 
-//        Mockito.when(_mapper.CreateUserpermissionInputToUserpermissionEntity(any(CreateUserpermissionInput.class))).thenReturn(userpermissionEntity); 
-//        Mockito.when(_userpermissionManager.Create(any(UserpermissionEntity.class))).thenReturn(userpermissionEntity); 
-//        Assertions.assertThat(_appService.Create(userpermission)).isEqualTo(_mapper.UserpermissionEntityToCreateUserpermissionOutput(userpermissionEntity)); 
+//       [=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permissionEntity = mock([=AuthenticationTable]permissionEntity.class); 
+//        Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Create[=AuthenticationTable]permissionInput.class); 
+//        Mockito.when(_mapper.Create[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(any(Create[=AuthenticationTable]permissionInput.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity); 
+//        Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.Create(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity); 
+//        Assertions.assertThat(_appService.Create([=AuthenticationTable?uncap_first]permission)).isEqualTo(_mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput([=AuthenticationTable?uncap_first]permissionEntity)); 
 //    } 
 
 //	@Test
-//	public void createUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
+//	public void create[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
 //
-//		CreateUserpermissionInput userpermission = mock(CreateUserpermissionInput.class);
+//		Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Create[=AuthenticationTable]permissionInput.class);
 //		
-//		Mockito.when(_userManager.FindById(anyLong())).thenReturn(null);
-//		Assertions.assertThat(_appService.Create(userpermission)).isEqualTo(null);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+//		Assertions.assertThat(_appService.Create([=AuthenticationTable?uncap_first]permission)).isEqualTo(null);
 //	}
 	
 //	@Test
-//	public void createUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
+//	public void create[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
 //
-//		CreateUserpermissionInput userpermission = mock(CreateUserpermissionInput.class);
+//		Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Create[=AuthenticationTable]permissionInput.class);
 //		
-//		Mockito.when(_userManager.FindById(anyLong())).thenReturn(null);
-//		Assertions.assertThat(_appService.Create(userpermission)).isEqualTo(null);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+//		Assertions.assertThat(_appService.Create([=AuthenticationTable?uncap_first]permission)).isEqualTo(null);
 //	}
 //
 //   @Test
-//	public void createUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNullAndChildIsNotMandatory_StoreUserpermission() {
+//	public void create[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNullAndChildIsNotMandatory_Store[=AuthenticationTable]permission() {
 //
-//		UserpermissionEntity userpermissionEntity = mock(UserpermissionEntity.class);
-//		CreateUserpermissionInput userpermission = mock(CreateUserpermissionInput.class);
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permissionEntity = mock([=AuthenticationTable]permissionEntity.class);
+//		Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Create[=AuthenticationTable]permissionInput.class);
 //		
-//		Mockito.when(_mapper.CreateUserpermissionInputToUserpermissionEntity(any(CreateUserpermissionInput.class))).thenReturn(userpermissionEntity);
-//		Mockito.when(_userpermissionManager.Create(any(UserpermissionEntity.class))).thenReturn(userpermissionEntity);
-//		Assertions.assertThat(_appService.Create(userpermission)).isEqualTo(_mapper.UserpermissionEntityToCreateUserpermissionOutput(userpermissionEntity));
+//		Mockito.when(_mapper.Create[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(any(Create[=AuthenticationTable]permissionInput.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.Create(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Assertions.assertThat(_appService.Create([=AuthenticationTable?uncap_first]permission)).isEqualTo(_mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput([=AuthenticationTable?uncap_first]permissionEntity));
 //	}
 	
 //	@Test
-//	public void createUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNotNullAndChildIsNotMandatory_StoreUserpermission() {
+//	public void create[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNotNullAndChildIsNotMandatory_Store[=AuthenticationTable]permission() {
 //
-//		UserpermissionEntity userpermissionEntity = mock(UserpermissionEntity.class);
-//		CreateUserpermissionInput userpermission = mock(CreateUserpermissionInput.class);
-//		UserEntity userEntity= mock(UserEntity.class);
-//		userpermissionEntity.setUser(userEntity);
-//		Mockito.when(_userManager.FindById(anyLong())).thenReturn(userEntity);
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permissionEntity = mock([=AuthenticationTable]permissionEntity.class);
+//		Create[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Create[=AuthenticationTable]permissionInput.class);
+//		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]Entity= mock([=AuthenticationTable]Entity.class);
+//		[=AuthenticationTable?uncap_first]permissionEntity.set[=AuthenticationTable]([=AuthenticationTable?uncap_first]Entity);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(anyLong())).thenReturn([=AuthenticationTable?uncap_first]Entity);
 //		
-//		Mockito.when(_mapper.CreateUserpermissionInputToUserpermissionEntity(any(CreateUserpermissionInput.class))).thenReturn(userpermissionEntity);
-//		Mockito.when(_userpermissionManager.Create(any(UserpermissionEntity.class))).thenReturn(userpermissionEntity);
-//		Assertions.assertThat(_appService.Create(userpermission)).isEqualTo(_mapper.UserpermissionEntityToCreateUserpermissionOutput(userpermissionEntity));
+//		Mockito.when(_mapper.Create[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(any(Create[=AuthenticationTable]permissionInput.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.Create(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Assertions.assertThat(_appService.Create([=AuthenticationTable?uncap_first]permission)).isEqualTo(_mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput([=AuthenticationTable?uncap_first]permissionEntity));
 //	}
 
 //	@Test
-//	public void updateUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
+//	public void update[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
 //
-//		UpdateUserpermissionInput userpermission = mock(UpdateUserpermissionInput.class);
+//		Update[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Update[=AuthenticationTable]permissionInput.class);
 //		
-//		Mockito.when(_userManager.FindById(anyLong())).thenReturn(null);
-//		Assertions.assertThat(_appService.Update(ID,userpermission)).isEqualTo(null);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+//		Assertions.assertThat(_appService.Update(ID,[=AuthenticationTable?uncap_first]permission)).isEqualTo(null);
 //	}
 	
 //	@Test
-//	public void updateUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
+//	public void update[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
 //
-//		UpdateUserpermissionInput userpermission = mock(UpdateUserpermissionInput.class);
+//		Update[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Update[=AuthenticationTable]permissionInput.class);
 //		
-//		Mockito.when(_userManager.FindById(anyLong())).thenReturn(null);
-//		Assertions.assertThat(_appService.Update(ID,userpermission)).isEqualTo(null);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+//		Assertions.assertThat(_appService.Update(ID,[=AuthenticationTable?uncap_first]permission)).isEqualTo(null);
 //	}
 
 //   @Test
-//	public void updateUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNullAndChildIsNotMandatory_ReturnUpdatedUserpermission() {
+//	public void update[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNullAndChildIsNotMandatory_ReturnUpdated[=AuthenticationTable]permission() {
 //
-//		UserpermissionEntity userpermissionEntity = mock(UserpermissionEntity.class);
-//		UpdateUserpermissionInput userpermission = mock(UpdateUserpermissionInput.class);
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permissionEntity = mock([=AuthenticationTable]permissionEntity.class);
+//		Update[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Update[=AuthenticationTable]permissionInput.class);
 //		
-//		Mockito.when(_mapper.UpdateUserpermissionInputToUserpermissionEntity(any(UpdateUserpermissionInput.class))).thenReturn(userpermissionEntity);
-//		Mockito.when(_userpermissionManager.Update(any(UserpermissionEntity.class))).thenReturn(userpermissionEntity);
-//		Assertions.assertThat(_appService.Update(ID,userpermission)).isEqualTo(_mapper.UserpermissionEntityToUpdateUserpermissionOutput(userpermissionEntity));
+//		Mockito.when(_mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(any(Update[=AuthenticationTable]permissionInput.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.Update(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Assertions.assertThat(_appService.Update(ID,[=AuthenticationTable?uncap_first]permission)).isEqualTo(_mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput([=AuthenticationTable?uncap_first]permissionEntity));
 //	}
 //	
 //	@Test
-//	public void updateUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExistAndChildIsNotNullAndChildIsNotMandatory_ReturnUpdatedUserpermission() {
+//	public void update[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExistAndChildIsNotNullAndChildIsNotMandatory_ReturnUpdated[=AuthenticationTable]permission() {
 //
-//		UserpermissionEntity userpermissionEntity = mock(UserpermissionEntity.class);
-//		UpdateUserpermissionInput userpermission = mock(UpdateUserpermissionInput.class);
-//		UserEntity userEntity= mock(UserEntity.class);
-//		userpermissionEntity.setUser(userEntity);
-//		Mockito.when(_userManager.FindById(anyLong())).thenReturn(userEntity);
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permissionEntity = mock([=AuthenticationTable]permissionEntity.class);
+//		Update[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission = mock(Update[=AuthenticationTable]permissionInput.class);
+//		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]Entity= mock([=AuthenticationTable]Entity.class);
+//		[=AuthenticationTable?uncap_first]permissionEntity.set[=AuthenticationTable]([=AuthenticationTable?uncap_first]Entity);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(anyLong())).thenReturn([=AuthenticationTable?uncap_first]Entity);
 //		
-//		Mockito.when(_mapper.UpdateUserpermissionInputToUserpermissionEntity(any(UpdateUserpermissionInput.class))).thenReturn(userpermissionEntity);
-//		Mockito.when(_userpermissionManager.Update(any(UserpermissionEntity.class))).thenReturn(userpermissionEntity);
-//		Assertions.assertThat(_appService.Update(ID,userpermission)).isEqualTo(_mapper.UserpermissionEntityToUpdateUserpermissionOutput(userpermissionEntity));
+//		Mockito.when(_mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(any(Update[=AuthenticationTable]permissionInput.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.Update(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Assertions.assertThat(_appService.Update(ID,[=AuthenticationTable?uncap_first]permission)).isEqualTo(_mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput([=AuthenticationTable?uncap_first]permissionEntity));
 //	}
 		
 //	@Test
-//	public void updateUserpermission_UserpermissionIdIsNotNullAndIdExists_ReturnUpdatedUserpermission() {
+//	public void update[=AuthenticationTable]permission_[=AuthenticationTable]permissionIdIsNotNullAndIdExists_ReturnUpdated[=AuthenticationTable]permission() {
 //
-//		UserpermissionEntity userpermissionEntity = mock(UserpermissionEntity.class);
-//		UpdateUserpermissionInput userpermission= mock(UpdateUserpermissionInput.class);
-//		Mockito.when(_mapper.UpdateUserpermissionInputToUserpermissionEntity(any(UpdateUserpermissionInput.class))).thenReturn(userpermissionEntity);
-//		Mockito.when(_userpermissionManager.Update(any(UserpermissionEntity.class))).thenReturn(userpermissionEntity);
-//		Assertions.assertThat(_appService.Update(ID,userpermission)).isEqualTo(_mapper.UserpermissionEntityToUpdateUserpermissionOutput(userpermissionEntity));
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permissionEntity = mock([=AuthenticationTable]permissionEntity.class);
+//		Update[=AuthenticationTable]permissionInput [=AuthenticationTable?uncap_first]permission= mock(Update[=AuthenticationTable]permissionInput.class);
+//		Mockito.when(_mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(any(Update[=AuthenticationTable]permissionInput.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.Update(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permissionEntity);
+//		Assertions.assertThat(_appService.Update(ID,[=AuthenticationTable?uncap_first]permission)).isEqualTo(_mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput([=AuthenticationTable?uncap_first]permissionEntity));
 //	}
     
 //	@Test
-//	public void deleteUserpermission_UserpermissionIsNotNullAndUserpermissionExists_UserpermissionRemoved() {
+//	public void delete[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionExists_[=AuthenticationTable]permissionRemoved() {
 //
-//		UserpermissionEntity userpermission= mock(UserpermissionEntity.class);
-//		Mockito.when(_userpermissionManager.FindById(anyLong())).thenReturn(userpermission);
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission= mock([=AuthenticationTable]permissionEntity.class);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindById(anyLong())).thenReturn([=AuthenticationTable?uncap_first]permission);
 //		_appService.Delete(ID); 
-//		verify(_userpermissionManager).Delete(userpermission);
+//		verify(_[=AuthenticationTable?uncap_first]permissionManager).Delete([=AuthenticationTable?uncap_first]permission);
 //	}
 	
 	@Test
 	public void Find_ListIsEmpty_ReturnList() throws Exception {
 
-		List<UserpermissionEntity> list = new ArrayList<>();
-		Page<UserpermissionEntity> foundPage = new PageImpl(list);
+		List<[=AuthenticationTable]permissionEntity> list = new ArrayList<>();
+		Page<[=AuthenticationTable]permissionEntity> foundPage = new PageImpl(list);
 		Pageable pageable = mock(Pageable.class);
-		List<FindUserpermissionByIdOutput> output = new ArrayList<>();
+		List<Find[=AuthenticationTable]permissionByIdOutput> output = new ArrayList<>();
 		SearchCriteria search= new SearchCriteria();
 		search.setType(1);
 		search.setValue("xyz");
 		search.setOperator("equals");
 
-		Mockito.when(_userpermissionManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(_appService.Find(search, pageable)).isEqualTo(output);
 	}
 	
 	@Test
 	public void Find_ListIsNotEmpty_ReturnList() throws Exception {
 
-		List<UserpermissionEntity> list = new ArrayList<>();
-		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
-		list.add(userpermission);
-    	Page<UserpermissionEntity> foundPage = new PageImpl(list);
+		List<[=AuthenticationTable]permissionEntity> list = new ArrayList<>();
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
+		list.add([=AuthenticationTable?uncap_first]permission);
+    	Page<[=AuthenticationTable]permissionEntity> foundPage = new PageImpl(list);
 		Pageable pageable = mock(Pageable.class);
-		List<FindUserpermissionByIdOutput> output = new ArrayList<>();
+		List<Find[=AuthenticationTable]permissionByIdOutput> output = new ArrayList<>();
         SearchCriteria search= new SearchCriteria();
 		search.setType(1);
 		search.setValue("xyz");
 		search.setOperator("equals");
-		output.add(_mapper.UserpermissionEntityToFindUserpermissionByIdOutput(userpermission));
-    	Mockito.when(_userpermissionManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+		output.add(_mapper.[=AuthenticationTable]permissionEntityToFind[=AuthenticationTable]permissionByIdOutput([=AuthenticationTable?uncap_first]permission));
+    	Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(_appService.Find(search, pageable)).isEqualTo(output);
 	}
 	
@@ -246,23 +246,23 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 	public void searchAllProperties_SearchIsNotNull_ReturnBooleanBuilder() {
 		String search= "xyz";
 		String operator= "equals";
-		QUserpermissionEntity userpermission = QUserpermissionEntity.userpermissionEntity;
+		Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = Q[=AuthenticationTable]permissionEntity.[=AuthenticationTable?uncap_first]permissionEntity;
 		BooleanBuilder builder = new BooleanBuilder();
-		Assertions.assertThat(_appService.searchAllProperties(userpermission,search,operator)).isEqualTo(builder);
+		Assertions.assertThat(_appService.searchAllProperties([=AuthenticationTable?uncap_first]permission,search,operator)).isEqualTo(builder);
 	}
 	
 	@Test
 	public void searchSpecificProperty_PropertyExists_ReturnBooleanBuilder() {
 		String operator= "equals";
 		List<String> list = new ArrayList<>();
-		QUserpermissionEntity userpermission = QUserpermissionEntity.userpermissionEntity;
+		Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = Q[=AuthenticationTable]permissionEntity.[=AuthenticationTable?uncap_first]permissionEntity;
 		BooleanBuilder builder = new BooleanBuilder();
-		Assertions.assertThat(_appService.searchSpecificProperty(userpermission, list,"xyz",operator)).isEqualTo(builder);
+		Assertions.assertThat(_appService.searchSpecificProperty([=AuthenticationTable?uncap_first]permission, list,"xyz",operator)).isEqualTo(builder);
 	}
 	
 //	@Test
 //	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder() {
-//		QUserpermissionEntity userpermission = QUserpermissionEntity.userpermissionEntity;
+//		Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = Q[=AuthenticationTable]permissionEntity.[=AuthenticationTable?uncap_first]permissionEntity;
 //	    SearchFields searchFields = new SearchFields();
 //		searchFields.setOperator("equals");
 //		searchFields.setSearchValue("xyz");
@@ -270,7 +270,7 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 //	    		
 //		BooleanBuilder builder = new BooleanBuilder();
 //		
-//		Assertions.assertThat(_appService.searchKeyValuePair(userpermission,map,"xyz",ID)).isEqualTo(builder);
+//		Assertions.assertThat(_appService.searchKeyValuePair([=AuthenticationTable?uncap_first]permission,map,"xyz",ID)).isEqualTo(builder);
 //	}
 	
 	@Test (expected = Exception.class)
@@ -289,7 +289,7 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 	@Test
 	public void search_SearchIsNotNullAndSearchContainsCaseOne_ReturnBooleanBuilder() throws Exception {
 
-		QUserpermissionEntity userpermission = QUserpermissionEntity.userpermissionEntity;
+		Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = Q[=AuthenticationTable]permissionEntity.[=AuthenticationTable?uncap_first]permissionEntity;
 		SearchCriteria search= new SearchCriteria();
 		search.setType(1);
 		search.setValue("xyz");
@@ -301,7 +301,7 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 	@Test
 	public void  search_SearchIsNotNullAndSearchContainsCaseTwo_ReturnBooleanBuilder() throws Exception {
 
-		QUserpermissionEntity userpermission = QUserpermissionEntity.userpermissionEntity;
+		Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = Q[=AuthenticationTable]permissionEntity.[=AuthenticationTable?uncap_first]permissionEntity;
 		List<SearchFields> fieldsList= new ArrayList<>();
 		SearchFields fields=new SearchFields();
 		SearchCriteria search= new SearchCriteria();
@@ -318,7 +318,7 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 //	public void  search_SearchIsNotNullAndSearchContainsCaseThree_ReturnBooleanBuilder() throws Exception {
 //
 //		Map<String,SearchFields> map = new HashMap<>();
-//		QUserpermissionEntity userpermission = QUserpermissionEntity.userpermissionEntity;
+//		Q[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = Q[=AuthenticationTable]permissionEntity.[=AuthenticationTable?uncap_first]permissionEntity;
 //		List<SearchFields> fieldsList= new ArrayList<>();
 //		SearchFields fields=new SearchFields();
 //		SearchCriteria search= new SearchCriteria();
@@ -341,41 +341,41 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 		Assertions.assertThat(_appService.Search(null)).isEqualTo(null);
 	}
 	
-//   //User
+//   //[=AuthenticationTable]
 //	@Test
-//	public void GetUser_IfUserpermissionIdAndUserIdIsNotNullAndUserpermissionExists_ReturnUser() {
-//		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
-//		UserEntity user = mock(UserEntity.class);
+//	public void Get[=AuthenticationTable]_If[=AuthenticationTable]permissionIdAnd[=AuthenticationTable]IdIsNotNullAnd[=AuthenticationTable]permissionExists_Return[=AuthenticationTable]() {
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
+//		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first] = mock([=AuthenticationTable]Entity.class);
 //
-//		Mockito.when(_userpermissionManager.FindById(anyLong())).thenReturn(userpermission);
-//		Mockito.when(_userpermissionManager.GetUser(anyLong())).thenReturn(user);
-//		Assertions.assertThat(_appService.GetUser(ID)).isEqualTo(_mapper.UserEntityToGetUserOutput(user, userpermission));
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindById(anyLong())).thenReturn([=AuthenticationTable?uncap_first]permission);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.Get[=AuthenticationTable](anyLong())).thenReturn([=AuthenticationTable?uncap_first]);
+//		Assertions.assertThat(_appService.Get[=AuthenticationTable](ID)).isEqualTo(_mapper.[=AuthenticationTable]EntityToGet[=AuthenticationTable]Output([=AuthenticationTable?uncap_first], [=AuthenticationTable?uncap_first]permission));
 //	}
 //
 //	@Test 
-//	public void GetUser_IfUserpermissionIdAndUserIdIsNotNullAndUserpermissionDoesNotExist_ReturnNull() {
-//		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
+//	public void Get[=AuthenticationTable]_If[=AuthenticationTable]permissionIdAnd[=AuthenticationTable]IdIsNotNullAnd[=AuthenticationTable]permissionDoesNotExist_ReturnNull() {
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
 //
-//		Mockito.when(_userpermissionManager.FindById(anyLong())).thenReturn(null);
-//		Assertions.assertThat(_appService.GetUser(ID)).isEqualTo(null);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindById(anyLong())).thenReturn(null);
+//		Assertions.assertThat(_appService.Get[=AuthenticationTable](ID)).isEqualTo(null);
 //	}
  
 //   //Permission
 //	@Test
-//	public void GetPermission_IfUserpermissionIdAndPermissionIdIsNotNullAndUserpermissionExists_ReturnPermission() {
-//		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
+//	public void GetPermission_If[=AuthenticationTable]permissionIdAndPermissionIdIsNotNullAnd[=AuthenticationTable]permissionExists_ReturnPermission() {
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
 //		PermissionEntity permission = mock(PermissionEntity.class);
 //
-//		Mockito.when(_userpermissionManager.FindById(anyLong())).thenReturn(userpermission);
-//		Mockito.when(_userpermissionManager.GetPermission(anyLong())).thenReturn(permission);
-//		Assertions.assertThat(_appService.GetPermission(ID)).isEqualTo(_mapper.PermissionEntityToGetPermissionOutput(permission, userpermission));
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindById(anyLong())).thenReturn([=AuthenticationTable?uncap_first]permission);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.GetPermission(anyLong())).thenReturn(permission);
+//		Assertions.assertThat(_appService.GetPermission(ID)).isEqualTo(_mapper.PermissionEntityToGetPermissionOutput(permission, [=AuthenticationTable?uncap_first]permission));
 //	}
 //
 //	@Test 
-//	public void GetPermission_IfUserpermissionIdAndPermissionIdIsNotNullAndUserpermissionDoesNotExist_ReturnNull() {
-//		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
+//	public void GetPermission_If[=AuthenticationTable]permissionIdAndPermissionIdIsNotNullAnd[=AuthenticationTable]permissionDoesNotExist_ReturnNull() {
+//		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
 //
-//		Mockito.when(_userpermissionManager.FindById(anyLong())).thenReturn(null);
+//		Mockito.when(_[=AuthenticationTable?uncap_first]permissionManager.FindById(anyLong())).thenReturn(null);
 //		Assertions.assertThat(_appService.GetPermission(ID)).isEqualTo(null);
 //	}
  

@@ -42,8 +42,8 @@ public class RolepermissionManager implements IRolepermissionManager {
 		return _rolepermissionRepository.save(rolepermission);
 	}
 
-	public RolepermissionEntity FindById(RolepermissionId rolepermissionId )
-    {
+	public RolepermissionEntity FindById(RolepermissionId rolepermissionId ) {
+	
     Optional<RolepermissionEntity> dbRolepermission= _rolepermissionRepository.findById(rolepermissionId);
 		if(dbRolepermission.isPresent()) {
 			RolepermissionEntity existingRolepermission = dbRolepermission.get();
@@ -51,9 +51,6 @@ public class RolepermissionManager implements IRolepermissionManager {
 		} else {
 		    return null;
 		}
-     //   return _rolepermissionRepository.findById(
-     //   rolepermissionId.getPermissionId(),rolepermissionId.getRoleId());
-
 
 	}
 
@@ -62,7 +59,7 @@ public class RolepermissionManager implements IRolepermissionManager {
 		return _rolepermissionRepository.findAll(predicate,pageable);
 	}
 
-   //Permission
+    //Permission
 	public PermissionEntity GetPermission(RolepermissionId rolepermissionId) {
 		
 		Optional<RolepermissionEntity> dbRolepermission= _rolepermissionRepository.findById(rolepermissionId);
@@ -73,12 +70,9 @@ public class RolepermissionManager implements IRolepermissionManager {
 		    return null;
 		}
 
-	//	RolepermissionEntity entity = _rolepermissionRepository.findById(rolepermissionId.getPermissionId(),rolepermissionId.getRoleId());
-
-    //  return entity.getPermission();
 	}
 	
-   //Role
+    //Role
 	public RoleEntity GetRole(RolepermissionId rolepermissionId) {
 		
 		Optional<RolepermissionEntity> dbRolepermission= _rolepermissionRepository.findById(rolepermissionId);
@@ -89,9 +83,6 @@ public class RolepermissionManager implements IRolepermissionManager {
 		    return null;
 		}
 
-	//	RolepermissionEntity entity = _rolepermissionRepository.findById(rolepermissionId.getPermissionId(),rolepermissionId.getRoleId());
-
-    //  return entity.getRole();
 	}
 	
 }

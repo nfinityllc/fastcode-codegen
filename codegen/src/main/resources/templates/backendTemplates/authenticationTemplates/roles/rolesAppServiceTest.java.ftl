@@ -348,12 +348,12 @@ public class RoleAppServiceTest {
 	}
 	
 	@Test
-	public void parseUserJoinColumn_StringIsNotNull_ReturnMap() {
+	public void parse[=AuthenticationTable]JoinColumn_StringIsNotNull_ReturnMap() {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
 		joinColumnMap.put("roleId", "1");
 		
-		Assertions.assertThat(roleAppService.parseUserJoinColumn("1")).isEqualTo(joinColumnMap);
+		Assertions.assertThat(roleAppService.parse[=AuthenticationTable]JoinColumn("1")).isEqualTo(joinColumnMap);
 		
 	}
 }

@@ -27,7 +27,7 @@ public class GetRoleOutput {
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "UserName">
   	<#if !PrimaryKeys[authValue.fieldName]??>
-  	private [=authValue.fieldType] [=AuthenticationTable?uncap_first][=authValue.fieldName?uncap_first];
+  	private [=authValue.fieldType] [=AuthenticationTable?uncap_first]DescriptiveField;
     </#if>
     </#if>
     </#list>
@@ -68,12 +68,12 @@ public class GetRoleOutput {
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "UserName">
   	<#if !PrimaryKeys[authValue.fieldName]??>
-  	public [=authValue.fieldType] get[=AuthenticationTable?cap_first][=authValue.fieldName?cap_first]() {
-   		return [=AuthenticationTable?cap_first][=authValue.fieldName?uncap_first];
+  	public [=authValue.fieldType] get[=AuthenticationTable?cap_first]DescriptiveField() {
+   		return [=AuthenticationTable?uncap_first]DescriptiveField;
   	}
 
-  	public void set[=AuthenticationTable?cap_first][=authValue.fieldName?cap_first]([=authValue.fieldType] [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]){
-   		this.[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first] = [=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first];
+  	public void set[=AuthenticationTable?cap_first]DescriptiveField([=authValue.fieldType] [=AuthenticationTable?uncap_first]DescriptiveField){
+   		this.[=AuthenticationTable?uncap_first]DescriptiveField = [=AuthenticationTable?uncap_first]DescriptiveField;
   	}
   	</#if>
     </#if>

@@ -322,11 +322,11 @@ public class PermissionAppServiceTest {
 	}
 	
 	@Test
-	public void parseUserpermissionJoinColumn_StringIsNotNull_ReturnMap() {
+	public void parse[=AuthenticationTable]permissionJoinColumn_StringIsNotNull_ReturnMap() {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
 		joinColumnMap.put("permissionId", "1");
-		Assertions.assertThat(permissionAppService.parseUserpermissionJoinColumn("1")).isEqualTo(joinColumnMap);
+		Assertions.assertThat(permissionAppService.parse[=AuthenticationTable]permissionJoinColumn("1")).isEqualTo(joinColumnMap);
 		
 	}
 	

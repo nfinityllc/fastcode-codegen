@@ -48,7 +48,7 @@ public class CodeGenerator {
 
 
 	private static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean audit,Boolean history, String sourcePath,
-			String type, String modName,EntityDetails details,String authenticationType,Boolean email, String schema,String authenticationTable) {
+			String type, String modName,EntityDetails details,String authenticationType,Boolean email, Boolean flowable, String schema,String authenticationTable) {
 		Map<String, Object> root = new HashMap<>();
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -76,6 +76,7 @@ public class CodeGenerator {
 		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("AuthenticationType", authenticationType);
 		root.put("EmailModule", email);
+		root.put("Flowable", flowable);
 		root.put("ApiPath", className.substring(0, 1).toLowerCase() + className.substring(1));
 		if(authenticationTable!=null) {
 			root.put("UserInput","true");
@@ -135,7 +136,7 @@ public class CodeGenerator {
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			entityNames.add(className);
 			Generate(entry.getKey(), appName, backEndRootFolder, clientRootFolder, sourcePackageName, audit, history, sourcePath, 
-					destPath, type, entry.getValue(), authenticationType, scheduler, email, schema,authenticationTable);
+					destPath, type, entry.getValue(), authenticationType, scheduler, email, flowable, schema,authenticationTable);
 		}
 
 		//FileUtils.copyFile(new File(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/keystore.p12"), new File(destPath + "/" + backEndRootFolder + "/src/main/resources/keystore.p12"));
@@ -359,11 +360,11 @@ public class CodeGenerator {
 
 	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,Boolean audit,
 
-			Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email, String schema,String authenticationTable) {
+			Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email, Boolean flowable, String schema,String authenticationTable) {
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		String clientAppFolder = clientRootFolder + "/src/app";
-		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details,authenticationType,email,schema,authenticationTable);
+		Map<String, Object> root = buildEntityInfo(entityName,packageName,audit,history, sourcePath, type, "",details,authenticationType,email,flowable,schema,authenticationTable);
 
 
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());

@@ -22,7 +22,7 @@ export interface I[=AuthenticationTable]permission {
     <#else>
 	<#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "User Name">
+  	<#if authKey== "UserName">
   	<#if !PrimaryKeys[authValue.fieldName]??>
   	[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]: string;
   	</#if>

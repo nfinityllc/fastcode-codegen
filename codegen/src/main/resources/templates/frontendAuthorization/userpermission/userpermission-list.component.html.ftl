@@ -26,7 +26,7 @@
                 <#else>
                 <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
-  				<#if authKey== "User Name">
+  				<#if authKey== "UserName">
   				<#if !PrimaryKeys[authValue.fieldName]??>
   				{{ item.[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first] }}
 				</#if>

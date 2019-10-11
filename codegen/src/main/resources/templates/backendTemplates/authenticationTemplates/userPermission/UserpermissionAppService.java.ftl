@@ -92,9 +92,12 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		[=AuthenticationTable]permissionEntity created[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Create([=AuthenticationTable?uncap_first]permission);
 
 		<#if Flowable!false>
-		<#if AuthenticationTable?? && AuthenticationFields??>
-		idmIdentityService.addUserPrivilegeMapping([=AuthenticationTable?uncap_first]permission.get[=AuthenticationTable?cap_first]().get[=AuthenticationFields.UserName.fieldName?cap_first](), [=AuthenticationTable?uncap_first]permission.getPermission().getName());
+		<#if AuthenticationType!="none" && UserInput??>
+		idmIdentityService.addUserPrivilegeMapping(created[=AuthenticationTable]permission.get[=AuthenticationTable?cap_first]().get[=AuthenticationFields.UserName.fieldName?cap_first](), created[=AuthenticationTable]permission.getPermission().getName());
+		<#else>
+		idmIdentityService.addUserPrivilegeMapping(created[=AuthenticationTable]permission.get[=AuthenticationTable]().getUserName(), created[=AuthenticationTable]permission.getPermission().getName());
 		</#if>
+		
 		</#if>
 		return mapper.[=AuthenticationTable]permissionEntityToCreate[=AuthenticationTable]permissionOutput(created[=AuthenticationTable]permission);
 	}
@@ -125,8 +128,10 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		
 		[=AuthenticationTable]permissionEntity updated[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.Update([=AuthenticationTable?uncap_first]permission);
 		<#if Flowable!false>
-		<#if AuthenticationTable?? && AuthenticationFields??>
+		<#if AuthenticationType!="none" && UserInput??>
 		idmIdentityService.updateUserPrivilegeMapping(updated[=AuthenticationTable]permission.get[=AuthenticationTable]().get[=AuthenticationFields.UserName.fieldName?cap_first](), updated[=AuthenticationTable]permission.getPermission().getName());
+		<#else>
+		idmIdentityService.updateUserPrivilegeMapping(updated[=AuthenticationTable]permission.get[=AuthenticationTable]().getUserName(), updated[=AuthenticationTable]permission.getPermission().getName());
 		</#if>
 		</#if>
 		return mapper.[=AuthenticationTable]permissionEntityToUpdate[=AuthenticationTable]permissionOutput(updated[=AuthenticationTable]permission);
@@ -170,8 +175,10 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		<#if Flowable!false>
 		[=AuthenticationTable]Entity found[=AuthenticationTable] = _[=AuthenticationTable?uncap_first]Manager.FindById(<#if (AuthenticationType!="none" && !UserInput??)>existing.get[=AuthenticationTable]Id()<#elseif AuthenticationType!="none" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>existing.get[=AuthenticationTable][=value.fieldName?cap_first](),<#else>existing.get[=AuthenticationTable][=value.fieldName?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
 		PermissionEntity foundPermission = _permissionManager.FindById(existing.getPermissionId());
-        <#if AuthenticationTable?? && AuthenticationFields??>
+        <#if AuthenticationType!="none" && UserInput??>
 		idmIdentityService.deleteUserPrivilegeMapping(found[=AuthenticationTable].get[=AuthenticationFields.UserName.fieldName?cap_first](), foundPermission.getName());
+		<#else>
+		idmIdentityService.deleteUserPrivilegeMapping(found[=AuthenticationTable].getUserName(), foundPermission.getName());
 		</#if>
 		</#if>
 	}

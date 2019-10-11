@@ -1,6 +1,7 @@
 package [=PackageName].domain.Flowable.Groups;
 
 import [=PackageName].CommonModule.logging.LoggingHelper;
+import [=PackageName].domain.IRepository.IActIdGroupRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -61,7 +62,7 @@ public void createGroup_GroupIsNotNullAndGroupDoesNotExist_StoreAGroup() {
 
 ActIdGroupEntity groupEntity = mock(ActIdGroupEntity.class);
 groupManager.create(groupEntity);
-verify(_groupRepository).create(groupEntity);
+verify(_groupRepository).save(groupEntity);
 }
 
 @Test

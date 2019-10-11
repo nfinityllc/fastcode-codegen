@@ -4,13 +4,9 @@ import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=PackageName].application.Authorization.Role.Dto.*;
-import [=PackageName].domain.Authorization.Permission.IPermissionManager;
-import [=PackageName].application.Authorization.Permission.PermissionAppService;
-import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.QRoleEntity;
-import [=PackageName].domain.IRepository.IPermissionRepository;
 import com.querydsl.core.BooleanBuilder;
 
 import java.util.ArrayList;
@@ -18,7 +14,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,8 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 <#if Flowable!false>
-	import [=PackageName].application.Flowable.ActIdGroupMapper;
-	import [=PackageName].application.Flowable.FlowableIdentityService;
+import [=PackageName].application.Flowable.ActIdGroupMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
 </#if>
 
 @Service

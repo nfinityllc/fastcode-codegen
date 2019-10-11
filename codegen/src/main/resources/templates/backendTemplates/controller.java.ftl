@@ -332,8 +332,8 @@ public class [=ClassName]Controller {
 		
 		return ResponseEntity.ok(_[=ClassName?uncap_first]AppService.Find(searchCriteria,Pageable));
 	}
-   <#list Relationship as relationKey, relationValue>
-   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+    <#list Relationship as relationKey, relationValue>
+    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
     <#if AuthenticationType != "none">
 //  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
@@ -394,7 +394,7 @@ public class [=ClassName]Controller {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}   
  
-   </#if>
+    </#if>
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
    	@RequestMapping(value = "/{id}/[=AuthenticationTable?uncap_first]permission", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {

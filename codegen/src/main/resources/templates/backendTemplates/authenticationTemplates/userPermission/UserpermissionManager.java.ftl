@@ -42,8 +42,8 @@ public class [=AuthenticationTable]permissionManager implements I[=Authenticatio
 		return _[=AuthenticationTable?uncap_first]permissionRepository.save([=AuthenticationTable?uncap_first]permission);
 	}
 
-	public [=AuthenticationTable]permissionEntity FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId )
-    {
+	public [=AuthenticationTable]permissionEntity FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
+    
     Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission= _[=AuthenticationTable?uncap_first]permissionRepository.findById([=AuthenticationTable?uncap_first]permissionId);
 		if(db[=AuthenticationTable]permission.isPresent()) {
 			[=AuthenticationTable]permissionEntity existing[=AuthenticationTable]permission = db[=AuthenticationTable]permission.get();
@@ -59,7 +59,7 @@ public class [=AuthenticationTable]permissionManager implements I[=Authenticatio
 		return _[=AuthenticationTable?uncap_first]permissionRepository.findAll(predicate,pageable);
 	}
 
-   //[=AuthenticationTable]
+    //[=AuthenticationTable]
 	public [=AuthenticationTable]Entity Get[=AuthenticationTable]([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId) {
 		
 		Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission= _[=AuthenticationTable?uncap_first]permissionRepository.findById([=AuthenticationTable?uncap_first]permissionId);

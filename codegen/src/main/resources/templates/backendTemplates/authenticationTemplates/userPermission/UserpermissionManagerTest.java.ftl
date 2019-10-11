@@ -1,12 +1,13 @@
 package [=PackageName].domain.Authorization.[=AuthenticationTable]permission;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionId;
 import [=PackageName].domain.IRepository.I[=AuthenticationTable]Repository;
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.IRepository.IPermissionRepository;
@@ -35,27 +37,30 @@ import com.querydsl.core.types.Predicate;
 public class [=AuthenticationTable]permissionManagerTest {
 
 	@InjectMocks
-	UserpermissionManager _userpermissionManager;
-	
+	[=AuthenticationTable]permissionManager _[=AuthenticationTable?uncap_first]permissionManager;
+
 	@Mock
-	IUserpermissionRepository  _userpermissionRepository;
-    
-    @Mock
-	IUserRepository  _userRepository;
-    
-    @Mock
+	I[=AuthenticationTable]permissionRepository  _[=AuthenticationTable?uncap_first]permissionRepository;
+
+	@Mock
+	I[=AuthenticationTable]Repository  _[=AuthenticationTable?uncap_first]Repository;
+
+	@Mock
+	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId;
+
+	@Mock
 	IPermissionRepository  _permissionRepository;
 	@Mock
-    private Logger loggerMock;
-   
+	private Logger loggerMock;
+
 	@Mock
 	private LoggingHelper logHelper;
-	
+
 	private static long ID=15;
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(_userpermissionManager);
+		MockitoAnnotations.initMocks(_[=AuthenticationTable?uncap_first]permissionManager);
 		when(logHelper.getLogger()).thenReturn(loggerMock);
 		doNothing().when(loggerMock).error(anyString());
 	}
@@ -63,81 +68,87 @@ public class [=AuthenticationTable]permissionManagerTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
-//	@Test
-//	public void findUserpermissionById_IdIsNotNullAndIdExists_ReturnUserpermission() {
-//		UserpermissionEntity userpermission =mock(UserpermissionEntity.class);
-//
-//		Mockito.when(_userpermissionRepository.findById(anyLong())).thenReturn(userpermission);
-//		Assertions.assertThat(_userpermissionManager.FindById(ID)).isEqualTo(userpermission);
-//	}
-//
-//	@Test 
-//	public void findUserpermissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
-//
-//	Mockito.when(_userpermissionRepository.findById(anyLong())).thenReturn(null);
-//	Assertions.assertThat(_userpermissionManager.FindById(ID)).isEqualTo(null);
-//	}
-	
-	@Test
-	public void createUserpermission_UserpermissionIsNotNullAndUserpermissionDoesNotExist_StoreUserpermission() {
 
-		UserpermissionEntity userpermission =mock(UserpermissionEntity.class);
-		Mockito.when(_userpermissionRepository.save(any(UserpermissionEntity.class))).thenReturn(userpermission);
-		Assertions.assertThat(_userpermissionManager.Create(userpermission)).isEqualTo(userpermission);
+	@Test
+	public void find[=AuthenticationTable]permissionById_IdIsNotNullAndIdExists_Return[=AuthenticationTable]permission() {
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission =mock([=AuthenticationTable]permissionEntity.class);
+
+		Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission = Optional.of(([=AuthenticationTable]permissionEntity) [=AuthenticationTable?uncap_first]permission);
+		Mockito.<Optional<[=AuthenticationTable]permissionEntity>>when(_[=AuthenticationTable?uncap_first]permissionRepository.findById(any([=AuthenticationTable]permissionId.class))).thenReturn(db[=AuthenticationTable]permission);
+
+		Assertions.assertThat(_[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId)).isEqualTo([=AuthenticationTable?uncap_first]permission);
+	}
+
+	@Test 
+	public void find[=AuthenticationTable]permissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
+
+		Mockito.<Optional<[=AuthenticationTable]permissionEntity>>when(_[=AuthenticationTable?uncap_first]permissionRepository.findById(any([=AuthenticationTable]permissionId.class))).thenReturn(Optional.empty());
+		Assertions.assertThat(_[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId)).isEqualTo(null);
 	}
 
 	@Test
-	public void deleteUserpermission_UserpermissionExists_RemoveUserpermission() {
+	public void create[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionDoesNotExist_Store[=AuthenticationTable]permission() {
 
-		UserpermissionEntity userpermission =mock(UserpermissionEntity.class);
-		_userpermissionManager.Delete(userpermission);
-		verify(_userpermissionRepository).delete(userpermission);
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission =mock([=AuthenticationTable]permissionEntity.class);
+		Mockito.when(_[=AuthenticationTable?uncap_first]permissionRepository.save(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permission);
+		Assertions.assertThat(_[=AuthenticationTable?uncap_first]permissionManager.Create([=AuthenticationTable?uncap_first]permission)).isEqualTo([=AuthenticationTable?uncap_first]permission);
 	}
 
 	@Test
-	public void updateUserpermission_UserpermissionIsNotNullAndUserpermissionExists_UpdateUserpermission() {
-		
-		UserpermissionEntity userpermission =mock(UserpermissionEntity.class);
-		Mockito.when(_userpermissionRepository.save(any(UserpermissionEntity.class))).thenReturn(userpermission);
-		Assertions.assertThat(_userpermissionManager.Update(userpermission)).isEqualTo(userpermission);
-		
+	public void delete[=AuthenticationTable]permission_[=AuthenticationTable]permissionExists_Remove[=AuthenticationTable]permission() {
+
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission =mock([=AuthenticationTable]permissionEntity.class);
+		_[=AuthenticationTable?uncap_first]permissionManager.Delete([=AuthenticationTable?uncap_first]permission);
+		verify(_[=AuthenticationTable?uncap_first]permissionRepository).delete([=AuthenticationTable?uncap_first]permission);
+	}
+
+	@Test
+	public void update[=AuthenticationTable]permission_[=AuthenticationTable]permissionIsNotNullAnd[=AuthenticationTable]permissionExists_Update[=AuthenticationTable]permission() {
+
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission =mock([=AuthenticationTable]permissionEntity.class);
+		Mockito.when(_[=AuthenticationTable?uncap_first]permissionRepository.save(any([=AuthenticationTable]permissionEntity.class))).thenReturn([=AuthenticationTable?uncap_first]permission);
+		Assertions.assertThat(_[=AuthenticationTable?uncap_first]permissionManager.Update([=AuthenticationTable?uncap_first]permission)).isEqualTo([=AuthenticationTable?uncap_first]permission);
+
 	}
 
 	@Test
 	public void findAll_PageableIsNotNull_ReturnPage() {
-		Page<UserpermissionEntity> userpermission = mock(Page.class);
+		Page<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permission = mock(Page.class);
 		Pageable pageable = mock(Pageable.class);
 		Predicate predicate = mock(Predicate.class);
 
-		Mockito.when(_userpermissionRepository.findAll(any(Predicate.class),any(Pageable.class))).thenReturn(userpermission);
-		Assertions.assertThat(_userpermissionManager.FindAll(predicate,pageable)).isEqualTo(userpermission);
+		Mockito.when(_[=AuthenticationTable?uncap_first]permissionRepository.findAll(any(Predicate.class),any(Pageable.class))).thenReturn([=AuthenticationTable?uncap_first]permission);
+		Assertions.assertThat(_[=AuthenticationTable?uncap_first]permissionManager.FindAll(predicate,pageable)).isEqualTo([=AuthenticationTable?uncap_first]permission);
 	}
-	
-   //User
-//	@Test
-//	public void getUser_if_UserpermissionIdIsNotNull_returnUser() {
-//
-//		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
-//		UserEntity user = mock(UserEntity.class);
-//
-//		Mockito.when(_userpermissionRepository.findById(anyLong())).thenReturn(userpermission);
-//		Mockito.when(userpermission.getUser()).thenReturn(user);
-//		Assertions.assertThat(_userpermissionManager.GetUser(ID)).isEqualTo(user);
-//
-//	}
-	
-   //Permission
-//	@Test
-//	public void getPermission_if_UserpermissionIdIsNotNull_returnPermission() {
-//
-//		UserpermissionEntity userpermission = mock(UserpermissionEntity.class);
-//		PermissionEntity permission = mock(PermissionEntity.class);
-//
-//		Mockito.when(_userpermissionRepository.findById(anyLong())).thenReturn(userpermission);
-//		Mockito.when(userpermission.getPermission()).thenReturn(permission);
-//		Assertions.assertThat(_userpermissionManager.GetPermission(ID)).isEqualTo(permission);
-//
-//	}
+
+	//[=AuthenticationTable]
+	@Test
+	public void get[=AuthenticationTable]_if_[=AuthenticationTable]permissionIdIsNotNull_return[=AuthenticationTable]() {
+
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
+		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first] = mock([=AuthenticationTable]Entity.class);
+
+		Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission = Optional.of(([=AuthenticationTable]permissionEntity) [=AuthenticationTable?uncap_first]permission);
+		Mockito.<Optional<[=AuthenticationTable]permissionEntity>>when(_[=AuthenticationTable?uncap_first]permissionRepository.findById(any([=AuthenticationTable]permissionId.class))).thenReturn(db[=AuthenticationTable]permission);
+		
+		Mockito.when([=AuthenticationTable?uncap_first]permission.get[=AuthenticationTable]()).thenReturn([=AuthenticationTable?uncap_first]);
+		Assertions.assertThat(_[=AuthenticationTable?uncap_first]permissionManager.Get[=AuthenticationTable]([=AuthenticationTable?uncap_first]permissionId)).isEqualTo([=AuthenticationTable?uncap_first]);
+
+	}
+
+	//Permission
+	@Test
+	public void getPermission_if_[=AuthenticationTable]permissionIdIsNotNull_returnPermission() {
+
+		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mock([=AuthenticationTable]permissionEntity.class);
+		PermissionEntity permission = mock(PermissionEntity.class);
+
+		Optional<[=AuthenticationTable]permissionEntity> db[=AuthenticationTable]permission = Optional.of(([=AuthenticationTable]permissionEntity) [=AuthenticationTable?uncap_first]permission);
+		Mockito.<Optional<[=AuthenticationTable]permissionEntity>>when(_[=AuthenticationTable?uncap_first]permissionRepository.findById(any([=AuthenticationTable]permissionId.class))).thenReturn(db[=AuthenticationTable]permission);
+		
+		Mockito.when([=AuthenticationTable?uncap_first]permission.getPermission()).thenReturn(permission);
+		Assertions.assertThat(_[=AuthenticationTable?uncap_first]permissionManager.GetPermission([=AuthenticationTable?uncap_first]permissionId)).isEqualTo(permission);
+
+	}
 	
 }

@@ -1,12 +1,13 @@
 package [=PackageName].domain.Authorization.Rolepermission;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import [=PackageName].domain.model.RolepermissionEntity;
+import [=PackageName].domain.model.RolepermissionId;
 import [=PackageName].domain.IRepository.IPermissionRepository;
 import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.IRepository.IRoleRepository;
@@ -33,7 +35,7 @@ import com.querydsl.core.types.Predicate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RolepermissionManagerTest {
-
+	
 	@InjectMocks
 	RolepermissionManager _rolepermissionManager;
 	
@@ -42,6 +44,9 @@ public class RolepermissionManagerTest {
     
     @Mock
 	IPermissionRepository  _permissionRepository;
+    
+    @Mock
+    RolepermissionId rolepermissionId;
     
     @Mock
 	IRoleRepository  _roleRepository;
@@ -64,20 +69,22 @@ public class RolepermissionManagerTest {
 	public void tearDown() throws Exception {
 	}
 	
-//	@Test
-//	public void findRolepermissionById_IdIsNotNullAndIdExists_ReturnRolepermission() {
-//		RolepermissionEntity rolepermission =mock(RolepermissionEntity.class);
-//
-//		Mockito.when(_rolepermissionRepository.findById(anyLong())).thenReturn(rolepermission);
-//		Assertions.assertThat(_rolepermissionManager.FindById(ID)).isEqualTo(rolepermission);
-//	}
-//
-//	@Test 
-//	public void findRolepermissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
-//
-//	Mockito.when(_rolepermissionRepository.findById(anyLong())).thenReturn(null);
-//	Assertions.assertThat(_rolepermissionManager.FindById(ID)).isEqualTo(null);
-//	}
+	@Test
+	public void findRolepermissionById_IdIsNotNullAndIdExists_ReturnRolepermission() {
+		RolepermissionEntity rolepermission =mock(RolepermissionEntity.class);
+		
+		Optional<RolepermissionEntity> dbRolepermission = Optional.of((RolepermissionEntity) rolepermission);
+		Mockito.<Optional<RolepermissionEntity>>when(_rolepermissionRepository.findById(any(RolepermissionId.class))).thenReturn(dbRolepermission);
+
+		Assertions.assertThat(_rolepermissionManager.FindById(rolepermissionId)).isEqualTo(rolepermission);
+	}
+
+	@Test 
+	public void findRolepermissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
+    
+	Mockito.<Optional<RolepermissionEntity>>when(_rolepermissionRepository.findById(any(RolepermissionId.class))).thenReturn(Optional.empty());
+	Assertions.assertThat(_rolepermissionManager.FindById(rolepermissionId)).isEqualTo(null);
+	}
 	
 	@Test
 	public void createRolepermission_RolepermissionIsNotNullAndRolepermissionDoesNotExist_StoreRolepermission() {
@@ -115,29 +122,33 @@ public class RolepermissionManagerTest {
 	}
 	
    //Permission
-//	@Test
-//	public void getPermission_if_RolepermissionIdIsNotNull_returnPermission() {
-//
-//		RolepermissionEntity rolepermission = mock(RolepermissionEntity.class);
-//		PermissionEntity permission = mock(PermissionEntity.class);
-//
-//		Mockito.when(_rolepermissionRepository.findById(anyLong())).thenReturn(rolepermission);
-//		Mockito.when(rolepermission.getPermission()).thenReturn(permission);
-//		Assertions.assertThat(_rolepermissionManager.GetPermission(ID)).isEqualTo(permission);
-//
-//	}
+	@Test
+	public void getPermission_ifRolepermissionIdIsNotNull_returnPermission() {
+
+		RolepermissionEntity rolepermission = mock(RolepermissionEntity.class);
+		PermissionEntity permission = mock(PermissionEntity.class);
+		
+		Optional<RolepermissionEntity> dbRolepermission = Optional.of((RolepermissionEntity) rolepermission);
+		Mockito.<Optional<RolepermissionEntity>>when(_rolepermissionRepository.findById(any(RolepermissionId.class))).thenReturn(dbRolepermission);
+	
+		Mockito.when(rolepermission.getPermission()).thenReturn(permission);
+		Assertions.assertThat(_rolepermissionManager.GetPermission(rolepermissionId)).isEqualTo(permission);
+
+	}
 	
    //Role
-//	@Test
-//	public void getRole_if_RolepermissionIdIsNotNull_returnRole() {
-//
-//		RolepermissionEntity rolepermission = mock(RolepermissionEntity.class);
-//		RoleEntity role = mock(RoleEntity.class);
-//
-//		Mockito.when(_rolepermissionRepository.findById(anyLong())).thenReturn(rolepermission);
-//		Mockito.when(rolepermission.getRole()).thenReturn(role);
-//		Assertions.assertThat(_rolepermissionManager.GetRole(ID)).isEqualTo(role);
-//
-//	}
+	@Test
+	public void getRole_ifRolepermissionIdIsNotNull_returnRole() {
+
+		RolepermissionEntity rolepermission = mock(RolepermissionEntity.class);
+		RoleEntity role = mock(RoleEntity.class);
+		
+		Optional<RolepermissionEntity> dbRolepermission = Optional.of((RolepermissionEntity) rolepermission);
+		Mockito.<Optional<RolepermissionEntity>>when(_rolepermissionRepository.findById(any(RolepermissionId.class))).thenReturn(dbRolepermission);
+		
+		Mockito.when(rolepermission.getRole()).thenReturn(role);
+		Assertions.assertThat(_rolepermissionManager.GetRole(rolepermissionId)).isEqualTo(role);
+
+	}
 	
 }

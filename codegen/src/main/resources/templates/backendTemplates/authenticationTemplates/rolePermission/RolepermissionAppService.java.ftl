@@ -302,12 +302,12 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
 				}
 				else {
-					//error
+					return null;
 				}
 			}
 		}
 		else {
-			//error
+			return null;
 		}
 		
 		rolepermissionId.setPermissionId(Long.valueOf(keyMap.get("permissionId")));

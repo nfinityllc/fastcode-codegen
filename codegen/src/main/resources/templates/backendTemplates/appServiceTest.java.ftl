@@ -28,17 +28,27 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import [=PackageName].domain.[=ClassName].*;
+import [=PackageName].domain<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].*;
 import [=CommonModulePackage].Search.*;
-import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
+<#if CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=ClassName]Id;
+</#if>
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
+import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
 </#list>
+<#if ClassName == AuthenticationTable>
+<#if Flowable!false>
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
+</#if>
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -260,9 +270,13 @@ public class [=ClassName]AppServiceTest {
 		String operator= "equals";
 		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-		builder.or([=ClassName?uncap_first].[=fields].eq(search));
-    	</#list>
+    	<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq(search));
+		</#if> 
+		</#if> 
+        </#list>
 		Assertions.assertThat(_appService.searchAllProperties([=ClassName?uncap_first],search,operator)).isEqualTo(builder);
 	}
 	
@@ -270,14 +284,24 @@ public class [=ClassName]AppServiceTest {
 	public void searchSpecificProperty_PropertyExists_ReturnBooleanBuilder() {
 		String operator= "equals";
 		List<String> list = new ArrayList<>();
-		<#list SearchFields as fields>
-		list.add("[=fields]");
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        list.add("[=value.fieldName]");
+		</#if> 
+		</#if> 
+        </#list>
+		
 		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-		builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
+		</#if> 
+		</#if> 
+        </#list>
+		
 		Assertions.assertThat(_appService.searchSpecificProperty([=ClassName?uncap_first], list,"xyz",operator)).isEqualTo(builder);
 	}
 	
@@ -310,9 +334,13 @@ public class [=ClassName]AppServiceTest {
 	@Test
 	public void checkProperties_PropertyExists_ReturnNothing() throws Exception {
 		List<String> list = new ArrayList<>();
-		<#list SearchFields as fields>
-		list.add("[=fields]");
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        list.add("[=value.fieldName]");
+		</#if> 
+		</#if> 
+        </#list>
 		_appService.checkProperties(list);
 	}
 	
@@ -325,9 +353,13 @@ public class [=ClassName]AppServiceTest {
 		search.setValue("xyz");
 		search.setOperator("equals");
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
+		</#if> 
+		</#if> 
+        </#list>
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
 	
@@ -341,17 +373,25 @@ public class [=ClassName]AppServiceTest {
 		search.setType(2);
 		search.setValue("xyz");
 		search.setOperator("equals");
-		<#list SearchFields as fields>
-		fields.setFieldName("[=fields]");
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        fields.setFieldName("[=value.fieldName]");
+		</#if> 
+		</#if> 
 		<#break>
-		</#list>
+        </#list>
         fieldsList.add(fields);
         search.setFields(fieldsList);
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
-        <#break>
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
+		</#if> 
+		</#if> 
+		<#break>
+        </#list>
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
 	

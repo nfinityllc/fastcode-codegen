@@ -59,7 +59,7 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
             <#else>
 			<#if AuthenticationFields??>
   			<#list AuthenticationFields as authKey,authValue>
-  			<#if authKey== "User Name">
+  			<#if authKey== "UserName">
   			<#if !PrimaryKeys[authValue.fieldName]??>
   			[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
   			</#if>
@@ -109,7 +109,7 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
                 <#else>
                 <#if AuthenticationFields??>
   				<#list AuthenticationFields as authKey,authValue>
-  				<#if authKey== "User Name">
+  				<#if authKey== "UserName">
   				<#if !PrimaryKeys[authValue.fieldName]??>
   				descriptiveField: '[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]',
 				referencedDescriptiveField: '[=authValue.fieldName]',
