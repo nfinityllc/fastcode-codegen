@@ -31,18 +31,18 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
         $scope.tabData.activeTab = $scope.tabData.tabs[0].id;
 
         $scope.returnToList = function () {
-            $location.path("/process-instances");
+            $location.path("/flowable-admin/process-instances");
         };
 
         $scope.openTask = function (task) {
             if (task && task.getProperty('id')) {
-                $location.path("/task/" + task.getProperty('id'));
+                $location.path("/flowable-admin/task/" + task.getProperty('id'));
             }
         };
 
         $scope.openJob = function (job) {
             if (job && job.getProperty('id')) {
-                $location.path("/job/" + job.getProperty('id'));
+                $location.path("/flowable-admin/job/" + job.getProperty('id'));
             }
         };
 
@@ -54,7 +54,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
                 } else {
                     id = instance;
                 }
-                $location.path("/process-instance/" + id);
+                $location.path("/flowable-admin/process-instance/" + id);
             }
         };
 
@@ -63,7 +63,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
             $rootScope.filters.forced.taskFilter = {
                 processInstanceId: $scope.process.id
             };
-            $location.path("/tasks");
+            $location.path("/flowable-admin/tasks");
         };
 
         $scope.showAllSubprocesses = function () {
@@ -76,13 +76,13 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
 
         $scope.openProcessDefinition = function (processDefinitionId) {
             if (processDefinitionId) {
-                $location.path("/process-definition/" + processDefinitionId);
+                $location.path("/flowable-admin/process-definition/" + processDefinitionId);
             }
         };
 
         $scope.showProcessDiagram = function () {
             $modal.open({
-                templateUrl: 'src/flowable_admin/views/process-instance-diagram-popup.html',
+                templateUrl: 'flowable_admin/views/process-instance-diagram-popup.html',
                 windowClass: 'modal modal-full-width',
                 controller: 'ShowProcessInstanceDiagramPopupCtrl',
                 resolve: {
@@ -98,7 +98,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
                 targetProcessDefinition: undefined
             };
             var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/process-instance-migration-popup.html', 
+                templateUrl: 'flowable_admin/views/process-instance-migration-popup.html', 
                 controller: 'ShowProcessInstanceMigrationPopupCtrl',
                 resolve: {
                     process: function () {
@@ -116,7 +116,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
             modalInstance.result.then(function (migrateProcessInstance) {
                 if (migrateProcessInstance) {
                     var migrationModalInstance = $modal.open({
-                        templateUrl: 'src/flowable_admin/views/process-instance-migration-diagram-popup.html',
+                        templateUrl: 'flowable_admin/views/process-instance-migration-diagram-popup.html',
                         windowClass: 'modal modal-full-width',
                         controller: 'ShowProcessInstanceMigrationDiagramPopupCtrl',
                         resolve: {
@@ -138,13 +138,13 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
 
         $scope.openDecisionTable = function (decisionTable) {
             if (decisionTable && decisionTable.getProperty('id')) {
-                $location.path("/decision-table-execution/" + decisionTable.getProperty('id'));
+                $location.path("/flowable-admin/decision-table-execution/" + decisionTable.getProperty('id'));
             }
         };
 
         $scope.openFormInstance = function (submittedForm) {
             if (submittedForm && submittedForm.getProperty('id')) {
-                $location.path("/form-instance/" + submittedForm.getProperty('id'));
+                $location.path("/flowable-admin/form-instance/" + submittedForm.getProperty('id'));
             }
         };
 
@@ -358,7 +358,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
             $rootScope.filters.forced.jobFilter = {
                 processInstanceId: $scope.process.id
             };
-            $location.path("/jobs");
+            $location.path("/flowable-admin/jobs");
         };
 
         $scope.loadTasks = function () {
@@ -452,7 +452,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
                 action = "delete";
             }
             var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/process-instance-delete-popup.html',
+                templateUrl: 'flowable_admin/views/process-instance-delete-popup.html',
                 controller: 'DeleteProcessModalInstanceCtrl',
                 resolve: {
                     process: function () {
@@ -481,7 +481,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
             if ($scope.selectedVariables && $scope.selectedVariables.length > 0) {
                 var selectedVariable = $scope.selectedVariables[0];
                 var modalInstance = $modal.open({
-                    templateUrl: 'src/flowable_admin/views/update-variable-popup.html',
+                    templateUrl: 'flowable_admin/views/update-variable-popup.html',
                     controller: 'UpdateVariableCtrl',
                     resolve: {
                         variable: function () {
@@ -506,7 +506,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
             if ($scope.selectedVariables && $scope.selectedVariables.length > 0) {
                 var selectedVariable = $scope.selectedVariables[0];
                 var modalInstance = $modal.open({
-                    templateUrl: 'src/flowable_admin/views/variable-delete-popup.html',
+                    templateUrl: 'flowable_admin/views/variable-delete-popup.html',
                     controller: 'DeleteVariableCtrl',
                     resolve: {
                         variable: function () {
@@ -529,7 +529,7 @@ flowableAdminApp.controller('ProcessInstanceController', ['$scope', '$rootScope'
 
         $scope.addVariable = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/variable-add-popup.html',
+                templateUrl: 'flowable_admin/views/variable-add-popup.html',
                 controller: 'AddVariableCtrl',
                 resolve: {
                     processInstanceId: function () {

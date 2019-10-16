@@ -24,6 +24,11 @@ public class PermissionEntity<#if Audit!false> extends AuditedEntity<String></#i
 
     public PermissionEntity() {
     }
+    
+    public PermissionEntity(String name, String displayName) {
+    	this.name = name;
+    	this.displayName = displayName;
+    }
 
     @Id
     @Column(name = "Id", nullable = false)

@@ -17,7 +17,7 @@ flowableAdminApp.controller('DecisionTableController', ['$scope', '$rootScope', 
         $rootScope.navigation = {main: 'dmn-engine', sub: 'decision-tables'};
         
         $scope.returnToList = function () {
-            $location.path("/decision-tables");
+            $location.path("/flowable-admin/decision-tables");
         };
 
         $scope.showAllDecisionTables = function () {
@@ -25,16 +25,16 @@ flowableAdminApp.controller('DecisionTableController', ['$scope', '$rootScope', 
             $rootScope.filters.forced.processDefinitionFilter = {
                 deploymentId: $scope.deployment.id
             };
-            $location.path("/process-definitions");
+            $location.path("/flowable-admin/process-definitions");
         };
 
         $scope.showAllExecutions = function () {
-            $location.path("/decision-table-executions");
+            $location.path("/flowable-admin/decision-table-executions");
         };
 
         $scope.showDecisionTable = function () {
             $modal.open({
-                templateUrl: 'src/flowable_admin/views/decision-table-popup.html',
+                templateUrl: 'flowable_admin/views/decision-table-popup.html',
                 windowClass: 'modal modal-full-width',
                 controller: 'ShowDecisionTablePopupCtrl',
                 resolve: {
@@ -47,7 +47,7 @@ flowableAdminApp.controller('DecisionTableController', ['$scope', '$rootScope', 
 
         $scope.showDecisionExecution = function (decisionExecution) {
             if (decisionExecution && decisionExecution.getProperty('id')) {
-                $location.path("/decision-table-execution/"+decisionExecution.getProperty('id'));
+                $location.path("/flowable-admin/decision-table-execution/"+decisionExecution.getProperty('id'));
             }
         };
 

@@ -243,7 +243,7 @@ export var en:any = {
             "OK": "Ok"
         },
         "ERROR": {
-            "REQUIRED": " is required",
+            "REQUIRED": "Field is required",
             "LENGTH": "Length cannot be greater than "
         }
     },

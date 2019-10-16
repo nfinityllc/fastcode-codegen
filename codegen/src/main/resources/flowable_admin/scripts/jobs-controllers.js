@@ -101,7 +101,7 @@ flowableAdminApp.controller('JobsController', ['$scope', '$rootScope', '$http', 
 	    
 	    $scope.jobSelected = function(job) {
 	    	if (job && job.getProperty('id')) {
-	    		$location.path('/job/' + job.getProperty('id')).search({jobType: $scope.filter.jobType});
+	    		$location.path('/flowable-admin/job/' + job.getProperty('id')).search({jobType: $scope.filter.jobType});
 	    	}
 	    };
 	    

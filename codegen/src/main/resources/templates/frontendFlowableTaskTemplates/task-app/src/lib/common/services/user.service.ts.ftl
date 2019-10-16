@@ -17,7 +17,11 @@ export class UserService {
     this.url = _config.apiPath;
   }
 
-
+  // Get logged in user info
+  getAccount() {
+    return this.httpclient.get(this.url + '/app/rest/account');
+  };
+  
   // Get user info by id
   getUserInfo(userId) {
     return this.httpclient.get(this.url + '/app/rest/users/' + userId);

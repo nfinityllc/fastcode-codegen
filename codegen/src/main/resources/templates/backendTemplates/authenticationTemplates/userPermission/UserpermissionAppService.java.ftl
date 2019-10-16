@@ -417,12 +417,12 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
 				}
 				else {
-					//error
+					return null;
 				}
 			}
 		}
 		else {
-			//error
+			return null;
 		}
 		
 		[=AuthenticationTable?uncap_first]permissionId.setPermissionId(Long.valueOf(keyMap.get("permissionId")));

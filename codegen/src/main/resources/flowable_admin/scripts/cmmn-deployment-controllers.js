@@ -18,12 +18,12 @@ flowableAdminApp.controller('CmmnDeploymentController', ['$scope', '$rootScope',
         $rootScope.navigation = {main: 'cmmn-engine', sub: 'deployments'};
         
 		$scope.returnToList = function() {
-			$location.path("/cmmn-deployments");
+			$location.path("/flowable-admin/cmmn-deployments");
 		};
 		
 		$scope.openDefinition = function(definition) {
 			if (definition && definition.getProperty('id')) {
-				$location.path("/case-definition/" + definition.getProperty('id'));
+				$location.path("/flowable-admin/case-definition/" + definition.getProperty('id'));
 			}
 		};
 		
@@ -32,7 +32,7 @@ flowableAdminApp.controller('CmmnDeploymentController', ['$scope', '$rootScope',
 		    $rootScope.filters.forced.caseDefinitionFilter = {
 	            deploymentId: $scope.cmmnDeployment.id
 		    };
-		    $location.path("/case-definitions");
+		    $location.path("/flowable-admin/case-definitions");
 		};
 		
 		$q.all([$translate('CASE-DEFINITIONS.HEADER.ID'),
@@ -60,7 +60,7 @@ flowableAdminApp.controller('CmmnDeploymentController', ['$scope', '$rootScope',
 		
 		$scope.deleteDeployment = function() {
 		    var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/confirm-popup.html',
+                templateUrl: 'flowable_admin/views/confirm-popup.html',
                 controller: 'ConfirmPopupCtrl',
                 resolve: {
                     model: function () {

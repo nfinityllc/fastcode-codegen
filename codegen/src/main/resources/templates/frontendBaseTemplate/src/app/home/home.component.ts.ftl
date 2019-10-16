@@ -16,16 +16,16 @@ import { OAuthService } from 'angular-oauth2-oidc';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-    itemForm: FormGroup;
-    errorMessage = '';
-   // iLogin: ILogin = {} as ILogin;
-    loading = false;
-    submitted = false;
-    returnUrl: string;
-    constructor(
-    	private formBuilder: FormBuilder,
-    	private route: ActivatedRoute,
-    	public router: Router,
+	itemForm: FormGroup;
+	errorMessage = '';
+	// iLogin: ILogin = {} as ILogin;
+	loading = false;
+	submitted = false;
+	returnUrl: string;
+	constructor(
+		private formBuilder: FormBuilder,
+		private route: ActivatedRoute,
+		public router: Router,
 		private global:Globals,
 		<#if AuthenticationType != "none">
 		public authService: AuthenticationService,
@@ -36,15 +36,6 @@ export class HomeComponent implements OnInit {
  
     ngOnInit() {
        
-     /*   this.itemForm = this.formBuilder.group({
-       
-         userName: ['', Validators.required],
-         password: ['', Validators.required]       
-           
-        });
-       this.authenticationService.logout();
-       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-       */
     }
     
 	logout() {
@@ -56,12 +47,13 @@ export class HomeComponent implements OnInit {
 		if(this.authService.loginType == 'oidc') {
 			this.logout();
 			this.oauthService.initLoginFlow();
-		}       
-		this.router.navigate(['/login'],{ queryParams: { returnUrl: 'dashboard' } });
-    }
-    </#if>
-    onBack(): void {
-       // this.router.navigate(['/']);
-    }
-    
+		}
+		else{
+			this.router.navigate(['/login'],{ queryParams: { returnUrl: 'dashboard' } });
+		}
+	}
+	</#if>
+	onBack(): void {
+		// this.router.navigate(['/']);
+	}
 }

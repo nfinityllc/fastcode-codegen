@@ -212,7 +212,7 @@ flowableAdminApp.controller('TasksController', ['$scope', '$rootScope', '$http',
 	    
 	    $scope.taskSelected = function(task) {
 	    	if(task && task.getProperty('id')) {
-	    		$location.path('/task/' + task.getProperty('id'));
+	    		$location.path('/flowable-admin/task/' + task.getProperty('id'));
 	    	}
 	    };
 	    

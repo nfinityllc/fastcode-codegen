@@ -1,4 +1,4 @@
-<div class="container">
+<div class="new-container">
 	<mat-toolbar class="action-tool-bar" color="primary">
 		<button mat-button (click)="onCancel()">{{'GENERAL.ACTIONS.CANCEL' | translate}}</button>
 		<span class="middle">{{title}}</span>

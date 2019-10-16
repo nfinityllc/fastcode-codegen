@@ -20,12 +20,12 @@ flowableAdminApp.controller('DeploymentController', ['$scope', '$rootScope', '$h
         $rootScope.navigation = {main: 'process-engine', sub: 'deployments'};
         
 		$scope.returnToList = function() {
-			$location.path("/deployments");
+			$location.path("/flowable-admin/deployments");
 		};
 		
 		$scope.openDefinition = function(definition) {
 			if (definition && definition.getProperty('id')) {
-				$location.path("/process-definition/" + definition.getProperty('id'));
+				$location.path("/flowable-admin/process-definition/" + definition.getProperty('id'));
 			}
 		};
 		
@@ -34,7 +34,7 @@ flowableAdminApp.controller('DeploymentController', ['$scope', '$rootScope', '$h
 		    $rootScope.filters.forced.processDefinitionFilter = {
 		            deploymentId: $scope.deployment.id
 		    };
-		    $location.path("/process-definitions");
+		    $location.path("/flowable-admin/process-definitions");
 		};
 		
 		$q.all([$translate('PROCESS-DEFINITIONS.HEADER.ID'), 
@@ -62,7 +62,7 @@ flowableAdminApp.controller('DeploymentController', ['$scope', '$rootScope', '$h
 		
 		$scope.deleteDeployment = function() {
 		    var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/confirm-popup.html',
+                templateUrl: 'flowable_admin/views/confirm-popup.html',
                 controller: 'ConfirmPopupCtrl',
                 resolve: {
                     model: function () {

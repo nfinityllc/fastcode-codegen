@@ -57,18 +57,17 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
   }
 
 	ngOnInit() {
-		<#if Relationship?has_content>
 		this.setAssociation();
-	    </#if>
 		this.setColumns();
 		this.primaryKeys = [ <#list PrimaryKeys as key,value>"[=key]", </#list> ]
 		super.ngOnInit();
 	}
   
-  <#if Relationship?has_content> 
+  
 	setAssociation(){
   	
 		this.associations = [
+		<#if Relationship?has_content> 
 		<#list Relationship as relationKey, relationValue>
 		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			{
@@ -98,6 +97,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 			},
 		</#if>
 		</#list>
+		</#if>
 		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 			{
 				column: [
@@ -117,7 +117,6 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		</#if>
 		];
 	}
-  </#if>
   
   	setColumns(){
   		this.columns = [

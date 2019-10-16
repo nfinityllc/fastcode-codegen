@@ -18,7 +18,7 @@ angular.module('flowableAdminApp')
     .directive('navbar', [function () {
         return {
             restrict: 'E',
-            templateUrl: 'src/flowable_admin/views/navbar.html',
+            templateUrl: 'flowable_admin/views/navbar.html',
             link: function ($scope, element, attributes) {
             }
         };
@@ -88,7 +88,7 @@ angular.module('flowableAdminApp')
     .directive('hourChart', [function () {
         return {
             restrict: 'E',
-            templateUrl: 'src/flowable_admin/views/monitoring-hour-chart.html',
+            templateUrl: 'flowable_admin/views/monitoring-hour-chart.html',
             scope: {
                 model: '=model',
             },
@@ -99,7 +99,7 @@ angular.module('flowableAdminApp')
     .directive('weekdayChart', [function () {
         return {
             restrict: 'E',
-            templateUrl: 'src/flowable_admin/views/monitoring-weekday-chart.html',
+            templateUrl: 'flowable_admin/views/monitoring-weekday-chart.html',
             scope: {
                 model: '=model',
             },
@@ -145,7 +145,7 @@ angular.module('flowableAdminApp')
     .directive('fieldPreview', ['RecursionHelper', function (RecursionHelper) {
         return {
             restrict: 'E',
-            templateUrl: 'src/flowable_admin/views/field-preview-template.html',
+            templateUrl: 'flowable_admin/views/field-preview-template.html',
             transclude: false,
             scope: {
                 field: '=',
@@ -205,7 +205,7 @@ angular.module('flowableAdminApp')
     .directive('formElement', ['RecursionHelper', function (RecursionHelper) {
         return {
             restrict: 'E',
-            templateUrl: 'src/flowable_admin/views/form-element-template.html',
+            templateUrl: 'flowable_admin/views/form-element-template.html',
             transclude: false,
             scope: {
                 field: '=',

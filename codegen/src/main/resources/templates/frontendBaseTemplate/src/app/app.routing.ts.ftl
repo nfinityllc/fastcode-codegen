@@ -10,12 +10,12 @@ import { AuthGuard } from './core/auth-guard';
 import { CallbackComponent } from './oauth/callback.component';
 </#if>
 <#if FlowableModule!false>
-import { TaskAppRoutes } from 'task-app';
+import { TaskAppRoutes } from '../../projects/task-app/src/public_api';
 </#if>
 
 const routes: Routes = [
 
-	{ path: '', component: HomeComponent },
+	
 	{ path: 'dashboard',  component: DashboardComponent <#if AuthenticationType != "none">,canActivate: [ AuthGuard ]</#if>  },
 	<#if AuthenticationType != "none">	
 	{ path: 'login', component: LoginComponent },
@@ -23,9 +23,10 @@ const routes: Routes = [
 	{ path: 'callback', component: CallbackComponent },
 	</#if>
     <#if FlowableModule!false>
-	{path: 'task', children: TaskAppRoutes <#if AuthenticationType != "none">,canActivate: [ AuthGuard ]</#if>},
+	{ path: 'task-app', children: TaskAppRoutes <#if AuthenticationType != "none">,canActivate: [ AuthGuard ]</#if>},
     </#if>
+    { path: '', component: HomeComponent },
 	{ path: '', redirectTo: '/', pathMatch: 'full' }, 
 ];
 
-export const routingModule: ModuleWithProviders = RouterModule.forRoot(routes);
+export const routingModule: ModuleWithProviders = RouterModule.forRoot(routes<#if FlowableModule!false>, { useHash: true, enableTracing: true }</#if>);

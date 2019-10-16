@@ -22,7 +22,7 @@ flowableAdminApp.controller('FormInstanceController', ['$rootScope', '$scope', '
         $rootScope.navigation = {main: 'form-engine', sub: 'instances'};
 
         $scope.returnToList = function () {
-            $location.path("/form-instances");
+            $location.path("/flowable-admin/form-instances");
         };
 
         $q.all([$translate('FORM-INSTANCE.FORM-FIELD-VALUES.ID'),

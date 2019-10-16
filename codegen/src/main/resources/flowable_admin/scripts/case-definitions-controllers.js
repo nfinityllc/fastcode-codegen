@@ -84,7 +84,7 @@ flowableAdminApp.controller('CaseDefinitionsController', ['$rootScope', '$scope'
 
 	    $scope.definitionSelected = function(definition) {
 	    	if (definition && definition.getProperty('id')) {
-	    		$location.path('/case-definition/' + definition.getProperty('id'));
+	    		$location.path('/flowable-admin/case-definition/' + definition.getProperty('id'));
 	    	}
 	    };
 

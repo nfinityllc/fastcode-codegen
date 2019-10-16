@@ -36,7 +36,7 @@ import { SchedulerModule } from 'scheduler';
 <#if FlowableModule!false>
 import { UpgradeModule } from "@angular/upgrade/static"; 
 import { UrlHandlingStrategy } from '@angular/router';
-import { TaskAppModule } from 'task-app';
+import { TaskAppModule } from '../../projects/task-app/src/public_api';
 </#if>
 
 import {
@@ -68,24 +68,17 @@ import { Globals } from './globals';
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
 }
+
 <#if FlowableModule!false>
-export class CustomHandlingStrategy implements UrlHandlingStrategy { 
+export class CustomHandlingStrategy implements UrlHandlingStrategy {
+  shouldProcessUrl(url) {
+    let urlStr = url.toString().split('/');
+    return url.toString() == "/" || (urlStr.length > 1 && urlStr[1] != "flowable-admin")
+  }
+  extract(url) { return url; }
+  merge(url, whole) { return url; }
+}
 
-shouldProcessUrl(url) { 
-
-       console.log(url.toString()); 
-
-       let urlStr = url.toString().split('/'); 
-
-       return url.toString() == "/" || (urlStr.length > 1 && urlStr[1] == "app") 
-
-   } 
-
-   extract(url) { return url; } 
-
-   merge(url, whole) { return url; } 
-
-} 
 </#if>
 @NgModule({
   declarations: [
@@ -147,14 +140,12 @@ shouldProcessUrl(url) {
     </#if>
     <#if FlowableModule!false>
     UpgradeModule,  
-    TaskAppModule.forRoot({ 
-
-	apiPath: "http://localhost:8080/flowable-task" // url where task backend app is running 
-
+    TaskAppModule.forRoot({
+      apiPath: environment.flowableUrl + "/flowable-task" // url where task backend app is running
 	}),
     </#if>
     FastCodeCoreModule.forRoot({
-    	apiUrl: environment.apiUrl
+      apiUrl: environment.apiUrl
     }),
     TranslateModule.forRoot({
       loader: {

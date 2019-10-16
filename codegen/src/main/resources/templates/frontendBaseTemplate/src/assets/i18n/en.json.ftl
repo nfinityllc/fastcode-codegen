@@ -46,9 +46,8 @@
     },
     "Language": "Language",   
     "Monitoring": "Monitoring",
-    "Message" : "Welcome to fast code"
-    <#if FlowableModule!false>
-    ,"ProcessAdmin": {
+    "Message" : "Welcome to fast code"<#if FlowableModule!false>,
+    "ProcessAdmin": {
       "Title": "Process Admin",
       "ProcessEngine": "Process Engine",
       "CmmnEngine": "CMMN Engine",
@@ -67,6 +66,11 @@
       "DecisionTables": "Decision tables",
       "DecisionTableExecutions": "Executions",
       "ContentItems": "Content items"
+    },
+    "Task":{
+      "Title": "Task App",
+      "Tasks": "Tasks",
+      "Processes": "Processes"
     }
     </#if>
   }

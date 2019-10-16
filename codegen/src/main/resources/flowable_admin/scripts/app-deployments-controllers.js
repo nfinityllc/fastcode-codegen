@@ -63,7 +63,7 @@ flowableAdminApp.controller('AppDeploymentsController', ['$rootScope', '$scope',
 
 	    $scope.deploymentSelected = function(deployment) {
 	    	if (deployment && deployment.getProperty('id')) {
-	    		$location.path('/app-deployment/' + deployment.getProperty('id'));
+	    		$location.path('/flowable-admin/app-deployment/' + deployment.getProperty('id'));
 	    	}
 	    };
 
@@ -102,7 +102,7 @@ flowableAdminApp.controller('AppDeploymentsController', ['$rootScope', '$scope',
 
       $scope.uploadDeployment = function () {
           var modalInstance = $modal.open({
-              templateUrl: 'src/flowable_admin/views/upload-app.html',
+              templateUrl: 'flowable_admin/views/upload-app.html',
               controller: 'UploadAppDeploymentCtrl'
           });
           modalInstance.result.then(function (result) {

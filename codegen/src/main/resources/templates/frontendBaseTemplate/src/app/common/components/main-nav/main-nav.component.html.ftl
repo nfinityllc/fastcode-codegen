@@ -45,21 +45,7 @@
         </mat-nav-list>
       </mat-expansion-panel>
       </#if>
-      <!-- <a mat-list-item class="sidenav-list-item" routerLink="admin">Admin</a>
-
-      <mat-expansion-panel class="expansion-panel">
-        <mat-expansion-panel-header class="subnav-header">
-          {{'MainNav.AccessMgmt' | translate }}
-        </mat-expansion-panel-header>
-
-        <mat-nav-list class="subnav">
-
-          <a mat-list-item class="mat-sub-list-item" routerLink="users">{{'MainNav.Users' | translate }} </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="roles">Roles</a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="permissions">Permissions</a>
-
-        </mat-nav-list>
-      </mat-expansion-panel>
+      <!--
 
       <a mat-list-item class="sidenav-list-item" routerLink="entityHistory">{{'MainNav.EntityHistory' | translate }}
       </a>
@@ -115,70 +101,74 @@
       </mat-expansion-panel>
 
       <!-- <a mat-list-item class="sidenav-list-item" routerLink="entities">{{'MainNav.Monitoring' | translate }}</a> -->
-<#if FlowableModule!false>
-	<mat-expansion-panel class="expansion-panel">
-<mat-expansion-panel-header class="subnav-header">
-{{'MainNav.ProcessAdmin.Title' | translate }}
-</mat-expansion-panel-header>
+      <#if FlowableModule!false>
+      <mat-expansion-panel class="expansion-panel" *ngIf="isFlowableMenuVisible('access-admin')">
+        <mat-expansion-panel-header class="subnav-header">
+          {{'MainNav.ProcessAdmin.Title' | translate }}
+        </mat-expansion-panel-header>
 
-<!-- Process Engine -->
-<mat-expansion-panel class="expansion-panel">
+        <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/engine">{{'MainNav.ProcessAdmin.ConfigurationEngine' | translate }} </a>
+        <!-- Process Engine -->
+        <mat-expansion-panel class="expansion-panel">
 
-<mat-expansion-panel-header class="subnav-header">
-{{'MainNav.ProcessAdmin.ProcessEngine' | translate }}
-</mat-expansion-panel-header>
+          <mat-expansion-panel-header class="subnav-header">
+            {{'MainNav.ProcessAdmin.ProcessEngine' | translate }}
+          </mat-expansion-panel-header>
 
-<mat-nav-list class="subnav">
-<a mat-list-item class="mat-sub-list-item" href="/#/deployments">{{'MainNav.ProcessAdmin.Deployments'
-|translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/process-definitions">{{'MainNav.ProcessAdmin.Definitions'
-|translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/process-instances">{{'MainNav.ProcessAdmin.Instances'
-|translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/tasks">{{'MainNav.ProcessAdmin.Tasks' |translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/jobs">{{'MainNav.ProcessAdmin.Jobs' |translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/event-subscriptions">{{'MainNav.ProcessAdmin.EventSubscriptions'
-|translate }} </a>
-</mat-nav-list>
+          <mat-nav-list class="subnav">
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/deployments">{{'MainNav.ProcessAdmin.Deployments'|translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/process-definitions">{{'MainNav.ProcessAdmin.Definitions'|translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/process-instances">{{'MainNav.ProcessAdmin.Instances'|translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/tasks">{{'MainNav.ProcessAdmin.Tasks' |translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/jobs">{{'MainNav.ProcessAdmin.Jobs' |translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/event-subscriptions">{{'MainNav.ProcessAdmin.EventSubscriptions'|translate }} </a>
+          </mat-nav-list>
 
-</mat-expansion-panel>
+        </mat-expansion-panel>
 
-<!-- App engine -->
-<mat-expansion-panel class="expansion-panel">
+        <!-- App engine -->
+        <mat-expansion-panel class="expansion-panel">
 
-<mat-expansion-panel-header class="subnav-header">
-{{'MainNav.ProcessAdmin.AppEngine' | translate }}
-</mat-expansion-panel-header>
+          <mat-expansion-panel-header class="subnav-header">
+            {{'MainNav.ProcessAdmin.AppEngine' | translate }}
+          </mat-expansion-panel-header>
 
-<mat-nav-list class="subnav">
-<a mat-list-item class="mat-sub-list-item" href="/#/app-deployments">{{'MainNav.ProcessAdmin.Deployments'
-|translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/app-definitions">{{'MainNav.ProcessAdmin.Definitions'
-|translate }} </a>
-</mat-nav-list>
+          <mat-nav-list class="subnav">
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/app-deployments">{{'MainNav.ProcessAdmin.Deployments'|translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/app-definitions">{{'MainNav.ProcessAdmin.Definitions'|translate }} </a>
+          </mat-nav-list>
 
-</mat-expansion-panel>
+        </mat-expansion-panel>
 
-<!-- Form engine -->
-<mat-expansion-panel class="expansion-panel">
+        <!-- Form engine -->
+        <mat-expansion-panel class="expansion-panel">
 
-<mat-expansion-panel-header class="subnav-header">
-{{'MainNav.ProcessAdmin.FormEngine' | translate }}
-</mat-expansion-panel-header>
+          <mat-expansion-panel-header class="subnav-header">
+            {{'MainNav.ProcessAdmin.FormEngine' | translate }}
+          </mat-expansion-panel-header>
 
-<mat-nav-list class="subnav">
-<a mat-list-item class="mat-sub-list-item" href="/#/form-deployments">{{'MainNav.ProcessAdmin.Deployments'
-|translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/form-definitions">{{'MainNav.ProcessAdmin.Definitions'
-|translate }} </a>
-<a mat-list-item class="mat-sub-list-item" href="/#/form-instances">{{'MainNav.ProcessAdmin.Instances'
-|translate }} </a>
-</mat-nav-list>
+          <mat-nav-list class="subnav">
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/form-deployments">{{'MainNav.ProcessAdmin.Deployments'|translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/form-definitions">{{'MainNav.ProcessAdmin.Definitions'|translate }} </a>
+            <a mat-list-item class="mat-sub-list-item" href="/#/flowable-admin/form-instances">{{'MainNav.ProcessAdmin.Instances'|translate }} </a>
+          </mat-nav-list>
 
-</mat-expansion-panel>
+        </mat-expansion-panel>
 
-</mat-expansion-panel>
-</#if>
+      </mat-expansion-panel>
+      <mat-expansion-panel class="expansion-panel"  *ngIf="isFlowableMenuVisible('access-task')">
+        <mat-expansion-panel-header class="subnav-header">
+          {{'MainNav.Task.Title' | translate }}
+        </mat-expansion-panel-header>
+
+        <mat-nav-list class="subnav">
+
+          <a mat-list-item class="mat-sub-list-item" routerLink="/task-app/tasks">{{'MainNav.Task.Tasks' | translate }}</a>
+          <a mat-list-item class="mat-sub-list-item" routerLink="/task-app/processes">{{'MainNav.Task.Processes' | translate }}</a>
+
+        </mat-nav-list>
+      </mat-expansion-panel>
+      </#if>
 
     </mat-nav-list>
   </mat-sidenav>
@@ -198,9 +188,9 @@
       <a *ngIf="Auth.token" (click)="logout()">Logout</a>
       </#if>
     </mat-toolbar>
-<#if FlowableModule!false>
+	<#if FlowableModule!false>
 	<div ng-view style="height: 100%;overflow: auto"></div>
-</#if>
+	</#if>
     
     <router-outlet></router-outlet>
     <bottom-tab-nav (onNavMenuClicked)="drawer.toggle()" *ngIf=" (Global.isSmallDevice$ | async)" class="fc-bottom-nav">

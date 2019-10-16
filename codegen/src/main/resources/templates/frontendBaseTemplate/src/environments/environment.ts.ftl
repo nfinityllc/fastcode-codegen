@@ -5,8 +5,9 @@
 export const environment = {
   production: false,
   apiUrl:  '/api', //'https://localhost:5555',
-  loginType:'[=AuthenticationType]',
-  authUrl: '/api', //'http://localhost:5555'
+  loginType:'database',
+  authUrl: '/api', //'http://localhost:5555',
+  flowableUrl: 'localhost:8080',
 };
 
 /*

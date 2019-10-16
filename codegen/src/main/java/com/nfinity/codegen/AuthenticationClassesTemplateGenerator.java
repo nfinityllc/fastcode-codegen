@@ -589,7 +589,7 @@ public class AuthenticationClassesTemplateGenerator {
 		authorizationEntities.add("userpermission");
 
 		CodeGenerator.updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
-		CodeGenerator.updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType);
+		CodeGenerator.updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType, flowable);
 
 		authorizationEntities.add("login");
 		authorizationEntities.add("core");

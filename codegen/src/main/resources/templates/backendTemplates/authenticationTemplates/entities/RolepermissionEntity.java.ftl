@@ -24,6 +24,11 @@ public class RolepermissionEntity<#if Audit!false> extends AuditedEntity<String>
  
   public RolepermissionEntity() {
   }
+  
+  public RolepermissionEntity(Long permissionId, Long roleId) {
+	  this.roleId = roleId;
+	  this.permissionId = permissionId;
+  }
 
   @ManyToOne
   @JoinColumn(name = "permissionId", insertable=false, updatable=false)

@@ -15,7 +15,7 @@ import { IInvolvePeopleDialogConfig } from './involve-people-dialog-config';
 })
 export class InvolvePeopleComponent implements OnInit {
   users: any[] = [];
-  @ViewChild(MatSelectionList, { read: true, static: true }) selectionList: MatSelectionList;
+  @ViewChild(MatSelectionList, { static: true }) selectionList: MatSelectionList;
 
   hasNextPage: boolean;
 

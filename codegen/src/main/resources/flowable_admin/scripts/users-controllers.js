@@ -80,7 +80,7 @@ flowableAdminApp.controller('UsersController', ['$scope', '$rootScope', '$http',
 
 		$scope.deleteUser = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/user-delete-popup.html',
+				templateUrl: 'flowable_admin/views/user-delete-popup.html',
 				controller: 'DeleteUserModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -98,7 +98,7 @@ flowableAdminApp.controller('UsersController', ['$scope', '$rootScope', '$http',
 
 		$scope.editUser = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/user-edit-popup.html',
+				templateUrl: 'flowable_admin/views/user-edit-popup.html',
 				controller: 'EditUserModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -113,7 +113,7 @@ flowableAdminApp.controller('UsersController', ['$scope', '$rootScope', '$http',
 
 		$scope.changePassword = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/user-change-password-popup.html',
+				templateUrl: 'flowable_admin/views/user-change-password-popup.html',
 				controller: 'ChangePasswordModalInstanceCtrl',
 				resolve: resolve
 			});
@@ -127,7 +127,7 @@ flowableAdminApp.controller('UsersController', ['$scope', '$rootScope', '$http',
 
 		$scope.newUser = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/user-new-popup.html',
+				templateUrl: 'flowable_admin/views/user-new-popup.html',
 				controller: 'NewUserModalInstanceCtrl',
 				resolve: resolve
 			});

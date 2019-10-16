@@ -30,18 +30,18 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
         $scope.tabData.activeTab = $scope.tabData.tabs[0].id;
 
         $scope.returnToList = function () {
-            $location.path("/case-instances");
+            $location.path("/flowable-admin/case-instances");
         };
 
         $scope.openTask = function (task) {
             if (task && task.getProperty('id')) {
-                $location.path("/cmmn-task/" + task.getProperty('id'));
+                $location.path("/flowable-admin/cmmn-task/" + task.getProperty('id'));
             }
         };
 
         $scope.openJob = function (job) {
             if (job && job.getProperty('id')) {
-                $location.path("/job/" + job.getProperty('id'));
+                $location.path("/flowable-admin/job/" + job.getProperty('id'));
             }
         };
 
@@ -53,7 +53,7 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
                 } else {
                     id = instance;
                 }
-                $location.path("/case-instance/" + id);
+                $location.path("/flowable-admin/case-instance/" + id);
             }
         };
 
@@ -62,24 +62,24 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
             $rootScope.filters.forced.cmmnTaskFilter = {
                 caseInstanceId: $scope.caseInstance.id
             };
-            $location.path("/cmmn-tasks");
+            $location.path("/flowable-admin/cmmn-tasks");
         };
 
         $scope.openCaseDefinition = function (caseDefinitionId) {
             if (caseDefinitionId) {
-                $location.path("/case-definition/" + caseDefinitionId);
+                $location.path("/flowable-admin/case-definition/" + caseDefinitionId);
             }
         };
 
         $scope.openDecisionTable = function (decisionTable) {
             if (decisionTable && decisionTable.getProperty('id')) {
-                $location.path("/decision-table-execution/" + decisionTable.getProperty('id'));
+                $location.path("/flowable-admin/decision-table-execution/" + decisionTable.getProperty('id'));
             }
         };
 
         $scope.openFormInstance = function (submittedForm) {
             if (submittedForm && submittedForm.getProperty('id')) {
-                $location.path("/form-instance/" + submittedForm.getProperty('id'));
+                $location.path("/flowable-admin/form-instance/" + submittedForm.getProperty('id'));
             }
         };
 
@@ -268,7 +268,7 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
             $rootScope.filters.forced.jobFilter = {
                 caseInstanceId: $scope.caseInstance.id
             };
-            $location.path("/jobs");
+            $location.path("/flowable-admin/jobs");
         };
 
         $scope.loadTasks = function () {
@@ -351,7 +351,7 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
                 action = "delete";
             }
             var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/case-instance-delete-popup.html',
+                templateUrl: 'flowable_admin/views/case-instance-delete-popup.html',
                 controller: 'DeleteCaseModalInstanceCtrl',
                 resolve: {
                     process: function () {
@@ -380,7 +380,7 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
             if ($scope.selectedVariables && $scope.selectedVariables.length > 0) {
                 var selectedVariable = $scope.selectedVariables[0];
                 var modalInstance = $modal.open({
-                    templateUrl: 'src/flowable_admin/views/update-variable-popup.html',
+                    templateUrl: 'flowable_admin/views/update-variable-popup.html',
                     controller: 'UpdateCaseInstanceVariableCtrl',
                     resolve: {
                         variable: function () {
@@ -405,7 +405,7 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
             if ($scope.selectedVariables && $scope.selectedVariables.length > 0) {
                 var selectedVariable = $scope.selectedVariables[0];
                 var modalInstance = $modal.open({
-                    templateUrl: 'src/flowable_admin/views/variable-delete-popup.html',
+                    templateUrl: 'flowable_admin/views/variable-delete-popup.html',
                     controller: 'DeleteCaseInstanceVariableCtrl',
                     resolve: {
                         variable: function () {
@@ -428,7 +428,7 @@ flowableAdminApp.controller('CaseInstanceController', ['$scope', '$rootScope', '
 
         $scope.addVariable = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'src/flowable_admin/views/variable-add-popup.html',
+                templateUrl: 'flowable_admin/views/variable-add-popup.html',
                 controller: 'AddCaseInstanceVariableCtrl',
                 resolve: {
                     caseInstanceId: function () {

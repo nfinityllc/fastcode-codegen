@@ -84,7 +84,7 @@ public class UserAppService implements IUserAppService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(value="User", key = "#userId")
 	public UpdateUserOutput Update(Long userId, UpdateUserInput input) {
-	
+
 		UserEntity user = mapper.UpdateUserInputToUserEntity(input);
 	  	if(input.getRoleId()!=null) {
 		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
