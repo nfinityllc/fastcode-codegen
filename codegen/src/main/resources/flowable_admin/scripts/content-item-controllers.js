@@ -20,12 +20,12 @@ flowableAdminApp.controller('ContentItemController', ['$rootScope', '$scope', '$
         $rootScope.navigation = {main: 'content-engine', sub: 'content-items'};
 
         $scope.returnToList = function () {
-            $location.path("/content-items");
+            $location.path("/flowable-admin/content-items");
         };
 
         $scope.showContentItem = function () {
             $modal.open({
-                templateUrl: 'src/flowable_admin/views/form-render-popup.html',
+                templateUrl: 'flowable_admin/views/form-render-popup.html',
                 windowClass: 'modal modal-full-width',
                 controller: 'ShowFormRenderPopupCtrl',
                 resolve: {

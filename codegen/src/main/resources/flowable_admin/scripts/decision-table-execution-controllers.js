@@ -18,12 +18,12 @@ flowableAdminApp.controller('DecisionTableExecutionController', ['$scope', '$roo
         $rootScope.navigation = {main: 'dmn-engine', sub: 'executions'};
 
         $scope.returnToList = function () {
-            $location.path("/decision-table-executions");
+            $location.path("/flowable-admin/decision-table-executions");
         };
 
         $scope.openDecisionTable = function (definition) {
             if (definition && definition.getProperty('id')) {
-                $location.path("/decision-table/" + definition.getProperty('id'));
+                $location.path("/flowable-admin/decision-table/" + definition.getProperty('id'));
             }
         };
 

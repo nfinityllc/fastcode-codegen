@@ -1,7 +1,7 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.User.Dto;
 
 
-import java.sql.Date;
+import java.util.Date;
 
 public class FindUserByIdOutput {
 
@@ -28,7 +28,7 @@ public class FindUserByIdOutput {
     </#if>
     private String authenticationSource;     
     private Long roleId;       
-    private String rolesName;
+     private String roleDescriptiveField;
     
     public Long getRoleId() {
    		return roleId;
@@ -37,12 +37,12 @@ public class FindUserByIdOutput {
   	public void setRoleId(Long roleId){
   		 this.roleId = roleId;
     }
-    public String getRolesName() {
-    	return rolesName;
+    public String getRoleDescriptiveField() {
+    	return roleDescriptiveField;
     }
 
-  	public void setRolesName(String rolesName){
-   		this.rolesName = rolesName;
+  	public void setRoleDescriptiveField(String roleDescriptiveField){
+   		this.roleDescriptiveField = roleDescriptiveField;
   	}
     
     public String getAuthenticationSource() {

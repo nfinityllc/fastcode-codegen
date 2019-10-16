@@ -1,8 +1,8 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable].Dto;
 
-import java.sql.Date;
+import java.util.Date;
 
-public class FindUserByNameOutput {
+public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "UserName">[=authValue.fieldName?cap_first]</#if></#list><#else>Name</#if>Output {
 
 	private Long id;
 	private int accessFailedCount;
@@ -26,8 +26,8 @@ public class FindUserByNameOutput {
     private java.util.Date lastModificationTime;
     </#if>
     private String authenticationSource;
-     private Long roleId;       
-    private String rolesName;
+    private Long roleId;       
+    private String roleDescriptiveField;
     
     public Long getRoleId() {
    		return roleId;
@@ -36,12 +36,12 @@ public class FindUserByNameOutput {
   	public void setRoleId(Long roleId){
   		 this.roleId = roleId;
     }
-    public String getRolesName() {
-    	return rolesName;
+    public String getRoleDescriptiveField() {
+    	return roleDescriptiveField;
     }
 
-  	public void setRolesName(String roleName){
-   		this.rolesName = rolesName;
+  	public void setRoleDescriptiveField(String roleDescriptiveField){
+   		this.roleDescriptiveField = roleDescriptiveField;
   	}
     
     public String getAuthenticationSource() {

@@ -1,10 +1,14 @@
 package com.nfinity.codegen;
 
+import com.google.common.base.CaseFormat;
 import com.nfinity.entitycodegen.BaseAppGen;
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
 import com.nfinity.entitycodegen.GetUserInput;
 import com.nfinity.entitycodegen.UserInput;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,10 +28,13 @@ public class CodegenApplication implements ApplicationRunner {
 	public static UserInput composeInput(FastCodeProperties configProperties) {
 		UserInput input = new UserInput();
 		Scanner scanner = new Scanner(System.in);
-		System.out.println(" v " + root.get("c") + "\n ss " + root.get("s"));
+		//System.out.println(" v " + root.get("c") + "\n ss " + root.get("s"));
 		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// /Users/getachew/fc/exer/root
+		input.setUpgrade(root.get("upgrade") == null
+				? false
+						: (root.get("upgrade").toLowerCase().equals("true") ? true : false));
 		input.setConnectionStr(root.get("c") != null ? root.get("c")
 				: (configProperties.getConnectionStr() != null ? configProperties.getConnectionStr()
 						: GetUserInput.getInput(scanner, "DB Connection String")));
@@ -38,62 +45,119 @@ public class CodegenApplication implements ApplicationRunner {
 				root.get("a") == null ? GetUserInput.getInput(scanner, "application name") : root.get("a"));
 		input.setGenerationType(
 				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
-		input.setAudit(root.get("audit") == null
-				? false//(GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
-				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+
+		//		input.setAudit(root.get("audit") == null
+		//				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
+		//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 		input.setEmail(root.get("email") == null
-				? false//(GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
-				: (root.get("email").toLowerCase().equals("true") ? true : false));
+				? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
+						: (root.get("email").toLowerCase().equals("true") ? true : false));
 		input.setScheduler(root.get("scheduler") == null
-				? false//(GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false)
-				: (root.get("scheduler").toLowerCase().equals("true") ? true : false));
+				? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false)
+						: (root.get("scheduler").toLowerCase().equals("true") ? true : false));
 		input.setFlowable(root.get("flowable") == null
-				? false//(GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false)
-				: (root.get("flowable").toLowerCase().equals("true") ? true : false));
+				? (GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false)
+						: (root.get("flowable").toLowerCase().equals("true") ? true : false));
 		input.setHistory(root.get("h") == null
-				? true//(GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
-				: (root.get("h").toLowerCase().equals("true") ? true : false));
-		
+				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
+						: (root.get("h").toLowerCase().equals("true") ? true : false));
+
 		System.out.print("\nSelect Authentication and Authorization method :");
 		System.out.print("\n1. none");
 		System.out.print("\n2. database");
 		System.out.print("\n3. ldap");
-		System.out.print("\nEnter 1,2,or 3 : ");
-		int value = 1;//scanner.nextInt();
-		while (value < 1 || value > 3) {
+
+		System.out.print("\n4. oidc");
+		System.out.print("\nEnter 1,2,3 or 4 : ");
+		int value = scanner.nextInt();
+		while (value < 1 || value > 4) {
+
 			System.out.println("\nInvalid Input \nEnter again :");
 			value = scanner.nextInt();
 		}
 		if (value == 1) {
 			input.setAuthenticationType("none");
-		} else if (value == 2) {
-			input.setAuthenticationType("database");
+		} 
+		else if (value>1) {
+			scanner.nextLine();
+			System.out.print("\nDo you want to enable auditing ? (y/n)");
+			String str= scanner.nextLine();
+			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes") )
+			{
+				input.setAudit(true);
+			}
+			System.out.print("\nDo you have your own user table? (y/n)");
+			str= scanner.nextLine();
+			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes"))
+			{
+				System.out.print("\nEnter table name :");
+				str= scanner.nextLine();
+				if(str.contains("_"))
+				{
+					str=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
+				}
+				input.setAuthenticationSchema(str.substring(0, 1).toUpperCase() + str.substring(1));
+			}
+
+			if (value == 2) {
+				input.setAuthenticationType("database");
+			}
+			else if (value == 3) {
+				input.setAuthenticationType("ldap");
+			}
+			else if (value == 4) {
+				input.setAuthenticationType("oidc");
+			}
 		}
-		else if (value == 3) {
-			input.setAuthenticationType("ldap");
-		}
-		
-		
-//		input.setDatabaseAuthentication(root.get("db-autentication") == null
-//				? (GetUserInput.getInput(scanner, "database authentication").toLowerCase().equals("true") ? true : false)
-//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
+
+		//		input.setDatabaseAuthentication(root.get("db-autentication") == null
+		//				? (GetUserInput.getInput(scanner, "database authentication").toLowerCase().equals("true") ? true : false)
+		//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 
 		return input;
 	}
 
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 		FastCodeProperties configProperties = context.getBean(FastCodeProperties.class);
 
 		UserInput input = composeInput(configProperties);
 
-		if (configProperties.getUseGit() != null
-				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
-				: false) {
-			if(GitRepositoryManager.hasUncommittedChanges(input.getDestinationPath())) {
+
+		File dir = new File(input.getDestinationPath());
+		if(!dir.exists()) {
+			dir.mkdirs();
+		};
+
+		GitRepositoryManager.setDestinationPath(input.getDestinationPath());
+		String sourceBranch = "";
+		if(GitRepositoryManager.isGitInstalled()) {
+			if(!GitRepositoryManager.isGitInitialized()) {
+				GitRepositoryManager.initializeGit();
+				System.out.print("Git repository initialized.");
+			}
+			//Clean up old files if needed
+		}
+		else {
+			System.out.print("Git repository could not be initialized, as Git is not installed on your system.");
+			return;
+		}
+		if(input.getUpgrade()) {
+			if(GitRepositoryManager.hasUncommittedChanges()) {
 				System.out.print("\nGit has uncommitted changes. ");
 				return;
 			}
+			else {
+				sourceBranch = GitRepositoryManager.getCurrentBranch();
+				if(!GitRepositoryManager.createUpgradeBranch()) {
+					System.out.print("Unable to create upgrade branch.");
+					return;
+				}
+			}
+		}
+		else {
+			GitRepositoryManager.CopyGitFiles();
+
 		}
 
 		String groupArtifactId = input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
@@ -111,58 +175,55 @@ public class CodegenApplication implements ApplicationRunner {
 		{
 			dependencies = dependencies.concat(",mail");
 		}
-		
-		
+
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
-				input.getAudit());
-		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler());
+				input.getAudit(),input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
+
+		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory(),input.getFlowable());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
-		
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
-		
-		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client", input.getEmail(), input.getScheduler(), input.getFlowable(), input.getAuthenticationType() );
-		
+
+		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId + "Client",input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema());
+
+		if(input.getFlowable()) {
+			FlowableBackendCodeGenerator.generateFlowableClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAuthenticationType(), input.getAuthenticationSchema(),input.getSchemaName(), details, input.getHistory());
+		}
+
 		if(!input.getAuthenticationType().equals("none"))
 		{
-        AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath() + "/" + artifactId, groupArtifactId, input.getAudit(),
-				input.getHistory(),input.getFlowable(),input.getAuthenticationType(),input.getSchemaName());
+			AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath(), groupArtifactId, input.getAudit(),
+					input.getHistory(),input.getFlowable(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema(),details);
 		}
-		
+
 		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),
 				input.getHistory(),
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
-				input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
-				input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail());
-		
+						input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
+						input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail(),input.getFlowable(),input.getAuthenticationSchema());
+
 		if(input.getEmail())
-        {
-        	EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
-        }
-        if(input.getScheduler())
-        {
-        	SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName(),
-        			input.getConnectionStr());
-        }
-        if(input.getFlowable())
-        {
-        	FlowableFrontendCodeGenerator.generate(input.getDestinationPath(), artifactId + "Client");
-        }
-
-		try {
-			Thread.sleep(28000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		{
+			EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
+		}
+		if(input.getScheduler())
+		{
+			SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName(),
+					input.getConnectionStr());
+		}
+		if(input.getFlowable())
+		{
+			FlowableFrontendCodeGenerator.generate(input.getDestinationPath(), artifactId + "Client");
 		}
 
-		if (configProperties.getUseGit() != null
-				? (configProperties.getUseGit().equalsIgnoreCase("true") ? true : false)
-				: false) {
-			GitRepositoryManager.addToGitRepository(input.getDestinationPath());
-		}
+		GitRepositoryManager.addToGitRepository(input.getUpgrade(), sourceBranch);
+
+		System.out.println("\n Code generation Completed ...");
+		System.exit(1);
+
 	}
 
 	@Override
@@ -194,7 +255,7 @@ public class CodegenApplication implements ApplicationRunner {
 
 			return connectionStr.isPresent()
 					? (connectionStr.get() + "username=" + username.get() + ";password=" + password.get())
-					: null;
+							: null;
 		}
 
 		@Value("${fastCode.bootVersion}")

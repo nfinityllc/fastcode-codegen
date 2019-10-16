@@ -27,7 +27,7 @@ describe('[=ClassName]NewComponent', () => {
 		[=key]: true,
 			<#elseif value.fieldType?lower_case == "string">              
 		[=key]: '[=key][=counter]',
-			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "int">              
+			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "double" ||  value.fieldType?lower_case == "short">              
 		[=key]: [=counter],
 			</#if> 
 		</#list>    };

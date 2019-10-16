@@ -42,255 +42,255 @@ flowableAdminApp
     .config(['$routeProvider', '$httpProvider', '$translateProvider', '$provide',
         function ($routeProvider, $httpProvider, $translateProvider, $provide) {
             $routeProvider
-            	.when('/login', {
-            		templateUrl: 'src/flowable_admin/views/login.html',
+            	.when('/flowable-admin/login', {
+            		templateUrl: 'flowable_admin/views/login.html',
             		controller: 'LoginController'
             	})
-                .when('/process-engine', {
-                    templateUrl: 'src/flowable_admin/views/deployments.html',
+                .when('/flowable-admin/process-engine', {
+                    templateUrl: 'flowable_admin/views/deployments.html',
                     controller: 'DeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/cmmn-engine', {
-                    templateUrl: 'src/flowable_admin/views/cmmn-deployments.html',
+                .when('/flowable-admin/cmmn-engine', {
+                    templateUrl: 'flowable_admin/views/cmmn-deployments.html',
                     controller: 'CmmnDeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/app-engine', {
-                    templateUrl: 'src/flowable_admin/views/app-deployments.html',
+                .when('/flowable-admin/app-engine', {
+                    templateUrl: 'flowable_admin/views/app-deployments.html',
                     controller: 'AppDeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/form-engine', {
-                    templateUrl: 'src/flowable_admin/views/form-deployments.html',
+                .when('/flowable-admin/form-engine', {
+                    templateUrl: 'flowable_admin/views/form-deployments.html',
                     controller: 'FormDeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/dmn-engine', {
-                    templateUrl: 'src/flowable_admin/views/decision-table-deployments.html',
+                .when('/flowable-admin/dmn-engine', {
+                    templateUrl: 'flowable_admin/views/decision-table-deployments.html',
                     controller: 'DecisionTableDeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/content-engine', {
-                    templateUrl: 'src/flowable_admin/views/content-items.html',
+                .when('/flowable-admin/content-engine', {
+                    templateUrl: 'flowable_admin/views/content-items.html',
                     controller: 'ContentItemsController',
                     reloadOnSearch: true
                 })
-                .when('/process-definitions', {
-                    templateUrl: 'src/flowable_admin/views/process-definitions.html',
+                .when('/flowable-admin/process-definitions', {
+                    templateUrl: 'flowable_admin/views/process-definitions.html',
                     controller: 'ProcessDefinitionsController',
                     reloadOnSearch: true
                 })
-                .when('/process-definition/:definitionId', {
-                    templateUrl: 'src/flowable_admin/views/process-definition.html',
+                .when('/flowable-admin/process-definition/:definitionId', {
+                    templateUrl: 'flowable_admin/views/process-definition.html',
                     controller: 'ProcessDefinitionController',
                     reloadOnSearch: true
                 })
-                .when('/deployments', {
-                    templateUrl: 'src/flowable_admin/views/deployments.html',
+                .when('/flowable-admin/deployments', {
+                    templateUrl: 'flowable_admin/views/deployments.html',
                     controller: 'DeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/deployment/:deploymentId', {
-                    templateUrl: 'src/flowable_admin/views/deployment.html',
+                .when('/flowable-admin/deployment/:deploymentId', {
+                    templateUrl: 'flowable_admin/views/deployment.html',
                     controller: 'DeploymentController',
                     reloadOnSearch: true
                 })
-                .when('/process-instances', {
-                    templateUrl: 'src/flowable_admin/views/process-instances.html',
+                .when('/flowable-admin/process-instances', {
+                    templateUrl: 'flowable_admin/views/process-instances.html',
                     controller: 'ProcessInstancesController',
                     reloadOnSearch: true
                 })
-                .when('/process-instance/:processInstanceId', {
-                	templateUrl: 'src/flowable_admin/views/process-instance.html',
+                .when('/flowable-admin/process-instance/:processInstanceId', {
+                	templateUrl: 'flowable_admin/views/process-instance.html',
                 	controller: 'ProcessInstanceController',
                   	reloadOnSearch: true
                 })
-                .when('/tasks', {
-                	templateUrl: 'src/flowable_admin/views/tasks.html',
+                .when('/flowable-admin/tasks', {
+                	templateUrl: 'flowable_admin/views/tasks.html',
                 	controller: 'TasksController',
                  	reloadOnSearch: true
                 })
-                .when('/task/:taskId', {
-                	templateUrl: 'src/flowable_admin/views/task.html',
+                .when('/flowable-admin/task/:taskId', {
+                	templateUrl: 'flowable_admin/views/task.html',
                 	controller: 'TaskController',
                   	reloadOnSearch: true
                 })
-                .when('/jobs', {
-                	templateUrl: 'src/flowable_admin/views/jobs.html',
+                .when('/flowable-admin/jobs', {
+                	templateUrl: 'flowable_admin/views/jobs.html',
                 	controller: 'JobsController',
                   	reloadOnSearch: true
                 })
-                .when('/job/:jobId', {
-                	templateUrl: 'src/flowable_admin/views/job.html',
+                .when('/flowable-admin/job/:jobId', {
+                	templateUrl: 'flowable_admin/views/job.html',
                 	controller: 'JobController',
                   	reloadOnSearch: true
                 })
-                .when('/event-subscriptions', {
-                	templateUrl: 'src/flowable_admin/views/event-subscriptions.html',
+                .when('/flowable-admin/event-subscriptions', {
+                	templateUrl: 'flowable_admin/views/event-subscriptions.html',
                 	controller: 'EventSubscriptionsController',
                   	reloadOnSearch: true
                 })
-                .when('/event-subscriptions/:eventSubscriptionId', {
-                	templateUrl: 'src/flowable_admin/views/event-subscription.html',
+                .when('/flowable-admin/event-subscriptions/:eventSubscriptionId', {
+                	templateUrl: 'flowable_admin/views/event-subscription.html',
                 	controller: 'EventSubscriptionController',
                   	reloadOnSearch: true
                 })
-                .when('/users', {
-                	templateUrl: 'src/flowable_admin/views/users.html',
+                .when('/flowable-admin/users', {
+                	templateUrl: 'flowable_admin/views/users.html',
                 	controller: 'UsersController',
                   	reloadOnSearch: true
                 })
-                .when('/engine', {
-                    templateUrl: 'src/flowable_admin/views/engine.html',
+                .when('/flowable-admin/engine', {
+                    templateUrl: 'flowable_admin/views/engine.html',
                     controller: 'EngineController',
                     reloadOnSearch: true
                 })
-                .when('/monitoring', {
-                    templateUrl: 'src/flowable_admin/views/monitoring.html',
+                .when('/flowable-admin/monitoring', {
+                    templateUrl: 'flowable_admin/views/monitoring.html',
                     controller: 'MonitoringController',
                     reloadOnSearch: true
                 })
-              	.when('/process-definitions-refresh', {
-              		redirectTo: '/process-definitions'
+              	.when('/flowable-admin/process-definitions-refresh', {
+              		redirectTo: '/flowable-admin/process-definitions'
               	})
-              	.when('/cmmn-deployments', {
-                    templateUrl: 'src/flowable_admin/views/cmmn-deployments.html',
+              	.when('/flowable-admin/cmmn-deployments', {
+                    templateUrl: 'flowable_admin/views/cmmn-deployments.html',
                     controller: 'CmmnDeploymentsController',
                     reloadOnSearch: true
                 })
-              	.when('/cmmn-deployment/:deploymentId', {
-                    templateUrl: 'src/flowable_admin/views/cmmn-deployment.html',
+              	.when('/flowable-admin/cmmn-deployment/:deploymentId', {
+                    templateUrl: 'flowable_admin/views/cmmn-deployment.html',
                     controller: 'CmmnDeploymentController',
                     reloadOnSearch: true
                 })
-                .when('/case-definitions', {
-                    templateUrl: 'src/flowable_admin/views/case-definitions.html',
+                .when('/flowable-admin/case-definitions', {
+                    templateUrl: 'flowable_admin/views/case-definitions.html',
                     controller: 'CaseDefinitionsController',
                     reloadOnSearch: true
                 })
-                .when('/case-definition/:definitionId', {
-                    templateUrl: 'src/flowable_admin/views/case-definition.html',
+                .when('/flowable-admin/case-definition/:definitionId', {
+                    templateUrl: 'flowable_admin/views/case-definition.html',
                     controller: 'CaseDefinitionController',
                     reloadOnSearch: true
                 })
-                .when('/case-instances', {
-                    templateUrl: 'src/flowable_admin/views/case-instances.html',
+                .when('/flowable-admin/case-instances', {
+                    templateUrl: 'flowable_admin/views/case-instances.html',
                     controller: 'CaseInstancesController',
                     reloadOnSearch: true
                 })
-                .when('/case-instance/:caseInstanceId', {
-                    templateUrl: 'src/flowable_admin/views/case-instance.html',
+                .when('/flowable-admin/case-instance/:caseInstanceId', {
+                    templateUrl: 'flowable_admin/views/case-instance.html',
                     controller: 'CaseInstanceController',
                     reloadOnSearch: true
                 })
-                .when('/cmmn-tasks', {
-                    templateUrl: 'src/flowable_admin/views/cmmn-tasks.html',
+                .when('/flowable-admin/cmmn-tasks', {
+                    templateUrl: 'flowable_admin/views/cmmn-tasks.html',
                     controller: 'CmmnTasksController',
                     reloadOnSearch: true
                 })
-                .when('/cmmn-task/:taskId', {
-                    templateUrl: 'src/flowable_admin/views/cmmn-task.html',
+                .when('/flowable-admin/cmmn-task/:taskId', {
+                    templateUrl: 'flowable_admin/views/cmmn-task.html',
                     controller: 'CmmnTaskController',
                     reloadOnSearch: true
                 })
-                .when('/cmmn-jobs', {
-                    templateUrl: 'src/flowable_admin/views/cmmn-jobs.html',
+                .when('/flowable-admin/cmmn-jobs', {
+                    templateUrl: 'flowable_admin/views/cmmn-jobs.html',
                     controller: 'CmmnJobsController',
                     reloadOnSearch: true
                 })
-                .when('/cmmn-job/:jobId', {
-                    templateUrl: 'src/flowable_admin/views/cmmn-job.html',
+                .when('/flowable-admin/cmmn-job/:jobId', {
+                    templateUrl: 'flowable_admin/views/cmmn-job.html',
                     controller: 'CmmnJobController',
                     reloadOnSearch: true
                 })
-                .when('/app-deployments', {
-                    templateUrl: 'src/flowable_admin/views/app-deployments.html',
+                .when('/flowable-admin/app-deployments', {
+                    templateUrl: 'flowable_admin/views/app-deployments.html',
                     controller: 'AppDeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/app-deployment/:deploymentId', {
-                    templateUrl: 'src/flowable_admin/views/app-deployment.html',
+                .when('/flowable-admin/app-deployment/:deploymentId', {
+                    templateUrl: 'flowable_admin/views/app-deployment.html',
                     controller: 'AppDeploymentController',
                     reloadOnSearch: true
                 })
-                .when('/app-definitions', {
-                    templateUrl: 'src/flowable_admin/views/app-definitions.html',
+                .when('/flowable-admin/app-definitions', {
+                    templateUrl: 'flowable_admin/views/app-definitions.html',
                     controller: 'AppDefinitionsController',
                     reloadOnSearch: true
                 })
-                .when('/app-definition/:definitionId', {
-                    templateUrl: 'src/flowable_admin/views/app-definition.html',
+                .when('/flowable-admin/app-definition/:definitionId', {
+                    templateUrl: 'flowable_admin/views/app-definition.html',
                     controller: 'AppDefinitionController',
                     reloadOnSearch: true
                 })
-                .when('/decision-table-deployments', {
-                    templateUrl: 'src/flowable_admin/views/decision-table-deployments.html',
+                .when('/flowable-admin/decision-table-deployments', {
+                    templateUrl: 'flowable_admin/views/decision-table-deployments.html',
                     controller: 'DecisionTableDeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/decision-table-deployment/:deploymentId', {
-                    templateUrl: 'src/flowable_admin/views/decision-table-deployment.html',
+                .when('/flowable-admin/decision-table-deployment/:deploymentId', {
+                    templateUrl: 'flowable_admin/views/decision-table-deployment.html',
                     controller: 'DecisionTableDeploymentController',
                     reloadOnSearch: true
                 })
-                .when('/decision-tables', {
-                    templateUrl: 'src/flowable_admin/views/decision-tables.html',
+                .when('/flowable-admin/decision-tables', {
+                    templateUrl: 'flowable_admin/views/decision-tables.html',
                     controller: 'DecisionTablesController',
                     reloadOnSearch: true
                 })
-                .when('/decision-table/:decisionTableId', {
-                    templateUrl: 'src/flowable_admin/views/decision-table.html',
+                .when('/flowable-admin/decision-table/:decisionTableId', {
+                    templateUrl: 'flowable_admin/views/decision-table.html',
                     controller: 'DecisionTableController',
                     reloadOnSearch: true
                 })
-                .when('/decision-table-executions', {
-                    templateUrl: 'src/flowable_admin/views/decision-table-executions.html',
+                .when('/flowable-admin/decision-table-executions', {
+                    templateUrl: 'flowable_admin/views/decision-table-executions.html',
                     controller: 'DecisionTableExecutionsController',
                     reloadOnSearch: true
                 })
-                .when('/decision-table-execution/:executionId', {
-                    templateUrl: 'src/flowable_admin/views/decision-table-execution.html',
+                .when('/flowable-admin/decision-table-execution/:executionId', {
+                    templateUrl: 'flowable_admin/views/decision-table-execution.html',
                     controller: 'DecisionTableExecutionController',
                     reloadOnSearch: true
                 })
-                .when('/form-deployments', {
-                    templateUrl: 'src/flowable_admin/views/form-deployments.html',
+                .when('/flowable-admin/form-deployments', {
+                    templateUrl: 'flowable_admin/views/form-deployments.html',
                     controller: 'FormDeploymentsController',
                     reloadOnSearch: true
                 })
-                .when('/form-deployment/:formDeploymentId', {
-                    templateUrl: 'src/flowable_admin/views/form-deployment.html',
+                .when('/flowable-admin/form-deployment/:formDeploymentId', {
+                    templateUrl: 'flowable_admin/views/form-deployment.html',
                     controller: 'FormDeploymentController',
                     reloadOnSearch: true
                 })
-                .when('/form-definitions', {
-                    templateUrl: 'src/flowable_admin/views/form-definitions.html',
+                .when('/flowable-admin/form-definitions', {
+                    templateUrl: 'flowable_admin/views/form-definitions.html',
                     controller: 'FormDefinitionsController',
                     reloadOnSearch: true
                 })
-                .when('/form-instances', {
-                    templateUrl: 'src/flowable_admin/views/form-instances.html',
+                .when('/flowable-admin/form-instances', {
+                    templateUrl: 'flowable_admin/views/form-instances.html',
                     controller: 'FormInstancesController',
                     reloadOnSearch: true
                 })
-                .when('/form-definition/:formId', {
-                    templateUrl: 'src/flowable_admin/views/form-definition.html',
+                .when('/flowable-admin/form-definition/:formId', {
+                    templateUrl: 'flowable_admin/views/form-definition.html',
                     controller: 'FormDefinitionController',
                     reloadOnSearch: true
                 })
-                .when('/form-instance/:formInstanceId', {
-                    templateUrl: 'src/flowable_admin/views/form-instance.html',
+                .when('/flowable-admin/form-instance/:formInstanceId', {
+                    templateUrl: 'flowable_admin/views/form-instance.html',
                     controller: 'FormInstanceController',
                     reloadOnSearch: true
                 })
-                .when('/content-items', {
-                    templateUrl: 'src/flowable_admin/views/content-items.html',
+                .when('/flowable-admin/content-items', {
+                    templateUrl: 'flowable_admin/views/content-items.html',
                     controller: 'ContentItemsController',
                     reloadOnSearch: true
                 })
-                .when('/content-item/:contentItemId', {
-                    templateUrl: 'src/flowable_admin/views/content-item.html',
+                .when('/flowable-admin/content-item/:contentItemId', {
+                    templateUrl: 'flowable_admin/views/content-item.html',
                     controller: 'ContentItemController',
                     reloadOnSearch: true
                 })
@@ -298,7 +298,7 @@ flowableAdminApp
 
             // Initialize angular-translate
             $translateProvider.useStaticFilesLoader({
-                prefix: 'src/flowable_admin/i18n/',
+                prefix: './flowable_admin/i18n/',
                 suffix: '.json'
             })
             /*

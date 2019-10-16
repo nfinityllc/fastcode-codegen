@@ -19,12 +19,12 @@ flowableAdminApp.controller('FormDefinitionController', ['$scope', '$rootScope',
         $rootScope.navigation = {main: 'form-engine', sub: 'definitions'};
 
         $scope.returnToList = function () {
-            $location.path("/form-definitions");
+            $location.path("/flowable-admin/form-definitions");
         };
 
         $scope.showForm = function () {
             $modal.open({
-                templateUrl: 'src/flowable_admin/views/form-popup.html',
+                templateUrl: 'flowable_admin/views/form-popup.html',
                 windowClass: 'modal modal-full-width',
                 controller: 'ShowFormPopupCtrl',
                 resolve: {
@@ -37,13 +37,13 @@ flowableAdminApp.controller('FormDefinitionController', ['$scope', '$rootScope',
 
         $scope.showFormInstance = function (formInstance) {
             if (formInstance && formInstance.getProperty('id')) {
-                $location.path("/form-instance/"+formInstance.getProperty('id'));
+                $location.path("/flowable-admin/form-instance/"+formInstance.getProperty('id'));
             }
         };
 
        $scope.openDeployment = function(deploymentId) {
             if (deploymentId) {
-                $location.path("/deployment/" + deploymentId);
+                $location.path("/flowable-admin/deployment/" + deploymentId);
             }
         };
 

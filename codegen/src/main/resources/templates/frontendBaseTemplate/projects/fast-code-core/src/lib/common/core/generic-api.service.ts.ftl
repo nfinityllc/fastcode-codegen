@@ -12,10 +12,10 @@ import { IForRootConf } from '../../IForRootConf';
 export class GenericApiService<T> {
   private url = "";
   private apiUrl = "";
-  private suffix = '';
+  public suffix = '';
   constructor(private http: HttpClient,  private config: IForRootConf, suffix: string) {
-    this.apiUrl = config.apiUrl;
-    this.url = config.apiUrl + '/' + suffix;
+    this.apiUrl = this.config.apiUrl;
+    this.url = this.config.apiUrl + '/' + suffix;
     this.suffix = suffix;
   }
 
@@ -28,9 +28,24 @@ export class GenericApiService<T> {
     }), catchError(this.handleError));
 
   }
+  
+  getChild(childSuffix : string, id:any) : Observable<any>{
+    return this.http
+      .get<T>(this.url + '/' + id + "/" + childSuffix).pipe(catchError(this.handleError));
+  }
+  
   getAssociations(parentSuffix: string, parentId: any, searchFields?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
 
     let url = this.apiUrl + '/' + parentSuffix + '/' + parentId + '/' + this.suffix;
+    let params = ServiceUtils.buildQueryData(searchFields, offset, limit, sort);
+    return this.http.get<T[]>(url, { params }).pipe(map((response: any) => {
+      return response;
+    }), catchError(this.handleError));
+  }
+
+  getAvailableAssociations(parentSuffix: string, parentId: any, searchFields?: ISearchField[], offset?: number, limit?: number, sort?: string): Observable<T[]> {
+
+    let url = this.apiUrl + '/' + parentSuffix + '/' + parentId + '/available' + this.suffix.charAt(0).toUpperCase() + this.suffix.slice(1);
     let params = ServiceUtils.buildQueryData(searchFields, offset, limit, sort);
     return this.http.get<T[]>(url, { params }).pipe(map((response: any) => {
       return response;
@@ -72,7 +87,7 @@ export class GenericApiService<T> {
       // A client-side or network error occurred. Handle it accordingly.
       errorMessage = 'An error occurred: ' + err.error.message;
     } else {
-
+      console.log(err);
       errorMessage = 'Server returned code: ' + err.status + ', error message is: ' + err.message;
     }
     console.error(errorMessage);

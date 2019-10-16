@@ -17,26 +17,39 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class PomFileModifier {
 
-	public static void update(String path,String authenticationType,Boolean scheduler) {
+	public static void update(String path,String authenticationType,Boolean scheduler,Boolean history,Boolean flowable) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
-		Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
-		Dependency javersCore = new Dependency("org.javers","javers-core","3.10.2");
 		Dependency mapstruct = new Dependency("org.mapstruct", "mapstruct", "1.2.0.Final");
 		Dependency querydsljpa = new Dependency("com.querydsl", "querydsl-jpa", "4.2.1");
 		Dependency querydslapt= new Dependency("com.querydsl", "querydsl-apt", "4.2.1");
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
 		
+		Dependency springFoxSwagger = new Dependency("io.springfox","springfox-swagger2","2.7.0");
+		Dependency springFoxSwaggerUI = new Dependency("io.springfox","springfox-swagger-ui","2.7.0");
+		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
+
+	    Dependency httpComponents = new Dependency("org.apache.httpcomponents","httpclient","4.5");
+
+	    if(flowable) {
+			Dependency flowableRest = new Dependency("org.flowable","flowable-spring-boot-starter-rest","6.4.1");
+			dependencies.add(flowableRest);
+		}
+
 		if(scheduler)
 		{
+			if(!history)
+			{
+				Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
+				dependencies.add(javersSql);
+			}
 			Dependency hibernate_cp = new Dependency("org.hibernate","hibernate-c3p0","4.3.6.Final");
 			dependencies.add(hibernate_cp);
 			Dependency apache_directory_server = new Dependency("org.apache.directory.server","apacheds-server-jndi","1.5.5");
@@ -48,26 +61,35 @@ public class PomFileModifier {
 		if(authenticationType !="none")
 		{
 			Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
-
 			dependencies.add(json_web_token);
-		}
-		if(authenticationType =="ldap")
-		{
 			Dependency ldap_security = new Dependency("org.springframework.security","spring-security-ldap","5.1.1.RELEASE");
 			dependencies.add(ldap_security);
+			Dependency nimbus= new Dependency("com.nimbusds","nimbus-jose-jwt","7.7");
+			dependencies.add(nimbus);
 		}
-		dependencies.add(javersSql);
-		dependencies.add(javersCore);
+		
+		if(history)
+		{
+			Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
+			Dependency javersCore = new Dependency("org.javers","javers-core","3.10.2");
+			dependencies.add(javersSql);
+			dependencies.add(javersCore);
+		}
+
 		dependencies.add(mapstruct);
 		dependencies.add(querydsljpa);
 		dependencies.add(querydslapt);
 		dependencies.add(apache_commons);
 		dependencies.add(postgres);
+		dependencies.add(springFoxSwagger);
+		dependencies.add(springFoxSwaggerUI);
+		dependencies.add(springFoxDataRest);
+		dependencies.add(httpComponents);
 		
-
 		PomFileModifier.addDependenciesAndPluginsToPom(path,dependencies);
 
 	}
+	
 	public static void addDependenciesAndPluginsToPom(String path, List<Dependency> dependencies) {
 
 		try {

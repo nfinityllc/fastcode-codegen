@@ -1,46 +1,29 @@
-package [=PackageName].domain.Authorization.Users;
+package [=PackageName].domain.Authorization.User;
 
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.model.UsersEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.model.UserEntity;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import [=CommonModulePackage].Search.SearchFields;
-
-import java.util.List;
-
-import javax.validation.constraints.Positive;
-
 
 public interface IUserManager {
-
     // CRUD Operations
-    public UsersEntity Create(UsersEntity user);
+    UserEntity Create(UserEntity user);
 
-    public void Delete(UsersEntity user);
+    void Delete(UserEntity user);
 
-    public UsersEntity Update(UsersEntity user);
+    UserEntity Update(UserEntity user);
 
-    public UsersEntity FindById(@Positive(message ="Id should be a positive value") Long userId);
+    UserEntity FindById(Long id);
+    
+    UserEntity FindByUserName(String userName);
 
-    public Page<UsersEntity> FindAll(Predicate predicate, Pageable pageable);
-
-    // Extra methods for internal use only - not exposed as ReST API methods
-    public UsersEntity FindByUserName(String userName);
- //Roles
-   public RolesEntity GetRoles(@Positive(message ="usersId should be a positive value") Long usersId);
+    Page<UserEntity> FindAll(Predicate predicate, Pageable pageable);
+   
+    //Role
+    public RoleEntity GetRole(Long userId);
+   
   
-  
-    //Permissions
-    public Boolean AddPermissions(UsersEntity users, PermissionsEntity permissions);
-
-    public void RemovePermissions(UsersEntity users, PermissionsEntity permissions);
-
-    public PermissionsEntity GetPermissions(@Positive(message ="usersId should be a positive value") Long usersId,@Positive(message ="PermissionsId should be a positive value") Long permissionsId);
-
-    public Page<PermissionsEntity> FindPermissions(@Positive(message ="usersId should be a positive value") Long usersId,List<SearchFields> fields,String operator,Pageable pageable);
- 
-  }
+}
 
 

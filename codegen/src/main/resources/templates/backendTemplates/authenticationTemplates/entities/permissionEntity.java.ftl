@@ -1,9 +1,9 @@
 package [=PackageName].domain.model;
 
-import [=PackageName].domain.model.RolesEntity;
+import [=PackageName].domain.model.RoleEntity;
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=PackageName].Audit.AuditedEntity;
+import [=PackageName].domain.BaseClasses.AuditedEntity;
 </#if>
 
 import javax.persistence.*;
@@ -12,17 +12,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Permissions")
+@Table(name = "Permission", schema = "[=SchemaName]")
 <#if Audit!false>
 @EntityListeners(AuditingEntityListener.class)
 </#if>
 
-public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class PermissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
     private Long id;
     private String name;
     private String displayName;
 
-    public PermissionsEntity() {
+    public PermissionEntity() {
+    }
+    
+    public PermissionEntity(String name, String displayName) {
+    	this.name = name;
+    	this.displayName = displayName;
     }
 
     @Id
@@ -59,8 +64,8 @@ public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PermissionsEntity)) return false;
-        PermissionsEntity permission = (PermissionsEntity) o;
+        if (!(o instanceof PermissionEntity)) return false;
+        PermissionEntity permission = (PermissionEntity) o;
         return id != null && id.equals(permission.id);
     }
 
@@ -69,16 +74,29 @@ public class PermissionsEntity <#if Audit!false>extends AuditedEntity<String></#
         return 31;
     }
 
-    @ManyToMany(mappedBy = "permissions")
-    public Set<RolesEntity> getRoles() { return roles; }
-    public void setRoles(Set<RolesEntity> roles) { this.roles = roles; }
-    private Set<RolesEntity> roles = new HashSet<>();
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<RolepermissionEntity> getRolepermissionSet() { 
+      return rolepermissionSet; 
+    } 
+ 
+    public void setRolepermissionSet(Set<RolepermissionEntity> rolepermission) { 
+      this.rolepermissionSet = rolepermission; 
+    } 
+ 
+    private Set<RolepermissionEntity> rolepermissionSet = new HashSet<RolepermissionEntity>(); 
+  
 
-   
-    <#if AuthenticationType == "database">
-    @ManyToMany(mappedBy = "permissions")
-    public Set<UsersEntity> getUsers() { return users; }
-    public void setUsers(Set<UsersEntity> users) { this.users = users; }
-    private Set<UsersEntity> users = new HashSet<>();
+    <#if AuthenticationType != "none">
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 
+      return [=AuthenticationTable?uncap_first]permissionSet; 
+    } 
+ 
+    public void set[=AuthenticationTable]permissionSet(Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permission) { 
+      this.[=AuthenticationTable?uncap_first]permissionSet = [=AuthenticationTable?uncap_first]permission; 
+    } 
+ 
+    private Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionSet = new HashSet<[=AuthenticationTable]permissionEntity>(); 
+
     </#if>
 }

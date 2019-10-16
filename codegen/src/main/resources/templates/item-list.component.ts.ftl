@@ -5,22 +5,20 @@ import { [=IEntity] } from './[=IEntityFile]';
 import { [=ClassName]Service } from './[=ModuleName].service';
 import { Router, ActivatedRoute } from '@angular/router';
 import {[=ClassName]NewComponent} from './[=ModuleName]-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService } from 'fastCodeCore';
-
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>
-<#if relationValue.relation == "ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if parent?keep_before("-") == relationValue.eName>
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[=relationValue.eModuleName].service';
 </#if>
 </#list>
-<#elseif relationValue.relation == "ManyToOne">
-import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_case]/[=relationValue.eName?lower_case].service';
 </#if>
-</#list>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+import { RoleService} from '../role/role.service';
+</#if>
+<#if AuthenticationType !="none" >
+import { GlobalPermissionService } from 'fastCodeCore';
 </#if>
 
 @Component({
@@ -31,64 +29,7 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eName?lower_ca
 export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> implements OnInit {
 
 	title:string = "[=ClassName]";
-  
-	columns: IListColumn[] = [
-		{
-			column: 'id',
-			label: 'id',
-			sort: true,
-			filter: false,
-			type: listColumnType.Number
-		},
-	<#list Fields as key,value>
-	<#if value.fieldName?lower_case == "id">  
-	<#elseif value.fieldType?lower_case == "string">
-		{
-			column: '[=value.fieldName]',
-			label: '[=value.fieldName]',
-			sort: true,
-			filter: true,
-			type: listColumnType.String
-		},
-	<#elseif value.fieldType?lower_case == "int" || value.fieldType?lower_case == "long">
-		{
-			column: '[=value.fieldName]',
-			label: '[=value.fieldName]',
-			sort: true,
-			filter: true,
-			type: listColumnType.Number
-		},
-	<#elseif value.fieldType?lower_case == "date">
-		{
-			column: '[=value.fieldName]',
-			label: '[=value.fieldName]',
-			sort: true,
-			filter: true,
-			type: listColumnType.Date
-		},
-	<#elseif value.fieldType?lower_case == "boolean">
-		{
-			column: '[=value.fieldName]',
-			label: '[=value.fieldName]',
-			sort: true,
-			filter: true,
-			type: listColumnType.Boolean
-		},
-  </#if> 
-  </#list>
-  	{
-			column: 'actions',
-			label: 'Actions',
-			sort: false,
-			filter: false,
-			type: listColumnType.String
-		}
-	];
-  
-	selectedColumns = this.columns;
-	displayedColumns: string[] = this.columns.map((obj) => { return obj.column });
-
-  
+	
 	constructor(
 		public router: Router,
 		public route: ActivatedRoute,
@@ -97,84 +38,169 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
 		public dataService: [=ClassName]Service,
+		public errorService: ErrorService,
 		<#if Relationship?has_content>
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToMany">
-		<#list RelationInput as relationInput>
-		<#assign parent = relationInput>
-		<#if parent?keep_before("-") == relationValue.eName>
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
 		</#if>
 		</#list>
-		<#elseif relationValue.relation == "ManyToOne">
-		public [=relationValue.eName?uncap_first]Service: [=relationValue.eName]Service,
 		</#if>
-		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		public roleService: RoleService,
+		</#if>
+		<#if AuthenticationType !="none" >
+		public globalPermissionService: GlobalPermissionService,
 		</#if>
 	) { 
-		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService)
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
   }
 
 	ngOnInit() {
-		<#if Relationship?has_content>
 		this.setAssociation();
-	    </#if>
+		this.setColumns();
+		this.primaryKeys = [ <#list PrimaryKeys as key,value>"[=key]", </#list> ]
 		super.ngOnInit();
 	}
   
-  <#if Relationship?has_content> 
+  
 	setAssociation(){
   	
 		this.associations = [
+		<#if Relationship?has_content> 
 		<#list Relationship as relationKey, relationValue>
-		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "ManyToMany">
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
 			{
-				column: {
-					<#if relationValue.relation == "ManyToMany">
-					key: '[=relationValue.inverseJoinColumn]',
-					<#else>
-					key: '[=relationValue.joinColumn]',
-					</#if>
-					value: undefined
-				},
-				<#if relationValue.relation == "ManyToMany">
-				<#list RelationInput as relationInput>
-				<#assign parent = relationInput>
-				<#if relationKey == parent>
-  				<#if parent?keep_after("-") == relationValue.eName>
-				isParent: true,
-				</#if>
-            	</#if>
-				<#if parent?keep_before("-") == relationValue.eName>
+				column: [
+				      <#list relationValue.joinDetails as joinDetails>
+                      <#if joinDetails.joinEntityName == relationValue.eName>
+                      <#if joinDetails.joinColumn??>
+                      {
+					  	key: '[=joinDetails.joinColumn]',
+					  	value: undefined,
+					  	referencedkey: '[=joinDetails.referenceColumn]'
+					  },
+					  </#if>
+                      </#if>
+                      </#list>
+					  
+				],
 				isParent: false,
-				<#if DescriptiveField[relationValue.eName]??>
-				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
-				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
-				<#if DescriptiveField[relationValue.cName]??>
-				childDescriptiveField : '[=DescriptiveField[relationValue.cName].fieldName]',
-				</#if>
-				</#if>
-				service: this.[=relationValue.eName?uncap_first]Service,
-				associatedObj: undefined,
-				</#if>
-				</#list>
-				<#else>
-				isParent: false,
-				<#if DescriptiveField[relationValue.eName]??>
-				descriptiveField: '[=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first]',
+				<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+				descriptiveField: '[=DescriptiveField[relationValue.eName].description?uncap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[relationValue.eName].fieldName]',
 				</#if>
 				service: this.[=relationValue.eName?uncap_first]Service,
 				associatedObj: undefined,
-				</#if>
-				table: '[=relationValue.eName?lower_case]',
+				table: '[=relationValue.eName?uncap_first]',
 				type: '[=relationValue.relation]'
 			},
 		</#if>
 		</#list>
+		</#if>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+			{
+				column: [
+					{
+						key: 'roleId',
+						value: undefined,
+						referencedkey: 'id'
+					},
+				],
+				isParent: false,
+				table: 'role',
+				type: 'ManyToOne',
+				service: this.roleService,
+				descriptiveField: 'roleDescriptiveField',
+				referencedDescriptiveField: 'name',
+			},	
+		</#if>
 		];
 	}
-  </#if>
+  
+  	setColumns(){
+  		this.columns = [
+		<#list Fields as key,value>
+		<#-- to exclude the duplicate fields(join columns) -->
+		<#assign isJoinColumn = false>
+		<#if Relationship?has_content>
+		<#list Relationship as relationKey, relationValue>
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+		<#list relationValue.joinDetails as joinDetails>
+	    <#if joinDetails.joinEntityName == relationValue.eName>
+	    <#if joinDetails.joinColumn??>
+	    <#if joinDetails.joinColumn == key>
+	    <#assign isJoinColumn = true>
+	    </#if>
+	    </#if>
+		</#if>
+		</#list>
+		</#if>
+		</#list>
+		</#if>
+		<#-- to exclude the password field in case of user provided "User" table -->
+		<#assign isPasswordField = false>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
+		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName == value.fieldName>
+		<#assign isPasswordField = true>
+		</#if>
+		</#if>
+		<#if isJoinColumn == false && isPasswordField = false && (value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "string")>
+    		{
+				column: '[=value.fieldName]',
+				label: '[=value.fieldName]',
+				<#if value.isPrimaryKey == true>
+				sort: false,
+				filter: false,
+				<#else>
+				sort: true,
+				filter: true,
+				</#if>
+				<#if value.fieldType?lower_case == "string">
+				type: listColumnType.String
+				<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "long" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "short">
+				type: listColumnType.Number
+				<#elseif value.fieldType?lower_case == "date">
+				type: listColumnType.Date
+				<#elseif value.fieldType?lower_case == "boolean">
+				type: listColumnType.Boolean
+				</#if>
+			},
+    	</#if>
+		</#list>
+		<#list Relationship as relationKey, relationValue>
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+			<#if DescriptiveField[relationValue.eName]??>
+			{
+	  			column: '[=relationValue.eName]',
+				label: '[=relationValue.eName]',
+				sort: false,
+				filter: false,
+				type: listColumnType.String
+	  		},
+			</#if>
+		</#if>
+		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+			{
+	  			column: 'Role',
+				label: 'Role',
+				sort: false,
+				filter: false,
+				type: listColumnType.Boolean
+			},
+		</#if>
+		  	{
+				column: 'actions',
+				label: 'Actions',
+				sort: false,
+				filter: false,
+				type: listColumnType.String
+			}
+		];
+		this.selectedColumns = this.columns;
+		this.displayedColumns = this.columns.map((obj) => { return obj.column });
+  	}
   
 	addNew() {
 		super.addNew([=ClassName]NewComponent);

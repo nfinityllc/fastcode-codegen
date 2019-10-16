@@ -1,19 +1,23 @@
-package [=PackageName].application.Authorization.Users;
+package [=PackageName].application.Authorization.User;
 
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
-import [=PackageName].application.Authorization.Users.Dto.CreateUserInput;
-import [=PackageName].application.Authorization.Users.Dto.FindUserByIdOutput;
-import [=PackageName].application.Authorization.Users.Dto.GetPermissionOutput;
-import [=PackageName].application.Authorization.Users.Dto.UpdateUserInput;
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.Authorization.Permissions.PermissionsManager;
-import [=PackageName].application.Authorization.Permissions.PermissionAppService;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.Authorization.Roles.RolesManager;
-import [=PackageName].domain.Authorization.Users.UserManager;
-import [=PackageName].domain.model.UsersEntity;
-import [=PackageName].domain.model.QUsersEntity;
+import [=PackageName].application.Authorization.User.Dto.CreateUserInput;
+import [=PackageName].application.Authorization.User.Dto.FindUserByIdOutput;
+import [=PackageName].application.Authorization.User.Dto.UpdateUserInput;
+import [=PackageName].domain.model.PermissionEntity;
+<#if Flowable!false>
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+</#if>
+import [=PackageName].domain.Authorization.Permission.PermissionManager;
+import [=PackageName].application.Authorization.Permission.PermissionAppService;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.Role.RoleManager;
+import [=PackageName].domain.Authorization.User.UserManager;
+import [=PackageName].domain.model.UserEntity;
+import [=PackageName].domain.model.QUserEntity;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -37,10 +41,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -53,13 +57,13 @@ public class UserAppServiceTest {
 	UserManager userManager;
 
 	@Mock
-	PermissionsManager permissionManager;
+	PermissionManager permissionManager;
 	
 	@Mock
 	private PermissionAppService  permissionsAppService;
 
 	@Mock
-	RolesManager roleManager;
+	RoleManager roleManager;
 
 	@Mock
 	UserMapper userMapper;
@@ -69,7 +73,15 @@ public class UserAppServiceTest {
 
 	@Mock
 	private LoggingHelper logHelper;
-
+    <#if Flowable!false>
+   
+	@Mock
+	private ActIdUserMapper actIdUserMapper;
+	
+	@Mock
+	private FlowableIdentityService idmIdentityService;
+    
+    </#if>
 	private static long ID=15;
 
 	@Before
@@ -96,10 +108,10 @@ public class UserAppServiceTest {
 	@Test
 	public void findUserById_IdIsNotNullAndUserExists_ReturnAUser() {
 
-		UsersEntity user = mock(UsersEntity.class);
+		UserEntity user = mock(UserEntity.class);
 
 		Mockito.when(userManager.FindById(anyLong())).thenReturn(user);
-		Assertions.assertThat(userAppService.FindById(ID)).isEqualTo(userMapper.UsersEntityToCreateUserOutput(user));
+		Assertions.assertThat(userAppService.FindById(ID)).isEqualTo(userMapper.UserEntityToCreateUserOutput(user));
 	}
 
 	@Test 
@@ -113,140 +125,107 @@ public class UserAppServiceTest {
 	@Test
 	public void findUserByName_NameIsNotNullAndUserExists_ReturnAUser() {
 
-		UsersEntity user = mock(UsersEntity.class);
+		UserEntity user = mock(UserEntity.class);
 
 		Mockito.when(userManager.FindByUserName(anyString())).thenReturn(user);
-		Assertions.assertThat(userAppService.FindByUserName("User1")).isEqualTo(userMapper.UsersEntityToCreateUserOutput(user));
+		Assertions.assertThat(userAppService.FindByUserName("User1")).isEqualTo(userMapper.UserEntityToCreateUserOutput(user));
 	}
 
 	@Test
 	public void createUser_UserIsNotNullAndUserDoesNotExist_StoreAUser() {
 
-		UsersEntity userEntity = mock(UsersEntity.class);
+		UserEntity userEntity = mock(UserEntity.class);
 		CreateUserInput user=mock(CreateUserInput.class);
-
-		Mockito.when(userMapper.CreateUserInputToUsersEntity(any(CreateUserInput.class))).thenReturn(userEntity);
-		Mockito.when(userManager.Create(any(UsersEntity.class))).thenReturn(userEntity);
-		Assertions.assertThat(userAppService.Create(user)).isEqualTo(userMapper.UsersEntityToCreateUserOutput(userEntity));
+		RoleEntity foundRole = mock(RoleEntity.class);
+		
+		
+		Mockito.when(roleManager.FindById(anyLong())).thenReturn(foundRole);
+		Mockito.when(userManager.Create(any(UserEntity.class))).thenReturn(userEntity);
+		<#if Flowable!false>
+		ActIdUserEntity actIdUser = mock (ActIdUserEntity.class);
+		Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any(UserEntity.class))).thenReturn(actIdUser);
+		doNothing().when(idmIdentityService).createUser(any(UserEntity.class),any(ActIdUserEntity.class));
+		</#if>
+		Mockito.when(userMapper.CreateUserInputToUserEntity(any(CreateUserInput.class))).thenReturn(userEntity);
+		
+		Assertions.assertThat(userAppService.Create(user)).isEqualTo(userMapper.UserEntityToCreateUserOutput(userEntity));
 	}
 	
 	@Test
-	public void createUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
+	public void createUser_UserIsNotNullAndUserDoesNotExistAndRoleIdIsNullAndRoleIdIsMandatory_ReturnNull() {
 
-		CreateUserInput users = mock(CreateUserInput.class);
+		CreateUserInput user = mock(CreateUserInput.class);
+		
+		Mockito.when(user.getRoleId()).thenReturn(null);
+		Assertions.assertThat(userAppService.Create(user)).isEqualTo(null);
+	}
+	
+	@Test
+	public void createUser_UserIsNotNullAndUserDoesNotExistAndRoleIdIsNotNullAndRoleIdIsMandatoryAndRoleDoesNotExistIsNull_ReturnNull() {
+
+		CreateUserInput user = mock(CreateUserInput.class);
 		
 		Mockito.when(roleManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.Create(users)).isEqualTo(null);
-	}
-	
-	@Test
-	public void createUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
-
-		CreateUserInput users = mock(CreateUserInput.class);
-		
-		Mockito.when(roleManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.Create(users)).isEqualTo(null);
-	}
-
-    @Test
-	public void createUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNullAndChildIsNotMandatory_StoreUsers() {
-
-		UsersEntity usersEntity = mock(UsersEntity.class);
-		CreateUserInput users = mock(CreateUserInput.class);
-		
-		users.setRoleId(null);
-		
-		Mockito.when(userMapper.CreateUserInputToUsersEntity(any(CreateUserInput.class))).thenReturn(usersEntity);
-		Mockito.when(userManager.Create(any(UsersEntity.class))).thenReturn(usersEntity);
-		Assertions.assertThat(userAppService.Create(users)).isEqualTo(userMapper.UsersEntityToCreateUserOutput(usersEntity));
-	}
-	
-	@Test
-	public void createUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNotNullAndChildIsNotMandatory_StoreUsers() {
-
-		UsersEntity usersEntity = mock(UsersEntity.class);
-		CreateUserInput users = mock(CreateUserInput.class);
-		RolesEntity rolesEntity= mock(RolesEntity.class);
-		usersEntity.setRole(rolesEntity);
-		Mockito.when(roleManager.FindById(anyLong())).thenReturn(rolesEntity);
-		
-		Mockito.when(userMapper.CreateUserInputToUsersEntity(any(CreateUserInput.class))).thenReturn(usersEntity);
-		Mockito.when(userManager.Create(any(UsersEntity.class))).thenReturn(usersEntity);
-		Assertions.assertThat(userAppService.Create(users)).isEqualTo(userMapper.UsersEntityToCreateUserOutput(usersEntity));
+		Assertions.assertThat(userAppService.Create(user)).isEqualTo(null);
 	}
 
 	@Test
 	public void deleteUser_UserIsNotNullAndUserExists_UserRemoved() {
 
-		UsersEntity user=mock(UsersEntity.class);
+		UserEntity user=mock(UserEntity.class);
 
+        <#if Flowable!false>
 		Mockito.when(userManager.FindById(anyLong())).thenReturn(user);
+		doNothing().when(idmIdentityService).deleteUser(any(String.class));
+	    </#if>
 		userAppService.Delete(ID);
 		verify(userManager).Delete(user);
 	}
 	
 		@Test
-	public void updateUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
+	public void updateUser_UserIsNotNullAndUserDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
 
-		UpdateUserInput users = mock(UpdateUserInput.class);
+		UpdateUserInput user = mock(UpdateUserInput.class);
+		
+		Mockito.when(user.getRoleId()).thenReturn(null);
+		Assertions.assertThat(userAppService.Update(ID,user)).isEqualTo(null);
+	}
+	
+	@Test
+	public void updateUser_UserIsNotNullAndUserDoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
+
+		UpdateUserInput user = mock(UpdateUserInput.class);
 		
 		Mockito.when(roleManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.Update(ID,users)).isEqualTo(null);
+		Assertions.assertThat(userAppService.Update(ID,user)).isEqualTo(null);
 	}
-	
+
 	@Test
-	public void updateUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
+	public void updateUser_UserIdIsNotNullAndUserExistsAndRoleIdIsNotNull_ReturnUpdatedUser() {
 
-		UpdateUserInput users = mock(UpdateUserInput.class);
-		
-		Mockito.when(roleManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.Update(ID,users)).isEqualTo(null);
-	}
-
-    @Test
-	public void updateUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNullAndChildIsNotMandatory_ReturnUpdatedUsers() {
-
-		UsersEntity usersEntity = mock(UsersEntity.class);
-		UpdateUserInput users = mock(UpdateUserInput.class);
-		
-		users.setRoleId(null);
-		
-		Mockito.when(userMapper.UpdateUserInputToUsersEntity(any(UpdateUserInput.class))).thenReturn(usersEntity);
-		Mockito.when(userManager.Update(any(UsersEntity.class))).thenReturn(usersEntity);
-		Assertions.assertThat(userAppService.Update(ID,users)).isEqualTo(userMapper.UsersEntityToUpdateUserOutput(usersEntity));
-	}
-	
-	@Test
-	public void updateUsers_UsersIsNotNullAndUsersDoesNotExistAndChildIsNotNullAndChildIsNotMandatory_ReturnUpdatedUsers() {
-
-		UsersEntity usersEntity = mock(UsersEntity.class);
-		UpdateUserInput users = mock(UpdateUserInput.class);
-		RolesEntity rolesEntity= mock(RolesEntity.class);
-		usersEntity.setRole(rolesEntity);
-		Mockito.when(roleManager.FindById(anyLong())).thenReturn(rolesEntity);
-		
-		Mockito.when(userMapper.UpdateUserInputToUsersEntity(any(UpdateUserInput.class))).thenReturn(usersEntity);
-		Mockito.when(userManager.Update(any(UsersEntity.class))).thenReturn(usersEntity);
-		Assertions.assertThat(userAppService.Update(ID,users)).isEqualTo(userMapper.UsersEntityToUpdateUserOutput(usersEntity));
-	}
-	
-	@Test
-	public void updateUser_UserIdIsNotNullAndUserExists_ReturnUpdatedUser() {
-
-		UsersEntity userEntity = mock(UsersEntity.class);
+		UserEntity userEntity = mock(UserEntity.class);
 		UpdateUserInput user=mock(UpdateUserInput.class);
-
-		Mockito.when(userMapper.UpdateUserInputToUsersEntity(any(UpdateUserInput.class))).thenReturn(userEntity);
-		Mockito.when(userManager.Update(any(UsersEntity.class))).thenReturn(userEntity);
-		Assertions.assertThat(userAppService.Update(ID,user)).isEqualTo(userMapper.UsersEntityToUpdateUserOutput(userEntity));
+		RoleEntity foundRole = mock(RoleEntity.class);
+		<#if Flowable!false>
+		ActIdUserEntity actIdUser = mock (ActIdUserEntity.class); 
+		Mockito.when(userManager.FindById(anyLong())).thenReturn(userEntity);
+		Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any(UserEntity.class))).thenReturn(actIdUser);
+		doNothing().when(idmIdentityService).updateUser(any(UserEntity.class),any(ActIdUserEntity.class),anyString());
+        </#if>
+        
+		Mockito.when(roleManager.FindById(anyLong())).thenReturn(foundRole);
+		
+		Mockito.when(userMapper.UpdateUserInputToUserEntity(any(UpdateUserInput.class))).thenReturn(userEntity);
+		Mockito.when(userManager.Update(any(UserEntity.class))).thenReturn(userEntity);
+		Assertions.assertThat(userAppService.Update(ID,user)).isEqualTo(userMapper.UserEntityToUpdateUserOutput(userEntity));
 
 	}
 
 	@Test
 	public void Find_ListIsEmpty_ReturnList() throws Exception
 	{
-		List<UsersEntity> list = new ArrayList<>();
-		Page<UsersEntity> foundPage = new PageImpl(list);
+		List<UserEntity> list = new ArrayList<>();
+		Page<UserEntity> foundPage = new PageImpl(list);
 		Pageable pageable =mock(Pageable.class);
 
 		List<FindUserByIdOutput> output = new ArrayList<>();
@@ -264,10 +243,10 @@ public class UserAppServiceTest {
 	@Test
 	public void Find_ListIsNotEmpty_ReturnList() throws Exception
 	{
-		List<UsersEntity> list = new ArrayList<>();
-		UsersEntity user=mock(UsersEntity.class);
+		List<UserEntity> list = new ArrayList<>();
+		UserEntity user=mock(UserEntity.class);
 		list.add(user);
-		Page<UsersEntity> foundPage = new PageImpl(list);
+		Page<UserEntity> foundPage = new PageImpl(list);
 		Pageable pageable =mock(Pageable.class);
 		SearchCriteria search= new SearchCriteria();
 		search.setType(1);
@@ -275,7 +254,7 @@ public class UserAppServiceTest {
 		search.setOperator("equals");
 
 		List<FindUserByIdOutput> output = new ArrayList<>();
-		output.add(userMapper.UsersEntityToFindUserByIdOutput(user));
+		output.add(userMapper.UserEntityToFindUserByIdOutput(user));
 		Mockito.when(userManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(userAppService.Find(search,pageable)).isEqualTo(output);
 
@@ -283,121 +262,20 @@ public class UserAppServiceTest {
 
 	 //Roles
 	@Test
-	public void GetRoles_IfUsersIdAndRolesIdIsNotNullAndUsersExists_ReturnRoles() {
-		UsersEntity users = mock(UsersEntity.class);
-		RolesEntity roles = mock(RolesEntity.class);
+	public void GetRole_IfUserIdAndRoleIdIsNotNullAndUserExists_ReturnRole() {
+		UserEntity user = mock(UserEntity.class);
+		RoleEntity role = mock(RoleEntity.class);
 
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
-		Mockito.when(userManager.GetRoles(anyLong())).thenReturn(roles);
-		Assertions.assertThat(userAppService.GetRoles(ID)).isEqualTo(userMapper.RolesEntityToGetRoleOutput(roles, users));
+		Mockito.when(userManager.FindById(anyLong())).thenReturn(user);
+		Mockito.when(userManager.GetRole(anyLong())).thenReturn(role);
+		Assertions.assertThat(userAppService.GetRole(ID)).isEqualTo(userMapper.RoleEntityToGetRoleOutput(role, user));
 	}
 
 	@Test 
-	public void GetRoles_IfUsersIdAndRolesIdIsNotNullAndUsersDoesNotExist_ReturnNull() {
-		UsersEntity users = mock(UsersEntity.class);
+	public void GetRole_IfUserIdAndRoleIdIsNotNullAndUserDoesNotExist_ReturnNull() {
 
 		Mockito.when(userManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.GetRoles(ID)).isEqualTo(null);
-	}
-    // Operations With Permissions
-    
-    @Test 
-	public void AddPermissions_IfUsersIdAndPermissionsIdIsNotNullAndUsersAlreadyHasPermissions_ReturnFalse() {
-		UsersEntity users = mock(UsersEntity.class);
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-//		permissions.addUser(users);
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
-		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permissions);
-		Mockito.when(userManager.AddPermissions(users, permissions)).thenReturn(false);
-		Assertions.assertThat(userAppService.AddPermissions(ID, ID)).isEqualTo(false);
-	}
-	@Test
-	public void AddPermissions_IfUsersIdAndPermissionsIdIsNotNullAndUsersExists_PermissionsGranted() {
-		UsersEntity users = mock(UsersEntity.class);
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
-		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permissions);
-		Mockito.when(userManager.AddPermissions(users, permissions)).thenReturn(true);
-		Assertions.assertThat(userAppService.AddPermissions(ID, ID)).isEqualTo(true);
-	}
-
-	@Test
-	public void RemovePermissions_IfUsersIdAndPermissionsIdIsNotNullAndUsersExists_PermissionsRemoved() {
-		UsersEntity users = mock(UsersEntity.class);
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
-		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permissions);
-		userAppService.RemovePermissions(ID,ID);
-		verify(userManager).RemovePermissions(users, permissions);
-	}
-
-	@Test 
-	public void GetPermissions_IfUsersIdAndPermissionsIdIsNotNullAndUsersDoesNotExist_ReturnNull() {
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.GetPermissions(ID, ID)).isEqualTo(null);
-	}
-
-	@Test 
-	public void GetPermissions_IfUsersIdAndPermissionsIdIsNotNullAndPermissionsDoesNotExist_ReturnNull() {
-		UsersEntity users = mock(UsersEntity.class);
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
-		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.GetPermissions(ID, ID)).isEqualTo(null);
-	}
-
-	@Test
-	public void GetPermissions_IfUsersIdAndPermissionsIdIsNotNullAndUsersExists_ReturnPermissions() {
-		UsersEntity users = mock(UsersEntity.class);
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
-		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permissions);
-		Mockito.when(userManager.GetPermissions(anyLong(),anyLong())).thenReturn(permissions);
-		Assertions.assertThat(userAppService.GetPermissions(ID, ID)).isEqualTo(userMapper.PermissionsEntityToGetPermissionOutput(permissions, users));		
-	}
-	
-	@Test 
-	public void GetPermissionsList_IfUsersIdIsNotNullAndUsersDoesNotExist_ReturnNull() throws Exception {
-		String operator= "equals";
-		SearchCriteria search = mock(SearchCriteria.class);
-		Pageable pageable = mock(Pageable.class);
-		
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.GetPermissionsList(ID,search,operator,pageable)).isEqualTo(null);
-	}
-	
-	@Test
-	public void GetPermissionsList_IfUsersIdIsNotNullAndUsersExists_ReturnPermissions() throws Exception {
-		UsersEntity users = mock(UsersEntity.class);
-		String operator= "equals";
-		SearchCriteria search = mock(SearchCriteria.class);
-		Pageable pageable = mock(Pageable.class);
-		List<PermissionsEntity> list = new ArrayList<>();
-		PermissionsEntity permissions = mock(PermissionsEntity.class);
-		list.add(permissions);
-		
-    	Page<PermissionsEntity> foundPage = new PageImpl<>(list);
-		List<GetPermissionOutput> output = new ArrayList<>();
-		
-		output.add(userMapper.PermissionsEntityToGetPermissionOutput(permissions,users));
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(users);
-		doNothing().when(permissionsAppService).checkProperties(any(List.class));
-		Mockito.when(userManager.FindPermissions(anyLong(),any(List.class),anyString(),any(Pageable.class))).thenReturn(foundPage);
-		Assertions.assertThat(userAppService.GetPermissionsList(ID,search,operator,pageable)).isEqualTo(output);
-	}
-
-    @Test 
-	public void checkPermissionsProperties_SearchListIsNotNull_ReturnKeyValueMap()throws Exception
-	{
-		List<String> list = new ArrayList<>();
-		list.add("displayName");
-		list.add("name");
-		permissionsAppService.checkProperties(list);
+		Assertions.assertThat(userAppService.GetRole(ID)).isEqualTo(null);
 	}
 
 	@Test
@@ -405,16 +283,19 @@ public class UserAppServiceTest {
 	{
 		String search= "xyz";
 		String operator= "equals";
-		QUsersEntity user = QUsersEntity.usersEntity;
+		QUserEntity user = QUserEntity.userEntity;
 		BooleanBuilder builder = new BooleanBuilder();
-		builder.or(user.firstName.eq(search));
-		builder.or(user.lastName.eq(search));
-		builder.or(user.emailAddress.eq(search));
-		builder.or(user.userName.eq(search));
-		builder.or(user.phoneNumber.eq(search));
 		builder.or(user.authenticationSource.eq(search));
-
-
+		builder.or(user.emailAddress.eq(search));
+		builder.or(user.emailConfirmationCode.eq(search));
+		builder.or(user.firstName.eq(search));
+		builder.or(user.isPhoneNumberConfirmed.eq(search));
+		builder.or(user.lastName.eq(search));
+		builder.or(user.password.eq(search));
+		builder.or(user.passwordResetCode.eq(search));
+		builder.or(user.phoneNumber.eq(search));
+		builder.or(user.userName.eq(search));
+		
 		Assertions.assertThat(userAppService.searchAllProperties(user,search,operator)).isEqualTo(builder);
 	}
 
@@ -426,7 +307,7 @@ public class UserAppServiceTest {
 		list.add("firstName");
 		list.add("userName");
 		
-		QUsersEntity user = QUsersEntity.usersEntity;
+		QUserEntity user = QUserEntity.userEntity;
 		BooleanBuilder builder = new BooleanBuilder();
 		builder.or(user.firstName.eq("xyz"));
 		builder.or(user.userName.eq("xyz"));
@@ -438,7 +319,7 @@ public class UserAppServiceTest {
 	@Test
 	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder()
 	{
-		QUsersEntity user = QUsersEntity.usersEntity;
+		QUserEntity user = QUserEntity.userEntity;
 		SearchFields searchFields = new SearchFields();
 		searchFields.setOperator("equals");
 		searchFields.setSearchValue("xyz");
@@ -446,8 +327,10 @@ public class UserAppServiceTest {
         map.put("firstName",searchFields);
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(user.firstName.eq("xyz"));
+        Map searchMap = new HashMap();
+        map.put("xyz",ID);
         
-        Assertions.assertThat(userAppService.searchKeyValuePair(user, map,"xyz",ID)).isEqualTo(builder);
+        Assertions.assertThat(userAppService.searchKeyValuePair(user, map,searchMap)).isEqualTo(builder);
 	}
 
 	@Test(expected = Exception.class)
@@ -470,18 +353,22 @@ public class UserAppServiceTest {
 	@Test
 	public void search_SearchIsNotNullAndSearchContainsCaseOne_ReturnBooleanBuilder() throws Exception
 	{
-		QUsersEntity user = QUsersEntity.usersEntity;
+		QUserEntity user = QUserEntity.userEntity;
 		SearchCriteria search= new SearchCriteria();
 		search.setType(1);
 		search.setValue("xyz");
 		search.setOperator("equals");
         BooleanBuilder builder = new BooleanBuilder();
-        builder.or(user.firstName.eq("xyz"));
-    	builder.or(user.lastName.eq("xyz"));
-		builder.or(user.emailAddress.eq("xyz"));
-		builder.or(user.userName.eq("xyz"));
-		builder.or(user.phoneNumber.eq("xyz"));
 		builder.or(user.authenticationSource.eq("xyz"));
+		builder.or(user.emailAddress.eq("xyz"));
+		builder.or(user.emailConfirmationCode.eq("xyz"));
+		builder.or(user.firstName.eq("xyz"));
+		builder.or(user.isPhoneNumberConfirmed.eq("xyz"));
+		builder.or(user.lastName.eq("xyz"));
+		builder.or(user.password.eq("xyz"));
+		builder.or(user.passwordResetCode.eq("xyz"));
+		builder.or(user.phoneNumber.eq("xyz"));
+		builder.or(user.userName.eq("xyz"));
         Assertions.assertThat(userAppService.Search(search)).isEqualTo(builder);
         
 	}
@@ -489,7 +376,7 @@ public class UserAppServiceTest {
 	@Test
 	public void search_SearchIsNotNullAndSearchContainsCaseTwo_ReturnBooleanBuilder() throws Exception
 	{
-		QUsersEntity user = QUsersEntity.usersEntity;
+		QUserEntity user = QUserEntity.userEntity;
 		List<SearchFields> fieldsList= new ArrayList<>();
 		SearchFields fields=new SearchFields();
 		SearchCriteria search= new SearchCriteria();
@@ -502,26 +389,26 @@ public class UserAppServiceTest {
     	BooleanBuilder builder = new BooleanBuilder();
 		builder.or(user.firstName.eq("xyz"));
 
-        Assertions.assertThat(userAppService.Search(search)).isEqualTo(builder);
+       Assertions.assertThat(userAppService.Search(search)).isEqualTo(builder);
 	}
 	@Test
 	public void search_SearchIsNotNullAndSearchContainsCaseThree_ReturnBooleanBuilder() throws Exception
 	{
 		Map<String,SearchFields> map = new HashMap<>();
-		QUsersEntity user = QUsersEntity.usersEntity;
+		QUserEntity user = QUserEntity.userEntity;
 		List<SearchFields> fieldsList= new ArrayList<>();
 		SearchFields fields=new SearchFields();
 		SearchCriteria search= new SearchCriteria();
 		search.setType(3);
 		fields.setFieldName("firstName");
-        fields.setOperator("equals");
+       fields.setOperator("equals");
 		fields.setSearchValue("xyz");
-        fieldsList.add(fields);
-        search.setFields(fieldsList);
-    	BooleanBuilder builder = new BooleanBuilder();
-    	builder.or(user.firstName.eq("xyz"));
-    	
-        Assertions.assertThat(userAppService.Search(search)).isEqualTo(builder);
+       fieldsList.add(fields);
+       search.setFields(fieldsList);
+   	BooleanBuilder builder = new BooleanBuilder();
+   	builder.or(user.firstName.eq("xyz"));
+  	
+       Assertions.assertThat(userAppService.Search(search)).isEqualTo(builder);
 	}
 	
 	@Test

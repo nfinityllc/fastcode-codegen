@@ -1,13 +1,13 @@
 package [=PackageName].RestControllers;
 
-import [=PackageName].application.Authorization.Permissions.PermissionAppService;
-import [=PackageName].application.Authorization.Permissions.Dto.FindPermissionByIdOutput;
-<#if AuthenticationType == "database">
-import [=PackageName].application.Authorization.Users.Dto.FindUserByIdOutput;
-import [=PackageName].application.Authorization.Users.UserAppService;
+import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
+import [=PackageName].application.Authorization.Rolepermission.Dto.FindRolepermissionByIdOutput;
+<#if AuthenticationType != "none">
+import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.Find[=AuthenticationTable]ByIdOutput;
+import [=PackageName].application.Authorization.[=AuthenticationTable].[=AuthenticationTable]AppService;
 </#if>
-import [=PackageName].application.Authorization.Roles.RoleAppService;
-import [=PackageName].application.Authorization.Roles.Dto.*;
+import [=PackageName].application.Authorization.Role.RoleAppService;
+import [=PackageName].application.Authorization.Role.Dto.*;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
@@ -25,26 +25,30 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/role")
 public class RoleController {
 
     @Autowired
     private RoleAppService roleAppService;
     
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "none">
     @Autowired
-	private UserAppService  userAppService;
+	private [=AuthenticationTable]AppService  _[=AuthenticationTable?uncap_first]AppService;
 	</#if>
 	@Autowired
-	private PermissionAppService  permissionAppService;
-
+	private RoleAppService _roleAppService;
+    
     @Autowired
-    private LoggingHelper logHelper;
+	private RolepermissionAppService  _rolepermissionAppService;
 
-    @Autowired
-    private Environment env;
+	@Autowired
+	private LoggingHelper logHelper;
+
+	@Autowired
+	private Environment env;
 
     // CRUD Operations
 
@@ -52,7 +56,7 @@ public class RoleController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CreateRoleOutput> Create(@RequestBody @Valid CreateRoleInput role) {
 
-        FindRoleByNameOutput foundRole = roleAppService.FindByRoleName(role.getName());
+        FindRoleByNameOutput foundRole = _roleAppService.FindByRoleName(role.getName());
 
         if (foundRole != null) {
             logHelper.getLogger().error("There already exists a role with name=%s", role.getName());
@@ -60,153 +64,117 @@ public class RoleController {
                     String.format("There already exists a role with name=%s", role.getName()));
         }
 
-        return new ResponseEntity(roleAppService.Create(role), HttpStatus.OK);
+        CreateRoleOutput output=_roleAppService.Create(role);
+		if(output==null)
+		{
+			logHelper.getLogger().error("No record found");
+		throw new EntityNotFoundException(
+				String.format("No record found"));
+	    }
+		
+		return new ResponseEntity(output, HttpStatus.OK);
     }
 
-    // ------------ Delete a role ------------
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @RequestMapping(value = "/{rid}", method = RequestMethod.DELETE)
-    public void Delete(@PathVariable String rid) {
-    	
-    	FindRoleByIdOutput ro = roleAppService.FindById(Long.valueOf(rid));
-
-        if (ro == null) {
-        	logHelper.getLogger().error("There does not exist a role wth a id=%s", rid);
-            throw new EntityNotFoundException(
-                    String.format("There does not exist a role wth a id=%s", rid));
-        }
-        roleAppService.Delete(Long.valueOf(rid));
+    // ------------ Delete role ------------
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void Delete(@PathVariable String id) {
+    FindRoleByIdOutput output = _roleAppService.FindById(Long.valueOf(id));
+	if (output == null) {
+		logHelper.getLogger().error("There does not exist a role with a id=%s", id);
+		throw new EntityNotFoundException(
+			String.format("There does not exist a role with a id=%s", id));
+	}
+    _roleAppService.Delete(Long.valueOf(id));
     }
-    // ------------ Update a role ------------
+    
+    // ------------ Update role ------------
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<UpdateRoleOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateRoleInput role) {
+    FindRoleByIdOutput currentRole = _roleAppService.FindById(Long.valueOf(id));
+		
+		if (currentRole == null) {
+			logHelper.getLogger().error("Unable to update. Role with id {} not found.", id);
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		
+    return new ResponseEntity(_roleAppService.Update(Long.valueOf(id),role), HttpStatus.OK);
+	}
 
-    @RequestMapping(value = "/{rid}", method = RequestMethod.PUT)
-    public ResponseEntity<UpdateRoleOutput> Update(@PathVariable String rid, @RequestBody @Valid UpdateRoleInput role) {
-        FindRoleByIdOutput currentRole = roleAppService.FindById(Long.valueOf(rid));
-        if (currentRole == null) {
-            logHelper.getLogger().error("Unable to update. Role with id {} not found.", rid);
-            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity(roleAppService.Update(Long.valueOf(rid), role), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/{rid}", method = RequestMethod.GET)
-    public ResponseEntity<FindRoleByIdOutput> FindById(@PathVariable String rid) {
-
-        FindRoleByIdOutput ro = roleAppService.FindById(Long.valueOf(rid));
-
-        if (ro == null) {
-            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity(ro, HttpStatus.OK);
-    }
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<FindRoleByIdOutput> FindById(@PathVariable String id) {
+    FindRoleByIdOutput output = _roleAppService.FindById(Long.valueOf(id));
+		if (output == null) {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity(output, HttpStatus.OK);
+	}
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity Find(@RequestParam(value = "search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
-        if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
-        if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-        if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
+		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
-        Pageable offsetPageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-    	SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		
-        return ResponseEntity.ok(roleAppService.Find(searchCriteria, offsetPageable));
-    }
-    <#if AuthenticationType == "database">
-  @RequestMapping(value = "/{rolesid}/users", method = RequestMethod.GET)
-	public ResponseEntity GetUsers(@PathVariable String rolesid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+		List<FindRoleByIdOutput> roles = roleAppService.Find(searchCriteria, Pageable);
+ 		return ResponseEntity.ok(roles);
+	}
+    <#if AuthenticationType != "none">
+  
+	@RequestMapping(value = "/{roleid}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
+	public ResponseEntity Get[=AuthenticationTable](@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+	//	if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		searchCriteria.setJoinColumn("roleId");
-		searchCriteria.setJoinColumnValue(Long.valueOf(rolesid));
-    	List<FindUserByIdOutput> output = userAppService.Find(searchCriteria,pageable);
+		Map<String,String> joinColDetails=_roleAppService.parse[=AuthenticationTable]JoinColumn(roleid);
+		if(joinColDetails== null)
+		{
+			logHelper.getLogger().error("Invalid Join Column");
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		searchCriteria.setJoinColumns(joinColDetails);
+		
+    	List<Find[=AuthenticationTable]ByIdOutput> output = _[=AuthenticationTable?uncap_first]AppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity(output, HttpStatus.OK);
-	}  
+	}    
 	</#if>
 	
 	
-    // Permissions related methods
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/{rolesid}/permissions", method = RequestMethod.POST)
-	public void AddPermissions(@PathVariable String rolesid, @RequestBody @Valid String permissionsid) {
-		FindRoleByIdOutput foundRoles = roleAppService.FindById(Long.valueOf(rolesid));
-
-		if (foundRoles == null) {
-			logHelper.getLogger().error("There does not exist a roles with a id=%s", rolesid);
-       	 throw new EntityNotFoundException(
-	                    String.format("There does not exist a roles with a id=%s", rolesid));
-		}
-		FindPermissionByIdOutput foundPermissions = permissionAppService.FindById(Long.valueOf(permissionsid));
-
-        if (foundPermissions == null) {
-            logHelper.getLogger().error("There does not exist a permissions with a id=%s", permissionsid);
-            throw new EntityNotFoundException(
-                    String.format("There does not exist a permissions with a id=%s", permissionsid));
-        }
-		Boolean status = roleAppService.AddPermission(Long.valueOf(rolesid), Long.valueOf(permissionsid));
-		if(status == false) {
-	    	   logHelper.getLogger().error("The roles already has the permissions");
-	    	   throw new EntityExistsException("The roles already has the permissions");
-	   	}
-	
-	}
-
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/{rolesid}/permissions/{permissionsid}", method = RequestMethod.DELETE)
-	public void RemovePermissions(@PathVariable String rolesid, @PathVariable String permissionsid) {
-		FindRoleByIdOutput foundRoles = roleAppService.FindById(Long.valueOf(rolesid));
-
-		if (foundRoles == null) {
-			logHelper.getLogger().error("There does not exist a roles with a id = " + rolesid);
-       	 throw new EntityNotFoundException(
-	                    String.format("There does not exist a roles with a id=%s", rolesid));
-		}
-		FindPermissionByIdOutput foundPermissions = permissionAppService.FindById(Long.valueOf(permissionsid));
-
-        if (foundPermissions == null) {
-            logHelper.getLogger().error("There does not exist a permissions with a id =" + permissionsid);
-            throw new EntityNotFoundException(
-                    String.format("There does not exist a permissions with a id=%s", permissionsid));
-        }
-		roleAppService.RemovePermission(Long.valueOf(rolesid), Long.valueOf(permissionsid));
-		
-	}
-
-	@RequestMapping(value = "/{rolesid}/permissions/{permissionsid}", method = RequestMethod.GET)
-	public ResponseEntity<GetPermissionOutput> GetPermissionsById(@PathVariable String rolesid, @PathVariable String permissionsid) {
-		GetPermissionOutput output= roleAppService.GetPermissions(Long.valueOf(rolesid), Long.valueOf(permissionsid));
-		
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity(output, HttpStatus.OK);
-	}
-    @RequestMapping(value = "/{rolesid}/permissions", method = RequestMethod.GET)
-	public ResponseEntity GetPermissionsList(@PathVariable String rolesid,@RequestParam(value = "search", required=false) String search,@RequestParam(value = "operator", required=false) String operator,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception{
-		if (operator == null) { operator="equals"; } else if(!operator.equalsIgnoreCase("notEqual")) { operator="equals"; }
-		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+    @RequestMapping(value = "/{roleid}/rolepermission", method = RequestMethod.GET)
+	public ResponseEntity GetRolepermission(@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+	//	if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
-		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-        SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-
-		List<GetPermissionOutput> output = roleAppService.GetPermissionsList(Long.valueOf(rolesid),searchCriteria,operator,Pageable);
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		
+		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+		Map<String,String> joinColDetails=_roleAppService.parseRolepermissionJoinColumn(roleid);
+		if(joinColDetails== null)
+		{
+			logHelper.getLogger().error("Invalid Join Column");
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		searchCriteria.setJoinColumns(joinColDetails);
+		
+    	List<FindRolepermissionByIdOutput> output = _rolepermissionAppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity(output, HttpStatus.OK);
-	}
-
-   
+	}   
 
 }

@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.User.Dto;
 
 import java.sql.Date;
 
@@ -15,7 +15,6 @@ public class CreateUserOutput {
     private Date lastLoginTime;
     private Date lockoutEndDateUtc;
     private String firstName;
-    private String password;
     private String passwordResetCode;
     private String phoneNumber;
     private Long profilePictureId;
@@ -24,14 +23,14 @@ public class CreateUserOutput {
     private Date signInTokenExpireTimeUtc;
     private String lastName;
     private String userName;
-      <#if Audit!false>
+    <#if Audit!false>
     private String creatorUserId;
     private java.util.Date creationTime;
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
-</#if>     
+    </#if>     
     private Long roleId;       
-    private String rolesName;
+    private String roleDescriptiveField;
     
     public Long getRoleId() {
    		return roleId;
@@ -40,12 +39,12 @@ public class CreateUserOutput {
   	public void setRoleId(Long roleId){
   		 this.roleId = roleId;
     }
-    public String getRolesName() {
-    	return rolesName;
+    public String getRoleDescriptiveField() {
+    	return roleDescriptiveField;
     }
 
-  	public void setRolesName(String rolesName){
-   		this.rolesName = rolesName;
+  	public void setRoleDescriptiveField(String roleDescriptiveField){
+   		this.roleDescriptiveField = roleDescriptiveField;
   	}
     public CreateUserOutput() {
     }
@@ -138,14 +137,6 @@ public class CreateUserOutput {
         this.firstName = firstName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getPasswordResetCode() {
         return passwordResetCode;
     }
@@ -209,7 +200,8 @@ public class CreateUserOutput {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-<#if Audit!false>
+    <#if Audit!false>
+    
     public java.util.Date getCreationTime() {
         return creationTime;
     }
@@ -241,5 +233,5 @@ public class CreateUserOutput {
     public void setCreatorUserId(String creatorUserId) {
       	this.creatorUserId = creatorUserId;
     }
-</#if>
+    </#if>
 }

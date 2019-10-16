@@ -1,28 +1,30 @@
 package [=PackageName].security;
 
-<#if AuthenticationType == "database">
-import [=PackageName].application.Authorization.Users.Dto.LoginUserInput;
+<#if AuthenticationType != "none">
+import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.LoginUserInput;
 </#if>
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.Authorization.Roles.IRolesManager;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.Authorization.Roles.RolesManager;
+<#if Flowable!false>
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
+import [=PackageName].domain.model.RolepermissionEntity;
+import [=PackageName].domain.Authorization.Role.IRoleManager;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.Role.RoleManager;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
-<#if AuthenticationType == "database">
+<#if AuthenticationType != "none">
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 </#if>
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-<#if AuthenticationType == "ldap">
-import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
-</#if>
+
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -40,14 +42,17 @@ import java.util.stream.Collectors;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    IRolesManager _roleManager;
-
+    IRoleManager _roleManager;
+<#if Flowable!false>
+    FlowableIdentityService idmIdentityService;
+    private static final String COOKIE_NAME = "FLOWABLE_REMEMBER_ME";
+</#if>
     private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
- <#if AuthenticationType == "database">
+ <#if AuthenticationType != "none">
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
@@ -73,30 +78,43 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
 
-
+        <#if Flowable!false>
+        String cookieValue = null;
+        </#if>
         // We cannot autowire RolesManager, but need to use the code below to set it
         if(_roleManager==null){
             ServletContext servletContext = req.getServletContext();
             WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-            _roleManager = webApplicationContext.getBean(RolesManager.class);
+            _roleManager = webApplicationContext.getBean(RoleManager.class);
         }
 
         Claims claims = Jwts.claims();
         claims.put("scopes", (convertToPrivilegeAuthorities(auth.getAuthorities())).stream().map(s -> s.toString()).collect(Collectors.toList()));
         //claims.put("scopes", (auth.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList())));
-
+        <#if Flowable!false>
+        //Flowable IDM Support
+        if(idmIdentityService==null){
+            ServletContext servletContext = req.getServletContext();
+            WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+            idmIdentityService = webApplicationContext.getBean(FlowableIdentityService.class);
+        }
+        </#if>
         if (auth != null) {
-        <#if AuthenticationType == "database">
+            String userId = "";
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-                claims.setSubject(((User) auth.getPrincipal()).getUsername());
+                userId = ((User) auth.getPrincipal()).getUsername();
+                claims.setSubject(userId);
             }
-       </#if>
-       <#if AuthenticationType == "ldap">
-       if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
-                claims.setSubject(((LdapUserDetailsImpl) auth.getPrincipal()).getUsername());
+            else if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
+                userId = ((LdapUserDetailsImpl) auth.getPrincipal()).getUsername();
+                claims.setSubject(userId);
             }
-       </#if>
-           
+            <#if Flowable!false>
+            //Flowable IDM Support
+            if(userId != "") {
+                cookieValue = idmIdentityService.createTokenAndCookie(userId, req, res);
+            }
+            </#if>
         }
 
         claims.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME));
@@ -110,6 +128,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrintWriter out = res.getWriter();
         out.println("{");
         out.println("\"token\":" + "\"" + SecurityConstants.TOKEN_PREFIX + token + "\"");
+        <#if Flowable!false>
+        if(cookieValue != null) {
+            out.println(",\"" + COOKIE_NAME + "\":" + "\"" + cookieValue + "\"");
+        }
+        </#if>
         out.println("}");
         out.close();
 
@@ -131,14 +154,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         for (GrantedAuthority ga : currentlistAuthorities) {
             if (ga.getAuthority().startsWith("ROLE_")) {
 
-                RolesEntity re = _roleManager.FindByRoleName(ga.getAuthority());
-                Set<PermissionsEntity> spe = re.getPermissions();
+                RoleEntity re = _roleManager.FindByRoleName(ga.getAuthority());
+                Set<RolepermissionEntity> spe= re.getRolepermissionSet();
                 if(spe.size() != 0) {
-                    for (PermissionsEntity pe : spe) {
-                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
+                    for (RolepermissionEntity pe : spe) {
+                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getPermission().getName());
                         newlistAuthorities.add(authority);
                     }
                 }
+//                Set<PermissionEntity> spe = re.getPermissions();
+//                if(spe.size() != 0) {
+//                    for (PermissionEntity pe : spe) {
+//                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
+//                        newlistAuthorities.add(authority);
+//                    }
+//                }
             }
 
             else {

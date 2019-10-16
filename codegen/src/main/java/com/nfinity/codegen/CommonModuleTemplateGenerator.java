@@ -54,12 +54,12 @@ public class CommonModuleTemplateGenerator {
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getCommonModuleDomainLayerTemplates(), root, destFolderBackend);
 		
-		if(Boolean.parseBoolean(root.get("Audit").toString()))
-		{
-			destFolderBackend = destPath + "/domain/BaseClasses" ;
-			new File(destFolderBackend).mkdirs();
-			generateFiles(getCommonModuleAuditedEntityTemplates(), root, destFolderBackend);
-		}
+//		if(Boolean.parseBoolean(root.get("Audit").toString()))
+//		{
+//			destFolderBackend = destPath + "/domain/BaseClasses" ;
+//			new File(destFolderBackend).mkdirs();
+//			generateFiles(getCommonModuleAuditedEntityTemplates(), root, destFolderBackend);
+//		}
 		
 		
 		destFolderBackend = destPath + "/error" ;
@@ -133,14 +133,14 @@ public class CommonModuleTemplateGenerator {
 		return backEndTemplate;
 	}
 	
-	private static Map<String, Object> getCommonModuleAuditedEntityTemplates() {
-
-		Map<String, Object> backEndTemplate = new HashMap<>();
-
-		backEndTemplate.put("domain/BaseClasses/AuditedEntity.java.ftl", "AuditedEntity.java");
-
-		return backEndTemplate;
-	}
+//	private static Map<String, Object> getCommonModuleAuditedEntityTemplates() {
+//
+//		Map<String, Object> backEndTemplate = new HashMap<>();
+//
+//		backEndTemplate.put("domain/BaseClasses/AuditedEntity.java.ftl", "AuditedEntity.java");
+//
+//		return backEndTemplate;
+//	}
 	
 	private static Map<String, Object> getCommonModuleErrorTemplates() {
 
@@ -150,6 +150,7 @@ public class CommonModuleTemplateGenerator {
 		backEndTemplate.put("error/ApiSubError.java.ftl", "ApiSubError.java");
 		backEndTemplate.put("error/ApiValidationError.java.ftl", "ApiValidationError.java");
 		backEndTemplate.put("error/RestExceptionHandler.java.ftl", "RestExceptionHandler.java");
+		backEndTemplate.put("error/ExceptionMessageConstants.java.ftl", "ExceptionMessageConstants.java");
 		
 		return backEndTemplate;
 	}

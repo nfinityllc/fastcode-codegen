@@ -1,38 +1,26 @@
-package [=PackageName].application.Authorization.Users;
+package [=PackageName].application.Authorization.User;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import [=CommonModulePackage].Search.SearchCriteria;
-import [=PackageName].application.Authorization.Users.Dto.*;
-
-import javax.validation.constraints.Positive;
+import [=PackageName].application.Authorization.User.Dto.*;
 
 import java.util.List;
 
 @Service
 public interface IUserAppService {
 
-    CreateUserOutput Create(CreateUserInput users);
+	CreateUserOutput Create(CreateUserInput user);
 
-    void Delete(@Positive(message ="Id should be a positive value")Long id);
+    void Delete(Long id);
 
-    UpdateUserOutput Update(@Positive(message ="Id should be a positive value") Long id,UpdateUserInput users);
+    UpdateUserOutput Update(Long userId, UpdateUserInput input);
 
-    FindUserByIdOutput FindById(@Positive(message ="Id should be a positive value")Long id);
-    
+    FindUserByIdOutput FindById(Long id);
+
     List<FindUserByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception;
 	
-   //Roles
-    GetRoleOutput GetRoles(@Positive(message ="usersId should be a positive value") Long usersid);
-  
-    // Operations With Permissions
-    Boolean AddPermissions(@Positive(message ="usersId should be a positive value") Long usersid, @Positive(message ="PermissionsId should be a positive value") Long permissionsid);
-
-    void RemovePermissions(@Positive(message ="usersId should be a positive value") Long usersid, @Positive(message ="PermissionsId should be a positive value") Long permissionsid);
-
-    GetPermissionOutput GetPermissions(@Positive(message ="usersId should be a positive value") Long usersid, @Positive(message ="PermissionsId should be a positive value") Long permissionsid);
-
-    List<GetPermissionOutput> GetPermissionsList(@Positive(message ="usersId should be a positive value") Long usersid,SearchCriteria search,String operator,Pageable pageable) throws Exception;
-  
+    //Role
+    GetRoleOutput GetRole(Long userid);
 }

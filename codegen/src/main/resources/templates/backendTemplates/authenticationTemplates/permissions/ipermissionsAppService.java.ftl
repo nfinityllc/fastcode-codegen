@@ -1,10 +1,10 @@
-package [=PackageName].application.Authorization.Permissions;
+package [=PackageName].application.Authorization.Permission;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import [=CommonModulePackage].Search.SearchCriteria;
-import [=PackageName].application.Authorization.Permissions.Dto.*;
+import [=PackageName].application.Authorization.Permission.Dto.*;
 
 import javax.validation.constraints.Positive;
 

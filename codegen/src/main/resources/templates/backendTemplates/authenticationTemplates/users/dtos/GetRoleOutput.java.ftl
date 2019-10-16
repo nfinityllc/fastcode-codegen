@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable].Dto;
 
 import java.util.Date;
 
@@ -12,24 +12,74 @@ public class GetRoleOutput {
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
     </#if>
+    <#if AuthenticationType!="none" && !UserInput??>
     private Long userId;
-    private String userName;
+    private String userDescriptiveField;
+  	<#elseif AuthenticationType!="none" && UserInput??>
+  	<#if PrimaryKeys??>
+  	<#list PrimaryKeys as key,value>
+   	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+    private [=value] [=AuthenticationTable?uncap_first][=key?cap_first];
+  	</#if> 
+  	</#list>
+  	</#if>
+    <#if AuthenticationFields??>
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "UserName">
+  	<#if !PrimaryKeys[authValue.fieldName]??>
+  	private [=authValue.fieldType] [=AuthenticationTable?uncap_first]DescriptiveField;
+    </#if>
+    </#if>
+    </#list>
+  	</#if>
+    </#if>
 
-    public Long getUserId() {
-        return userId;
-    }
+    <#if AuthenticationType!="none" && !UserInput?? >
+  	public Long getUserId() {
+  	return userId;
+  	}
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+  	public void setUserId(Long userId){
+  	this.userId = userId;
+  	}
+  	
+  	public String getUserDescriptiveField() {
+   		return userDescriptiveField;
+  	}
 
-    public String getUserName() {
-        return userName;
-    }
+  	public void setUserDescriptiveField(String userDescriptiveField){
+   		this.userDescriptiveField = userDescriptiveField;
+  	}
+  	<#elseif AuthenticationType!="none" && UserInput??>
+  	<#if PrimaryKeys??>
+  	<#list PrimaryKeys as key,value>
+  	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+    public [=value] get[=AuthenticationTable?cap_first][=key?cap_first]() {
+  	return [=AuthenticationTable?uncap_first][=key?cap_first];
+  	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+  	public void set[=AuthenticationTable?cap_first][=key?cap_first]([=value] [=AuthenticationTable?uncap_first][=key?cap_first]){
+  	this.[=AuthenticationTable?uncap_first][=key?cap_first] = [=AuthenticationTable?uncap_first][=key?cap_first];
+  	}
+  	</#if> 
+  	</#list>
+  	</#if>
+    <#if AuthenticationFields??>
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "UserName">
+  	<#if !PrimaryKeys[authValue.fieldName]??>
+  	public [=authValue.fieldType] get[=AuthenticationTable?cap_first]DescriptiveField() {
+   		return [=AuthenticationTable?uncap_first]DescriptiveField;
+  	}
+
+  	public void set[=AuthenticationTable?cap_first]DescriptiveField([=authValue.fieldType] [=AuthenticationTable?uncap_first]DescriptiveField){
+   		this.[=AuthenticationTable?uncap_first]DescriptiveField = [=AuthenticationTable?uncap_first]DescriptiveField;
+  	}
+  	</#if>
+    </#if>
+    </#list>
+    </#if>
+  	</#if>
 
     public String getDisplayName() {
         return displayName;

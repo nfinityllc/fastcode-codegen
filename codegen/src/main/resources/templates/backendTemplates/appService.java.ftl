@@ -1,30 +1,33 @@
-package [=PackageName].application.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
-import [=PackageName].application.[=ClassName].Dto.*;
-import [=PackageName].domain.[=ClassName].I[=ClassName]Manager;
+import [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].domain<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].I[=ClassName]Manager;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
+<#if CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=ClassName]Id;
+</#if>
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToMany" || relationValue.relation == "ManyToOne">
-import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
+<#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
+import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
 </#if>
-<#if relationValue.relation == "ManyToOne">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
-
-<#if relationValue.relation == "ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if relationKey == parent>
-<#if parent?keep_after("-") == relationValue.eName>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
-import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent==false)>
+<#assign i=relationValue.joinDetails?size>
+<#if i!=0 && i!=1>
+import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#if>
 </#list>
+<#if ClassName == AuthenticationTable>
+<#if Flowable!false>
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
 </#if>
-</#list>
+</#if>
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
@@ -36,7 +39,14 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+import java.util.Set;
 
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.Role.RoleManager;
+import [=PackageName].domain.model.RolepermissionEntity;
+import [=PackageName].domain.model.[=ClassName]permissionEntity;
+</#if>
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -56,115 +66,258 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Autowired
 	private I[=ClassName]Manager _[=ClassName?uncap_first]Manager;
-  
+	
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+	@Autowired
+	private RoleManager _roleManager;
+    
+    <#if Flowable!false>
+	@Autowired
+	private FlowableIdentityService idmIdentityService;
+		
+	@Autowired
+	private ActIdUserMapper actIdUserMapper;
+		
+	</#if>
+    </#if>
     <#list Relationship as relationKey,relationValue>
     <#if ClassName != relationValue.eName && relationValue.relation !="OneToMany">
     @Autowired
-	private [=relationValue.eName]Manager  _[=relationValue.eName?uncap_first]Manager;
+	private [=relationValue.eName]Manager _[=relationValue.eName?uncap_first]Manager;
     
-    </#if>
-    <#if relationValue.relation == "ManyToMany">
-    <#list RelationInput as relationInput>
-    <#assign parent = relationInput>
-    <#if relationKey == parent>
-    <#if parent?keep_after("-") == relationValue.eName>
-    @Autowired 
-	private [=relationValue.eName]AppService _[=relationValue.eName?uncap_first]AppService;
-	
-	</#if>
-    </#if>
-	</#list>
     </#if>
     </#list>
 	@Autowired
-	private LoggingHelper logHelper;
-
-	@Autowired
 	private [=ClassName]Mapper mapper;
+	
+	@Autowired
+	private LoggingHelper logHelper;
 
     @Transactional(propagation = Propagation.REQUIRED)
 	public Create[=ClassName]Output Create(Create[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Create[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
-	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
-		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
-		if(found[=relationValue.eName]!=null)
-		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-		<#if relationValue.isJoinColumnOptional==false>
-		else
-		return null;
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.isParent==false>
+        <#assign i=relationValue.joinDetails?size>
+        <#if i==1>
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null) {
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
+			if(found[=relationValue.eName]!=null) {
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			}
+		<#if joinDetails.isJoinColumnOptional==false>
+			else {
+				return null;
+			}
 		</#if>
 		}
-		<#if relationValue.isJoinColumnOptional==false>
-		else
-		return null;
+		<#if joinDetails.isJoinColumnOptional==false>
+		else {
+			return null;
+		}
 		</#if>
-		
+        </#if>
+        </#if>
+        </#list>
+        <#else>
+        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+			if(found[=relationValue.eName]!=null) {
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			}
+			else {
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
 		</#if>
+		</#if>
+        </#if>
 		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		if(input.getRoleId()!=null)
+		{
+		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+		if(foundRole!=null)
+		{
+			Set<[=ClassName]permissionEntity> [=ClassName?uncap_first]Permission = [=ClassName?uncap_first].get[=ClassName]permissionSet();
+			Set<RolepermissionEntity> rolePermission = foundRole.getRolepermissionSet();
+			
+			Iterator pIterator = [=ClassName?uncap_first]Permission.iterator();
+			Iterator rIterator = rolePermission.iterator();
+				while (pIterator.hasNext()) { 
+					[=ClassName]permissionEntity up = ([=ClassName]permissionEntity) pIterator.next();
+					while(rIterator.hasNext()) {
+						RolepermissionEntity rp = (RolepermissionEntity) pIterator.next();
+					if (up.getPermission() == rp.getPermission() ) {
+                         [=ClassName?uncap_first]Permission.remove(rp.getPermission());
+					}
+					}
+				}
+		    [=ClassName?uncap_first].setRole(foundRole);
+		}
+		}
+		</#if>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
+		<#if ClassName == AuthenticationTable>
+		<#if Flowable!false>
+		//Map and create flowable user
+		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(created[=ClassName]);
+		idmIdentityService.createUser(created[=ClassName], actIdUser);
+	    </#if>
+		</#if>
 		return mapper.[=EntityClassName]ToCreate[=ClassName]Output(created[=ClassName]);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=ClassName]", key = "#id")
-	public Update[=ClassName]Output Update(Long id , Update[=ClassName]Input input) {
+	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>, Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
-	  	if(input.get[=relationValue.joinColumn?cap_first]()!=null)
-		{
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=relationValue.joinColumn?cap_first]());
-		if(found[=relationValue.eName]!=null)
-		[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
-		<#if relationValue.isJoinColumnOptional==false>
-		else
-		return null;
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.isParent==false>
+	  	<#assign i=relationValue.joinDetails?size>
+        <#if i==1>
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+	  	if(input.get[=joinDetails.joinColumn?cap_first]()!=null) {
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(input.get[=joinDetails.joinColumn?cap_first]());
+			if(found[=relationValue.eName]!=null) {
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			}
+		<#if joinDetails.isJoinColumnOptional==false>
+			else {
+				return null;
+			}
 		</#if>
 		}
-		<#if relationValue.isJoinColumnOptional==false>
-		else
-		return null;
+		<#if joinDetails.isJoinColumnOptional==false>
+		else {
+			return null;
+		}
 		</#if>
-
+		</#if>
+        </#if>
+        </#list>
+        <#else>
+        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
+			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+			if(found[=relationValue.eName]!=null){
+				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
+			}
+			else {
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		</#if>
+        </#if>
 		</#if>
 		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		if(input.getRoleId()!=null) {
+			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
+			if(foundRole!=null)
+			[=ClassName?uncap_first].setRole(foundRole);
+		}
+		</#if>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
+		
+		<#if ClassName == AuthenticationTable>
+		<#if Flowable!false>
+		String oldRoleName = null;
+		//TODO: how to map Role in custom User table?
+		[=EntityClassName] oldUser = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		if(oldUser.getRole() != null) {
+			oldRoleName = oldUser.getRole().getName();
+		}
+		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(updated[=ClassName]);
+		idmIdentityService.updateUser(updated[=ClassName], actIdUser, oldRoleName);
+	    </#if>
+		</#if>
 		return mapper.[=EntityClassName]ToUpdate[=ClassName]Output(updated[=ClassName]);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=ClassName]", key = "#id")
-	public void Delete(Long id) {
+	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
-		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById(id) ; 
-
+		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id) ; 
 		_[=ClassName?uncap_first]Manager.Delete(existing);
+		<#if ClassName == AuthenticationTable>
+		<#if Flowable!false>
+		<#if AuthenticationFields??>
+		<#list AuthenticationFields as authKey,authValue>
+		<#if authKey == "UserName">
+			idmIdentityService.deleteUser(existing.get[=authValue.fieldName?cap_first]());
+		</#if>
+		</#list>
+		</#if>
+		</#if>
+		</#if>
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "[=ClassName]", key = "#id")
-	public Find[=ClassName]ByIdOutput FindById(Long id) {
+	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById(id);
-
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null)  
 			return null ; 
  	   
- 	   Find[=ClassName]ByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]); 
+ 	    Find[=ClassName]ByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput(found[=ClassName]); 
 		return output;
 	}
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	public Find[=ClassName]WithAllFieldsByIdOutput FindWithAllFieldsById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		if (found[=ClassName] == null)  
+			return null ; 
+ 	   
+ 	    Find[=ClassName]WithAllFieldsByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]WithAllFieldsByIdOutput(found[=ClassName]); 
+		return output;
+	}
+	<#if AuthenticationFields??>
+	<#list AuthenticationFields as authKey,authValue>
+	<#if authKey== "UserName">
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=authValue.fieldName?uncap_first]")
+	public Find[=ClassName]By[=authValue.fieldName?cap_first]Output FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindBy[=authValue.fieldName?cap_first]([=authValue.fieldName?uncap_first]);
+		if (found[=ClassName] == null) {
+			return null;
+		}
+		return  mapper.[=ClassName]EntityToFind[=ClassName]By[=authValue.fieldName?cap_first]Output(found[=ClassName]);
+
+	}
+	</#if>
+    </#list>
+    </#if>
+	</#if>
 	<#list Relationship as relationKey,relationValue>
-	<#if relationValue.relation == "ManyToOne">
+	<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
-	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id) {
+	public Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
 		if (found[=ClassName] == null) {
 			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] wth a id=%s", [=ClassName?uncap_first]Id);
@@ -173,108 +326,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		[=relationValue.eName]Entity re = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id);
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(re, found[=ClassName]);
 	}
-    <#elseif relationValue.relation == "ManyToMany">
-    //[=relationValue.eName]
-    <#list RelationInput as relationInput>
-    <#assign parent = relationInput>
-    <#if relationKey == parent>
-    <#if parent?keep_after("-") == relationValue.eName>
-    @Transactional(propagation = Propagation.REQUIRED)
-    @CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
-    public Boolean Add[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
-
-		return _[=ClassName?uncap_first]Manager.Add[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
-	}
 	
-    @Transactional(propagation = Propagation.REQUIRED)
-    @CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
-	public void Remove[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
-
-		_[=ClassName?uncap_first]Manager.Remove[=relationValue.eName](found[=ClassName], found[=relationValue.eName]);
-	}
-
-	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]/3
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @CacheEvict(value="[=ClassName]", key = "#[=relationValue.eName?uncap_first]Id")
-	public Get[=relationValue.eName]Output Get[=relationValue.eName](Long [=ClassName?uncap_first]Id, Long [=relationValue.eName?uncap_first]Id) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist [=ClassName?uncap_first] with a id=%s", [=ClassName?uncap_first]Id);
-			return null;
-		}
-		[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById([=relationValue.eName?uncap_first]Id);
-		if (found[=relationValue.eName] == null) {
-			logHelper.getLogger().error("There does not exist [=relationValue.eName?uncap_first] with a name=%s", found[=relationValue.eName]);
-			return null;
-		}
-
-		[=relationValue.eName]Entity pe = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id, [=relationValue.eName?uncap_first]Id);
-		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(pe, found[=ClassName]);
-	}
-
-	// ReST API Call => GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public List<Get[=relationValue.eName]Output> Get[=relationValue.eName]List(Long [=ClassName?uncap_first]Id,SearchCriteria search,String operator,Pageable pageable) throws Exception{
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=ClassName?uncap_first]Id);
-			return null;
-		}
-        check[=relationValue.eName]Properties(search.getFields());
-        
-		Page<[=relationValue.eName]Entity> found[=relationValue.eName] = _[=ClassName?uncap_first]Manager.Find[=relationValue.eName]([=ClassName?uncap_first]Id,search.getFields(),operator,pageable);
-		List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = found[=relationValue.eName].getContent();
-		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]List.iterator();
-		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
-
-		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
-			output.add(mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next(), found[=ClassName]));
-		}
-		return output;
-	}
-	
-	// ReST API Call => GET /[=ClassName?uncap_first]/1/available[=relationValue.eName]
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public List<Find[=relationValue.eName]ByIdOutput> GetAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable) throws Exception{
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=relationValue.joinColumn]);
-		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName] with a id=%s", [=relationValue.joinColumn]);
-			return null;
-		}
-        
-		Page<[=relationValue.eName]Entity> found[=relationValue.eName] = _[=ClassName?uncap_first]Manager.GetAvailable[=relationValue.eName]List([=relationValue.joinColumn],search,pageable);
-		List<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]List = found[=relationValue.eName].getContent();
-		Iterator<[=relationValue.eName]Entity> [=relationValue.eName?uncap_first]Iterator = [=relationValue.eName?uncap_first]List.iterator();
-		List<Find[=relationValue.eName]ByIdOutput> output = new ArrayList<>();
-
-		while ([=relationValue.eName?uncap_first]Iterator.hasNext()) {
-			output.add(mapper.[=relationValue.eName]EntityToGetAvailable[=relationValue.eName]Output([=relationValue.eName?uncap_first]Iterator.next()));
-		}
-		return output;
-	}
-	
-	public void check[=relationValue.eName]Properties(List<SearchFields> search) throws Exception
-	{
-		List<String> keysList = new ArrayList<String>();
-		for (SearchFields obj : search) {
-            keysList.add(obj.getFieldName());
-        }
-		_[=relationValue.eName?uncap_first]AppService.checkProperties(keysList);
-	}
-  </#if>
-  </#if>
-  </#list>
-  </#if>
- </#list>
-
+   </#if>
+   </#list>
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "[=ClassName]")
 	public List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
@@ -317,7 +371,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 				}
 				List<String> keysList = new ArrayList<String>(map.keySet());
 				checkProperties(keysList);
-				return searchKeyValuePair([=ClassName?uncap_first], map,search.getJoinColumn(),search.getJoinColumnValue());
+				return searchKeyValuePair([=ClassName?uncap_first], map,search.getJoinColumns());
 			}
 
 		}
@@ -328,15 +382,21 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
-		<#list SearchFields as fields>
-			builder.or([=ClassName?uncap_first].[=fields].likeIgnoreCase("%"+ value + "%"));
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        	builder.or([=ClassName?uncap_first].[=value.fieldName].eq(value));
+		</#if> 
+		</#if> 
+        </#list>
 		}
 		else if(operator.equals("equals"))
 		{
 		<#list Fields as key,value>
         <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
         	builder.or([=ClassName?uncap_first].[=value.fieldName].eq(value));
+		</#if> 
 		</#if> 
         </#list>
         	if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
@@ -348,11 +408,17 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
        	 	}
 			else if(StringUtils.isNumeric(value)){
 		<#list Fields as key,value>
-        <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
-        <#if value.isPrimaryKey==false>
+		<#if value.isPrimaryKey==false>
+        <#if value.fieldType?lower_case == "long">
 				builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Long.valueOf(value)));
-	    </#if>
+        <#elseif value.fieldType?lower_case == "integer">
+                builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Integer.valueOf(value)));
+        <#elseif value.fieldType?lower_case == "short">
+                builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Short.valueOf(value)));
+        <#elseif value.fieldType?lower_case == "double">
+                builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Double.valueOf(value)));
 		</#if> 
+		</#if>
         </#list>
         	}
         	else if(SearchUtils.stringToDate(value)!=null) {
@@ -371,18 +437,26 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
-		 list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]") ||
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.isParent==false>
+		<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        <#if !Fields[joinDetails.joinColumn]?? >
+		 list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]") ||
 		</#if>
+        </#if>
+        </#if>
+		</#list>
+        </#if>
+        </#if>
 		</#list>
 		
         <#list Fields?keys as key>
-        <#if Fields[key].isPrimaryKey==false>
         <#if key_has_next>
 		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]") ||
 		<#else>
 		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]")
-		</#if>
         </#if> 
         </#list>
 		)) 
@@ -399,22 +473,45 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		
 		<#list Fields as key,value>
         <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
             if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(operator.equals("contains"))
 					builder.or([=ClassName?uncap_first].[=value.fieldName].likeIgnoreCase("%"+ value + "%"));
 				else if(operator.equals("equals"))
 					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(value));
 			}
+		</#if>	
 		<#elseif value.fieldType?lower_case == "boolean">
 			if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(operator.equals("equals") && (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")))
 					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Boolean.parseBoolean(value)));
 			}
-		<#elseif value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
+		<#elseif value.fieldType?lower_case == "long">
         <#if value.isPrimaryKey==false>
 			if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(operator.equals("equals") && StringUtils.isNumeric(value))
 					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Long.valueOf(value)));
+			}
+		</#if>
+        <#elseif value.fieldType?lower_case == "integer">
+        <#if value.isPrimaryKey==false>
+			if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
+				if(operator.equals("equals") && StringUtils.isNumeric(value))
+					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Integer.valueOf(value)));
+			}
+		</#if>
+        <#elseif value.fieldType?lower_case == "short">
+        <#if value.isPrimaryKey==false>
+			if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
+				if(operator.equals("equals") && StringUtils.isNumeric(value))
+					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Short.valueOf(value)));
+			}
+		</#if>
+        <#elseif value.fieldType?lower_case == "double">
+        <#if value.isPrimaryKey==false>
+			if(list.get(i).replace("%20","").trim().equals("[=value.fieldName]")) {
+				if(operator.equals("equals") && StringUtils.isNumeric(value))
+					builder.or([=ClassName?uncap_first].[=value.fieldName].eq(Double.valueOf(value)));
 			}
 		</#if>
 		<#elseif value.fieldType?lower_case == "date">
@@ -426,21 +523,29 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#list>
         <#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne">
-		  if(list.get(i).replace("%20","").trim().equals("[=relationValue.joinColumn]")) {
-			builder.or([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(Long.parseLong(value)));
+		<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+		  if(list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]")) {
+			builder.or([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(<#if joinDetails.joinColumnType == "Long">Long.parseLong(value)<#elseif joinDetails.joinColumnType == "Integer">Integer.parseInt(value)<#elseif joinDetails.joinColumnType == "Double">Double.parseDouble(value)<#elseif joinDetails.joinColumnType == "String">value</#if>));
 			}
+		</#if>
+		</#if>
+		</#list>
 		</#if>
 		</#list>
 		}
 		return builder;
 	}
 	
-	BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
+	BooleanBuilder searchKeyValuePair(Q[=EntityClassName] [=ClassName?uncap_first], Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
-
+        
+        <#if Fields??>
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
 		<#list Fields as key,value>
         <#if value.fieldType?lower_case == "string">
+         <#if value.isPrimaryKey==false>
             if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(details.getValue().getOperator().equals("contains"))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
@@ -449,6 +554,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 				else if(details.getValue().getOperator().equals("notEqual"))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(details.getValue().getSearchValue()));
 			}
+		  </#if>
 		<#elseif value.fieldType?lower_case == "boolean">
 			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(details.getValue().getOperator().equals("equals") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
@@ -456,7 +562,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 				else if(details.getValue().getOperator().equals("notEqual") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
 					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Boolean.parseBoolean(details.getValue().getSearchValue())));
 			}
-		<#elseif value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
+		<#elseif value.fieldType?lower_case == "long">
         <#if value.isPrimaryKey==false>
 			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
 				if(details.getValue().getOperator().equals("equals") && StringUtils.isNumeric(details.getValue().getSearchValue()))
@@ -471,6 +577,60 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
                 	   builder.and([=ClassName?uncap_first].[=value.fieldName].goe(Long.valueOf(details.getValue().getStartingValue())));
                    else if(StringUtils.isNumeric(details.getValue().getEndingValue()))
                 	   builder.and([=ClassName?uncap_first].[=value.fieldName].loe(Long.valueOf(details.getValue().getEndingValue())));
+				}
+			}
+		</#if>
+        <#elseif value.fieldType?lower_case == "integer">
+        <#if value.isPrimaryKey==false>
+			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
+				if(details.getValue().getOperator().equals("equals") && StringUtils.isNumeric(details.getValue().getSearchValue()))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(Integer.valueOf(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && StringUtils.isNumeric(details.getValue().getSearchValue()))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Integer.valueOf(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("range"))
+				{
+				   if(StringUtils.isNumeric(details.getValue().getStartingValue()) && StringUtils.isNumeric(details.getValue().getEndingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].between(Integer.valueOf(details.getValue().getStartingValue()), Long.valueOf(details.getValue().getEndingValue())));
+                   else if(StringUtils.isNumeric(details.getValue().getStartingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].goe(Integer.valueOf(details.getValue().getStartingValue())));
+                   else if(StringUtils.isNumeric(details.getValue().getEndingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].loe(Integer.valueOf(details.getValue().getEndingValue())));
+				}
+			}
+		</#if>
+        <#elseif value.fieldType?lower_case == "short">
+        <#if value.isPrimaryKey==false>
+			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
+				if(details.getValue().getOperator().equals("equals") && StringUtils.isNumeric(details.getValue().getSearchValue()))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(Short.valueOf(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && StringUtils.isNumeric(details.getValue().getSearchValue()))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Short.valueOf(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("range"))
+				{
+				   if(StringUtils.isNumeric(details.getValue().getStartingValue()) && StringUtils.isNumeric(details.getValue().getEndingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].between(Short.valueOf(details.getValue().getStartingValue()), Long.valueOf(details.getValue().getEndingValue())));
+                   else if(StringUtils.isNumeric(details.getValue().getStartingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].goe(Short.valueOf(details.getValue().getStartingValue())));
+                   else if(StringUtils.isNumeric(details.getValue().getEndingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].loe(Short.valueOf(details.getValue().getEndingValue())));
+				}
+			}
+		</#if>
+        <#elseif value.fieldType?lower_case == "double">
+        <#if value.isPrimaryKey==false>
+			if(details.getKey().replace("%20","").trim().equals("[=value.fieldName]")) {
+				if(details.getValue().getOperator().equals("equals") && StringUtils.isNumeric(details.getValue().getSearchValue()))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].eq(Double.valueOf(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && StringUtils.isNumeric(details.getValue().getSearchValue()))
+					builder.and([=ClassName?uncap_first].[=value.fieldName].ne(Double.valueOf(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("range"))
+				{
+				   if(StringUtils.isNumeric(details.getValue().getStartingValue()) && StringUtils.isNumeric(details.getValue().getEndingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].between(Double.valueOf(details.getValue().getStartingValue()), Long.valueOf(details.getValue().getEndingValue())));
+                   else if(StringUtils.isNumeric(details.getValue().getStartingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].goe(Double.valueOf(details.getValue().getStartingValue())));
+                   else if(StringUtils.isNumeric(details.getValue().getEndingValue()))
+                	   builder.and([=ClassName?uncap_first].[=value.fieldName].loe(Double.valueOf(details.getValue().getEndingValue())));
 				}
 			}
 		</#if>
@@ -496,16 +656,159 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	    </#if>
 	    </#list>	
 		}
+		</#if>
 		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne">
-		if(joinColumn != null && joinColumn.equals("[=relationValue.joinColumn]")) {
-			builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].id.eq(joinColumnValue));
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne" >
+		<#if relationValue.isParent==false>
+		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
+		<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        if(joinCol != null && joinCol.getKey().equals("[=joinDetails.joinColumn]")) {
+		<#if joinDetails.joinColumnType == "String">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(joinCol.getValue()));
+		<#elseif joinDetails.joinColumnType == "Long">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Long.parseLong(joinCol.getValue())));
+		<#elseif joinDetails.joinColumnType == "Integer">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Integer.parseInt(joinCol.getValue())));
+		<#elseif joinDetails.joinColumnType == "Double">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Double.parseDouble(joinCol.getValue())));
+        <#elseif joinDetails.joinColumnType == "Short">
+		    builder.and([=ClassName?uncap_first].[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn].eq(Short.parseShort(joinCol.getValue())));
+        </#if>
 		}
 		</#if>
+        </#if>
 		</#list>
-
+        }
+		</#if>
+        </#if> 
+		</#list>
 		return builder;
 	}
+	
+	<#if CompositeKeyClasses?seq_contains(ClassName)>
+	public [=ClassName]Id parse[=ClassName]Key(String keysString) {
+		
+		String[] keyEntries = keysString.split(",");
+		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
+		
+		Map<String,String> keyMap = new HashMap<String,String>();
+		if(keyEntries.length > 1) {
+			for(String keyEntry: keyEntries)
+			{
+				String[] keyEntryArr = keyEntry.split(":");
+				if(keyEntryArr.length > 1) {
+					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
+				}
+				else {
+					//error
+				}
+			}
+		}
+		else {
+			//error
+		}
+		
+		<#list PrimaryKeys as fieldName,fieldType>
+		<#if fieldType?lower_case == "string" >
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](keyMap.get("[=fieldName]"));
+		<#elseif fieldType?lower_case == "long" >
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Long.valueOf(keyMap.get("[=fieldName]")));
+		<#elseif fieldType?lower_case == "integer">
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Integer.valueOf(keyMap.get("[=fieldName]")));
+        <#elseif fieldType?lower_case == "short">
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Short.valueOf(keyMap.get("[=fieldName]")));
+        <#elseif fieldType?lower_case == "double">
+		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Double.valueOf(keyMap.get("[=fieldName]")));
+		</#if>
+		</#list>
+		return [=ClassName?uncap_first]Id;
+		
+	}	
+	</#if>
+	
+	<#list Relationship as relationKey,relationValue>
+	<#if relationValue.relation == "OneToMany">
+	
+	public Map<String,String> parse[=relationValue.eName]JoinColumn(String keysString) {
+		
+		<#list relationValue.joinDetails as joinDetails>
+		<#assign i=relationValue.joinDetails?size>
+        <#if i!=1>
+		String[] keyEntries = keysString.split(",");
+		
+		Map<String,String> keyMap = new HashMap<String,String>();
+		if(keyEntries.length > 1) {
+			for(String keyEntry: keyEntries)
+			{
+				String[] keyEntryArr = keyEntry.split(":");
+				if(keyEntryArr.length > 1) {
+					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
+				}
+				else {
+					return null;
+				}
+			}
+		}
+		else {
+			return null;
+		}
+		</#if>
+		<#break>
+		</#list>
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		<#list relationValue.joinDetails as joinDetails>
+		<#assign i=relationValue.joinDetails?size>
+        <#if i==1>
+		joinColumnMap.put("[=joinDetails.joinColumn?uncap_first]", keysString);
+		<#else>
+		joinColumnMap.put("[=joinDetails.joinColumn?uncap_first]", keyMap.get("[=joinDetails.referenceColumn]"));
+		</#if>
+		</#list>
+		return joinColumnMap;
+		
+	}
+	
+    </#if>
+    </#list>
+    
+    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+    public Map<String,String> parse[=AuthenticationTable]permissionJoinColumn(String keysString) {
+    	Map<String,String> joinColumnMap = new HashMap<String,String>();
+    	<#assign primaryKeyLength=PrimaryKeys?size>
+		<#if primaryKeyLength gt 1 >
+		String[] keyEntries = keysString.split(",");
+		
+		Map<String,String> keyMap = new HashMap<String,String>();
+		if(keyEntries.length > 1) {
+			for(String keyEntry: keyEntries)
+			{
+				String[] keyEntryArr = keyEntry.split(":");
+				if(keyEntryArr.length > 1) {
+					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
+				}
+				else {
+					return null;
+				}
+			}
+		}
+		else {
+			return null;
+		}
+		
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keyMap.get("[=fieldName?uncap_first]"));
+		</#list>
+		<#elseif primaryKeyLength == 1>
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keysString);
+		</#list>
+		</#if>
+		return joinColumnMap;
+	}
+	</#if>
 	
 }
 

@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Roles.Dto;
+package [=PackageName].application.Authorization.Role.Dto;
 
 public class UpdateRoleOutput {
     private Long id;
@@ -9,7 +9,7 @@ public class UpdateRoleOutput {
     private java.util.Date creationTime;
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
-</#if>
+	</#if>
 
     public Long getId() {
         return id;
@@ -35,7 +35,7 @@ public class UpdateRoleOutput {
         this.name = name;
     }
 
-<#if Audit!false>
+	<#if Audit!false>
     public java.util.Date getCreationTime() {
         return creationTime;
     }
@@ -67,6 +67,6 @@ public class UpdateRoleOutput {
     public void setCreatorUserId(String creatorUserId) {
       	this.creatorUserId = creatorUserId;
     }
-</#if>
+	</#if>
 
 }

@@ -1,4 +1,4 @@
-package [=PackageName].application.[=ClassName];
+package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -28,27 +28,32 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import [=PackageName].domain.[=ClassName].*;
+import [=PackageName].domain<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].*;
 import [=CommonModulePackage].Search.*;
-import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
+<#if CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=ClassName]Id;
+</#if>
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import [=PackageName].domain.[=relationValue.eName].[=relationValue.eName]Manager;
-</#if>
-<#if relationValue.relation == "ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if relationKey == parent>
-<#if parent?keep_after("-") == relationValue.eName>
-import [=PackageName].application.[=relationValue.eName].[=relationValue.eName]AppService;
+import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
+<#if CompositeKeyClasses?seq_contains(relationValue.eName)>
+import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#if>
 </#list>
+<#if ClassName == AuthenticationTable>
+import [=PackageName].domain.Authorization.Role.RoleManager;
+import [=PackageName].domain.model.RoleEntity;
+<#if Flowable!false>
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
 </#if>
-</#list>
+</#if>
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -68,17 +73,6 @@ public class [=ClassName]AppServiceTest {
 	private [=relationValue.eName]Manager  _[=relationValue.eName?uncap_first]Manager;
 	
 	</#if>
-	<#if relationValue.relation == "ManyToMany">
-    <#list RelationInput as relationInput>
-    <#assign parent = relationInput>
-    <#if relationKey == parent>
-    <#if parent?keep_after("-") == relationValue.eName>
-    @Mock
-	private [=relationValue.eName]AppService  _[=relationValue.eName?uncap_first]AppService;
-	</#if>
-	</#if>
-	</#list>
-    </#if>
     </#list>
 	@Mock
 	private [=ClassName]Mapper _mapper;
@@ -88,8 +82,43 @@ public class [=ClassName]AppServiceTest {
 
 	@Mock
 	private LoggingHelper logHelper;
+	
+	<#if ClassName == AuthenticationTable>
+	@Mock
+	private RoleManager _roleManager;
+	
+    <#if Flowable!false>
+    @Mock
+	private ActIdUserMapper actIdUserMapper;
+	
+	@Mock
+	private FlowableIdentityService idmIdentityService;
+    </#if>
+    </#if>
 
-	private static long ID=15;
+	<#if CompositeKeyClasses?seq_contains(ClassName)>
+	@Mock
+	private [=ClassName]Id [=ClassName?uncap_first]Id;
+	
+	private static Long ID=15L;
+	<#else>
+	<#list Fields as key,value>
+	<#if value.isPrimaryKey!false>
+	<#if value.fieldType?lower_case == "long">
+	private static [=value.fieldType?cap_first] ID=15L;
+	
+	<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short">
+	private static [=value.fieldType?cap_first] ID=15;
+	
+	<#elseif value.fieldType?lower_case == "double">
+	private static [value.fieldType?cap_first] ID=15D;
+	
+	<#elseif value.fieldType?lower_case == "string">
+	private static String ID="15";
+	</#if>
+	</#if>
+	</#list>
+	</#if>
 	@Before
 	public void setUp() throws Exception {
 
@@ -105,119 +134,273 @@ public class [=ClassName]AppServiceTest {
 	@Test
 	public void find[=ClassName]ById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
 
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(null);
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(null);
+		Assertions.assertThat(_appService.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo(null);
 	}
 	
 	@Test
 	public void find[=ClassName]ById_IdIsNotNullAndIdExists_Return[=ClassName]() {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Assertions.assertThat(_appService.FindById(ID)).isEqualTo(_mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?uncap_first]));
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]);
+		Assertions.assertThat(_appService.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo(_mapper.[=EntityClassName]ToFind[=ClassName]ByIdOutput([=ClassName?uncap_first]));
 	}
 	
 	 @Test 
     public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExist_Store[=ClassName]() { 
  
-        [=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class); 
-        Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class); 
-        Mockito.when(_mapper.Create[=ClassName]InputTo[=EntityClassName](any(Create[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity); 
-        Mockito.when(_[=ClassName?uncap_first]Manager.Create(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity); 
-        Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]Entity)); 
+       [=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class); 
+       Create[=ClassName]Input [=ClassName?uncap_first] = new Create[=ClassName]Input();
+   
+        <#list Relationship as relationKey,relationValue>
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.isParent==false>
+		[=relationValue.eName]Entity [=relationValue.eName?uncap_first]= mock([=relationValue.eName]Entity.class);
+        <#assign i=relationValue.joinDetails?size>
+        <#if i !=0 >
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        <#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		
+        </#if>
+        </#if>
+        </#list>
+		</#if>
+		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(<#if i ==1 ><#list relationValue.joinDetails as joinDetails><#if joinDetails.joinEntityName == relationValue.eName><#if joinDetails.joinColumn??>
+        <#if joinDetails.joinColumnType == "String">any(String.class)<#elseif joinDetails.joinColumnType == "Long">any(Long.class)<#elseif joinDetails.joinColumnType == "Integer">any(Integer.class)<#elseif joinDetails.joinColumnType == "Double">any(Double.class)<#elseif joinDetails.joinColumnType == "Short">any(Short.class)</#if></#if></#if></#list><#else>any([=relationValue.eName]Id.class)</#if>)).thenReturn([=relationValue.eName?uncap_first]);
+		
+        </#if>
+        
+        </#if>
+		</#list>
+        
+       <#if ClassName == AuthenticationTable>
+       RoleEntity foundRole = mock(RoleEntity.class);
+       Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
+       <#if Flowable!false>
+       ActIdUserEntity actIdUser = mock (ActIdUserEntity.class);
+			
+	   Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any(CustomUserEntity.class))).thenReturn(actIdUser);
+	   doNothing().when(idmIdentityService).createUser(any(CustomUserEntity.class),any(ActIdUserEntity.class)); 
+       </#if>
+       </#if>
+       Mockito.when(_mapper.Create[=ClassName]InputTo[=ClassName]Entity(any(Create[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity); 
+       Mockito.when(_[=ClassName?uncap_first]Manager.Create(any([=ClassName]Entity.class))).thenReturn([=ClassName?uncap_first]Entity);
+      
+       Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]Entity)); 
     } 
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
-
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"  >
+<#if relationValue.isParent==false>
+<#assign i=relationValue.joinDetails?size>
+<#if i==1>
+<#list relationValue.joinDetails as joinDetails>
+<#if joinDetails.joinEntityName == relationValue.eName>
+<#if joinDetails.joinColumn??>
+<#if joinDetails.isJoinColumnOptional==false>
 	@Test
 	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
 
 		Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class);
 		
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+		Mockito.when(_mapper.Create[=ClassName]InputTo[=ClassName]Entity(any(Create[=ClassName]Input.class))).thenReturn(null); 
 		Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(null);
 	}
 	
 	@Test
 	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
 
-		Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class);
+		Create[=ClassName]Input [=ClassName?uncap_first] = new Create[=ClassName]Input();
+	    
+        <#assign i=relationValue.joinDetails?size>
+        <#if i !=0 >
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        <#if joinDetails.joinColumnType?lower_case == "string">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType?lower_case == "short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
 		
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+        </#if>
+        </#if>
+        </#list>
+		</#if>
+     
+		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(<#assign i=relationValue.joinDetails?size><#if i ==1 ><#list relationValue.joinDetails as joinDetails><#if joinDetails.joinEntityName == relationValue.eName><#if joinDetails.joinColumn??><#if joinDetails.joinColumnType?lower_case == "string">any(String.class)<#elseif joinDetails.joinColumnType?lower_case == "long">any(Long.class)<#elseif joinDetails.joinColumnType?lower_case == "integer">any(Integer.class)<#elseif joinDetails.joinColumnType?lower_case == "double">any(Double.class)<#elseif joinDetails.joinColumnType?lower_case == "short">any(Short.class)</#if></#if></#if></#list><#else>any([=relationValue.eName]Id.class)</#if>)).thenReturn(null);
 		Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(null);
+    }
+    
+    @Test
+	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
+
+		Update[=ClassName]Input [=ClassName?uncap_first] = mock(Update[=ClassName]Input.class);
+		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class); 
+		
+		Mockito.when(_mapper.Update[=ClassName]InputTo[=ClassName]Entity(any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity); 
+		Assertions.assertThat(_appService.Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>,[=ClassName?uncap_first])).isEqualTo(null);
+	}
+	
+	@Test
+	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
+		
+		Update[=ClassName]Input [=ClassName?uncap_first] = new Update[=ClassName]Input();
+	    <#assign i=relationValue.joinDetails?size>
+        <#if i !=0 >
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        <#if joinDetails.joinColumnType?lower_case == "string">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType?lower_case == "short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		
+        </#if>
+        </#if>
+        </#list>
+		</#if>
+     
+		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(<#assign i=relationValue.joinDetails?size><#if i ==1 ><#list relationValue.joinDetails as joinDetails><#if joinDetails.joinEntityName == relationValue.eName><#if joinDetails.joinColumn??><#if joinDetails.joinColumnType?lower_case == "string">any(String.class)<#elseif joinDetails.joinColumnType?lower_case == "long">any(Long.class)<#elseif joinDetails.joinColumnType?lower_case == "integer">any(Integer.class)<#elseif joinDetails.joinColumnType?lower_case == "double">any(Double.class)<#elseif joinDetails.joinColumnType?lower_case == "short">any(Short.class)</#if></#if></#if></#list><#else>any([=relationValue.eName]Id.class)</#if>)).thenReturn(null);
+		Assertions.assertThat(_appService.Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>,[=ClassName?uncap_first])).isEqualTo(null);
 	}
 
+<#else>
     @Test
 	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNullAndChildIsNotMandatory_Store[=ClassName]() {
 
 		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
 		Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class);
 		
-		[=ClassName?uncap_first].set[=relationValue.joinColumn?cap_first](null);
-		
 		Mockito.when(_mapper.Create[=ClassName]InputTo[=EntityClassName](any(Create[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
 		Mockito.when(_[=ClassName?uncap_first]Manager.Create(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity);
 		Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]Entity));
+
 	}
 	
-	@Test
-	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNotNullAndChildIsNotMandatory_Store[=ClassName]() {
-
-		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
-		Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first]Entity= mock([=relationValue.eName]Entity.class);
-		[=ClassName?uncap_first]Entity.set[=relationValue.eName]([=relationValue.eName?uncap_first]Entity);
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?uncap_first]Entity);
-		
-		Mockito.when(_mapper.Create[=ClassName]InputTo[=EntityClassName](any(Create[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Create(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity);
-		Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]Entity));
-	}
-
-	@Test
-	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
-
-		Update[=ClassName]Input [=ClassName?uncap_first] = mock(Update[=ClassName]Input.class);
-		
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Update(ID,[=ClassName?uncap_first])).isEqualTo(null);
-	}
 	
-	@Test
-	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
-
-		Update[=ClassName]Input [=ClassName?uncap_first] = mock(Update[=ClassName]Input.class);
-		
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Update(ID,[=ClassName?uncap_first])).isEqualTo(null);
-	}
-
     @Test
 	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNullAndChildIsNotMandatory_ReturnUpdated[=ClassName]() {
 
 		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
 		Update[=ClassName]Input [=ClassName?uncap_first] = mock(Update[=ClassName]Input.class);
 		
-		[=ClassName?uncap_first].set[=relationValue.joinColumn?cap_first](null);
-		
 		Mockito.when(_mapper.Update[=ClassName]InputTo[=EntityClassName](any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
 		Mockito.when(_[=ClassName?uncap_first]Manager.Update(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity);
-		Assertions.assertThat(_appService.Update(ID,[=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?uncap_first]Entity));
+		Assertions.assertThat(_appService.Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>,[=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?uncap_first]Entity));
+	}
+	
+</#if>
+</#if>
+</#if>
+</#list>
+<#else>
+  @Test
+	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
+
+		Create[=ClassName]Input [=ClassName?uncap_first] = mock(Create[=ClassName]Input.class);
+		
+		Mockito.when(_mapper.Create[=ClassName]InputTo[=ClassName]Entity(any(Create[=ClassName]Input.class))).thenReturn(null); 
+		Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(null);
 	}
 	
 	@Test
-	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNotNullAndChildIsNotMandatory_ReturnUpdated[=ClassName]() {
+	public void create[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
 
-		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
-		Update[=ClassName]Input [=ClassName?uncap_first] = mock(Update[=ClassName]Input.class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first]Entity= mock([=relationValue.eName]Entity.class);
-		[=ClassName?uncap_first]Entity.set[=relationValue.eName]([=relationValue.eName?uncap_first]Entity);
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?uncap_first]Entity);
+		Create[=ClassName]Input [=ClassName?uncap_first] = new Create[=ClassName]Input();
+	    
+        <#assign i=relationValue.joinDetails?size>
+        <#if i !=0 >
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        <#if joinDetails.joinColumnType?lower_case == "string">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType?lower_case == "short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
 		
-		Mockito.when(_mapper.Update[=ClassName]InputTo[=EntityClassName](any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Update(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity);
-		Assertions.assertThat(_appService.Update(ID,[=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?uncap_first]Entity));
+        </#if>
+        </#if>
+        </#list>
+		</#if>
+     
+		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(<#assign i=relationValue.joinDetails?size><#if i ==1 ><#list relationValue.joinDetails as joinDetails><#if joinDetails.joinEntityName == relationValue.eName><#if joinDetails.joinColumn??><#if joinDetails.joinColumnType?lower_case == "string">any(String.class)<#elseif joinDetails.joinColumnType?lower_case == "long">any(Long.class)<#elseif joinDetails.joinColumnType?lower_case == "integer">any(Integer.class)<#elseif joinDetails.joinColumnType?lower_case == "double">any(Double.class)<#elseif joinDetails.joinColumnType?lower_case == "short">any(Short.class)</#if></#if></#if></#list><#else>any([=relationValue.eName]Id.class)</#if>)).thenReturn(null);
+		Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(null);
+    }
+    
+    @Test
+	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
+
+		Update[=ClassName]Input [=ClassName?uncap_first] = mock(Update[=ClassName]Input.class);
+		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class); 
+		
+		Mockito.when(_mapper.Update[=ClassName]InputTo[=ClassName]Entity(any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity); 
+		Assertions.assertThat(_appService.Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>,[=ClassName?uncap_first])).isEqualTo(null);
 	}
+	
+	@Test
+	public void update[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]DoesNotExistAndChildIsNotNullAndChildIsMandatoryAndFindByIdIsNull_ReturnNull() {
+		
+		Update[=ClassName]Input [=ClassName?uncap_first] = new Update[=ClassName]Input();
+	    <#assign i=relationValue.joinDetails?size>
+        <#if i !=0 >
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+        <#if joinDetails.joinColumnType?lower_case == "string">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType?lower_case == "short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		
+        </#if>
+        </#if>
+        </#list>
+		</#if>
+     
+		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(<#assign i=relationValue.joinDetails?size><#if i ==1 ><#list relationValue.joinDetails as joinDetails><#if joinDetails.joinEntityName == relationValue.eName><#if joinDetails.joinColumn??><#if joinDetails.joinColumnType?lower_case == "string">any(String.class)<#elseif joinDetails.joinColumnType?lower_case == "long">any(Long.class)<#elseif joinDetails.joinColumnType?lower_case == "integer">any(Integer.class)<#elseif joinDetails.joinColumnType?lower_case == "double">any(Double.class)<#elseif joinDetails.joinColumnType?lower_case == "short">any(Short.class)</#if></#if></#if></#list><#else>any([=relationValue.eName]Id.class)</#if>)).thenReturn(null);
+		Assertions.assertThat(_appService.Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>,[=ClassName?uncap_first])).isEqualTo(null);
+	}
+
+</#if>
+</#if>
 		
 <#break>
 </#if>
@@ -227,17 +410,32 @@ public class [=ClassName]AppServiceTest {
 
 		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
 		Update[=ClassName]Input [=ClassName?uncap_first]= mock(Update[=ClassName]Input.class);
+		<#if ClassName == AuthenticationTable>
+        RoleEntity foundRole = mock(RoleEntity.class);
+        Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
+        <#if Flowable!false>
+        ActIdUserEntity actIdUser = mock (ActIdUserEntity.class);
+		Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any([=ClassName]Entity.class))).thenReturn(actIdUser);
+		doNothing().when(idmIdentityService).updateUser(any([=ClassName]Entity.class),any(ActIdUserEntity.class),anyString()); 
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]Entity);
+		</#if>
+		</#if>
 		Mockito.when(_mapper.Update[=ClassName]InputTo[=EntityClassName](any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
 		Mockito.when(_[=ClassName?uncap_first]Manager.Update(any([=EntityClassName].class))).thenReturn([=ClassName?uncap_first]Entity);
-		Assertions.assertThat(_appService.Update(ID,[=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?uncap_first]Entity));
+		Assertions.assertThat(_appService.Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>,[=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToUpdate[=ClassName]Output([=ClassName?uncap_first]Entity));
 	}
     
 	@Test
 	public void delete[=ClassName]_[=ClassName]IsNotNullAnd[=ClassName]Exists_[=ClassName]Removed() {
 
 		[=EntityClassName] [=ClassName?uncap_first]= mock([=EntityClassName].class);
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		_appService.Delete(ID); 
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]);
+		<#if ClassName == AuthenticationTable>
+		<#if Flowable!false>
+		doNothing().when(idmIdentityService).deleteUser(anyString()); 
+		</#if>
+		</#if>
+		_appService.Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>); 
 		verify(_[=ClassName?uncap_first]Manager).Delete([=ClassName?uncap_first]);
 	}
 	
@@ -281,9 +479,13 @@ public class [=ClassName]AppServiceTest {
 		String operator= "equals";
 		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-		builder.or([=ClassName?uncap_first].[=fields].eq(search));
-    	</#list>
+    	<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq(search));
+		</#if> 
+		</#if> 
+        </#list>
 		Assertions.assertThat(_appService.searchAllProperties([=ClassName?uncap_first],search,operator)).isEqualTo(builder);
 	}
 	
@@ -291,14 +493,24 @@ public class [=ClassName]AppServiceTest {
 	public void searchSpecificProperty_PropertyExists_ReturnBooleanBuilder() {
 		String operator= "equals";
 		List<String> list = new ArrayList<>();
-		<#list SearchFields as fields>
-		list.add("[=fields]");
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        list.add("[=value.fieldName]");
+		</#if> 
+		</#if> 
+        </#list>
+		
 		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-		builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
+		</#if> 
+		</#if> 
+        </#list>
+		
 		Assertions.assertThat(_appService.searchSpecificProperty([=ClassName?uncap_first], list,"xyz",operator)).isEqualTo(builder);
 	}
 	
@@ -308,17 +520,27 @@ public class [=ClassName]AppServiceTest {
 	    SearchFields searchFields = new SearchFields();
 		searchFields.setOperator("equals");
 		searchFields.setSearchValue("xyz");
-	    Map map = new HashMap();
-	    <#list SearchFields as fields>
-        map.put("[=fields]",searchFields);
+	    Map<String,SearchFields> map = new HashMap<>();
+	    <#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        map.put("[=value.fieldName]",searchFields);
         <#break>
-		</#list>		
+		</#if> 
+		</#if> 
+        </#list>		
+		 Map<String,String> searchMap = new HashMap<>();
+        searchMap.put("xyz",String.valueOf(ID));
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.and([=ClassName?uncap_first].[=fields].eq("xyz"));
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+         builder.and([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
         <#break>
-		</#list>
-		Assertions.assertThat(_appService.searchKeyValuePair([=ClassName?uncap_first],map,"xyz",ID)).isEqualTo(builder);
+		</#if> 
+		</#if> 
+        </#list>
+		Assertions.assertThat(_appService.searchKeyValuePair([=ClassName?uncap_first],map,searchMap)).isEqualTo(builder);
 	}
 	
 	@Test (expected = Exception.class)
@@ -331,9 +553,13 @@ public class [=ClassName]AppServiceTest {
 	@Test
 	public void checkProperties_PropertyExists_ReturnNothing() throws Exception {
 		List<String> list = new ArrayList<>();
-		<#list SearchFields as fields>
-		list.add("[=fields]");
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        list.add("[=value.fieldName]");
+		</#if> 
+		</#if> 
+        </#list>
 		_appService.checkProperties(list);
 	}
 	
@@ -346,9 +572,13 @@ public class [=ClassName]AppServiceTest {
 		search.setValue("xyz");
 		search.setOperator("equals");
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
+		</#if> 
+		</#if> 
+        </#list>
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
 	
@@ -362,23 +592,31 @@ public class [=ClassName]AppServiceTest {
 		search.setType(2);
 		search.setValue("xyz");
 		search.setOperator("equals");
-		<#list SearchFields as fields>
-		fields.setFieldName("[=fields]");
-		<#break>
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        fields.setFieldName("[=value.fieldName]");
+        <#break>
+		</#if> 
+		</#if> 
+        </#list>
         fieldsList.add(fields);
         search.setFields(fieldsList);
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
         <#break>
-		</#list>
+		</#if> 
+		</#if> 
+        </#list>
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
 	
 	@Test
 	public void  search_SearchIsNotNullAndSearchContainsCaseThree_ReturnBooleanBuilder() throws Exception {
-
+	
 		Map<String,SearchFields> map = new HashMap<>();
 		Q[=EntityClassName] [=ClassName?uncap_first] = Q[=EntityClassName].[=EntityClassName?uncap_first];
 		List<SearchFields> fieldsList= new ArrayList<>();
@@ -387,19 +625,27 @@ public class [=ClassName]AppServiceTest {
 		search.setType(3);
 		search.setValue("xyz");
 		search.setOperator("equals");
-		<#list SearchFields as fields>
-		fields.setFieldName("[=fields]");
-		<#break>
-		</#list>
+		<#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        fields.setFieldName("[=value.fieldName]");
+        <#break>
+		</#if> 
+		</#if> 
+        </#list>
         fields.setOperator("equals");
 		fields.setSearchValue("xyz");
         fieldsList.add(fields);
         search.setFields(fieldsList);
 		BooleanBuilder builder = new BooleanBuilder();
-		<#list SearchFields as fields>
-        builder.or([=ClassName?uncap_first].[=fields].eq("xyz"));
+	    <#list Fields as key,value>
+        <#if value.fieldType?lower_case == "string">
+        <#if value.isPrimaryKey==false>
+        builder.or([=ClassName?uncap_first].[=value.fieldName].eq("xyz"));
         <#break>
-		</#list>
+		</#if> 
+		</#if> 
+        </#list>
 		Assertions.assertThat(_appService.Search(search)).isEqualTo(builder);
 	}
 	
@@ -410,135 +656,26 @@ public class [=ClassName]AppServiceTest {
 	}
 	
    <#list Relationship as relationKey, relationValue>
-   <#if relationValue.relation == "ManyToOne">
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
    //[=relationValue.eName]
 	@Test
 	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() {
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
 
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](anyLong())).thenReturn([=relationValue.eName?uncap_first]);
-		Assertions.assertThat(_appService.Get[=relationValue.eName](ID)).isEqualTo(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first], [=ClassName?uncap_first]));
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]);
+		Mockito.when(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=relationValue.eName?uncap_first]);
+		Assertions.assertThat(_appService.Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first], [=ClassName?uncap_first]));
 	}
 
 	@Test 
 	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
 
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Get[=relationValue.eName](ID)).isEqualTo(null);
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(null);
+		Assertions.assertThat(_appService.Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo(null);
 	}
-  <#elseif relationValue.relation == "ManyToMany">
-  <#list RelationInput as relationInput>
-  <#assign parent = relationInput>
-  <#if relationKey == parent>
-  <#if parent?keep_after("-") == relationValue.eName>
-    // Operations With [=relationValue.eName]
-    
-    @Test 
-	public void Add[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]AlreadyHas[=relationValue.eName]_ReturnFalse() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?uncap_first]);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Add[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first])).thenReturn(false);
-		Assertions.assertThat(_appService.Add[=relationValue.eName](ID, ID)).isEqualTo(false);
-	}
-	@Test
-	public void Add[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_[=relationValue.eName]Granted() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?uncap_first]);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Add[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first])).thenReturn(true);
-		Assertions.assertThat(_appService.Add[=relationValue.eName](ID, ID)).isEqualTo(true);
-	}
-
-	@Test
-	public void Remove[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_[=relationValue.eName]Removed() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?uncap_first]);
-		_appService.Remove[=relationValue.eName](ID,ID);
-		verify(_[=ClassName?uncap_first]Manager).Remove[=relationValue.eName]([=ClassName?uncap_first], [=relationValue.eName?uncap_first]);
-	}
-
-	@Test 
-	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Get[=relationValue.eName](ID, ID)).isEqualTo(null);
-	}
-
-	@Test 
-	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=relationValue.eName]DoesNotExist_ReturnNull() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Get[=relationValue.eName](ID, ID)).isEqualTo(null);
-	}
-
-	@Test
-	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(anyLong())).thenReturn([=relationValue.eName?uncap_first]);
-		Mockito.when(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](anyLong(),anyLong())).thenReturn([=relationValue.eName?uncap_first]);
-		Assertions.assertThat(_appService.Get[=relationValue.eName](ID, ID)).isEqualTo(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first], [=ClassName?uncap_first]));		
-	}
-	
-	@Test 
-	public void Get[=relationValue.eName]List_If[=ClassName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() throws Exception {
-		String operator= "equals";
-		SearchCriteria search = mock(SearchCriteria.class);
-		Pageable pageable = mock(Pageable.class);
-		
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID,search,operator,pageable)).isEqualTo(null);
-	}
-	
-	@Test
-	public void Get[=relationValue.eName]List_If[=ClassName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() throws Exception {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		String operator= "equals";
-		SearchCriteria search = mock(SearchCriteria.class);
-		Pageable pageable = mock(Pageable.class);
-		List<[=relationValue.eName]Entity> list = new ArrayList<>();
-		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
-		list.add([=relationValue.eName?uncap_first]);
-		
-    	Page<[=relationValue.eName]Entity> foundPage = new PageImpl<>(list);
-		List<Get[=relationValue.eName]Output> output = new ArrayList<>();
-		
-		output.add(_mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName?uncap_first],[=ClassName?uncap_first]));
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		doNothing().when(_[=relationValue.eName?uncap_first]AppService).checkProperties(any(List.class));
-		Mockito.when(_[=ClassName?uncap_first]Manager.Find[=relationValue.eName](anyLong(),any(List.class),anyString(),any(Pageable.class))).thenReturn(foundPage);
-		Assertions.assertThat(_appService.Get[=relationValue.eName]List(ID,search,operator,pageable)).isEqualTo(output);
-	}
-
-    @Test 
-	public void check[=relationValue.eName]Properties_SearchListIsNotNull_ReturnKeyValueMap()throws Exception
-	{
-		List<String> list = new ArrayList<>();
-		<#list relationValue.fDetails as fValue>
-		<#if fValue.fieldType?lower_case == "string">
-		list.add("[=fValue.fieldName]");
-		</#if>
-		</#list>
-		_[=relationValue.eName?lower_case]AppService.checkProperties(list);
-	}
-	</#if>
-	</#if>
-    </#list>
+ 
    </#if>
   </#list>
 

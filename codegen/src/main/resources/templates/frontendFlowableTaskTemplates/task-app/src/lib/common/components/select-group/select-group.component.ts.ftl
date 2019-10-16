@@ -15,7 +15,7 @@ import { ISelectGroupDialogConfig } from './select-group-dialog-config';
 })
 export class SelectGroupComponent implements OnInit {
   functionalGroups: any[] = [];
-  @ViewChild(MatSelectionList) selectionList: MatSelectionList;
+  @ViewChild(MatSelectionList, { static: true }) selectionList: MatSelectionList;
 
   hasNextPage: boolean;
 

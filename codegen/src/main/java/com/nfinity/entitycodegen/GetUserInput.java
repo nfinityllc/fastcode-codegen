@@ -58,8 +58,8 @@ public class GetUserInput {
 
 		List<FieldDetails> fieldsList = new ArrayList<>();
 		for (FieldDetails f : fields) {
-			if (f.fieldType.equalsIgnoreCase("long") || f.fieldType.contains("int")
-					|| f.fieldType.equalsIgnoreCase("string") || f.fieldType.equalsIgnoreCase("boolean")
+			if (f.fieldType.equalsIgnoreCase("long") || f.fieldType.equalsIgnoreCase("integer") || f.fieldType.equalsIgnoreCase("double")
+					|| f.fieldType.equalsIgnoreCase("short") || f.fieldType.equalsIgnoreCase("string") || f.fieldType.equalsIgnoreCase("boolean")
 					|| f.fieldType.equalsIgnoreCase("timestamp") || f.fieldType.equalsIgnoreCase("date"))
 				fieldsList.add(f);
 		}

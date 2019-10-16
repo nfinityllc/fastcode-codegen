@@ -65,7 +65,7 @@ flowableAdminApp.controller('DecisionTableExecutionsController', ['$rootScope', 
 
         $scope.decisionTableExecutionSelected = function (decisionTableExecution) {
             if (decisionTableExecution && decisionTableExecution.getProperty('id')) {
-                $location.path('/decision-table-execution/' + decisionTableExecution.getProperty('id'));
+                $location.path('/flowable-admin/decision-table-execution/' + decisionTableExecution.getProperty('id'));
             }
         };
 

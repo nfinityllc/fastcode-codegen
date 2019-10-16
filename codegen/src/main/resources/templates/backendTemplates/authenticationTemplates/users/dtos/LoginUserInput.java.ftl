@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.[=AuthenticationTable].Dto;
 
 public class LoginUserInput {
 

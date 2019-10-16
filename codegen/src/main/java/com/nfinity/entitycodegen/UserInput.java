@@ -10,14 +10,22 @@ public class UserInput {
 	String schemaName;
 	String connectionStr;
 	List<String> tablesList;
-	Boolean audit;
+	Boolean audit=false;
 	Boolean email;
 	Boolean scheduler;
 	Boolean history;
 	Boolean flowable;
-	String authenticationType;
+	String authenticationType=null;
+	String authenticationSchema;
+	Boolean doUpgrade;
+
 	
-	
+	public String getAuthenticationSchema() {
+		return authenticationSchema;
+	}
+	public void setAuthenticationSchema(String authenticationSchema) {
+		this.authenticationSchema = authenticationSchema;
+	}
 	public String getGroupArtifactId() {
 		return groupArtifactId;
 	}
@@ -97,7 +105,8 @@ public class UserInput {
 	}
 	public void setAuthenticationType(String authenticationType) {
 		this.authenticationType = authenticationType;
-	}	
-	
+	}
+	public Boolean getUpgrade() { return doUpgrade; }
+	public void setUpgrade(Boolean doUpgrade) { this.doUpgrade = doUpgrade; }
 }
 

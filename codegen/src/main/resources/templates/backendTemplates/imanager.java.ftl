@@ -1,24 +1,16 @@
-package [=PackageName].domain.[=ClassName];
+package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import javax.validation.constraints.Positive;
 import [=PackageName].domain.model.[=EntityClassName];
+<#if CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=ClassName]Id;
+</#if>
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-</#if>
-<#if relationValue.relation =="ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if relationKey == parent>
-<#if parent?keep_after("-") == relationValue.eName>
-import java.util.List;
-import [=CommonModulePackage].Search.SearchFields;
-</#if>
-</#if>
-</#list>
 </#if>
 </#list>
 
@@ -30,35 +22,22 @@ public interface I[=ClassName]Manager {
 
     [=EntityClassName] Update([=EntityClassName] [=InstanceName]);
 
-    [=EntityClassName] FindById(@Positive(message ="Id should be a positive value")Long [=InstanceName]Id);
+    [=EntityClassName] FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> id</#if>);
 
-    Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable);
-   
-  <#list Relationship as relationKey, relationValue>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-   //[=relationValue.eName]
-   public [=relationValue.eName]Entity Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]Id);
-  
-    <#elseif relationValue.relation == "ManyToMany">
-    <#list RelationInput as relationInput>
-    <#assign parent = relationInput>
-    <#if relationKey == parent>
-    <#if parent?keep_after("-") == relationValue.eName>
-    //[=relationValue.eName]
-    public Boolean Add[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]);
-
-    public void Remove[=relationValue.eName]([=EntityClassName] [=InstanceName], [=relationValue.eName]Entity [=relationValue.eName?lower_case]);
-
-    public [=relationValue.eName]Entity Get[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]Id,@Positive(message ="[=relationValue.eName]Id should be a positive value") Long [=relationValue.eName?lower_case]Id);
-
-    public Page<[=relationValue.eName]Entity> Find[=relationValue.eName](@Positive(message ="[=InstanceName]Id should be a positive value") Long [=InstanceName]Id,List<SearchFields> fields,String operator,Pageable pageable);
-    
-    public Page<[=relationValue.eName]Entity> GetAvailable[=relationValue.eName]List(Long [=relationValue.joinColumn], String search, Pageable pageable);
-    
-    </#if>
-    </#if>
+    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+    <#if AuthenticationFields??>
+    <#list AuthenticationFields as authKey,authValue>
+	<#if authKey== "UserName">
+	[=EntityClassName] FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]);
+	</#if>
     </#list>
+    </#if>
+	</#if>
+    Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable);
+   <#list Relationship as relationKey, relationValue>
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+    //[=relationValue.eName]
+    public [=relationValue.eName]Entity Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=InstanceName]Id</#if>);
    </#if>
-  
   </#list>
 }

@@ -1,4 +1,4 @@
-package com.nfinity.codegen;
+ package com.nfinity.codegen;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,7 +37,9 @@ public class FronendBaseTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
-	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler, Boolean flowable, String authenticationType) {
+
+	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable, String authenticationType, String authenticationTable) {
+
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
 		editTsConfigJsonFile(destination + "/" + clientSubfolder + "/tsconfig.json", flowable, scheduler, email);
@@ -57,7 +59,18 @@ public class FronendBaseTemplateGenerator {
 		root.put("EmailModule", email);
 		root.put("SchedulerModule", scheduler);
 		root.put("FlowableModule", flowable);
-		root.put("AuthenticationType", authenticationType);
+
+		root.put("AuthenticationType",authenticationType);
+		if(authenticationTable!=null) {
+			root.put("UserInput","true");
+			root.put("AuthenticationTable", authenticationTable);
+		}
+		else
+		{
+			root.put("UserInput",null);
+			root.put("AuthenticationTable", "User");	
+		}	
+
 
 
 		for (String filePath : fl) {
@@ -171,9 +184,15 @@ public class FronendBaseTemplateGenerator {
 			JSONObject projects = (JSONObject) jsonObject.get("projects");
 			JSONObject project = (JSONObject) projects.get(clientSubfolder);
 			JSONObject architect = (JSONObject) project.get("architect");
+			
+			JSONObject serve = (JSONObject) architect.get("serve");
+			JSONObject serveOptions = (JSONObject) serve.get("options");
+			serveOptions.put("proxyConfig", "proxy.conf.json");
+		
 			JSONObject build = (JSONObject) architect.get("build");
 			JSONObject options = (JSONObject) build.get("options");
 			JSONArray styles = (JSONArray) options.get("styles");
+			JSONArray assets = (JSONArray) options.get("assets");
 			styles.clear();
 
 			JSONObject input = new JSONObject();
@@ -187,6 +206,7 @@ public class FronendBaseTemplateGenerator {
 
 			if(flowable)
 			{
+				assets.add("src/flowable_admin");
 				projects.put("task-app",getFlowableTaskProjectNode());
 			}
 			

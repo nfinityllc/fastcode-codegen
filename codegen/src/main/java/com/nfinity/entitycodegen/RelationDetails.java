@@ -8,42 +8,27 @@ public class RelationDetails {
 
 	String cName;
 	String relation;
-	String joinColumn;
-	String joinColumnType;
-	Boolean isJoinColumnOptional;
-	String referenceColumn;
 	String joinTable;
-	String inverseJoinColumn;
-	String inverseReferenceColumn;
 	String eName;
-	String mappedBy;
+	String eModuleName;
 	String fName;
-	Boolean isParent;
+	Boolean isParent=false;
+	List<JoinDetails> joinDetails = new ArrayList<JoinDetails>();
 	List<FieldDetails> fDetails = new ArrayList<>();
-//	FieldDetails entityDescriptionField;
 
-//	public FieldDetails getEntityDescriptionField() {
-//		return entityDescriptionField;
-//	}
-//
-//	public void setEntityDescriptionField(FieldDetails descFieldName) {
-//		this.entityDescriptionField = descFieldName;
-//	}
+	public List<JoinDetails> getJoinDetails() {
+		return joinDetails;
+	}
 
+	public void setJoinDetails(List<JoinDetails> joinDetails) {
+		this.joinDetails = joinDetails;
+	}
 	public String getRelation() {
 		return relation;
 	}
 
 	public void setRelation(String relation) {
 		this.relation = relation;
-	}
-
-	public String getJoinColumn() {
-		return joinColumn;
-	}
-
-	public void setJoinColumn(String joinColumn) {
-		this.joinColumn = joinColumn;
 	}
 
 	public String getcName() {
@@ -70,44 +55,12 @@ public class RelationDetails {
 		this.fName = fName;
 	}
 
-	public String getMappedBy() {
-		return mappedBy;
-	}
-
-	public void setMappedBy(String mappedBy) {
-		this.mappedBy = mappedBy;
-	}
-
-	public String getReferenceColumn() {
-		return referenceColumn;
-	}
-
-	public void setReferenceColumn(String referenceColumn) {
-		this.referenceColumn = referenceColumn;
-	}
-
 	public String getJoinTable() {
 		return joinTable;
 	}
 
 	public void setJoinTable(String joinTable) {
 		this.joinTable = joinTable;
-	}
-
-	public String getInverseJoinColumn() {
-		return inverseJoinColumn;
-	}
-
-	public void setInverseJoinColumn(String inverseJoinColumn) {
-		this.inverseJoinColumn = inverseJoinColumn;
-	}
-
-	public String getInverseReferenceColumn() {
-		return inverseReferenceColumn;
-	}
-
-	public void setInverseReferenceColumn(String inverseReferenceColumn) {
-		this.inverseReferenceColumn = inverseReferenceColumn;
 	}
 
 	public Boolean getIsParent() {
@@ -125,59 +78,24 @@ public class RelationDetails {
 	public void setfDetails(List<FieldDetails> fDetails) {
 		this.fDetails = fDetails;
 	}
-
-	public String getJoinColumnType() {
-		return joinColumnType;
+	
+	public String geteModuleName() {
+		return eModuleName;
 	}
 
-	public void setJoinColumnType(String joinColumnType) {
-		this.joinColumnType = joinColumnType;
+	public void seteModuleName(String eModuleName) {
+		this.eModuleName = eModuleName;
 	}
 
-	public Boolean getIsJoinColumnOptional() {
-		return isJoinColumnOptional;
-	}
-
-	public void setIsJoinColumnOptional(Boolean isJoinColumnOptional) {
-		this.isJoinColumnOptional = isJoinColumnOptional;
-	}
-
-	public Map<String,FieldDetails> FindAndSetDescriptiveField(List<String> manyToManyRshp,Map<String,FieldDetails> descriptiveFieldEntities) {
+	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities) {
 		FieldDetails descriptiveField = null;
 		
-		if (this.getRelation() == "ManyToOne" || this.getRelation() == "ManyToMany") {
-
-			if (this.getRelation() == "ManyToMany") {
-				for (String str : manyToManyRshp) {
-					int indexOfDash = str.indexOf('-');
-					String before = str.substring(0, indexOfDash);
-					String after = str.substring(indexOfDash+1);
-					if (before.equals(this.geteName())) {
-						if(!descriptiveFieldEntities.containsKey(this.geteName()))
-						{
-						descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
-						descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-						}
-					}
-					if(after.equals(this.getcName()))
-					{
-						if(!descriptiveFieldEntities.containsKey(this.getcName()))
-						{
-						descriptiveField = GetUserInput.getEntityDescriptionField(this.getcName(), this.getfDetails());
-						descriptiveFieldEntities.put(this.getcName(),descriptiveField);
-						}
-					}
-				}
-			} else {
+		//if (this.getRelation() == "ManyToOne" || this.getRelation() == "OneToOne") {
 				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
+				descriptiveField.setDescription(this.geteName().concat("DescriptiveField"));
 				descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-			}
-//			if (descriptiveField != null) {
-//				this.setEntityDescriptionField(descriptiveField);
-//				// descriptiveMap.put(entry.getKey(),
-//				// entry.getValue().getEntityDescriptionField());
-//			}
-		}
+	//	}
 		return descriptiveFieldEntities;
 	}
+
 }

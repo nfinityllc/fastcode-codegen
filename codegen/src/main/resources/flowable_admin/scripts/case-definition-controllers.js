@@ -28,25 +28,25 @@ flowableAdminApp.controller('CaseDefinitionController', ['$scope', '$rootScope',
 		$scope.tabData.activeTab = $scope.tabData.tabs[0].id;
 
 		$scope.returnToList = function() {
-			$location.path("/case-definitions");
+			$location.path("/flowable-admin/case-definitions");
 		};
 
 		$scope.openDefinition = function(definitionId) {
 			if (definitionId) {
-				$location.path("/case-definition/" + definitionId);
+				$location.path("/flowable-admin/case-definition/" + definitionId);
 			}
 		};
 
 
 		$scope.openDeployment = function(deploymentId) {
 		    if (deploymentId) {
-		        $location.path("/cmmn-deployment/" + deploymentId);
+		        $location.path("/flowable-admin/cmmn-deployment/" + deploymentId);
 		    }
 		};
 
     $scope.editCategory = function() {
       var modalInstance = $modal.open({
-        templateUrl: 'src/flowable_admin/views/case-definition-edit-category-popup.html',
+        templateUrl: 'flowable_admin/views/case-definition-edit-category-popup.html',
         controller: 'EditCaseDefinitionCategoryModalCtrl',
         resolve: {
           definition: function() {
@@ -65,7 +65,7 @@ flowableAdminApp.controller('CaseDefinitionController', ['$scope', '$rootScope',
 
     $scope.showCaseDiagram = function() {
       $modal.open({
-        templateUrl: 'src/flowable_admin/views/case-definition-diagram-popup.html',
+        templateUrl: 'flowable_admin/views/case-definition-diagram-popup.html',
         windowClass: 'modal modal-full-width',
         controller: 'ShowCaseDefinitionDiagramPopupCtrl',
         resolve: {
@@ -78,31 +78,31 @@ flowableAdminApp.controller('CaseDefinitionController', ['$scope', '$rootScope',
 
     $scope.openJob = function(job) {
       if (job && job.getProperty('id')) {
-        $location.path("/job/" + job.getProperty('id'));
+        $location.path("/flowable-admin/job/" + job.getProperty('id'));
       }
     };
 
     $scope.openCaseInstance = function(instance) {
       if (instance && instance.getProperty('id')) {
-        $location.path("/case-instance/" + instance.getProperty('id'));
+        $location.path("/flowable-admin/case-instance/" + instance.getProperty('id'));
       }
     };
     
     $scope.openStartForm = function () {
         if ($scope.startForm) {
-            $location.path("/form/" + $scope.startForm.id);
+            $location.path("/flowable-admin/form/" + $scope.startForm.id);
         }
     };
     
     $scope.openFormDefinition = function (form) {
         if (form && form.getProperty('id')) {
-            $location.path("/form-definition/" + form.getProperty('id'));
+            $location.path("/flowable-admin/form-definition/" + form.getProperty('id'));
           }
     };
     
     $scope.openDecisionTable = function (decisionTable) {
         if (decisionTable && decisionTable.getProperty('id')) {
-            $location.path("/decision-table/" + decisionTable.getProperty('id'));
+            $location.path("/flowable-admin/decision-table/" + decisionTable.getProperty('id'));
           }
     };
 
@@ -111,7 +111,7 @@ flowableAdminApp.controller('CaseDefinitionController', ['$scope', '$rootScope',
       $rootScope.filters.forced.jobFilter = {
         caseDefinitionId: $scope.definition.id
       };
-      $location.path("/jobs");
+      $location.path("/flowable-admin/jobs");
     };
 
     $scope.showAllCases = function() {
@@ -119,7 +119,7 @@ flowableAdminApp.controller('CaseDefinitionController', ['$scope', '$rootScope',
       $rootScope.filters.forced.instanceFilter = {
           caseDefinitionId: $scope.definition.id
       };
-      $location.path("/case-instances");
+      $location.path("/flowable-admin/case-instances");
     };
 
     $scope.loadCaseInstances = function() {

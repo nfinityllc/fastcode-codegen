@@ -2,6 +2,8 @@ package [=PackageName].Search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class SearchCriteria {
 	
@@ -9,22 +11,14 @@ public class SearchCriteria {
 	String value;
 	String operator;
 	List<SearchFields> fields = new ArrayList<>();
-	String joinColumn;
-	Long joinColumnValue;
+	Map<String,String> joinColumns = new HashMap<String,String>();
 	
-	public Long getJoinColumnValue() {
-		return joinColumnValue;
+	public Map<String,String> getJoinColumns() {
+		return joinColumns;
 	}
-	public void setJoinColumnValue(Long joinColumnValue) {
-		this.joinColumnValue = joinColumnValue;
+	public void setJoinColumns(Map<String,String> joinColumns) {
+		this.joinColumns = joinColumns;
 	}
-	public String getJoinColumn() {
-		return joinColumn;
-	}
-	public void setJoinColumn(String joinColumn) {
-		this.joinColumn = joinColumn;
-	}
-	
 	public int getType() {
 		return type;
 	}

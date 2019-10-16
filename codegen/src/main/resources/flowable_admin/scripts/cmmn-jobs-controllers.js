@@ -101,7 +101,7 @@ flowableAdminApp.controller('CmmnJobsController', ['$scope', '$rootScope', '$htt
 	    
 	    $scope.jobSelected = function(job) {
 	    	if (job && job.getProperty('id')) {
-	    		$location.path('/cmmn-job/' + job.getProperty('id')).search({jobType: $scope.filter.jobType});
+	    		$location.path('/flowable-admin/cmmn-job/' + job.getProperty('id')).search({jobType: $scope.filter.jobType});
 	    	}
 	    };
 	    

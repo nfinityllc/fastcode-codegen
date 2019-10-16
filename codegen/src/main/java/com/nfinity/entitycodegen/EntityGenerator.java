@@ -2,28 +2,35 @@ package com.nfinity.entitycodegen;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.nfinity.codegen.AuthenticationClassesTemplateGenerator;
+import com.nfinity.codegen.CodegenApplication;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-
 import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 
 public class EntityGenerator {
 
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-
+	static String TEMPLATE_FOLDER = "/templates";
 	public static void setTemplateLoader() {
-		ClassTemplateLoader ctl = new ClassTemplateLoader(new EntityGenerator().getClass(), "/templates/entityTemplate");
+
+		ClassTemplateLoader ctl = new ClassTemplateLoader(EntityGenerator.class, TEMPLATE_FOLDER + "/");
+		TemplateLoader[] templateLoadersArray = new TemplateLoader[] {ctl};
+		MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
 		cfg.setDefaultEncoding("UTF-8");
-		cfg.setTemplateLoader(ctl);
+		cfg.setTemplateLoader(mtl);
 	}
 
 	public static Map<String, EntityDetails> generateEntities(String connectionString, String schema,
-			List<String> tableList, String packageName, String destination, Boolean audit) {
-
+			List<String> tableList, String packageName, String destination, Boolean audit,Boolean history,Boolean flowable,String authenticationTable,String authenticationType) { 
 		Map<String, String> connectionProps = parseConnectionString(connectionString);
 		String entityPackage = packageName + ".domain.model";
 		final String tempPackageName = entityPackage.concat(".Temp");
@@ -55,7 +62,6 @@ public class EntityGenerator {
 		try {
 			BaseAppGen.CompileApplication(destination);
 			deleteFile(destinationPath + "/orm.xml");
-			// Utils.runCommand("mvn compile", destination);
 		} catch (Exception e) {
 			System.out.println("Compilation Error");
 			e.printStackTrace();
@@ -64,136 +70,256 @@ public class EntityGenerator {
 
 		ArrayList<Class<?>> entityClasses;
 		Map<String, EntityDetails> entityDetailsMap = new HashMap<>();
-		Map<String, FieldDetails> descriptiveMap = new HashMap<>();
 		Map<String,FieldDetails> descriptiveFieldEntities = new HashMap<>();
-		List<String> relationInputList = new ArrayList<String>();
+		List<String> compositePrimaryKeyEntities = new ArrayList<String>();
 		try {
 			entityClasses = loader.findClasses(tempPackageName);
-			// ClassDetails classDetails = getClasses(entityClasses);
+
 			List<Class<?>> classList = filterOnlyRelevantEntities(entityClasses);// classDetails.getClassesList();
-			List<String> manyToManyAssociationEntities = findManyToManyAssociationEntities(entityClasses);// classDetails.getRelationClassesList();
-			relationInputList = GetUserInput.getRelationInput(classList, manyToManyAssociationEntities, destination,
-					tempPackageName);
+			compositePrimaryKeyEntities=findCompositePrimaryKeyClasses(entityClasses);			
 
 			for (Class<?> currentClass : classList) {
 				String entityName = currentClass.getName();
+
 				// process each entities except many to many association entities
-				if (!manyToManyAssociationEntities.contains(entityName)) {
+				if (!entityName.endsWith("Id")) {
+
 					EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
-					// entityName, classList);
-					details.setRelationInput(relationInputList);
-
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
+					if(audit)
+					{
+						details.setFieldsMap(removeAuditFieldsIfExists(details.getFieldsMap()));
+						for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+							entry.getValue().setfDetails(removeAuditFieldsIfExistsFromList(entry.getValue().getfDetails()));
+						}
+
+					}
+					details.setCompositeKeyClasses(compositePrimaryKeyEntities);
+
+
 					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
-
-
-
+					relationMap = EntityDetails.FindOneToOneJoinColFromChildEntity(relationMap, classList);
 					// Get parent descrptive fields from user
 					for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
 
-						if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
+						if(entry.getValue().getRelation().equals("OneToOne") && !entry.getValue().getIsParent())
 						{
-							descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(relationInputList,descriptiveFieldEntities);
+							if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName())))
+							{
+								descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(descriptiveFieldEntities);
+							}
 						}
-						//						else
-						//						{
-						//							for (Map.Entry<String, FieldDetails> entry1 : descriptiveFieldEntities.entrySet() ) {
-						//								int indexOfDash = entry.getKey().indexOf('-');
-						//								String before = entry.getKey().substring(indexOfDash+1);
-						//								
-						//								System.out.println("\n else part "  + entry1.getKey() + "  relation key " + entry.getKey()+
-						//										" -- \n key " + entry1.getKey());
-						//								if(entry1.getKey().equals(before))
-						//								{
-						//									System.out.println("here");
-						//									descriptiveMap.put(entry.getKey(), entry1.getValue());
-						//								}
-						//							}
-						//						}
-
-
-						/*
-						 * if (entry.getValue().getRelation() == "ManyToOne" ||
-						 * entry.getValue().getRelation() == "ManyToMany") { FieldDetails
-						 * descriptiveField = null; if (entry.getValue().getRelation() == "ManyToMany")
-						 * { for (String str : relationInputList) { int indexOfDash = str.indexOf('-');
-						 * String before = str.substring(0, indexOfDash); if
-						 * (before.equals(entry.getValue().geteName())) { descriptiveField =
-						 * GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
-						 * entry.getValue().getfDetails()); } } } else { descriptiveField =
-						 * GetUserInput.getEntityDescriptionField(entry.getValue().geteName(),
-						 * entry.getValue().getfDetails()); } if (descriptiveField != null) {
-						 * entry.getValue().setEntityDescriptionField(descriptiveField);
-						 * descriptiveMap.put(entry.getKey(),
-						 * entry.getValue().getEntityDescriptionField()); } }
-						 */
+						else if(entry.getValue().getRelation().equals("ManyToOne"))
+						{
+							if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
+							{
+								descriptiveFieldEntities = entry.getValue().FindAndSetDescriptiveField(descriptiveFieldEntities);
+							}
+						}
 					}
 
 					details.setRelationsMap(relationMap);
 					details.setEntitiesDescriptiveFieldMap(descriptiveFieldEntities);
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 					// Generate Entity based on template
-					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit);
+					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit,compositePrimaryKeyEntities,authenticationTable,authenticationType);
 
 				}
-
 			}
+
+			if(authenticationTable !=null  && authenticationType != "none")
+			{
+				entityDetailsMap=validateAuthenticationTable(entityDetailsMap, authenticationTable, flowable);
+			}
+			if(authenticationType !="none")
+			{
+				EntityGenerator.GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath, audit,authenticationTable,authenticationType);
+				if(audit)
+				{
+					generateAuditEntity(destinationPath , packageName);
+				}
+			}
+
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
-		//
-		//		if (audit) {
-		//			EntityGenerator.generateAuditEntity(destinationPath, packageName);
-		//		}
 
-		//		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
-
-		//	return setDescriptiveField(entityDetailsMap, descriptiveMap, relationInputList);
 		return entityDetailsMap;
 	}
 
-	//	public static Map<String, EntityDetails> setDescriptiveField(Map<String, EntityDetails> entityDetailsMap,
-	//			Map<String, FieldDetails> descriptiveMap, List<String> relationInputList) {
-	//		for (Map.Entry<String, EntityDetails> details : entityDetailsMap.entrySet()) {
-	//			Map<String, RelationDetails> relationMap = details.getValue().getRelationsMap();
-	//			for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-	//				if (entry.getValue().getRelation() == "OneToMany" || entry.getValue().getRelation() == "ManyToMany") {
-	//					for (Map.Entry<String, FieldDetails> str : descriptiveMap.entrySet()) {
-	//						int indexOfDash = str.getKey().indexOf('-');
-	//						String before = str.getKey().substring(0, indexOfDash);
-	//						String after = str.getKey().substring(indexOfDash + 1);
-	//						if (entry.getValue().getRelation() == "ManyToMany") {
-	//							for (String input : relationInputList) {
-	//								int index = input.indexOf('-');
-	//								String parent = input.substring(0, index);
-	//								if (parent.equals(after)) {
-	//									if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
-	//											&& str.getKey() != null) {
-	//										entry.getValue().setEntityDescriptionField(str.getValue());
-	//									}
-	//
-	//								}
-	//							}
-	//						} else {
-	//							if (after.equals(entry.getValue().getcName()) && before.equals(entry.getValue().geteName())
-	//									&& str.getKey() != null) {
-	//								entry.getValue().setEntityDescriptionField(str.getValue());
-	//							}
-	//						}
-	//					}
-	//				}
-	//
-	//			}
-	//			details.getValue().setRelationsMap(relationMap);
-	//		}
-	//
-	//		return entityDetailsMap;
-	//	}
+	public static List<FieldDetails> removeAuditFieldsIfExistsFromList(List<FieldDetails> fieldDetailsList)
+	{
+		Iterator<FieldDetails> iterator = fieldDetailsList.iterator();
+		while (iterator.hasNext()) {
+			FieldDetails fieldObj = iterator.next();
+			if("creatorUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "creationTime".equalsIgnoreCase(fieldObj.getFieldName())
+					|| "lastModifierUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "lastModificationTime".equalsIgnoreCase(fieldObj.getFieldName()) ) 	
+			{
+
+				iterator.remove();
+			}
+		}
+	
+		return fieldDetailsList;
+	}
+	public static Map<String,FieldDetails> removeAuditFieldsIfExists(Map<String,FieldDetails> fieldDetailsMap)
+	{
+
+		Iterator<Map.Entry<String,FieldDetails>> iter = fieldDetailsMap.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry<String,FieldDetails> entry = iter.next();
+			if("creatorUserId".equalsIgnoreCase(entry.getKey()) || "creationTime".equalsIgnoreCase(entry.getKey()) ||
+					"lastModifierUserId".equalsIgnoreCase(entry.getKey()) || "lastModificationTime".equalsIgnoreCase(entry.getKey())){
+				iter.remove();
+			}
+		}
+		return fieldDetailsMap;
+	}
+	public static Map<String,EntityDetails> validateAuthenticationTable(Map<String,EntityDetails> entityDetailsMap, String authenticationTable, Boolean flowable)
+	{
+		Boolean isTableExits=false;
+		if(entityDetailsMap!=null)
+		{
+			if(entityDetailsMap.containsKey(authenticationTable)) {
+				isTableExits=true;
+			}
+			Scanner scanner = new Scanner(System.in);
+			while(!isTableExits)
+			{
+				System.out.println(" INVALID AUTHORIZATION SCHEMA ");
+				System.exit(0);
+				//			System.out.println("Enter Valid Authorization Table : ");
+				//			String str=scanner.nextLine();
+				//			str=str.substring(0, 1).toUpperCase() + str.substring(1);
+				//			System.out.println("  j" + str);
+				//			if(entityDetailsMap.containsKey(str))
+				//			{
+				//				isTableExits=true;
+				//				
+				//				authenticationTable=str;
+				//			}
+			}
+
+			return getAuthenticationTableFieldsMapping(entityDetailsMap, authenticationTable, flowable, scanner);
+		}
+		return entityDetailsMap;
+	}
+
+	public static Map<String,EntityDetails> getAuthenticationTableFieldsMapping(Map<String,EntityDetails> entityDetails, String authenticationTable, Boolean flowable, Scanner scanner)
+	{
+		Map<String,FieldDetails> authFields=new HashMap<String, FieldDetails>();
+		authFields.put("UserName", null);
+		authFields.put("Password", null);
+		if(flowable) {
+			authFields.put("FirstName", null);
+			authFields.put("LastName", null);
+			authFields.put("EmailAddress", null);
+		}
+
+		for(Map.Entry<String,EntityDetails> entry: entityDetails.entrySet())
+		{
+			if(entry.getKey().equals(authenticationTable))
+			{
+
+				List<FieldDetails> fieldsList = new ArrayList<>();
+				for(Map.Entry<String,FieldDetails> fieldsEntry: entry.getValue().getFieldsMap().entrySet())
+				{
+					if (fieldsEntry.getValue().fieldType.equalsIgnoreCase("long") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("integer") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("double")
+							|| fieldsEntry.getValue().fieldType.equalsIgnoreCase("short") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("string") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("boolean")
+							|| fieldsEntry.getValue().fieldType.equalsIgnoreCase("timestamp") || fieldsEntry.getValue().fieldType.equalsIgnoreCase("date"))
+						fieldsList.add(fieldsEntry.getValue());
+				}
+				for(Map.Entry<String,FieldDetails> authFieldsEntry: authFields.entrySet())
+				{
+					int i = 1;
+					StringBuilder b = new StringBuilder();
+					for (FieldDetails f : fieldsList) {
+						b.append(MessageFormat.format("{0}.{1} ", i, f.getFieldName()));
+						i++;
+					}
+					System.out.println("\n Select field you want to map on "+ authFieldsEntry.getKey()+" by typing its corresponding number : ");
+					System.out.println(b.toString());
+					i = scanner.nextInt();
+					while (i < 1 || i > fieldsList.size()) {
+						System.out.println("\nInvalid Input \nEnter again :");
+						i = scanner.nextInt();
+					}
+					FieldDetails selected=fieldsList.get(i - 1);
+					while(!selected.getFieldType().equalsIgnoreCase("String"))
+					{
+						System.out.println("Please choose valid string field : ");
+						i = scanner.nextInt();
+						while (i < 1 || i > fieldsList.size()) {
+							System.out.println("\nInvalid Input \nEnter again : ");
+							i = scanner.nextInt();
+						}
+						selected=fieldsList.get(i - 1);
+					}
+					fieldsList.remove(i-1);
+					authFields.replace(authFieldsEntry.getKey(), selected);
+
+				}
+
+				entry.getValue().setAuthenticationFieldsMap(authFields);
+			}
+		}
+
+		return entityDetails;
+	}
+
+	public static void GenerateAutheticationEntities(Map<String,EntityDetails> entityDetails, String schemaName, String packageName,
+			String destPath, Boolean audit,String authenticationTable,String authenticationType) {
+
+		Map<String,FieldDetails> primaryKeys= new HashMap<>();
+		Map<String, Object> root = new HashMap<>();
+		root.put("PackageName", packageName);
+		root.put("Audit", audit);
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
+		root.put("AuthenticationType",authenticationType);
+		root.put("SchemaName",schemaName);
+		if(authenticationTable!=null) {
+			root.put("UserInput","true");
+			root.put("AuthenticationTable", authenticationTable);
+		}
+		else
+		{
+			root.put("UserInput",null);
+			root.put("AuthenticationTable", "User");	
+		}
+
+		setTemplateLoader();
+
+		for(Map.Entry<String,EntityDetails> entry : entityDetails.entrySet())
+		{
+			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
+			if(className.equalsIgnoreCase(authenticationTable))
+			{
+				root.put("ClassName", className);
+				root.put("TableName", entry.getValue().getEntityTableName());
+				root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
+				root.put("Fields", entry.getValue().getFieldsMap());
+				root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
+				for (Map.Entry<String, FieldDetails> entryFields : entry.getValue().getFieldsMap().entrySet()) {
+					if(entryFields.getValue().getIsPrimaryKey())
+					{
+						System.out.println(" primary key " + entryFields.getValue().getFieldName());
+						primaryKeys.put(entryFields.getValue().getFieldName(), entryFields.getValue());
+					}
+				}
+				root.put("PrimaryKeys", primaryKeys);
+			}
+		}
+
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
+
+		generateFiles(AuthenticationClassesTemplateGenerator.getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destinationFolder);
+	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
-			String destPath, Boolean audit) {
+			String destPath, Boolean audit,List<String> compositePrimaryKeyEntities,String authenticationTable,String authenticationType) {
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -203,26 +329,53 @@ public class EntityGenerator {
 		root.put("ClassName", className);
 		root.put("PackageName", packageName);
 		root.put("CommonModulePackage", packageName.concat(".CommonModule"));
-		root.put("RelationInput", entityDetails.getRelationInput());
+		root.put("CompositeKeyClasses", entityDetails.getCompositeKeyClasses());
+		root.put("TableName", entityDetails.getEntityTableName());
 		root.put("SchemaName", schemaName);
+		root.put("AuthenticationType",authenticationType);
+		if(authenticationTable !=null)
+			root.put("AuthenticationTable", authenticationTable);
+		else
+			root.put("AuthenticationTable", "User");
 		root.put("Audit", audit);
+		root.put("AuthenticationFields", entityDetails.getAuthenticationFieldsMap());
 
 		setTemplateLoader();
 
 		Map<String, FieldDetails> actualFieldNames = entityDetails.getFieldsMap();
 		Map<String, RelationDetails> relationMap = entityDetails.getRelationsMap();
+		Map<String,String> primaryKeys= new HashMap<>();
 		root.put("Fields", actualFieldNames);
-		root.put("Relationship", relationMap);
 
+		root.put("Relationship", relationMap);
+		for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
+			if(entry.getValue().getIsPrimaryKey())
+			{
+				if(entry.getValue().getFieldType().equalsIgnoreCase("long"))
+					primaryKeys.put(entry.getValue().getFieldName(),"Long");
+				else
+					primaryKeys.put(entry.getValue().getFieldName(), entry.getValue().getFieldType());
+			}
+		}
+		root.put("PrimaryKeys", primaryKeys);
 		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
 
 		generateEntity(root, destinationFolder);
+		if (compositePrimaryKeyEntities.contains(className)) {
+			generateIdClass(root, destinationFolder);
+		}
+
 
 	}
 
 	private static void generateEntity(Map<String, Object> root, String destPath) {
 		new File(destPath).mkdirs();
 		generateFiles(getEntityTemplate(root.get("ClassName").toString()), root, destPath);
+	}
+
+	private static void generateIdClass(Map<String, Object> root, String destPath) {
+		new File(destPath).mkdirs();
+		generateFiles(getIdClassTemplate(root.get("ClassName").toString()), root, destPath);
 	}
 
 	private static void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
@@ -244,7 +397,14 @@ public class EntityGenerator {
 	private static Map<String, Object> getEntityTemplate(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
-		backEndTemplate.put("entity.java.ftl", className + "Entity.java");
+		backEndTemplate.put("entityTemplate/entity.java.ftl", className + "Entity.java");
+		return backEndTemplate;
+	}
+
+	private static Map<String, Object> getIdClassTemplate(String className) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		backEndTemplate.put("entityTemplate/idClass.java.ftl", className + "Id.java");
 		return backEndTemplate;
 	}
 
@@ -253,8 +413,9 @@ public class EntityGenerator {
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
-		backEndTemplate.put("audit.java.ftl", "AuditedEntity.java");
-		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/Audit";
+		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditedEntity.java.ftl", "AuditedEntity.java");
+		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");
+		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/BaseClasses";
 		new File(destinationFolder).mkdirs();
 		generateFiles(backEndTemplate, root, destinationFolder);
 
@@ -282,57 +443,31 @@ public class EntityGenerator {
 	}
 
 	public static List<Class<?>> filterOnlyRelevantEntities(ArrayList<Class<?>> entityClasses) {
-		List<Class<?>> otherEntities = entityClasses.stream().filter((e) -> e.getName().endsWith("Id"))
-				.collect(Collectors.toList());
 		List<Class<?>> relevantEntities = entityClasses.stream()
-				.filter((e) -> !(e.getName().endsWith("Id") || e.getName().endsWith("Id$Tokenizer")))
+				.filter((e) -> !(e.getName().endsWith("Id$Tokenizer")))
 				.collect(Collectors.toList());
-		for (Class<?> currentClass : otherEntities) {
-			String className = currentClass.getName().substring(0, currentClass.getName().indexOf("Id"));
-			Class<?> entity = relevantEntities.stream().filter((r) -> r.getName().endsWith(className)).findAny().orElse(null);
-			if (entity == null)
-				relevantEntities.add(currentClass);
-
-		}
 		return relevantEntities;
 	}
 
-	public static List<String> findManyToManyAssociationEntities(ArrayList<Class<?>> entityClasses) {
-		List<String> associationEntities = new ArrayList<>();
-		List<Class<?>> otherEntities = entityClasses.stream().filter((e) -> e.getName().endsWith("Id"))
-				.collect(Collectors.toList());
-		List<Class<?>> relevantEntities = entityClasses.stream()
-				.filter((e) -> !(e.getName().endsWith("Id") || e.getName().endsWith("Id$Tokenizer")))
-				.collect(Collectors.toList());
-		for (Class<?> currentClass : otherEntities) {
-			String className = currentClass.getName().substring(0, currentClass.getName().indexOf("Id"));
-			Class<?> entity = relevantEntities.stream().filter((r) -> r.getName().endsWith(className)).findAny().orElse(null);
-			if (entity != null)
-				associationEntities.add(className);
+	public static List<String> findCompositePrimaryKeyClasses(ArrayList<Class<?>> entityClasses) {
+		List<String> compositeKeyEntities = new ArrayList<>(); 
+		List<Class<?>> otherEntities = entityClasses.stream().filter((e) -> e.getName().endsWith("Id")) 
+				.collect(Collectors.toList()); 
+		List<Class<?>> relevantEntities = entityClasses.stream() 
+				.filter((e) -> !(e.getName().endsWith("Id") || e.getName().endsWith("Id$Tokenizer"))) 
+				.collect(Collectors.toList()); 
+		for (Class<?> currentClass : otherEntities) { 
+			String className = currentClass.getName().substring(0, currentClass.getName().indexOf("Id")); 
+			Class<?> entity = relevantEntities.stream().filter((r) -> r.getName().endsWith(className)).findAny().orElse(null); 
+			if (entity != null) 
+			{
 
-		}
-		return associationEntities;
+				compositeKeyEntities.add(className.substring(className.lastIndexOf(".")+1));
+			}
+		} 
+		return compositeKeyEntities; 
 	}
 
-	/*
-	 * public static ClassDetails getClasses(ArrayList<Class<?>> entityClasses) {
-	 * List<String> entityClassNames = new ArrayList<>(); for (Class<?> currentClass
-	 * : entityClasses) { String entityName = currentClass.getName();
-	 * 
-	 * entityClassNames.add(entityName); }
-	 * 
-	 * List<String> relationClass = new ArrayList<>(); List<Class<?>> classList =
-	 * new ArrayList<>();
-	 * 
-	 * for (Class<?> currentClass : entityClasses) { String entityName =
-	 * currentClass.getName(); if (entityName.contains("Id")) { if
-	 * (!entityName.contains("Tokenizer")) { String className =
-	 * entityName.substring(0, entityName.indexOf("Id"));
-	 * 
-	 * if (!entityClassNames.contains(className)) classList.add(currentClass); else
-	 * relationClass.add(className); } } else { classList.add(currentClass); } }
-	 * return new ClassDetails(classList, relationClass); }
-	 */
 	public static Map<String, String> parseConnectionString(String connectionString) {
 		Map<String, String> connectionStringMap = new HashMap<String, String>();
 

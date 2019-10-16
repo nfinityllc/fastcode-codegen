@@ -1,16 +1,12 @@
-package [=PackageName].application.Authorization.Roles;
+package [=PackageName].application.Authorization.Role;
 
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
-import [=PackageName].application.Authorization.Roles.Dto.*;
-import [=PackageName].domain.Authorization.Permissions.IPermissionsManager;
-import [=PackageName].application.Authorization.Permissions.PermissionAppService;
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.Authorization.Roles.IRolesManager;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.model.QRolesEntity;
-import [=PackageName].domain.IRepository.IPermissionsRepository;
-import [=CommonModulePackage].logging.LoggingHelper;
+import [=CommonModulePackage].Search.SearchUtils;
+import [=PackageName].application.Authorization.Role.Dto.*;
+import [=PackageName].domain.Authorization.Role.IRoleManager;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.model.QRoleEntity;
 import com.querydsl.core.BooleanBuilder;
 
 import java.util.ArrayList;
@@ -18,7 +14,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.*;
+import org.apache.commons.lang3.StringUtils;
+<#if Flowable!false>
+import [=PackageName].application.Flowable.ActIdGroupMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 
 @Service
 @Validated
@@ -37,164 +38,104 @@ public class RoleAppService implements IRoleAppService{
 	static final int case3=3;
 	
 	@Autowired
-	IRolesManager _roleManager;
+	private IRoleManager _roleManager;
 
 	@Autowired
-	IPermissionsRepository _permissionsRepository;
+	private RoleMapper mapper;
+
+	<#if Flowable!false>
+		@Autowired
+		private FlowableIdentityService idmIdentityService;
+	</#if>
+
+    @Transactional(propagation = Propagation.REQUIRED)
+	public CreateRoleOutput Create(CreateRoleInput input) {
+
+		RoleEntity role = mapper.CreateRoleInputToRoleEntity(input);
+		RoleEntity createdRole = _roleManager.Create(role);
+
+		<#if Flowable!false>
+		//Map and create flowable groupS
+		idmIdentityService.createGroup(createdRole.getName());
+		</#if>
+
+		return mapper.RoleEntityToCreateRoleOutput(createdRole);
+	}
 	
-	@Autowired
-	private PermissionAppService _permissionsAppService;
-
-	@Autowired
-	IPermissionsManager _permissionManager;
-
-	@Autowired
-	private LoggingHelper logHelper;
-
-	@Autowired
-	private RoleMapper roleMapper;
-
-
-	// ReST API Call => POST /roles
 	@Transactional(propagation = Propagation.REQUIRED)
-	public CreateRoleOutput Create(CreateRoleInput role) {
+	@CacheEvict(value="Role", key = "#roleId")
+	public UpdateRoleOutput Update(Long  roleId, UpdateRoleInput input) {
 
-		RolesEntity re = roleMapper.CreateRoleInputToRolesEntity(role);
-		RolesEntity createdRole = _roleManager.Create(re);
-		return roleMapper.RolesEntityToCreateRoleOutput(createdRole);
-	}
-
-	// ReST API Call => DELETE /roles/1
-	@Transactional(propagation = Propagation.REQUIRED)
-	public void Delete(Long rid) {
-		
-		RolesEntity existing = _roleManager.FindById(rid);
-		_roleManager.Delete(existing);
-	}
-
-	// ReST API Call => PUT /roles/1
-	@Transactional(propagation = Propagation.REQUIRED)
-	public UpdateRoleOutput Update( Long rid,UpdateRoleInput role) {
-
-		RolesEntity re = roleMapper.UpdateRoleInputToRolesEntity(role);
-		RolesEntity updatedRole = _roleManager.Update(re);
-		return roleMapper.RolesEntityToUpdateRoleOutput(updatedRole);
-	}
-
-	// ReST API Call => GET /roles/1
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public FindRoleByIdOutput FindById(Long rid) {
-
-		RolesEntity foundRole = _roleManager.FindById(rid);
-
-		if (foundRole == null) {
-			return null;
+		<#if Flowable!false>
+		String oldRoleName = null;
+		RoleEntity oldUserRole = _roleManager.FindById(roleId);
+		if(oldUserRole != null) {
+			oldRoleName = oldUserRole.getName();
 		}
-		return roleMapper.RolesEntityToFindRoleByIdOutput(foundRole);
+		</#if>
+		RoleEntity role = mapper.UpdateRoleInputToRoleEntity(input);
+		RoleEntity updatedRole = _roleManager.Update(role);
+		<#if Flowable!false>
+		//Map and delete flowable groupS
+		idmIdentityService.updateGroup(updatedRole.getName(), oldRoleName);
+		</#if>
+		return mapper.RoleEntityToUpdateRoleOutput(updatedRole);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="Role", key = "#id")
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	public void Delete(Long  roleId) {
+
+		RoleEntity existing = _roleManager.FindById(roleId) ; 
+		_roleManager.Delete(existing);
+		<#if Flowable!false>
+		//Map and delete flowable groupS
+		idmIdentityService.deleteGroup(existing.getName());
+		</#if>
+	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "Role", key = "#id")
+	public FindRoleByIdOutput FindById(Long  roleId) {
+
+		RoleEntity foundRole = _roleManager.FindById(roleId);
+		if (foundRole == null)  
+			return null ; 
+ 	   
+ 	   FindRoleByIdOutput output=mapper.RoleEntityToFindRoleByIdOutput(foundRole); 
+		return output;
+	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public FindRoleByNameOutput FindByRoleName(String roleName) {
 
-		RolesEntity foundRole = _roleManager.FindByRoleName(roleName);
+		RoleEntity foundRole = _roleManager.FindByRoleName(roleName);
 
 		if (foundRole == null) {
 			return null;
 		}
-		return roleMapper.RolesEntityToFindRoleByNameOutput(foundRole);
+		return mapper.RoleEntityToFindRoleByNameOutput(foundRole);
 	}
 
-	// ReST API Call => GET /roles/?offset=2&limit=20&sort=id,asc
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public List<FindRoleByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception {
+	@Cacheable(value = "Role")
+	public List<FindRoleByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
-
-		Page<RolesEntity> foundRoles = _roleManager.FindAll(Search(search), pageable);
-		List<RolesEntity> roleList = foundRoles.getContent();
-
-		Iterator<RolesEntity> roleIterator = roleList.iterator();
+		Page<RoleEntity> foundRole = _roleManager.FindAll(Search(search), pageable);
+		List<RoleEntity> roleList = foundRole.getContent();
+		Iterator<RoleEntity> roleIterator = roleList.iterator(); 
 		List<FindRoleByIdOutput> output = new ArrayList<>();
 
 		while (roleIterator.hasNext()) {
-			output.add(roleMapper.RolesEntityToFindRoleByIdOutput(roleIterator.next()));
-		}
-
-		return output;
-	}
-	// Operations With Permission
-
-	// ReST API Call => POST /roles/1/permissions/3
-    @Transactional(propagation = Propagation.REQUIRED)
-	public Boolean AddPermission(Long rid, Long pid) {
-
-		RolesEntity foundRole = _roleManager.FindById(rid);
-		PermissionsEntity foundPermission = _permissionManager.FindById(pid);
-
-		return _roleManager.AddPermission(foundRole, foundPermission);
-	}
-
-	// ReST API Call => DELETE /roles/1/permissions/3
-    @Transactional(propagation = Propagation.REQUIRED)
-	public void RemovePermission(Long rid, Long pid) {
-
-		RolesEntity foundRole = _roleManager.FindById(rid);
-		PermissionsEntity foundPermission = _permissionManager.FindById(pid);
-		_roleManager.RemovePermission(foundRole, foundPermission);
-	}
-
-	// ReST API Call => GET /roles/1/permissions/3
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public GetPermissionOutput GetPermissions(Long rolesId, Long permissionsId) {
-
-		RolesEntity foundRoles = _roleManager.FindById(rolesId);
-		if (foundRoles == null) {
-			logHelper.getLogger().error("There does not exist roles with a id=%s", rolesId);
-			return null;
-		}
-		PermissionsEntity foundPermissions = _permissionManager.FindById(permissionsId);
-		if (foundPermissions == null) {
-			logHelper.getLogger().error("There does not exist permissions with a name=%s", foundPermissions);
-			return null;
-		}
-
-		PermissionsEntity pe = _roleManager.GetPermissions(rolesId, permissionsId);
-		return roleMapper.PermissionsEntityToGetPermissionOutput(pe, foundRoles);
-	}
-
-	// ReST API Call => GET /roles/1/permissions
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public List<GetPermissionOutput> GetPermissionsList(Long rolesId,SearchCriteria search,String operator,Pageable pageable) throws Exception{
-
-		RolesEntity foundRoles = _roleManager.FindById(rolesId);
-		if (foundRoles == null) {
-			logHelper.getLogger().error("There does not exist a Roles with a id=%s", rolesId);
-			return null;
-		}
-        checkPermissionsProperties(search.getFields());
-        
-		Page<PermissionsEntity> foundPermissions = _roleManager.FindPermissions(rolesId,search.getFields(),operator,pageable);
-		List<PermissionsEntity> permissionsList = foundPermissions.getContent();
-		Iterator<PermissionsEntity> permissionsIterator = permissionsList.iterator();
-		List<GetPermissionOutput> output = new ArrayList<>();
-
-		while (permissionsIterator.hasNext()) {
-			output.add(roleMapper.PermissionsEntityToGetPermissionOutput(permissionsIterator.next(), foundRoles));
+			output.add(mapper.RoleEntityToFindRoleByIdOutput(roleIterator.next()));
 		}
 		return output;
-	}
-	
-	public void checkPermissionsProperties(List<SearchFields> search) throws Exception
-	{
-		List<String> keysList = new ArrayList<String>();
-		for (SearchFields obj : search) {
-            keysList.add(obj.getFieldName());
-        }
-		_permissionsAppService.checkProperties(keysList);
 	}
 	
 	BooleanBuilder Search(SearchCriteria search) throws Exception {
 
-		QRolesEntity role=QRolesEntity.rolesEntity;
+		QRoleEntity role= QRoleEntity.roleEntity;
 		if(search != null) {
 			if(search.getType()==case1)
 			{
@@ -219,14 +160,14 @@ public class RoleAppService implements IRoleAppService{
 				}
 				List<String> keysList = new ArrayList<String>(map.keySet());
 				checkProperties(keysList);
-				return searchKeyValuePair(role, map,search.getJoinColumn(),search.getJoinColumnValue());
+				return searchKeyValuePair(role, map,search.getJoinColumns());
 			}
 
 		}
 		return null;
 	}
 	
-	BooleanBuilder searchAllProperties(QRolesEntity role,String value,String operator) {
+	BooleanBuilder searchAllProperties(QRoleEntity role,String value,String operator) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if(operator.equals("contains")) {
@@ -237,26 +178,34 @@ public class RoleAppService implements IRoleAppService{
 		{
         	builder.or(role.displayName.eq(value));
         	builder.or(role.name.eq(value));
+        	if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+       	 	}
+			else if(StringUtils.isNumeric(value)){
+        	}
+        	else if(SearchUtils.stringToDate(value)!=null) {
+			}
 		}
 
 		return builder;
 	}
 
-	public void checkProperties(List<String> list) throws Exception
-	{
+	public void checkProperties(List<String> list) throws Exception  {
 		for (int i = 0; i < list.size(); i++) {
-			if(!((list.get(i).replace("%20","").trim().equals("displayName"))
-					|| (list.get(i).replace("%20","").trim().equals("name")))) {
-
-
-				// Throw an exception
-				throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
-			}
+		if(!(
+		
+		 list.get(i).replace("%20","").trim().equals("displayName") ||
+		 list.get(i).replace("%20","").trim().equals("id") ||
+		 list.get(i).replace("%20","").trim().equals("name") ||
+		 list.get(i).replace("%20","").trim().equals("rolepermission") ||
+		 list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]")
+		)) 
+		{
+		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
 		}
-
+		}
 	}
 	
-	BooleanBuilder searchSpecificProperty(QRolesEntity role,List<String> list,String value,String operator)  {
+	BooleanBuilder searchSpecificProperty(QRoleEntity role,List<String> list,String value,String operator)  {
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -277,7 +226,7 @@ public class RoleAppService implements IRoleAppService{
 		return builder;
 	}
 	
-	BooleanBuilder searchKeyValuePair(QRolesEntity role, Map<String,SearchFields> map,String joinColumn,Long joinColumnValue) {
+	BooleanBuilder searchKeyValuePair(QRoleEntity role, Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
@@ -297,10 +246,22 @@ public class RoleAppService implements IRoleAppService{
 				else if(details.getValue().getOperator().equals("notEqual"))
 					builder.and(role.name.ne(details.getValue().getSearchValue()));
 			}
-           
 		}
-
 		return builder;
 	}
 
+	public Map<String,String> parseRolepermissionJoinColumn(String keysString) {
+	
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("roleId", keysString);
+		return joinColumnMap;
+	}
+
+	public Map<String,String> parse[=AuthenticationTable]JoinColumn(String keysString) {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("roleId", keysString);
+		return joinColumnMap;
+	}
+	
 }

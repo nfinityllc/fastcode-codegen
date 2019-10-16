@@ -103,7 +103,7 @@ flowableAdminApp.controller('ProcessInstancesController', ['$rootScope', '$scope
 
 	    $scope.processInstanceSelected = function(processInstance) {
         if (processInstance && processInstance.getProperty('id')) {
-            $location.path('/process-instance/' + processInstance.getProperty('id'));
+            $location.path('/flowable-admin/process-instance/' + processInstance.getProperty('id'));
         }
       };
 

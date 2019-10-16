@@ -205,7 +205,7 @@ flowableAdminApp.controller('CmmnTasksController', ['$scope', '$rootScope', '$ht
 	    
 	    $scope.taskSelected = function(task) {
 	    	if(task && task.getProperty('id')) {
-	    		$location.path('/cmmn-task/' + task.getProperty('id'));
+	    		$location.path('/flowable-admin/cmmn-task/' + task.getProperty('id'));
 	    	}
 	    };
 	    

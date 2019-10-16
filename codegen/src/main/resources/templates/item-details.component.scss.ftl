@@ -15,3 +15,19 @@
     display: flex;
     flex-direction: column;
 }
+
+
+.details-container{
+    height: 100%;
+}
+
+.card{
+    height: calc(100% - 137px);
+    overflow: auto;
+}
+
+.association-div {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px,
+}

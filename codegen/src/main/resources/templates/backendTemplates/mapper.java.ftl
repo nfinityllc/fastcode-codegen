@@ -1,171 +1,205 @@
-package [=PackageName].application.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import org.mapstruct.Mapper;
 <#list Relationship as relationKey, relationValue>
-<#if relationValue.relation == "ManyToOne" || relationValue.relation =="ManyToMany">
+<#if relationValue.relation == "ManyToOne" || relationValue.relation =="OneToOne">
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-<#if relationValue.relation == "ManyToOne">
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
-</#if>
-<#if relationValue.relation =="ManyToMany">
-<#list RelationInput as relationInput>
-<#assign parent = relationInput>
-<#if relationKey == parent>
-<#if parent?keep_after("-") == relationValue.eName>
-import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import [=PackageName].application.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
-</#if>
+<#break>
 </#if>
 </#list>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 </#if>
+<#list Relationship as relationKey, relationValue>
+<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
-import [=PackageName].application.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
-
 
 @Mapper(componentModel = "spring")
 public interface [=ClassName]Mapper {
 
-    [=ClassName]Entity Create[=ClassName]InputTo[=ClassName]Entity(Create[=ClassName]Input [=ClassName?lower_case]Dto);
+   [=ClassName]Entity Create[=ClassName]InputTo[=ClassName]Entity(Create[=ClassName]Input [=ClassName?lower_case]Dto);
    
-      <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=relationValue.entityDescriptionField.fieldName]", target = "[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]"),                   
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+   <#if joinDetails.joinColumn??>
+   <#if !Fields[joinDetails.joinColumn]??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
+   </#if>
+   </#list>
+   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=DescriptiveField[relationValue.eName].description?uncap_first]"),                    
+   </#if>
+   </#if>
+   </#if>
+   </#list>
+   <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
+   }) 
+   <#break> 
    </#if> 
-   <#if relationValue.joinColumn??> 
-   <#list relationValue.fDetails as fvalue> 
-   <#if fvalue.isPrimaryKey?string('true','false') == "true" > 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=fvalue.fieldName]", target = "[=relationValue.joinColumn]"),                   
+   </#if>
    </#if> 
    </#list> 
+   Create[=ClassName]Output [=ClassName]EntityToCreate[=ClassName]Output([=ClassName]Entity entity);
+
+   [=ClassName]Entity Update[=ClassName]InputTo[=ClassName]Entity(Update[=ClassName]Input [=ClassName?lower_case]Dto);
+
+   <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
+   @Mappings({ 
+   <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
-    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+   <#if joinDetails.joinColumn??>
+   <#if !Fields[joinDetails.joinColumn]??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
+   </#if>
+   </#list>
+   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=DescriptiveField[relationValue.eName].description?uncap_first]"),                    
+   </#if>
+   </#if>
+   </#if>
+   </#list>
+   <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    }) 
    <#break> 
    </#if> 
    </#if> 
+   </#if>
    </#list> 
-    Create[=ClassName]Output [=ClassName]EntityToCreate[=ClassName]Output([=ClassName]Entity entity);
+   Update[=ClassName]Output [=ClassName]EntityToUpdate[=ClassName]Output([=ClassName]Entity entity);
 
-    [=ClassName]Entity Update[=ClassName]InputTo[=ClassName]Entity(Update[=ClassName]Input [=ClassName?lower_case]Dto);
-
-    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content> 
    @Mappings({ 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=relationValue.entityDescriptionField.fieldName]", target = "[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]"),                   
-   </#if> 
-   <#if relationValue.joinColumn??> 
-   <#list relationValue.fDetails as fvalue> 
-   <#if fvalue.isPrimaryKey?string('true','false') == "true" > 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=fvalue.fieldName]", target = "[=relationValue.joinColumn]"),                   
-   </#if> 
-   </#list> 
-   </#if> 
-   </#if> 
-   </#list> 
-    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+   <#if joinDetails.joinColumn??>
+   <#if !Fields[joinDetails.joinColumn]??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=joinDetails.referenceColumn]", target = "[=joinDetails.joinColumn]"),                   
+   </#if>
+   </#if>
+   </#if>
+   </#list>
+   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=DescriptiveField[relationValue.eName].fieldName]", target = "[=DescriptiveField[relationValue.eName].description?uncap_first]"),                    
+   </#if>
+   </#if>
+   </#if>
+   </#list>
+   <#list Relationship as relationKey, relationValue> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"> 
+   <#if relationValue.isParent == false>
+   <#if DescriptiveField[relationValue.eName]?? || relationValue.joinDetails?has_content>  
    }) 
    <#break> 
    </#if> 
+   </#if>
    </#if> 
    </#list> 
-    Update[=ClassName]Output [=ClassName]EntityToUpdate[=ClassName]Output([=ClassName]Entity entity);
-
-      <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+   <#if AuthenticationFields??>
+   <#list AuthenticationFields as authKey,authValue>
+   <#if authKey== "UserName">
    @Mappings({ 
-   <#break> 
-   </#if> 
-   </#if> 
-   </#list> 
-   <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField??> 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=relationValue.entityDescriptionField.fieldName]", target = "[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]"),                   
-   </#if> 
-   <#if relationValue.joinColumn??> 
-   <#list relationValue.fDetails as fvalue> 
-   <#if fvalue.isPrimaryKey?string('true','false') == "true" > 
-   @Mapping(source = "[=relationValue.eName?lower_case].[=fvalue.fieldName]", target = "[=relationValue.joinColumn]"),                   
-   </#if> 
-   </#list> 
-   </#if> 
-   </#if> 
-   </#list> 
-    <#list Relationship as relationKey, relationValue> 
-   <#if relationValue.relation == "ManyToOne"> 
-   <#if relationValue.entityDescriptionField?? || relationValue.joinColumn??> 
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
+   @Mapping(source = "role.id", target = "roleId"),                   
+   })
+   </#if>
+   </#list>
+   </#if>
+   </#if>
+   Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
+
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+   @Mappings({ 
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
+   @Mapping(source = "role.id", target = "roleId"),                   
    }) 
-   <#break> 
-   </#if> 
-   </#if> 
-   </#list> 
-    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
+   Find[=ClassName]WithAllFieldsByIdOutput [=ClassName]EntityToFind[=ClassName]WithAllFieldsByIdOutput([=ClassName]Entity entity);
+<#if AuthenticationFields??>
+<#list AuthenticationFields as authKey,authValue>
+<#if authKey== "UserName">
+   @Mappings({ 
+   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
+   @Mapping(source = "role.id", target = "roleId"),                   
+   }) 
+   Find[=ClassName]By[=authValue.fieldName?cap_first]Output [=ClassName]EntityToFind[=ClassName]By[=authValue.fieldName?cap_first]Output([=ClassName]Entity entity);
+</#if>
+</#list>
+</#if>
+</#if>
+   <#list Relationship as relationKey, relationValue>
 
-  <#list Relationship as relationKey, relationValue>
-
-   <#if relationValue.relation == "ManyToOne">
-  @Mappings({
-  <#list relationValue.fDetails as fValue>
-  <#list Fields as key,value> 
+   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+   @Mappings({
+   <#list relationValue.fDetails as fValue>
+   <#list Fields as key,value> 
    <#if fValue.fieldName == value.fieldName>
-    @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
+   <#if fValue.fieldType?lower_case == "long" || fValue.fieldType?lower_case == "integer" || fValue.fieldType?lower_case == "short" || fValue.fieldType?lower_case == "double" || fValue.fieldType?lower_case == "boolean" || fValue.fieldType?lower_case == "date" || fValue.fieldType?lower_case == "string">
+   @Mapping(source = "[=relationValue.eName?uncap_first].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
+   </#if>
    </#if>
    </#list>
    </#list> 
-    @Mapping(source = "[=InstanceName].id", target = "[=InstanceName]Id")
-    })
-    Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case], [=EntityClassName] [=InstanceName]);
-  
-  <#elseif relationValue.relation == "ManyToMany">
-  <#list RelationInput as relationInput>
-  <#assign parent = relationInput>
-  <#if relationKey == parent>
-  <#if parent?keep_after("-") == relationValue.eName>
-    @Mappings({
-  <#list relationValue.fDetails as fValue>
-  <#list Fields as key,value> 
-  <#if fValue.fieldName == value.fieldName>
-    @Mapping(source = "[=relationValue.eName?lower_case].[=fValue.fieldName]", target = "[=fValue.fieldName]"),                  
-  </#if>
-  </#list>
-  </#list>
-   <#if parent?keep_before("-") == ClassName && relationValue.entityDescriptionField??>
-    @Mapping(source = "[=InstanceName].[=relationValue.entityDescriptionField.fieldName]", target = "[=InstanceName][=relationValue.entityDescriptionField.fieldName?cap_first]"),
-   </#if> 
-    @Mapping(source = "[=InstanceName].[=relationValue.referenceColumn]", target = "[=InstanceName][=relationValue.referenceColumn?cap_first]")
-    })
-    Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case],[=EntityClassName] [=InstanceName]);
-    Find[=relationValue.eName]ByIdOutput [=relationValue.eName]EntityToGetAvailable[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?lower_case]);
-    </#if>
-</#if>
-    </#list>
+   <#list Fields as fkey,fvalue>
+   <#if fvalue.isPrimaryKey!false>
+   <#if fvalue.fieldType?lower_case == "long" || fvalue.fieldType?lower_case == "integer" || fvalue.fieldType?lower_case == "short" || fvalue.fieldType?lower_case == "double" || fvalue.fieldType?lower_case == "boolean" || fvalue.fieldType?lower_case == "date" || fvalue.fieldType?lower_case == "string">
+   @Mapping(source = "[=ClassName?uncap_first].[=fvalue.fieldName]", target = "[=ClassName?uncap_first][=fvalue.fieldName?cap_first]"),
    </#if>
-  </#list>
+   </#if>
+   </#list>
+   })
+   Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?uncap_first], [=EntityClassName] [=InstanceName]);
+ 
+   </#if>
+   </#list>
 }

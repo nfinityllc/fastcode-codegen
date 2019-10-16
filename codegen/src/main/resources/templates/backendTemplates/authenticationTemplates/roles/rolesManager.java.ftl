@@ -1,101 +1,58 @@
-package [=PackageName].domain.Authorization.Roles;
+package [=PackageName].domain.Authorization.Role;
 
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.IRepository.IPermissionsRepository;
-import [=PackageName].domain.IRepository.IRolesRepository;
+import java.util.Optional;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.IRepository.IRolepermissionRepository;
+import [=PackageName].domain.IRepository.IRoleRepository;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import [=CommonModulePackage].Search.SearchFields;
-
-import java.util.Iterator;
-import java.util.Set;
-import java.util.List;
 
 @Repository
+public class RoleManager implements IRoleManager {
 
-public class RolesManager implements IRolesManager {
+    @Autowired
+    IRoleRepository  _roleRepository;
+    
+    @Autowired
+	IRolepermissionRepository  _rolepermissionRepository;
+    
+	public RoleEntity Create(RoleEntity role) {
 
-	@Autowired
-	private IPermissionsRepository _permissionsRepository;
-
-	@Autowired
-	private IRolesRepository _rolesRepository;
-
-	// CRUD Operations
-	public RolesEntity Create(RolesEntity role) {
-		return _rolesRepository.save(role);
+		return _roleRepository.save(role);
 	}
 
-	public void Delete(RolesEntity role) {
-		_rolesRepository.delete(role);
+	public void Delete(RoleEntity role) {
+
+		_roleRepository.delete(role);	
 	}
 
-	public RolesEntity Update(RolesEntity role) {
-		return _rolesRepository.save(role);
+	public RoleEntity Update(RoleEntity role) {
+
+		return _roleRepository.save(role);
 	}
-
-	public RolesEntity FindById(Long roleId) {
-		return _rolesRepository.findById(roleId.longValue());
-	}
-
-	public Page<RolesEntity> FindAll(Predicate predicate, Pageable pageable) {
-		return _rolesRepository.findAll(predicate, pageable);
-	}
-
-	// Internal Operations
-	public RolesEntity FindByRoleName(String roleName) {
-
-		return _rolesRepository.findByRoleName(roleName);
-	}
-
-    //Permissions
-	public Page<PermissionsEntity> FindPermissions(Long rolesId,List<SearchFields> search,String operator,Pageable pageable) {
-
-		return _rolesRepository.getAllPermissions(rolesId,search,operator,pageable);
-	}
-   
-	public Boolean AddPermission(RolesEntity roles, PermissionsEntity permissions) {
-		
-		Set<PermissionsEntity> sp = roles.getPermissions();
-
-		if (!sp.contains(permissions)) {
-		    sp.add(permissions);
-			roles.setPermissions(sp);
-		} else {
-			return false;
-			//throw new EntityExistsException("The role already has the permission either individually or a part of the role");
-		}
-		_rolesRepository.save(roles);
-		return true;
-	}
-
-	public void RemovePermission(RolesEntity roles, PermissionsEntity permissions) {
 	
-		Set<PermissionsEntity> sp = roles.getPermissions();
-
-        if (sp.contains(permissions)) {
-            sp.remove(permissions);
-            roles.setPermissions(sp);
-        }
-        _rolesRepository.save(roles);
+	// Internal Operations
+	public RoleEntity FindByRoleName(String roleName) {
+		return _roleRepository.findByRoleName(roleName);
 	}
 
-	public PermissionsEntity GetPermissions(Long rolesId, Long permissionsId) {
-
-		RolesEntity foundRecord = _rolesRepository.findById(rolesId.longValue());
-		
-		Set<PermissionsEntity> permissions = foundRecord.getPermissions();
-		Iterator iterator = permissions.iterator();
-		while (iterator.hasNext()) { 
-			PermissionsEntity pe = (PermissionsEntity) iterator.next();
-			if (pe.getId() == permissionsId) {
-				return pe;
-			}
+	public RoleEntity FindById(Long  roleId)
+    {
+    Optional<RoleEntity> dbRole= _roleRepository.findById(roleId);
+		if(dbRole.isPresent()) {
+			RoleEntity existingRole = dbRole.get();
+		    return existingRole;
+		} else {
+		    return null;
 		}
-		return null;
 	}
+
+	public Page<RoleEntity> FindAll(Predicate predicate, Pageable pageable) {
+
+		return _roleRepository.findAll(predicate,pageable);
+	}
+
 }

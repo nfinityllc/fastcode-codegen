@@ -3,12 +3,14 @@ package [=PackageName].RestControllers;
 <#list entitiesMap as entityKey, entityMap>
 import [=entityMap.importPkg];
 </#list>
-<#if AuthenticationType == "database">
-import [=PackageName].domain.model.UsersEntity;
+<#if AuthenticationType != "none">
+<#if AuthenticationTable == "User">
+import [=PackageName].domain.model.UserEntity;
+</#if>
 </#if>
 <#if AuthenticationType != "none">
-import [=PackageName].domain.model.RolesEntity;
-import [=PackageName].domain.model.PermissionsEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.model.PermissionEntity;
 </#if>
  
 import org.javers.core.Javers;
@@ -31,25 +33,27 @@ public class AuditController {
     public AuditController(Javers javers) {
         this.javers = javers;
     }
-    <#if AuthenticationType == "database">
+    <#if AuthenticationType != "none">
+    <#if AuthenticationTable == "User">
     @RequestMapping("/user")
     public String getUserChanges() {
-        QueryBuilder jqlQuery = QueryBuilder.byClass(UsersEntity.class);
+        QueryBuilder jqlQuery = QueryBuilder.byClass(UserEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }
     </#if>
+    </#if>
     <#if AuthenticationType != "none">
     @RequestMapping("/role")
     public String getRoleChanges() {
-        QueryBuilder jqlQuery = QueryBuilder.byClass(RolesEntity.class);
+        QueryBuilder jqlQuery = QueryBuilder.byClass(RoleEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }
 
     @RequestMapping("/permission")
     public String getPermissionChanges() {
-        QueryBuilder jqlQuery = QueryBuilder.byClass(PermissionsEntity.class);
+        QueryBuilder jqlQuery = QueryBuilder.byClass(PermissionEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }
@@ -71,27 +75,5 @@ public class AuditController {
         return javers.getJsonConverter().toJson(changes);
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

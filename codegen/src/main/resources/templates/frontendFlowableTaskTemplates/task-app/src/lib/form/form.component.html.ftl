@@ -1,6 +1,6 @@
 <div id="formsection">
 
-    <div *ngIf="formData != null && formData != undefined && (disableForm == null || disableForm == undefined || disableForm == false)"
+    <div *ngIf="formData && !disableForm"
          class="form-wrapper">
 
         <div *ngIf="!outcomesOnly" >

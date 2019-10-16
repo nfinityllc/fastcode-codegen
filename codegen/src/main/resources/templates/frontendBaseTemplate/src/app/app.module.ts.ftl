@@ -9,6 +9,24 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { HomeComponent } from './home/index';
+<#if AuthenticationType != "none">
+import { LoginComponent } from './login/index';
+
+/** core components and filters for authorization and authentication **/
+
+import { AuthenticationService } from './core/authentication.service';
+import { AuthGuard } from './core/auth-guard';
+import { JwtInterceptor } from './core/jwt-interceptor';
+import { JwtErrorInterceptor } from './core/jwt-error-interceptor';
+import { GlobalPermissionService } from './core/global-permission.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { CallbackComponent } from './oauth/callback.component';
+
+/** end of core components and filters for authorization and authentication **/
+</#if>
+
 <#if EmailModule!false>
 import { IpEmailBuilderModule } from 'ip-email-builder';
 </#if>
@@ -18,7 +36,7 @@ import { SchedulerModule } from 'scheduler';
 <#if FlowableModule!false>
 import { UpgradeModule } from "@angular/upgrade/static"; 
 import { UrlHandlingStrategy } from '@angular/router';
-import { TaskAppModule } from 'task-app';
+import { TaskAppModule } from '../../projects/task-app/src/public_api';
 </#if>
 
 import {
@@ -37,14 +55,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { routingModule } from './app.routing';
 import { FastCodeCoreModule } from 'fastCodeCore';
 
-/** core components and filters **/
-import { AuthenticationService } from './core/authentication.service';
-import { AuthGuard } from './core/auth-guard';
-import { JwtInterceptor } from './core/jwt-interceptor';
-import { JwtErrorInterceptor } from './core/jwt-error-interceptor';
-
-/** end of core components and filters **/
-
 /** common components and filters **/
 
 import { MainNavComponent } from './common/components/main-nav/main-nav.component';
@@ -58,27 +68,26 @@ import { Globals } from './globals';
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
 }
+
 <#if FlowableModule!false>
-export class CustomHandlingStrategy implements UrlHandlingStrategy { 
+export class CustomHandlingStrategy implements UrlHandlingStrategy {
+  shouldProcessUrl(url) {
+    let urlStr = url.toString().split('/');
+    return url.toString() == "/" || (urlStr.length > 1 && urlStr[1] != "flowable-admin")
+  }
+  extract(url) { return url; }
+  merge(url, whole) { return url; }
+}
 
-shouldProcessUrl(url) { 
-
-       console.log(url.toString()); 
-
-       let urlStr = url.toString().split('/'); 
-
-       return url.toString() == "/" || (urlStr.length > 1 && urlStr[1] == "app") 
-
-   } 
-
-   extract(url) { return url; } 
-
-   merge(url, whole) { return url; } 
-
-} 
 </#if>
 @NgModule({
   declarations: [
+  	HomeComponent,
+  	DashboardComponent,
+  	<#if AuthenticationType != "none">
+	LoginComponent,
+	CallbackComponent,
+	</#if>
     AppComponent,
     MainNavComponent,
     BottomTabNavComponent,
@@ -87,6 +96,9 @@ shouldProcessUrl(url) {
     BrowserModule,
     routingModule,
     HttpClientModule,
+    <#if AuthenticationType != 'none'>
+    OAuthModule.forRoot(),
+	</#if>
     BrowserAnimationsModule,
     FormsModule,
     MatDialogModule,
@@ -114,7 +126,7 @@ shouldProcessUrl(url) {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatChipsModule,
-    NgxMaterialTimepickerModule.forRoot(),
+    NgxMaterialTimepickerModule,
     <#if EmailModule!false>
     IpEmailBuilderModule.forRoot({
       xApiKey: 't7HdQfZjGp6R96fOV4P8v18ggf6LLTQZ1puUI2tz',
@@ -128,14 +140,12 @@ shouldProcessUrl(url) {
     </#if>
     <#if FlowableModule!false>
     UpgradeModule,  
-    TaskAppModule.forRoot({ 
-
-	apiPath: "http://localhost:8080/flowable-task" // url where task backend app is running 
-
+    TaskAppModule.forRoot({
+      apiPath: environment.flowableUrl + "/flowable-task" // url where task backend app is running
 	}),
     </#if>
     FastCodeCoreModule.forRoot({
-    	apiUrl: environment.apiUrl
+      apiUrl: environment.apiUrl
     }),
     TranslateModule.forRoot({
       loader: {
@@ -147,13 +157,17 @@ shouldProcessUrl(url) {
 
   ],
   providers: [
-		AuthenticationService,
 		<#if FlowableModule!false>
 		{ provide: UrlHandlingStrategy, useClass: CustomHandlingStrategy },
 		</#if>
+		<#if AuthenticationType != "none">
+		AuthenticationService,
+		GlobalPermissionService,
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
 		{ provide: HTTP_INTERCEPTORS, useClass: JwtErrorInterceptor, multi: true },
 		AuthGuard,
+		</#if>
+		
 		Globals
 	],
   bootstrap: [AppComponent],

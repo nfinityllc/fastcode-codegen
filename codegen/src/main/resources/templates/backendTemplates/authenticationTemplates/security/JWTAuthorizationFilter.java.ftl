@@ -1,33 +1,54 @@
 package [=PackageName].security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Clock;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.impl.DefaultClock;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import [=CommonModulePackage].error.ApiError;
+import [=CommonModulePackage].error.ExceptionMessageConstants;
+import [=CommonModulePackage].logging.LoggingHelper;
+import io.jsonwebtoken.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.stream.Collectors;
+import java.net.URL;
+import org.springframework.security.core.authority.AuthorityUtils;
+import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
+import [=PackageName].domain.model.[=AuthenticationTable]Entity;
+import com.nimbusds.jose.*;
+import com.nimbusds.jwt.*;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import java.util.*;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import java.io.OutputStream;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+
+    //@Autowired
+    private Environment environment;
+
+    private I[=AuthenticationTable]Manager _userMgr;
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
-
-    private Clock clock = DefaultClock.INSTANCE;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req,
@@ -40,44 +61,144 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        chain.doFilter(req, res);
+
+
+        UsernamePasswordAuthenticationToken authentication = null;
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
+        LoggingHelper logHelper = new LoggingHelper();
+        try {
+            authentication = getAuthentication(req);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            chain.doFilter(req, res);
+            return;
+
+        } catch (ExpiredJwtException exception) {
+            apiError.setMessage(ExceptionMessageConstants.TOKEN_EXPIRED);
+            logHelper.getLogger().error("An Exception Occurred:", exception);
+        } catch (UnsupportedJwtException exception) {
+            apiError.setMessage(ExceptionMessageConstants.TOKEN_UNSUPPORTED);
+            logHelper.getLogger().error("An Exception Occurred:", exception);
+        } catch (MalformedJwtException exception) {
+            apiError.setMessage(ExceptionMessageConstants.TOKEN_MALFORMED);
+            logHelper.getLogger().error("An Exception Occurred:", exception);
+        } catch (SignatureException exception) {
+            apiError.setMessage(ExceptionMessageConstants.TOKEN_INCORRECT_SIGNATURE);
+            logHelper.getLogger().error("An Exception Occurred:", exception);
+        } catch (IllegalArgumentException exception) {
+            apiError.setMessage(ExceptionMessageConstants.TOKEN_ILLEGAL_ARGUMENT);
+            logHelper.getLogger().error("An Exception Occurred:", exception);
+        }
+
+
+        OutputStream out = res.getOutputStream();
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(out, apiError);
+        out.flush();
+    }
+
+    private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
+        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws JwtException {
+
         String token = request.getHeader(SecurityConstants.HEADER_STRING);
-        if (token != null) {
-            // parse the token.
+        Claims claims;
+        if(environment==null){
+            ServletContext servletContext = request.getServletContext();
+            WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+            environment = webApplicationContext.getBean(Environment.class);
+        }
+        if (StringUtils.isNotEmpty(token) && token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+            String userName = null;
+            List<GrantedAuthority> authorities = null;
+            if(!environment.getProperty("fastCode.auth.method").equals("oidc")) {
 
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SecurityConstants.SECRET.getBytes())
-                    .parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, ""))
-                    .getBody();
+                 claims = Jwts.parser()
+                        .setSigningKey(SecurityConstants.SECRET.getBytes())
+                        .parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, ""))
+                        .getBody();
+                userName = claims.getSubject();
+                List<String> scopes = claims.get("scopes", List.class);
+                authorities = scopes.stream()
+                        .map(authority -> new SimpleGrantedAuthority(authority))
+                        .collect(Collectors.toList());
+            }
+            else{
 
-            String user =
-                    claims.getSubject();
+	            SignedJWT accessToken = null;
+	            JWTClaimsSet claimSet = null;
+	
+	            try {
+	              
+	                accessToken = SignedJWT.parse(token.replace(SecurityConstants.TOKEN_PREFIX, ""));
+	            
+	                String kid = accessToken.getHeader().getKeyID();
+	                
+	                JWKSet jwks = null;
+					jwks = JWKSet.load(new URL(environment.getProperty("spring.security.oauth2.client.provider.oidc.issuer-uri") + "/v1/keys"));
+	
+	                RSAKey jwk = (RSAKey) jwks.getKeyByKeyId(kid);
+	
+	                JWSVerifier verifier = new RSASSAVerifier(jwk);
+	
+	                if (accessToken.verify(verifier)) {
+	                    System.out.println("valid signature");
+	                    claimSet = accessToken.getJWTClaimsSet();
+	                    userName = claimSet.getSubject();
+	                } else {
+	                    System.out.println("invalid signature");
+	                }
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	            }
+                if(_userMgr==null){
+                    ServletContext servletContext = request.getServletContext();
+                    WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+                    _userMgr = webApplicationContext.getBean(I[=AuthenticationTable]Manager.class);
+                }
 
-            final Date expiration = claims.getExpiration();
+                // Add all the roles and permissions in a list and then convert the list into all permissions, removing duplicates
 
-            if (expiration.before(clock.now())) //Token has expired
-            {
-                return null;
+            	<#if UserInput?? && AuthenticationFields??>
+                [=AuthenticationTable]Entity userEntity = _userMgr.FindBy[=AuthenticationFields.UserName.fieldName?cap_first](userName);       
+            	<#else>
+                [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName);
+            	</#if>
+
+                Set<[=AuthenticationTable]permissionEntity> spe = userEntity.get[=AuthenticationTable]permissionSet();
+                
+//              Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
+//              for (PermissionEntity item: permissions) { 
+//              	pList.add(item.getName()); 
+//              } 
+                List<String> pList = new ArrayList<String>(); 
+                Iterator pIterator = spe.iterator();
+        		while (pIterator.hasNext()) {
+                    [=AuthenticationTable]permissionEntity pe = ([=AuthenticationTable]permissionEntity) pIterator.next();
+        			pList.add(pe.getPermission().getName());
+        		}
+
+                RoleEntity role = userEntity.getRole();
+                List<String> groups = new ArrayList<String>();
+
+                groups.add(role.getName());
+                groups.addAll(pList);
+
+                ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities();
+                String[] groupsArray = new String[groups.size()];
+
+                authorities = con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray)));
             }
 
-            List<String> scopes = claims.get("scopes", List.class);
-
-            List<GrantedAuthority> authorities = scopes.stream()
-                    .map(authority -> new SimpleGrantedAuthority(authority))
-                    .collect(Collectors.toList());
-
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, authorities);
-            }
-            return null;
+            if ((userName != null) && StringUtils.isNotEmpty(userName)) {
+            	return new UsernamePasswordAuthenticationToken(userName, null, authorities);
+        	}
         }
         return null;
+
     }
+
 }

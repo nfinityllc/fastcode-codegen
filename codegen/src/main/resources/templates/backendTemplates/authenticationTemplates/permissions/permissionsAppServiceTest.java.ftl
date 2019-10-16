@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Permissions;
+package [=PackageName].application.Authorization.Permission;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -28,15 +28,18 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import [=CommonModulePackage].logging.LoggingHelper;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
-import [=PackageName].application.Authorization.Permissions.Dto.CreatePermissionInput;
-import [=PackageName].application.Authorization.Permissions.Dto.FindPermissionByIdOutput;
-import [=PackageName].application.Authorization.Permissions.Dto.UpdatePermissionInput;
-import [=PackageName].domain.model.PermissionsEntity;
-import [=PackageName].domain.Authorization.Permissions.PermissionsManager;
-import [=PackageName].domain.model.QPermissionsEntity;
-import [=CommonModulePackage].logging.LoggingHelper;
+import [=PackageName].application.Authorization.Permission.Dto.CreatePermissionInput;
+import [=PackageName].application.Authorization.Permission.Dto.FindPermissionByIdOutput;
+import [=PackageName].application.Authorization.Permission.Dto.UpdatePermissionInput;
+import [=PackageName].domain.model.PermissionEntity;
+import [=PackageName].domain.Authorization.Permission.PermissionManager;
+import [=PackageName].domain.model.QPermissionEntity;
+<#if Flowable!false>
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
@@ -47,7 +50,7 @@ public class PermissionAppServiceTest {
 	PermissionAppService permissionAppService;
 	
 	@Mock
-	private PermissionsManager permissionsManager;
+	private PermissionManager permissionManager;
 	
 	@Mock
 	private PermissionMapper permissionMapper;
@@ -57,7 +60,11 @@ public class PermissionAppServiceTest {
    
 	@Mock
 	private LoggingHelper logHelper;
-
+	<#if Flowable!false>
+	
+	@Mock
+	private FlowableIdentityService idmIdentityService;
+    </#if>
 	private static long ID=15;
 
 	@Before
@@ -74,74 +81,84 @@ public class PermissionAppServiceTest {
 	@Test 
 	public void findPermissionById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
 		
-		Mockito.when(permissionsManager.FindById(anyLong())).thenReturn(null);	
+		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(null);	
 		Assertions.assertThat(permissionAppService.FindById(ID)).isEqualTo(null);	
 	}
 
 	@Test
 	public void findPermissionById_IdIsNotNullAndPermissionExists_ReturnAPermission() {
 
-		PermissionsEntity permission = mock(PermissionsEntity.class);
+		PermissionEntity permission = mock(PermissionEntity.class);
 
-		Mockito.when(permissionsManager.FindById(anyLong())).thenReturn(permission);
-		Assertions.assertThat(permissionAppService.FindById(ID)).isEqualTo(permissionMapper.PermissionsEntityToCreatePermissionOutput(permission));
+		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permission);
+		Assertions.assertThat(permissionAppService.FindById(ID)).isEqualTo(permissionMapper.PermissionEntityToCreatePermissionOutput(permission));
 	}
 
 	@Test 
 	public void findPermissionByName_NameIsNotNullAndPermissionDoesNotExist_ReturnNull() {
 		
-		Mockito.when(permissionsManager.FindByPermissionName(anyString())).thenReturn(null);	
+		Mockito.when(permissionManager.FindByPermissionName(anyString())).thenReturn(null);	
 		Assertions.assertThat(permissionAppService.FindByPermissionName("Permission1")).isEqualTo(null);	
 	}
 
 	@Test
 	public void findPermissionByName_NameIsNotNullAndPermissionExists_ReturnAPermission() {
 
-		PermissionsEntity permission = mock(PermissionsEntity.class);
+		PermissionEntity permission = mock(PermissionEntity.class);
 
-		Mockito.when(permissionsManager.FindByPermissionName(anyString())).thenReturn(permission);
-		Assertions.assertThat(permissionAppService.FindByPermissionName("Permission1")).isEqualTo(permissionMapper.PermissionsEntityToCreatePermissionOutput(permission));
+		Mockito.when(permissionManager.FindByPermissionName(anyString())).thenReturn(permission);
+		Assertions.assertThat(permissionAppService.FindByPermissionName("Permission1")).isEqualTo(permissionMapper.PermissionEntityToCreatePermissionOutput(permission));
 	}
 
 
 	@Test
 	public void createPermission_PermissionIsNotNullAndPermissionDoesNotExist_StoreAPermission() {
 
-		PermissionsEntity permissionsEntity = mock(PermissionsEntity.class);
+		PermissionEntity permissionEntity = mock(PermissionEntity.class);
 		CreatePermissionInput permission=mock(CreatePermissionInput.class);
-
-		Mockito.when(permissionMapper.CreatePermissionInputToPermissionsEntity(any(CreatePermissionInput.class))).thenReturn(permissionsEntity);
-		Mockito.when(permissionsManager.Create(any(PermissionsEntity.class))).thenReturn(permissionsEntity);
-		Assertions.assertThat(permissionAppService.Create(permission)).isEqualTo(permissionMapper.PermissionsEntityToCreatePermissionOutput(permissionsEntity));
+		
+        <#if Flowable!false>
+		doNothing().when(idmIdentityService).createPrivilege(anyString());
+		</#if>
+		Mockito.when(permissionMapper.CreatePermissionInputToPermissionEntity(any(CreatePermissionInput.class))).thenReturn(permissionEntity);
+		Mockito.when(permissionManager.Create(any(PermissionEntity.class))).thenReturn(permissionEntity);
+		Assertions.assertThat(permissionAppService.Create(permission)).isEqualTo(permissionMapper.PermissionEntityToCreatePermissionOutput(permissionEntity));
 	}
 
 	@Test
 	public void deletePermission_PermissionIsNotNullAndPermissionExists_PermissionRemoved() {
 
-		PermissionsEntity permission = mock(PermissionsEntity.class);
+		PermissionEntity permission = mock(PermissionEntity.class);
 
-		Mockito.when(permissionsManager.FindById(anyLong())).thenReturn(permission);
+        <#if Flowable!false>
+		doNothing().when(idmIdentityService).deletePrivilege(anyString());
+		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permission);
+		</#if>
 		permissionAppService.Delete(ID);
-		verify(permissionsManager).Delete(permission);
+		verify(permissionManager).Delete(permission);
 	}
 
 
 	@Test
 	public void updatePermission_PermissionIdIsNotNullAndPermissionExists_ReturnUpdatedPermission() {
 
-		PermissionsEntity permissionsEntity = mock(PermissionsEntity.class);
+		PermissionEntity permissionEntity = mock(PermissionEntity.class);
 		UpdatePermissionInput permission=mock(UpdatePermissionInput.class);
-
-		Mockito.when(permissionMapper.UpdatePermissionInputToPermissionsEntity(any(UpdatePermissionInput.class))).thenReturn(permissionsEntity);
-		Mockito.when(permissionsManager.Update(any(PermissionsEntity.class))).thenReturn(permissionsEntity);
-		Assertions.assertThat(permissionAppService.Update(ID,permission)).isEqualTo(permissionMapper.PermissionsEntityToUpdatePermissionOutput(permissionsEntity));
+		<#if Flowable!false>
+		
+		doNothing().when(idmIdentityService).updatePrivilege(anyString(),anyString());
+		Mockito.when(permissionManager.FindById(anyLong())).thenReturn(permissionEntity);
+		</#if>
+		Mockito.when(permissionMapper.UpdatePermissionInputToPermissionEntity(any(UpdatePermissionInput.class))).thenReturn(permissionEntity);
+		Mockito.when(permissionManager.Update(any(PermissionEntity.class))).thenReturn(permissionEntity);
+		Assertions.assertThat(permissionAppService.Update(ID,permission)).isEqualTo(permissionMapper.PermissionEntityToUpdatePermissionOutput(permissionEntity));
 	}
 	
 	@Test
 	public void Find_ListIsEmpty_ReturnList() throws Exception
 	{
-		List<PermissionsEntity> list = new ArrayList<>();
-		Page<PermissionsEntity> foundPage = new PageImpl(list);
+		List<PermissionEntity> list = new ArrayList<>();
+		Page<PermissionEntity> foundPage = new PageImpl(list);
 		Pageable pageable =mock(Pageable.class);
 
 		List<FindPermissionByIdOutput> output = new ArrayList<>();
@@ -150,17 +167,17 @@ public class PermissionAppServiceTest {
 		search.setValue("xyz");
 		search.setOperator("equals");
 
-		Mockito.when(permissionsManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+		Mockito.when(permissionManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(permissionAppService.Find(search,pageable)).isEqualTo(output);
 	}
 
 	@Test
 	public void Find_ListIsNotEmpty_ReturnList() throws Exception
 	{
-		List<PermissionsEntity> list = new ArrayList<>();
-		PermissionsEntity permission=mock(PermissionsEntity.class);
+		List<PermissionEntity> list = new ArrayList<>();
+		PermissionEntity permission=mock(PermissionEntity.class);
 		list.add(permission);
-		Page<PermissionsEntity> foundPage = new PageImpl(list);
+		Page<PermissionEntity> foundPage = new PageImpl(list);
 		Pageable pageable =mock(Pageable.class);
 		SearchCriteria search= new SearchCriteria();
 		search.setType(1);
@@ -168,8 +185,8 @@ public class PermissionAppServiceTest {
 		search.setOperator("equals");
 
 		List<FindPermissionByIdOutput> output = new ArrayList<>();
-		output.add(permissionMapper.PermissionsEntityToFindPermissionByIdOutput(permission));
-		Mockito.when(permissionsManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
+		output.add(permissionMapper.PermissionEntityToFindPermissionByIdOutput(permission));
+		Mockito.when(permissionManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(permissionAppService.Find(search,pageable)).isEqualTo(output);
 	}
 	
@@ -178,7 +195,7 @@ public class PermissionAppServiceTest {
 	{
 		String search= "xyz";
 		String operator= "equals";
-		QPermissionsEntity permission = QPermissionsEntity.permissionsEntity;
+		QPermissionEntity permission = QPermissionEntity.permissionEntity;
 		BooleanBuilder builder = new BooleanBuilder();
 		builder.or(permission.displayName.eq(search));
 		builder.or(permission.name.eq(search));
@@ -193,7 +210,7 @@ public class PermissionAppServiceTest {
 		List<String> list = new ArrayList<>();
 		list.add("name");
 		list.add("displayName");
-		QPermissionsEntity permission = QPermissionsEntity.permissionsEntity;
+		QPermissionEntity permission = QPermissionEntity.permissionEntity;
 		BooleanBuilder builder = new BooleanBuilder();
 		builder.or(permission.name.eq("xyz"));
 		builder.or(permission.displayName.eq("xyz"));
@@ -204,7 +221,7 @@ public class PermissionAppServiceTest {
 	@Test
 	public void searchKeyValuePair_PropertyExists_ReturnBooleanBuilder()
 	{
-		QPermissionsEntity permission = QPermissionsEntity.permissionsEntity;
+		QPermissionEntity permission = QPermissionEntity.permissionEntity;
 		SearchFields searchFields = new SearchFields();
 		searchFields.setOperator("equals");
 		searchFields.setSearchValue("xyz");
@@ -214,7 +231,7 @@ public class PermissionAppServiceTest {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(permission.name.eq("xyz"));
         
-        Assertions.assertThat(permissionAppService.searchKeyValuePair(permission, map,"xyz",ID)).isEqualTo(builder);
+        Assertions.assertThat(permissionAppService.searchKeyValuePair(permission, map,new HashMap())).isEqualTo(builder);
 	}
 
 	@Test(expected = Exception.class)
@@ -237,7 +254,7 @@ public class PermissionAppServiceTest {
 	@Test
 	public void search_SearchIsNotNullAndSearchContainsCaseOne_ReturnBooleanBuilder() throws Exception
 	{
-		QPermissionsEntity permission = QPermissionsEntity.permissionsEntity;
+		QPermissionEntity permission = QPermissionEntity.permissionEntity;
 		SearchCriteria search= new SearchCriteria();
 		search.setType(1);
 		search.setValue("xyz");
@@ -252,7 +269,7 @@ public class PermissionAppServiceTest {
 	@Test
 	public void search_SearchIsNotNullAndSearchContainsCaseTwo_ReturnBooleanBuilder() throws Exception
 	{
-		QPermissionsEntity permission = QPermissionsEntity.permissionsEntity;
+		QPermissionEntity permission = QPermissionEntity.permissionEntity;
 		List<SearchFields> fieldsList= new ArrayList<>();
 		SearchFields fields=new SearchFields();
 		SearchCriteria search= new SearchCriteria();
@@ -272,7 +289,7 @@ public class PermissionAppServiceTest {
 	public void search_SearchIsNotNullAndSearchContainsCaseThree_ReturnBooleanBuilder() throws Exception
 	{
 		Map<String,SearchFields> map = new HashMap<>();List<SearchFields> fieldsList= new ArrayList<>();
-		QPermissionsEntity permission = QPermissionsEntity.permissionsEntity;
+		QPermissionEntity permission = QPermissionEntity.permissionEntity;
 		SearchFields fields=new SearchFields();
 		SearchCriteria search= new SearchCriteria();
 		search.setType(3);
@@ -293,5 +310,25 @@ public class PermissionAppServiceTest {
 	{
 		 Assertions.assertThat(permissionAppService.Search(null)).isEqualTo(null);
 	}
+	
+	@Test
+    public void parseRolepermissionJoinColumn_StringIsNotNull_ReturnMap() {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("permissionId", "1");
+		
+		Assertions.assertThat(permissionAppService.parseRolepermissionJoinColumn("1")).isEqualTo(joinColumnMap);
+		
+	}
+	
+	@Test
+	public void parse[=AuthenticationTable]permissionJoinColumn_StringIsNotNull_ReturnMap() {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("permissionId", "1");
+		Assertions.assertThat(permissionAppService.parse[=AuthenticationTable]permissionJoinColumn("1")).isEqualTo(joinColumnMap);
+		
+	}
+	
 	
 }

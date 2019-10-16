@@ -1,94 +1,218 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.User.Dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
+import java.util.Date;
 import org.hibernate.validator.constraints.Length;
 
 public class CreateUserInput {
 
-    // We display only the mandatory fields in thE User DTO - we can certainly add additional optional fields
-    // to DTO
-    @Email(message = "Email Address should be valid ")
-    @NotNull(message = "Email Address Should not be null")
-    private String emailAddress;
-    
-    @NotNull(message = "First Name Should not be null")
-    @Length(max = 32, message = "First Name must be less than 32 characters")
-    private String firstName;
-    
-    @NotNull(message = "Last Name Should not be null")
-    @Length(max = 32, message = "Last Name must be less than 32 characters")
-    private String lastName;
-    
-    @NotNull(message = "User Name Should not be null")
-    @Length(max = 32, message = "User Name must be less than 32 characters")
-    private String userName;
-    
-    @NotNull(message = "IsActive Should not be null")
-    private Boolean isActive;
-    
-    @NotNull(message = "Password Should not be null")
-    private String password;
-    
-    private Long roleId;
+  private Integer accessFailedCount;
+  
+  @Length(max = 64, message = "authenticationSource must be less than 64 characters")
+  private String authenticationSource;
+  
+  @NotNull(message = "emailAddress Should not be null")
+  @Length(max = 256, message = "emailAddress must be less than 256 characters")
+  @Email(message = "Email Address should be valid ")
+  private String emailAddress;
+  
+  @Length(max = 328, message = "emailConfirmationCode must be less than 328 characters")
+  private String emailConfirmationCode;
+  
+  @NotNull(message = "firstName Should not be null")
+  @Length(max = 32, message = "firstName must be less than 32 characters")
+  private String firstName;
+  
+  private Boolean isActive;
+  
+  private Boolean isEmailConfirmed;
+  
+  private Boolean isLockoutEnabled;
+  
+  @Length(max = 255, message = "isPhoneNumberConfirmed must be less than 255 characters")
+  private String isPhoneNumberConfirmed;
+  
+  private Date lastLoginTime;
+  
+  @NotNull(message = "lastName Should not be null")
+  @Length(max = 32, message = "lastName must be less than 32 characters")
+  private String lastName;
+  
+  private Date lockoutEndDateUtc;
+  
+  <#if AuthenticationType =="database">
+  @NotNull(message = "password Should not be null")
+  </#if>
+  @Length(max = 128, message = "password must be less than 128 characters")
+  private String password;
+  
+  @Length(max = 328, message = "passwordResetCode must be less than 328 characters")
+  private String passwordResetCode;
+  
+  @Length(max = 32, message = "phoneNumber must be less than 32 characters")
+  private String phoneNumber;
+  
+  private Long profilePictureId;
+  
+  private Boolean twoFactorEnabled;
+  
+  @NotNull(message = "userName Should not be null")
+  @Length(max = 32, message = "userName must be less than 32 characters")
+  private String userName;
+  
 
-    public CreateUserInput() {
-    }
-    
-    public Long getRoleId() {
-   	 return roleId;
-    }
+  private Long roleId;
 
-    public void setRoleId(Long roleId){
-  		this.roleId = roleId;
-  	}
+  
+  public Long getRoleId() {
+  return roleId;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setRoleId(Long roleId){
+  this.roleId = roleId;
+  }
+  public Integer getAccessFailedCount() {
+  return accessFailedCount;
+  }
 
-    public void setPassword(String password){
-        this.password = password;
-    }
+  public void setAccessFailedCount(Integer accessFailedCount){
+  this.accessFailedCount = accessFailedCount;
+  }
+  
+  public String getAuthenticationSource() {
+  return authenticationSource;
+  }
 
-    public String getEmailAddress() {
-        return emailAddress;
-    }
+  public void setAuthenticationSource(String authenticationSource){
+  this.authenticationSource = authenticationSource;
+  }
+  
+  public String getEmailAddress() {
+  return emailAddress;
+  }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
+  public void setEmailAddress(String emailAddress){
+  this.emailAddress = emailAddress;
+  }
+  
+  public String getEmailConfirmationCode() {
+  return emailConfirmationCode;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public void setEmailConfirmationCode(String emailConfirmationCode){
+  this.emailConfirmationCode = emailConfirmationCode;
+  }
+  
+  public String getFirstName() {
+  return firstName;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public void setFirstName(String firstName){
+  this.firstName = firstName;
+  }
+  
+  public Boolean getIsActive() {
+  return isActive;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public void setIsActive(Boolean isActive){
+  this.isActive = isActive;
+  }
+  
+  public Boolean getIsEmailConfirmed() {
+  return isEmailConfirmed;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public void setIsEmailConfirmed(Boolean isEmailConfirmed){
+  this.isEmailConfirmed = isEmailConfirmed;
+  }
+  
+  public Boolean getIsLockoutEnabled() {
+  return isLockoutEnabled;
+  }
 
-    public String getUserName() {
-        return userName;
-    }
+  public void setIsLockoutEnabled(Boolean isLockoutEnabled){
+  this.isLockoutEnabled = isLockoutEnabled;
+  }
+  
+  public String getIsPhoneNumberConfirmed() {
+  return isPhoneNumberConfirmed;
+  }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+  public void setIsPhoneNumberConfirmed(String isPhoneNumberConfirmed){
+  this.isPhoneNumberConfirmed = isPhoneNumberConfirmed;
+  }
+  
+  public Date getLastLoginTime() {
+  return lastLoginTime;
+  }
 
-    public Boolean getIsActive() {
-        return isActive;
-    }
+  public void setLastLoginTime(Date lastLoginTime){
+  this.lastLoginTime = lastLoginTime;
+  }
+  
+  public String getLastName() {
+  return lastName;
+  }
 
-    public void setIsActive(Boolean active) {
-        isActive = active;
-    }
+  public void setLastName(String lastName){
+  this.lastName = lastName;
+  }
+  
+  public Date getLockoutEndDateUtc() {
+  return lockoutEndDateUtc;
+  }
+
+  public void setLockoutEndDateUtc(Date lockoutEndDateUtc){
+  this.lockoutEndDateUtc = lockoutEndDateUtc;
+  }
+  
+  public String getPassword() {
+  return password;
+  }
+
+  public void setPassword(String password){
+  this.password = password;
+  }
+  
+  public String getPasswordResetCode() {
+  return passwordResetCode;
+  }
+
+  public void setPasswordResetCode(String passwordResetCode){
+  this.passwordResetCode = passwordResetCode;
+  }
+  
+  public String getPhoneNumber() {
+  return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber){
+  this.phoneNumber = phoneNumber;
+  }
+  
+  public Long getProfilePictureId() {
+  return profilePictureId;
+  }
+
+  public void setProfilePictureId(Long profilePictureId){
+  this.profilePictureId = profilePictureId;
+  }
+  
+  public Boolean getTwoFactorEnabled() {
+  return twoFactorEnabled;
+  }
+
+  public void setTwoFactorEnabled(Boolean twoFactorEnabled){
+  this.twoFactorEnabled = twoFactorEnabled;
+  }
+  
+  public String getUserName() {
+  return userName;
+  }
+
+  public void setUserName(String userName){
+  this.userName = userName;
+  }
 }

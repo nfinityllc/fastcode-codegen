@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Roles.Dto;
+package [=PackageName].application.Authorization.Role.Dto;
 
 public class GetPermissionOutput {
 
@@ -10,10 +10,9 @@ public class GetPermissionOutput {
     private java.util.Date creationTime;
     private String lastModifierUserId;
     private java.util.Date lastModificationTime;
-</#if>
-
+	</#if>
     private Long roleId;
-    private String roleName;
+    private String roleDescriptiveField;
 
     public Long getRoleId() {
         return roleId;
@@ -23,12 +22,12 @@ public class GetPermissionOutput {
         this.roleId = roleId;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getRoleDescriptiveField() {
+        return roleDescriptiveField;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setRoleDescriptiveField(String roleDescriptiveField) {
+        this.roleDescriptiveField = roleDescriptiveField;
     }
 
     public Long getId() {
@@ -89,5 +88,5 @@ public class GetPermissionOutput {
     public void setCreatorUserId(String creatorUserId) {
       	this.creatorUserId = creatorUserId;
     }
-</#if>
+	</#if>
 }

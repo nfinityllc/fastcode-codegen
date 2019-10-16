@@ -28,25 +28,25 @@ flowableAdminApp.controller('ProcessDefinitionController', ['$scope', '$rootScop
 		$scope.tabData.activeTab = $scope.tabData.tabs[0].id;
 
 		$scope.returnToList = function() {
-			$location.path("/process-definitions");
+			$location.path("/flowable-admin/process-definitions");
 		};
 
 		$scope.openDefinition = function(definitionId) {
 			if (definitionId) {
-				$location.path("/process-definition/" + definitionId);
+				$location.path("/flowable-admin/process-definition/" + definitionId);
 			}
 		};
 
 
 		$scope.openDeployment = function(deploymentId) {
 		    if (deploymentId) {
-		        $location.path("/deployment/" + deploymentId);
+		        $location.path("/flowable-admin/deployment/" + deploymentId);
 		    }
 		};
 
     $scope.editCategory = function() {
       var modalInstance = $modal.open({
-        templateUrl: 'src/flowable_admin/views/process-definition-edit-category-popup.html',
+        templateUrl: 'flowable_admin/views/process-definition-edit-category-popup.html',
         controller: 'EditProcessDefinitionCategoryModalCtrl',
         resolve: {
           definition: function() {
@@ -65,7 +65,7 @@ flowableAdminApp.controller('ProcessDefinitionController', ['$scope', '$rootScop
 
     $scope.showProcessDiagram = function() {
       $modal.open({
-        templateUrl: 'src/flowable_admin/views/process-definition-diagram-popup.html',
+        templateUrl: 'flowable_admin/views/process-definition-diagram-popup.html',
         windowClass: 'modal modal-full-width',
         controller: 'ShowProcessDefinitionDiagramPopupCtrl',
         resolve: {
@@ -78,31 +78,31 @@ flowableAdminApp.controller('ProcessDefinitionController', ['$scope', '$rootScop
 
     $scope.openJob = function(job) {
       if (job && job.getProperty('id')) {
-        $location.path("/job/" + job.getProperty('id'));
+        $location.path("/flowable-admin/job/" + job.getProperty('id'));
       }
     };
 
     $scope.openProcessInstance = function(instance) {
       if (instance && instance.getProperty('id')) {
-        $location.path("/process-instance/" + instance.getProperty('id'));
+        $location.path("/flowable-admin/process-instance/" + instance.getProperty('id'));
       }
     };
     
     $scope.openStartForm = function () {
         if ($scope.startForm) {
-            $location.path("/form/" + $scope.startForm.id);
+            $location.path("/flowable-admin/form/" + $scope.startForm.id);
         }
     };
     
     $scope.openFormDefinition = function (form) {
         if (form && form.getProperty('id')) {
-            $location.path("/form-definition/" + form.getProperty('id'));
+            $location.path("/flowable-admin/form-definition/" + form.getProperty('id'));
           }
     };
     
     $scope.openDecisionTable = function (decisionTable) {
         if (decisionTable && decisionTable.getProperty('id')) {
-            $location.path("/decision-table/" + decisionTable.getProperty('id'));
+            $location.path("/flowable-admin/decision-table/" + decisionTable.getProperty('id'));
           }
     };
 
@@ -111,7 +111,7 @@ flowableAdminApp.controller('ProcessDefinitionController', ['$scope', '$rootScop
       $rootScope.filters.forced.jobFilter = {
         processDefinitionId: $scope.definition.id
       };
-      $location.path("/jobs");
+      $location.path("/flowable-admin/jobs");
     };
 
     $scope.showAllProcesses = function() {
@@ -119,7 +119,7 @@ flowableAdminApp.controller('ProcessDefinitionController', ['$scope', '$rootScop
       $rootScope.filters.forced.instanceFilter = {
           processDefinitionId: $scope.definition.id
       };
-      $location.path("/process-instances");
+      $location.path("/flowable-admin/process-instances");
     };
 
     $scope.loadProcessInstances = function() {

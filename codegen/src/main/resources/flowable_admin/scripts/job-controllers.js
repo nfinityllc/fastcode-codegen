@@ -22,12 +22,12 @@ flowableAdminApp.controller('JobController', ['$scope', '$rootScope', '$http', '
 		}
 		
 		$scope.returnToList = function() {
-			$location.path("/jobs").search({jobType: $scope.jobType.param});
+			$location.path("/flowable-admin/jobs").search({jobType: $scope.jobType.param});
 		};
 
 		$scope.openDefinition = function(definitionId) {
 			if (definitionId) {
-				$location.path("/process-definition/" + definitionId);
+				$location.path("/flowable-admin/process-definition/" + definitionId);
 			}
 		};
 
@@ -55,7 +55,7 @@ flowableAdminApp.controller('JobController', ['$scope', '$rootScope', '$http', '
 
 		$scope.deleteJob = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'src/flowable_admin/views/job-delete-popup.html',
+				templateUrl: 'flowable_admin/views/job-delete-popup.html',
 				controller: 'DeleteJobModalInstanceCtrl',
 				resolve: {
 					job: function() {
@@ -77,13 +77,13 @@ flowableAdminApp.controller('JobController', ['$scope', '$rootScope', '$http', '
 
 		$scope.openProcessInstance = function(processInstanceId) {
 			if (processInstanceId) {
-				$location.path("/process-instance/" + processInstanceId);
+				$location.path("/flowable-admin/process-instance/" + processInstanceId);
 			}
 		};
 
 		$scope.openProcessDefinition = function(processDefinitionId) {
 			if (processDefinitionId) {
-				$location.path("/process-definition/" + processDefinitionId);
+				$location.path("/flowable-admin/process-definition/" + processDefinitionId);
 			}
 		};
 

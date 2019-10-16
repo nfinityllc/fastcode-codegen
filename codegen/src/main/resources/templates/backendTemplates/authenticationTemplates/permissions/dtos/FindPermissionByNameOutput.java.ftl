@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Permissions.Dto;
+package [=PackageName].application.Authorization.Permission.Dto;
 
 public class FindPermissionByNameOutput {
 

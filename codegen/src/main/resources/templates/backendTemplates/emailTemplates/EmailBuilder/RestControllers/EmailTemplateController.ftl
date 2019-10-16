@@ -122,7 +122,7 @@ public class EmailTemplateController {
 	    public ResponseEntity Find(@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 	        if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 	        if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-	        if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+	        //if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 	        Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 	        SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);

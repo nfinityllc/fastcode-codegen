@@ -18,7 +18,7 @@ flowableAdminApp.controller('EventSubscriptionController', ['$scope', '$rootScop
 		$rootScope.navigation = {main: 'process-engine', sub: 'event-subscriptions'};
 		
 		$scope.returnToList = function() {
-			$location.path("/event-subscriptions");
+			$location.path("/flowable-admin/event-subscriptions");
 		};
 
 		$scope.triggerEvent = function() {
@@ -49,13 +49,13 @@ flowableAdminApp.controller('EventSubscriptionController', ['$scope', '$rootScop
 
 		$scope.openProcessInstance = function(processInstanceId) {
 			if (processInstanceId) {
-				$location.path("/process-instance/" + processInstanceId);
+				$location.path("/flowable-admin/process-instance/" + processInstanceId);
 			}
 		};
 
 		$scope.openProcessDefinition = function(processDefinitionId) {
 			if (processDefinitionId) {
-				$location.path("/process-definition/" + processDefinitionId);
+				$location.path("/flowable-admin/process-definition/" + processDefinitionId);
 			}
 		};
 

@@ -1,4 +1,5 @@
 import { ISearchField, operatorType } from '../components/list-filters/ISearchCriteria';
+import { AssociationColumn } from '../core/association-column.interface';
 
 export class ServiceUtils {
     public static parseSearchFields(searchFields: ISearchField[]): string {
@@ -45,6 +46,42 @@ export class ServiceUtils {
         }
 
         return params;
+    }
+
+    public static encodeId(ids: AssociationColumn[]): string {
+        let idString: string = "";
+        
+        if (ids.length > 1) {
+            ids.forEach(id => {
+                idString += `${id.referencedkey}:${id.value},`
+            });
+            if (idString.length > 0) {
+                idString = idString.slice(0, -1);
+            }
+        }
+        else if(ids.length == 1) {
+            idString = ids[0].value;
+        }
+
+        return idString;
+    }
+
+    public static encodeIdByObject(obj: any, ids: string[]): string {
+        let idString: string = "";
+        
+        if (ids.length > 1) {
+            ids.forEach(id => {
+                idString += `${id}:${obj[id]},`
+            });
+            if (idString.length > 0) {
+                idString = idString.slice(0, -1);
+            }
+        }
+        else if(ids.length == 1) {
+            idString = obj[ids[0]];
+        }
+
+        return idString;
     }
 }
 

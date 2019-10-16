@@ -1,17 +1,23 @@
-package [=PackageName].application.[=ClassName].Dto;
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
 
 import java.util.Date;
 public class Update[=ClassName]Output {
 
 <#list Fields as key,value>
- <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
-  private Long [=value.fieldName];
- <#elseif value.fieldType?lower_case == "boolean">
-  private Boolean [=value.fieldName];
- <#elseif value.fieldType?lower_case == "date">
-  private Date [=value.fieldName];
-<#elseif value.fieldType?lower_case == "string">
-  private String [=value.fieldName];
+ <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+  <#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
+    <#if AuthenticationFields??>
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "Password">
+  	<#if value.fieldName != authValue.fieldName>
+  private [=value.fieldType] [=value.fieldName];
+    </#if>
+    </#if>
+    </#list>
+    </#if>
+    <#else>
+  private [=value.fieldType] [=value.fieldName];
+    </#if> 
  </#if> 
 </#list>
 <#if Audit!false>
@@ -21,128 +27,156 @@ public class Update[=ClassName]Output {
   private java.util.Date lastModificationTime;
 </#if>
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
-  private [=relationValue.joinColumnType] [=relationValue.joinColumn];
+ <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if CompositeKeyClasses?seq_contains(ClassName)>
+ <#list relationValue.joinDetails as joinDetails>
+ <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if !Fields[joinDetails.joinColumn]?? >
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+ </#if>
 </#if>
-<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-  <#if relationValue.entityDescriptionField.isPrimaryKey == false>
-  <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
-  private Long [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
-  private Boolean [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "date">
-  private Date [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
-  private String [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  </#if>
+</#list>
+ <#else>
+ <#list relationValue.joinDetails as joinDetails>
+ <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if joinDetails.joinColumn??>
+ <#if !Fields[joinDetails.joinColumn]?? >
+  private [=joinDetails.joinColumnType] [=joinDetails.joinColumn];
+ </#if>
+ </#if>
+</#if>
+</#list>
+ </#if>  
+ </#if>
+  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+	private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first];
   </#if>
   </#if>
 </#list>
-
-<#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne">
-<#if relationValue.joinColumnType?lower_case == "long">
-  public Long get[=relationValue.joinColumn?cap_first]() {
-  return [=relationValue.joinColumn];
+<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
+  private Long roleId;       
+  private String roleDescriptiveField;
+    
+  public Long getRoleId() {
+   	return roleId;
   }
 
-  public void set[=relationValue.joinColumn?cap_first](Long [=relationValue.joinColumn]){
-  this.[=relationValue.joinColumn] = [=relationValue.joinColumn];
+  public void setRoleId(Long roleId){
+  	this.roleId = roleId;
   }
-</#if> 
-</#if>
-<#if relationValue.relation == "ManyToOne" && relationValue.entityDescriptionField?? >
-  <#if relationValue.entityDescriptionField.isPrimaryKey == false>
-  <#if relationValue.entityDescriptionField.fieldType?lower_case == "long" || relationValue.entityDescriptionField.fieldType?lower_case == "int">
-  public Long get[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
-   return [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  public String getRoleDescriptiveField() {
+    return roleDescriptiveField;
   }
 
-  public void set[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first](Long [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
-   this.[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  }
-  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "boolean">
-  public Boolean get[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
-   return [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  }
-
-  public void set[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first](Boolean [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
-   this.[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  }
-  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "date">
-  public Date get[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
-   return [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  }
-
-  public void setget[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first](Date [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
-   this.[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  }
-  <#elseif relationValue.entityDescriptionField.fieldType?lower_case == "string">
-  public String get[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first]() {
-   return [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
-  }
-
-  public void set[=relationValue.eName][=relationValue.entityDescriptionField.fieldName?cap_first](String [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first]){
-   this.[=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first] = [=relationValue.eName?uncap_first][=relationValue.entityDescriptionField.fieldName?cap_first];
+  public void setRoleDescriptiveField(String roleDescriptiveField){
+   	this.roleDescriptiveField = roleDescriptiveField;
   }
   </#if>
+
+  <#list Relationship as relationKey,relationValue>
+  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if CompositeKeyClasses?seq_contains(ClassName)>
+   <#list relationValue.joinDetails as joinDetails>
+   <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if !Fields[joinDetails.joinColumn]?? >
+  <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
+  public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
+  return [=joinDetails.joinColumn];
+  }
+
+  public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
+  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
+  }
+  
+  </#if>
+  </#if>
+</#if>
+</#list>
+  <#else>
+  <#list relationValue.joinDetails as joinDetails>
+ <#if joinDetails.joinEntityName == relationValue.eName>
+ <#if joinDetails.joinColumn??>
+  <#if !Fields[joinDetails.joinColumn]?? >
+  <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
+  public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
+  return [=joinDetails.joinColumn];
+  }
+
+  public void set[=joinDetails.joinColumn?cap_first]([=joinDetails.joinColumnType?cap_first] [=joinDetails.joinColumn]){
+  this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
+  }
+  
+</#if> 
+</#if>
+</#if>
+</#if>
+</#list>
+</#if>
+  </#if>
+  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
+  public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=DescriptiveField[relationValue.eName].description?cap_first]() {
+  	return [=DescriptiveField[relationValue.eName].description?uncap_first];
+  }
+
+  public void set[=DescriptiveField[relationValue.eName].description?cap_first]([=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first]){
+  	this.[=DescriptiveField[relationValue.eName].description?uncap_first] = [=DescriptiveField[relationValue.eName].description?uncap_first];
+  }
+ 
   </#if>
   </#if>
 </#list>
 <#list Fields as key,value>
- <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "int">
-  public Long get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+  <#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
+  <#if AuthenticationFields??>
+  <#list AuthenticationFields as authKey,authValue>
+  <#if authKey== "Password">
+  <#if value.fieldName != authValue.fieldName>
+  public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
+  	return [=value.fieldName];
   }
 
-  public void set[=value.fieldName?cap_first](Long [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
+  	this.[=value.fieldName] = [=value.fieldName];
   }
- <#elseif value.fieldType?lower_case == "boolean">
-  public Boolean get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
-  }
-
-  public void set[=value.fieldName?cap_first](Boolean [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
-  }
- <#elseif value.fieldType?lower_case == "date">
-  public Date get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
+  
+  </#if>
+  </#if>
+  </#list>
+  </#if>
+  <#else>
+  public [=value.fieldType?cap_first] get[=value.fieldName?cap_first]() {
+  	return [=value.fieldName];
   }
 
-  public void set[=value.fieldName?cap_first](Date [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
+  public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
+  	this.[=value.fieldName] = [=value.fieldName];
   }
- <#elseif value.fieldType?lower_case == "string">
-  public String get[=value.fieldName?cap_first]() {
-  return [=value.fieldName];
-  }
-
-  public void set[=value.fieldName?cap_first](String [=value.fieldName]){
-  this.[=value.fieldName] = [=value.fieldName];
-  }
- </#if> 
+  
+  </#if> 
+  </#if>  
 </#list>
 <#if Audit!false>
   public java.util.Date getCreationTime() {
-      return creationTime;
+  	return creationTime;
   }
 
   public void setCreationTime(java.util.Date creationTime) {
-      this.creationTime = creationTime;
+  	this.creationTime = creationTime;
   }
 
   public String getLastModifierUserId() {
-      return lastModifierUserId;
+  	return lastModifierUserId;
   }
 
   public void setLastModifierUserId(String lastModifierUserId) {
-      this.lastModifierUserId = lastModifierUserId;
+  	this.lastModifierUserId = lastModifierUserId;
   }
 
   public java.util.Date getLastModificationTime() {
-      return lastModificationTime;
+  	return lastModificationTime;
   }
 
   public void setLastModificationTime(java.util.Date lastModificationTime) {
@@ -152,6 +186,9 @@ public class Update[=ClassName]Output {
   public String getCreatorUserId() {
       return creatorUserId;
   }
-</#if>
 
+  public void setCreatorUserId(String creatorUserId) {
+      this.creatorUserId = creatorUserId;
+  }
+</#if>
 }

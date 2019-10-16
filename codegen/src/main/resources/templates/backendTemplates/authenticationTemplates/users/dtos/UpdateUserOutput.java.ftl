@@ -1,4 +1,4 @@
-package [=PackageName].application.Authorization.Users.Dto;
+package [=PackageName].application.Authorization.User.Dto;
 
 import java.sql.Date;
 
@@ -17,7 +17,6 @@ public class UpdateUserOutput {
     private Date lastLoginTime;
     private Date lockoutEndDateUtc;
     private String firstName;
-    private String password;
     private String passwordResetCode;
     private String phoneNumber;
     private Long profilePictureId;
@@ -26,14 +25,14 @@ public class UpdateUserOutput {
     private Date signInTokenExpireTimeUtc;
     private String lastName;
     private String userName;
-   <#if Audit!false>
+    <#if Audit!false>
     private String creatorUserId;
     private java.util.Date creationTime;
     private String lastModifierUserId;
-    private java.util.Date lastModificationTime;
-</#if>
+    private java.util.Date lastModificationTime; 
+    </#if>
 	private Long roleId;       
-    private String rolesName;
+    private String roleDescriptiveField;
     
     public Long getRoleId() {
    		return roleId;
@@ -42,12 +41,12 @@ public class UpdateUserOutput {
   	public void setRoleId(Long roleId){
   		 this.roleId = roleId;
     }
-    public String getRolesName() {
-    	return rolesName;
+    public String getRoleDescriptiveField() {
+    	return roleDescriptiveField;
     }
 
-  	public void setRolesName(String rolesName){
-   		this.rolesName = rolesName;
+  	public void setRoleDescriptiveField(String roleDescriptiveField){
+   		this.roleDescriptiveField = roleDescriptiveField;
   	}
     public Long getId() {
         return id;
@@ -73,7 +72,6 @@ public class UpdateUserOutput {
     public void setAuthenticationSource(String authenticationSource) {
         this.authenticationSource = authenticationSource;
     }
-
 
     public String getEmailAddress() {
         return emailAddress;
@@ -173,16 +171,6 @@ public class UpdateUserOutput {
         this.firstName = firstName;
     }
 
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
     public String getPasswordResetCode() {
         return passwordResetCode;
     }
@@ -190,7 +178,6 @@ public class UpdateUserOutput {
     public void setPasswordResetCode(String passwordResetCode) {
         this.passwordResetCode = passwordResetCode;
     }
-
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -242,7 +229,6 @@ public class UpdateUserOutput {
         this.lastName = lastName;
     }
 
-
     public String getUserName() {
         return userName;
     }
@@ -250,7 +236,6 @@ public class UpdateUserOutput {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
 
  <#if Audit!false>
     public java.util.Date getCreationTime() {
@@ -285,7 +270,6 @@ public class UpdateUserOutput {
       	this.creatorUserId = creatorUserId;
     }
 </#if>
-
 
     public Boolean isActive() {
         return isActive;
