@@ -5,10 +5,7 @@ import { HttpTestingController } from '@angular/common/http/testing';
 import { TriggerNewComponent, TriggersComponent, ListFiltersComponent, AddFilterFieldComponent, TriggerService, ITrigger } from './index';
 
 import { TestingModule } from '../../testing/utils';
-import { environment } from '../../environments/environment';
-import { PickerComponent } from '../picker/picker.component';
-import { UserNewComponent } from 'src/app/users';
-import { JobNewComponent } from '../jobs/job-new/job-new.component';
+import { environment } from '../environment';
 
 fdescribe('TriggersComponent', () => {
   let component: TriggersComponent;
@@ -40,7 +37,7 @@ fdescribe('TriggersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TriggerNewComponent,JobNewComponent,UserNewComponent, TriggersComponent, ListFiltersComponent, AddFilterFieldComponent, PickerComponent],
+      declarations: [TriggersComponent],
       imports: [TestingModule],
       providers: [
         TriggerService,

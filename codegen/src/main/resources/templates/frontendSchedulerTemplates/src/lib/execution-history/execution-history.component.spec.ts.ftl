@@ -5,10 +5,7 @@ import { HttpTestingController } from '@angular/common/http/testing';
 import { ExecutionHistoryComponent, ListFiltersComponent, AddFilterFieldComponent, IExecutionHistory, JobService } from './index';
 
 import { TestingModule } from '../../testing/utils';
-import { environment } from '../../environments/environment';
-import { trigger } from '@angular/animations';
-import { PickerComponent } from '../picker/picker.component';
-import { UserNewComponent } from 'src/app/users';
+import { environment } from '../environment';
 
 describe('ExecutionHistoryComponent', () => {
   let component: ExecutionHistoryComponent;
@@ -44,7 +41,7 @@ describe('ExecutionHistoryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UserNewComponent, ExecutionHistoryComponent, ListFiltersComponent, AddFilterFieldComponent, PickerComponent],
+      declarations: [ExecutionHistoryComponent],
       imports: [TestingModule],
       providers: [
         JobService,

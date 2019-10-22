@@ -46,19 +46,20 @@ export class TriggerNewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.manageScreenResizing();
+    this.createForm();
+    this.getTriggerGroups();
+  }
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+  }
 
-    this.global.isMediumDeviceOrLess$.subscribe(value => {
-      this.isMediumDeviceOrLess = value;
-      if (this.selectJobDialogRef)
-        this.selectJobDialogRef.updateSize(value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
-          value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize);
-
-    });
-
+  createForm() {
     this.triggerForm = this.formBuilder.group({
       jobName: [{ value: '', disabled: true }, Validators.required],
       jobGroup: [{ value: '', disabled: true }, Validators.required],
-      jobClass: [{ value: '', disabled: true }, Validators.required],
+      // jobClass: [{ value: '', disabled: true }, Validators.required],
       triggerName: ['', Validators.required],
       triggerGroup: ['', Validators.required],
       triggerType: ['', Validators.required],
@@ -115,9 +116,11 @@ export class TriggerNewComponent implements OnInit {
       }
     });
 
+  }
+
+  getTriggerGroups() {
     this.triggerService.getTriggerGroups().subscribe(
       groups => {
-        console.log(groups);
         this.options = groups;
         this.filteredOptions = this.triggerForm.get('triggerGroup').valueChanges
           .pipe(startWith(''),
@@ -125,17 +128,20 @@ export class TriggerNewComponent implements OnInit {
           );
       }
     );
-
   }
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
 
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+  manageScreenResizing() {
+    this.global.isMediumDeviceOrLess$.subscribe(value => {
+      this.isMediumDeviceOrLess = value;
+      if (this.selectJobDialogRef)
+        this.selectJobDialogRef.updateSize(value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
+          value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize);
+    });
   }
 
   onSubmit() {
     this.submitted = true;
-
+    console.log("submitt")
     // stop here if form is invalid
     if (this.triggerForm.invalid) {
       return;
@@ -145,30 +151,33 @@ export class TriggerNewComponent implements OnInit {
     let newTrigger = {};
     // using getRawValues to get disabled fields values as well 
     newTrigger = this.triggerForm.getRawValue();
-    newTrigger["jobMapData"] = {};
-    this.ELEMENT_DATA.forEach(function (obj) {
-      let tmp = {};
-      tmp[obj.dataKey] = obj.dataValue;
-      newTrigger["jobMapData"][obj.dataKey] = obj.dataValue;
-    })
+    newTrigger["jobMapData"] = this.getJobMapData();
     //to combine both date and time into same object for start and end times of triggers
     newTrigger['startTime'] = this.combineDateAndTime(newTrigger['startDate'], newTrigger['startTime'])
     newTrigger['endTime'] = this.combineDateAndTime(newTrigger['endDate'], newTrigger['endTime'])
     delete newTrigger['startDate'];
     delete newTrigger['endDate'];
-    console.log(newTrigger)
     this.triggerService.create(newTrigger)
       .pipe(first())
       .subscribe(
         data => {
           // this.alertService.success('Registration successful', true);
           // this.router.navigate(['/users']);
+          console.log("created");
           console.log(data);
           this.dialogRef.close(data);
         },
         error => {
           this.loading = false;
         });
+  }
+
+  getJobMapData() {
+    let jobMapData: any = {};
+    this.ELEMENT_DATA.forEach(function (obj) {
+      jobMapData[obj.dataKey] = obj.dataValue;
+    });
+    return jobMapData;
   }
 
   combineDateAndTime(date: string, time: string): Date {
@@ -212,10 +221,11 @@ export class TriggerNewComponent implements OnInit {
       panelClass: 'fc-modal-dialog'
     });
     this.selectJobDialogRef.afterClosed().subscribe(result => {
+      console.log("result");
       if (result) {
         this.triggerForm.get('jobName').setValue(result.jobName);
         this.triggerForm.get('jobGroup').setValue(result.jobGroup);
-        this.triggerForm.get('jobClass').setValue(result.jobClass);
+        // this.triggerForm.get('jobClass').setValue(result.jobClass);
 
         this.changeDetectorRefs.detectChanges();
       }

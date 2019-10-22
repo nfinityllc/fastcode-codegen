@@ -21,7 +21,7 @@ import { IListColumn, listColumnType, ISearchField } from 'fastCodeCore';
   styleUrls: ['./triggers.component.scss']
 })
 export class TriggersComponent implements OnInit {
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort,{ read: true, static: true }) sort: MatSort;
 
   // table data for triggers
   columns: IListColumn[] = [
