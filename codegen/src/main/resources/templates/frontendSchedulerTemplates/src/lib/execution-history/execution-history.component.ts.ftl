@@ -18,7 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ExecutionHistoryComponent implements OnInit {
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort,{  static: true }) sort: MatSort;
   isLoadingResults = true;
 
   currentPage: number;

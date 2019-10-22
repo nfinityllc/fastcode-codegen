@@ -1,10 +1,10 @@
 <div class="container">
   <mat-toolbar class="action-tool-bar" color="primary">
-    <button mat-flat-button (click)="onCancel()">
+    <button name="cancel" mat-flat-button (click)="onCancel()">
       {{'SCHEDULER-GENERAL.ACTIONS.CANCEL' | translate}} </button>
     <span class="middle">{{'TRIGGERS.TITLE' | translate}}</span>
 
-    <button mat-flat-button (click)="jobNgForm.ngSubmit.emit()" [disabled]="!triggerForm.valid || loading">
+    <button mat-flat-button name="save" (click)="jobNgForm.ngSubmit.emit()" [disabled]="!triggerForm.valid || loading">
       {{'SCHEDULER-GENERAL.ACTIONS.SAVE' | translate}} </button>
 
   </mat-toolbar>
@@ -18,7 +18,7 @@
           </mat-radio-group>
         </div>
         <div class="button-row">
-          <button mat-raised-button color="accent" (click)="selectJob()">Select job</button>
+          <button mat-raised-button color="accent" title="select-job" (click)="selectJob()">Select job</button>
         </div>
         <mat-form-field [ngClass]="{'medium-device-width': isMediumDeviceOrLess, 'large-device-width' : !isMediumDeviceOrLess}">
           <input formControlName="jobName" matInput placeholder="{{'TRIGGERS.FIELDS.JOB-NAME' | translate}}">

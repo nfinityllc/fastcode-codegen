@@ -21,7 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class JobsComponent implements OnInit {
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort,{  static: true }) sort: MatSort;
 
   userId: number;
 

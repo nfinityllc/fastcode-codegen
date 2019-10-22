@@ -9,13 +9,10 @@ import { By } from '@angular/platform-browser';
 import { Observable, throwError,of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { Component, Directive, ChangeDetectorRef} from '@angular/core';
-import { PickerComponent } from '../../picker/picker.component';
-import { TriggerNewComponent } from '../../triggers/trigger-new/trigger-new.component';
-import { UserNewComponent } from '../../users/user-new.component';
+import { TriggerNewComponent } from '../../triggers/index';
 
 import { TestingModule } from '../../../testing/utils';
-
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environment';
 
 @Directive({
   selector:'[routerlink]',
@@ -45,7 +42,7 @@ describe('JobDetailsComponent', () => {
     
     TestBed.configureTestingModule({
       declarations: [
-        JobDetailsComponent, JobNewComponent, PickerComponent, TriggerNewComponent, UserNewComponent    
+        JobDetailsComponent    
       ],
       imports: [TestingModule],
       providers: [
