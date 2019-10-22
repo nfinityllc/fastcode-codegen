@@ -65,12 +65,6 @@ public class RoleController {
         }
 
         CreateRoleOutput output=_roleAppService.Create(role);
-		if(output==null)
-		{
-			logHelper.getLogger().error("No record found");
-		throw new EntityNotFoundException(
-				String.format("No record found"));
-	    }
 		
 		return new ResponseEntity(output, HttpStatus.OK);
     }

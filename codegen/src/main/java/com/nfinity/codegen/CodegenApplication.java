@@ -38,6 +38,7 @@ public class CodegenApplication implements ApplicationRunner {
 		input.setConnectionStr(root.get("c") != null ? root.get("c")
 				: (configProperties.getConnectionStr() != null ? configProperties.getConnectionStr()
 						: GetUserInput.getInput(scanner, "DB Connection String")));
+		
 		input.setSchemaName(root.get("s") == null ? GetUserInput.getInput(scanner, "Db schema") : root.get("s"));
 		input.setDestinationPath(
 				root.get("d") == null ? GetUserInput.getInput(scanner, "destination folder") : root.get("d"));

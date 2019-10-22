@@ -162,12 +162,37 @@ public class [=ClassName]Controller {
         </#if>
 		</#if>
 		Create[=ClassName]Output output=_[=ClassName?uncap_first]AppService.Create([=ClassName?uncap_first]);
+		
+		<#list Relationship as relationKey,relationValue>
+		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+		<#if relationValue.isParent==false>
+        <#assign i=relationValue.joinDetails?size>
+        <#if i==1>
+	  	<#list relationValue.joinDetails as joinDetails>
+        <#if joinDetails.joinEntityName == relationValue.eName>
+        <#if joinDetails.joinColumn??>
+		<#if joinDetails.isJoinColumnOptional==false>
+		if(output==null) {
+			logHelper.getLogger().error("No record found");
+		throw new EntityNotFoundException(
+				String.format("No record found"));
+	    }
+		</#if>
+	
+        </#if>
+        </#if>
+        </#list>
+        <#else>
 		if(output==null)
 		{
 			logHelper.getLogger().error("No record found");
 		throw new EntityNotFoundException(
 				String.format("No record found"));
 	    }
+		</#if>
+		</#if>
+        </#if>
+		</#list>
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}

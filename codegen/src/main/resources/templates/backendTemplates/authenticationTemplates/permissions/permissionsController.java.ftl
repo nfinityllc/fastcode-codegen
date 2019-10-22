@@ -54,15 +54,14 @@ public class PermissionController {
 	public ResponseEntity<CreatePermissionOutput> Create(@RequestBody @Valid CreatePermissionInput permission) {
 
 		FindPermissionByNameOutput existing = _permissionAppService.FindByPermissionName(permission.getName());
-
+        
+        if (existing != null) {
+            logHelper.getLogger().error("There already exists a permission with name=%s", permission.getName());
+            throw new EntityExistsException(
+                    String.format("There already exists a permission with name=%s", permission.getName()));
+        }
+        
 		CreatePermissionOutput output=_permissionAppService.Create(permission);
-		if(output==null)
-		{
-			logHelper.getLogger().error("No record found");
-		throw new EntityNotFoundException(
-				String.format("No record found"));
-	    }
-		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
@@ -71,6 +70,7 @@ public class PermissionController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
     FindPermissionByIdOutput output = _permissionAppService.FindById(Long.valueOf(id));
+	
 	if (output == null) {
 		logHelper.getLogger().error("There does not exist a permission with a id=%s", id);
 		throw new EntityNotFoundException(
