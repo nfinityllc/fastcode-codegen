@@ -75,7 +75,7 @@ public class BaseAppGen {
             boolean overRide, String otherOptions) {
         // String appName = a.substring(a.lastIndexOf(".") + 1);
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-        String cliCommand = " -a=" + appName + " -g=" + groupId + " -d=" + dependency + " " + otherOptions + " "
+        String cliCommand = " -b=2.1.9.RELEASE " + "-a=" + appName + " -g=" + groupId + " -d=" + dependency + " " + otherOptions + " "
                 + appName;
         String[] builderCommand;
         if (isWindows) {

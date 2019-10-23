@@ -6,6 +6,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Pageable;
@@ -139,7 +140,7 @@ public class [=ClassName]Controller {
   </#if>  
 
     <#if AuthenticationType != "none">
-//  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_CREATE')")
+    @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_CREATE')")
     </#if>
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Create[=ClassName]Output> Create(@RequestBody @Valid Create[=ClassName]Input [=ClassName?uncap_first]) {
@@ -199,7 +200,7 @@ public class [=ClassName]Controller {
 
 	// ------------ Delete [=ClassName?uncap_first] ------------
 	<#if AuthenticationType != "none">
-//	@PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_DELETE')")
+	@PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_DELETE')")
 	</#if>
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -246,7 +247,7 @@ public class [=ClassName]Controller {
 	
 	// ------------ Update [=ClassName?uncap_first] ------------
 	<#if AuthenticationType != "none">
-//  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_UPDATE')")
+    @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_UPDATE')")
     </#if>
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Update[=ClassName]Output> Update(@PathVariable String id, @RequestBody @Valid Update[=ClassName]Input [=ClassName?uncap_first]) {
@@ -312,7 +313,7 @@ public class [=ClassName]Controller {
 	}
 
     <#if AuthenticationType != "none">
-//  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
+    @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Find[=ClassName]ByIdOutput> FindById(@PathVariable String id) {
@@ -344,7 +345,7 @@ public class [=ClassName]Controller {
 	}
     
     <#if AuthenticationType != "none">
-//  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
+    @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
@@ -360,7 +361,7 @@ public class [=ClassName]Controller {
     <#list Relationship as relationKey, relationValue>
     <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
     <#if AuthenticationType != "none">
-//  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
+    @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
 	@RequestMapping(value = "/{id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity<Get[=relationValue.eName]Output> Get[=relationValue.eName](@PathVariable String id) {
@@ -392,7 +393,7 @@ public class [=ClassName]Controller {
     <#elseif relationValue.relation == "OneToMany">
     
     <#if AuthenticationType != "none">
-//  @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
+    @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
     </#if>
 	@RequestMapping(value = "/{id}/[=relationValue.eName?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity Get[=relationValue.eName](@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
@@ -420,7 +421,11 @@ public class [=ClassName]Controller {
 	}   
  
     </#if>
+    </#list>
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+	<#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
+    </#if>
    	@RequestMapping(value = "/{id}/[=AuthenticationTable?uncap_first]permission", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -446,7 +451,7 @@ public class [=ClassName]Controller {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}  
 	</#if>
-  </#list>
+
 
 }
 

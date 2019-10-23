@@ -8,15 +8,30 @@ public class Update[=ClassName]Input {
 
 <#list Fields as key,value>
   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-  <#if value.isNullable==false>
-  @NotNull(message = "[=value.fieldName] Should not be null")
-  </#if> 
+  <#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
+    <#if AuthenticationFields??>
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "Password">
+  	<#if value.fieldName != authValue.fieldName>
+    <#if value.isNullable==false>
+    @NotNull(message = "[=value.fieldName] Should not be null")
+    </#if> 
+    </#if>
+    </#if>
+    </#list>
+    </#if>
+    <#else>
+    <#if value.isNullable==false>
+    @NotNull(message = "[=value.fieldName] Should not be null")
+    </#if> 
+    </#if> 
   <#if value.fieldType?lower_case == "string"> 
   <#if value.length !=0>
   @Length(max = <#if value.length !=0>[=value.length?c]<#else>255</#if>, message = "[=value.fieldName] must be less than <#if value.length !=0>[=value.length?c]<#else>255</#if> characters")
   </#if>
   </#if>
   private [=value.fieldType] [=value.fieldName];
+  
   </#if>
 </#list>
 <#list Relationship as relationKey,relationValue>

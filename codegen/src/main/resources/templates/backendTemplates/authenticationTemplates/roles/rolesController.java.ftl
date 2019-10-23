@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityExistsException;
@@ -53,6 +54,7 @@ public class RoleController {
     // CRUD Operations
 
     // ------------ Create a role ------------
+    @PreAuthorize("hasAnyAuthority('ROLEENTITY_CREATE')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CreateRoleOutput> Create(@RequestBody @Valid CreateRoleInput role) {
 
@@ -70,6 +72,7 @@ public class RoleController {
     }
 
     // ------------ Delete role ------------
+    @PreAuthorize("hasAnyAuthority('ROLEENTITY_DELETE')")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
@@ -83,6 +86,7 @@ public class RoleController {
     }
     
     // ------------ Update role ------------
+    @PreAuthorize("hasAnyAuthority('ROLEENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdateRoleOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateRoleInput role) {
     FindRoleByIdOutput currentRole = _roleAppService.FindById(Long.valueOf(id));
@@ -95,6 +99,7 @@ public class RoleController {
     return new ResponseEntity(_roleAppService.Update(Long.valueOf(id),role), HttpStatus.OK);
 	}
 
+    @PreAuthorize("hasAnyAuthority('ROLEENTITY_READ')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindRoleByIdOutput> FindById(@PathVariable String id) {
     FindRoleByIdOutput output = _roleAppService.FindById(Long.valueOf(id));
@@ -105,6 +110,7 @@ public class RoleController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
+    @PreAuthorize("hasAnyAuthority('ROLEENTITY_READ')")
     @RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -119,6 +125,7 @@ public class RoleController {
 	}
     <#if AuthenticationType != "none">
   
+    @PreAuthorize("hasAnyAuthority('ROLEENTITY_READ')")
 	@RequestMapping(value = "/{roleid}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable](@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -145,7 +152,7 @@ public class RoleController {
 	}    
 	</#if>
 	
-	
+	@PreAuthorize("hasAnyAuthority('ROLEENTITY_READ')")
     @RequestMapping(value = "/{roleid}/rolepermission", method = RequestMethod.GET)
 	public ResponseEntity GetRolepermission(@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }

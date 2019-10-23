@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 <#if Audit!false>
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=CommonModulePackage].domain.BaseClasses.AuditedEntity;
+import [=AuditPackage].domain.BaseClasses.AuditedEntity;
 </#if>
 
 @Entity

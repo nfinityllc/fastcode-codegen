@@ -3,6 +3,7 @@ package [=PackageName];
 import [=PackageName].domain.model.*;
 import [=PackageName].domain.Authorization.Permission.IPermissionManager;
 import [=PackageName].domain.Authorization.Rolepermission.IRolepermissionManager;
+import [=PackageName].domain.Authorization.User.IUserManager;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class AppStartupRunner implements ApplicationRunner {
     @Autowired
     private IRoleManager rolesManager;
     
+    @Autowired
+    private I[=authenticationTable]Manager userManager;
+    
 	@Autowired
     private IRolepermissionManager rolepermissionManager;
     
@@ -70,11 +74,16 @@ public class AppStartupRunner implements ApplicationRunner {
         <#if Flowable!false>
         idmIdentityService.createGroup("ROLE_Admin");
         </#if>
+        addDefaultUser(role);
         
 		List<String> entityList = new ArrayList<String>();
         entityList.add("role");
         entityList.add("permission");
         entityList.add("rolepermission");
+        <#if email!false>
+        entityList.add("emailTemplate");
+        entityList.add("emailVariable");
+        </#if>
         
         <#if !authenticationTable??>
 		entityList.add("user");
@@ -158,5 +167,17 @@ public class AppStartupRunner implements ApplicationRunner {
         rolepermissionManager.Create(pe2RP);
         rolepermissionManager.Create(pe3RP);
         rolepermissionManager.Create(pe4RP);
+    }
+    
+    private void addDefaultUser(RoleEntity role) {
+    	[=authenticationTable]Entity admin = new [=authenticationTable]Entity();
+    	admin.setFirstName("test");
+    	admin.setLastName("admin");
+    	admin.setUserName("admin");
+    	admin.setEmailAddress("admin@demo.com");
+    	admin.setPassword(pEncoder.encode("secret"));
+    	admin.setRole(role);
+    	admin = userManager.Create(admin);
+    	actIdUserMapper.createUsersEntityToActIdUserEntity(admin);
     }
 }

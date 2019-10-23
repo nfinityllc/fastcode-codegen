@@ -191,8 +191,8 @@ public class [=ClassName]AppServiceTest {
        <#if Flowable!false>
        ActIdUserEntity actIdUser = mock (ActIdUserEntity.class);
 			
-	   Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any(CustomUserEntity.class))).thenReturn(actIdUser);
-	   doNothing().when(idmIdentityService).createUser(any(CustomUserEntity.class),any(ActIdUserEntity.class)); 
+	   Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any([=ClassName]Entity.class))).thenReturn(actIdUser);
+	   doNothing().when(idmIdentityService).createUser(any([=ClassName]Entity.class),any(ActIdUserEntity.class)); 
        </#if>
        </#if>
        Mockito.when(_mapper.Create[=ClassName]InputTo[=ClassName]Entity(any(Create[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity); 

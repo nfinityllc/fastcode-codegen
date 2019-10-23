@@ -196,7 +196,7 @@ public class CodegenApplication implements ApplicationRunner {
 		if(!input.getAuthenticationType().equals("none"))
 		{
 			AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath(), groupArtifactId, input.getAudit(),
-					input.getHistory(),input.getFlowable(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema(),details);
+					input.getHistory(),input.getFlowable(),input.getEmail(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema(),details);
 		}
 
 		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),

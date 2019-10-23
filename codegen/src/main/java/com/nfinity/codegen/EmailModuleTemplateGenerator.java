@@ -33,6 +33,7 @@ public class EmailModuleTemplateGenerator {
 		
 		Map<String, Object> root = new HashMap<>();
 
+		root.put("AuditPackage", packageName);
 		root.put("PackageName", packageName.concat(".EmailBuilder"));
 		root.put("AuthenticationType", authenticationType);
 		root.put("Audit", audit);
