@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'lightgreen-amber.scss';
+@import 'light-purple-teal.scss';
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Roboto', sans-serif; }
 [hidden] { display: none !important;}
