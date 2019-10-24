@@ -79,7 +79,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatChipsModule,
-    NgxMaterialTimepickerModule.forRoot(),
+    NgxMaterialTimepickerModule,
     FastCodeCoreModule.forRoot({
       apiUrl: environment.apiUrl
     }),
