@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Map;
@@ -50,27 +51,29 @@ public class PermissionController {
 	// CRUD Operations
 
 	// ------------ Create a permission ------------
+	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<CreatePermissionOutput> Create(@RequestBody @Valid CreatePermissionInput permission) {
 
 		FindPermissionByNameOutput existing = _permissionAppService.FindByPermissionName(permission.getName());
-
+        
+        if (existing != null) {
+            logHelper.getLogger().error("There already exists a permission with name=%s", permission.getName());
+            throw new EntityExistsException(
+                    String.format("There already exists a permission with name=%s", permission.getName()));
+        }
+        
 		CreatePermissionOutput output=_permissionAppService.Create(permission);
-		if(output==null)
-		{
-			logHelper.getLogger().error("No record found");
-		throw new EntityNotFoundException(
-				String.format("No record found"));
-	    }
-		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
 	// ------------ Delete permission ------------
+	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_DELETE')")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
     FindPermissionByIdOutput output = _permissionAppService.FindById(Long.valueOf(id));
+	
 	if (output == null) {
 		logHelper.getLogger().error("There does not exist a permission with a id=%s", id);
 		throw new EntityNotFoundException(
@@ -80,6 +83,7 @@ public class PermissionController {
     }
 	
 	// ------------ Update permission ------------
+	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdatePermissionOutput> Update(@PathVariable String id, @RequestBody @Valid UpdatePermissionInput permission) {
     FindPermissionByIdOutput currentPermission = _permissionAppService.FindById(Long.valueOf(id));
@@ -92,6 +96,7 @@ public class PermissionController {
     return new ResponseEntity(_permissionAppService.Update(Long.valueOf(id),permission), HttpStatus.OK);
 	}
 
+    @PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindPermissionByIdOutput> FindById(@PathVariable String id) {
     FindPermissionByIdOutput output = _permissionAppService.FindById(Long.valueOf(id));
@@ -102,6 +107,7 @@ public class PermissionController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
     
+    @PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -114,6 +120,7 @@ public class PermissionController {
 		return ResponseEntity.ok(_permissionAppService.Find(searchCriteria,Pageable));
 	}
     
+    @PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{permissionid}/rolepermission", method = RequestMethod.GET)
 	public ResponseEntity GetRolepermission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -140,6 +147,7 @@ public class PermissionController {
 	}
 
 	<#if AuthenticationType != "none">
+	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{permissionid}/[=AuthenticationTable?uncap_first]permission", method = RequestMethod.GET)
 	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }

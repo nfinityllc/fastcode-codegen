@@ -5,9 +5,9 @@ import [=PackageName].domain.Authorization.Rolepermission.IRolepermissionManager
 import [=PackageName].domain.model.QRolepermissionEntity;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.RolepermissionId;
-import [=PackageName].domain.Authorization.Permission.PermissionManager;
+import [=PackageName].domain.Authorization.Permission.IPermissionManager;
 import [=PackageName].domain.model.PermissionEntity;
-import [=PackageName].domain.Authorization.Role.RoleManager;
+import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -45,10 +45,10 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	private IRolepermissionManager _rolepermissionManager;
   
     @Autowired
-	private PermissionManager _permissionManager;
+	private IPermissionManager _permissionManager;
     
     @Autowired
-	private RoleManager _roleManager;
+	private IRoleManager _roleManager;
     
 	@Autowired
 	private LoggingHelper logHelper;

@@ -33,15 +33,13 @@ public class AuditController {
     public AuditController(Javers javers) {
         this.javers = javers;
     }
-    <#if AuthenticationType != "none">
-    <#if AuthenticationTable == "User">
+    <#if (AuthenticationType!="none" && !UserInput??) >
     @RequestMapping("/user")
     public String getUserChanges() {
         QueryBuilder jqlQuery = QueryBuilder.byClass(UserEntity.class);
         List<Change> changes = javers.findChanges(jqlQuery.build());
         return javers.getJsonConverter().toJson(changes);
     }
-    </#if>
     </#if>
     <#if AuthenticationType != "none">
     @RequestMapping("/role")

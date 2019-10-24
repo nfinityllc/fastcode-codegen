@@ -3,6 +3,7 @@ package [=PackageName].RestControllers;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +25,6 @@ import [=CommonModulePackage].domain.EmptyJsonResponse;
 import [=CommonModulePackage].logging.LoggingHelper;
 import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
 import [=PackageName].application.Authorization.Rolepermission.Dto.*;
-import [=PackageName].application.Authorization.Permission.PermissionAppService;
-import [=PackageName].application.Authorization.Role.RoleAppService;
-
 
 @RestController
 @RequestMapping("/rolepermission")
@@ -34,12 +32,6 @@ public class RolepermissionController {
 
 	@Autowired
 	private RolepermissionAppService _rolepermissionAppService;
-    
-    @Autowired
-	private PermissionAppService  _permissionAppService;
-    
-    @Autowired
-	private RoleAppService  _roleAppService;
 
 	@Autowired
 	private LoggingHelper logHelper;
@@ -47,6 +39,7 @@ public class RolepermissionController {
 	@Autowired
 	private Environment env;
     
+    @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<CreateRolepermissionOutput> Create(@RequestBody @Valid CreateRolepermissionInput rolepermission) {
 		CreateRolepermissionOutput output=_rolepermissionAppService.Create(rolepermission);
@@ -61,6 +54,7 @@ public class RolepermissionController {
 	}
 
 	// ------------ Delete rolepermission ------------
+	@PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_DELETE')")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
@@ -81,6 +75,7 @@ public class RolepermissionController {
     }
 	
 	// ------------ Update rolepermission ------------
+	@PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdateRolepermissionOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateRolepermissionInput rolepermission) {
 	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
@@ -100,6 +95,7 @@ public class RolepermissionController {
 	return new ResponseEntity(_rolepermissionAppService.Update(rolepermissionId,rolepermission), HttpStatus.OK);
 	}
 
+    @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindRolepermissionByIdOutput> FindById(@PathVariable String id) {
 	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
@@ -117,6 +113,7 @@ public class RolepermissionController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
     
+    @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -129,6 +126,7 @@ public class RolepermissionController {
 		return ResponseEntity.ok(_rolepermissionAppService.Find(searchCriteria,Pageable));
 	}
 
+    @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{rolepermissionid}/permission", method = RequestMethod.GET)
 	public ResponseEntity<GetPermissionOutput> GetPermission(@PathVariable String id) {
 	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
@@ -145,7 +143,7 @@ public class RolepermissionController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
   
-
+    @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{rolepermissionid}/role", method = RequestMethod.GET)
 	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String id) {
 	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);

@@ -155,7 +155,7 @@ public class CodeGenerator {
 			generateEntityHistoryComponent(appFolderPath);
 			addhistoryComponentsToAppModule(appFolderPath);
 			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType, flowable);
-			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType,authenticationTable);
+			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType,authenticationTable,email,scheduler);
 
 		}
 
@@ -210,14 +210,15 @@ public class CodeGenerator {
 		return propertyInfo;
 	}
 
-	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType,String authenticationTable){
+	private static void generateAuditorController(Map<String, EntityDetails> details, String appName,String packageName,String backEndRootFolder, String destPath,String authenticationType,String authenticationTable,
+			                 Boolean email, Boolean scheduler){
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
-
 			Map<String, String> entityMap = new HashMap<String,String>();
+			
 			String key = entry.getKey();
 			String name = key.substring(key.lastIndexOf(".") + 1);
 
@@ -229,6 +230,7 @@ public class CodeGenerator {
 			entitiesMap.put(name, entityMap);
 
 		}
+		
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/"); 
 		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
 
@@ -240,10 +242,17 @@ public class CodeGenerator {
 		root.put("entitiesMap", entitiesMap);
 		root.put("PackageName", packageName);
 		root.put("AuthenticationType", authenticationType);
-		if(authenticationTable !=null)
+		root.put("email", email);
+		root.put("scheduler", scheduler);
+		if(authenticationTable!=null) {
+			root.put("UserInput","true");
 			root.put("AuthenticationTable", authenticationTable);
+		}
 		else
+		{
+			root.put("UserInput",null);
 			root.put("AuthenticationTable", "User");	
+		}	
 
 		Map<String, Object> template = new HashMap<>();
 		template.put("AuditController.java.ftl", "AuditController.java");

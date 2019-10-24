@@ -104,6 +104,7 @@ public class UserController {
 	// CRUD Operations
 
 	// ------------ Create a user ------------
+	@PreAuthorize("hasAnyAuthority('USERENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<CreateUserOutput> Create(@RequestBody @Valid CreateUserInput user) {
 		 FindUserByNameOutput foundUser = _userAppService.FindByUserName(user.getUserName());
@@ -127,6 +128,7 @@ public class UserController {
 	}
 
 	// ------------ Delete a user ------------
+	@PreAuthorize("hasAnyAuthority('USERENTITY_DELETE')")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void Delete(@PathVariable String id) {
@@ -143,6 +145,7 @@ public class UserController {
 	}
 	
 	// ------------ Update user ------------
+	@PreAuthorize("hasAnyAuthority('USERENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdateUserOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateUserInput user) {
     	FindUserWithAllFieldsByIdOutput currentUser = _userAppService.FindWithAllFieldsById(Long.valueOf(id));
@@ -158,6 +161,7 @@ public class UserController {
 
 
 	// ------------ Retrieve a user ------------
+	@PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindUserByIdOutput> FindById(@PathVariable String id) {
     FindUserByIdOutput output = _userAppService.FindById(Long.valueOf(id));
@@ -168,6 +172,7 @@ public class UserController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
+    @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -179,7 +184,8 @@ public class UserController {
 		
 		return ResponseEntity.ok(_userAppService.Find(searchCriteria,Pageable));
 	}
-
+   
+    @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
 	@RequestMapping(value = "/{userid}/userpermission", method = RequestMethod.GET)
 	public ResponseEntity GetUserpermission(@PathVariable String userid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -205,8 +211,7 @@ public class UserController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}   
  
-  
-
+    @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
 	@RequestMapping(value = "/{userid}/role", method = RequestMethod.GET)
 	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String id) {
     GetRoleOutput output= _userAppService.GetRole(Long.valueOf(id));

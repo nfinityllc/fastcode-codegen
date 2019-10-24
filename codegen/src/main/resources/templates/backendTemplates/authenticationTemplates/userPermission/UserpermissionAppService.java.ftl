@@ -5,9 +5,9 @@ import [=PackageName].domain.Authorization.[=AuthenticationTable]permission.I[=A
 import [=PackageName].domain.model.Q[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionId;
-import [=PackageName].domain.Authorization.[=AuthenticationTable].[=AuthenticationTable]Manager;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
-import [=PackageName].domain.Authorization.Permission.PermissionManager;
+import [=PackageName].domain.Authorization.Permission.IPermissionManager;
 import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.model.RolepermissionEntity;
 
@@ -51,10 +51,10 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	private I[=AuthenticationTable]permissionManager _[=AuthenticationTable?uncap_first]permissionManager;
   
     @Autowired
-	private [=AuthenticationTable]Manager _[=AuthenticationTable?uncap_first]Manager;
+	private I[=AuthenticationTable]Manager _[=AuthenticationTable?uncap_first]Manager;
     
     @Autowired
-	private PermissionManager _permissionManager;
+	private IPermissionManager _permissionManager;
     
 	@Autowired
 	private LoggingHelper logHelper;
