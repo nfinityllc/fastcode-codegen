@@ -672,6 +672,7 @@ public class CodeGenerator {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("application.properties.ftl", "application.properties");
+		backEndTemplate.put("application-bootstrap.properties.ftl", "application-bootstrap.properties");
 		new File(destPath).mkdirs();
 		generateFiles(backEndTemplate, root, destPath);
 	}

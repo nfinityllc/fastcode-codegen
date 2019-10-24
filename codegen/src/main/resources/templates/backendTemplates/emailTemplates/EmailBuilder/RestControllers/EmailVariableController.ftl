@@ -34,87 +34,87 @@ import [=CommonModulePackage].domain.EmptyJsonResponse;
 @RequestMapping("/emailvariable")
 public class EmailVariableController {
 
-	 @Autowired
-	    private EmailVariableAppService emailVariableAppService;
+	@Autowired
+	private EmailVariableAppService emailVariableAppService;
 
-	    @Autowired
-	    private LoggingHelper logHelper;
+	@Autowired
+	private LoggingHelper logHelper;
 
-	    @Autowired
-	    private Environment env;
+	@Autowired
+	private Environment env;
 
-        <#if AuthenticationType != "none">
-//		@PreAuthorize("hasAnyAuthority('EMAILVARIABLESENTITY_READ')")
-		</#if>
-	    @RequestMapping(method = RequestMethod.POST)
-	    public ResponseEntity<CreateEmailVariableOutput> Create(@RequestBody @Valid CreateEmailVariableInput email) {
-	    	FindEmailVariableByNameOutput foundEmail = emailVariableAppService.FindByName(email.getPropertyName());
-			if (foundEmail != null) {
-				logHelper.getLogger().error("There already exists a email with a name=%s", email.getPropertyName());
-				throw new EntityExistsException(
-						String.format("There already exists a user with email address=%s", email.getPropertyName()));
-			}
-	        return new ResponseEntity(emailVariableAppService.Create(email), HttpStatus.OK);
-	    }
+    <#if AuthenticationType != "none">
+	@PreAuthorize("hasAnyAuthority('EMAILVARIABLEENTITY_READ')")
+	</#if>
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<CreateEmailVariableOutput> Create(@RequestBody @Valid CreateEmailVariableInput email) {
+		FindEmailVariableByNameOutput foundEmail = emailVariableAppService.FindByName(email.getPropertyName());
+		if (foundEmail != null) {
+			logHelper.getLogger().error("There already exists a email with a name=%s", email.getPropertyName());
+			throw new EntityExistsException(
+				String.format("There already exists a user with email address=%s", email.getPropertyName()));
+		}
+	       return new ResponseEntity(emailVariableAppService.Create(email), HttpStatus.OK);
+	}
 
 	    // ------------ Delete an email ------------
-	    <#if AuthenticationType != "none">
-//		@PreAuthorize("hasAnyAuthority('EMAILVARIABLESENTITY_DELETE')")
-		</#if>
-	    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-	    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	    public void Delete(@PathVariable String id) {
-	    	  FindEmailVariableByIdOutput eo = emailVariableAppService.FindById(Long.valueOf(id));
+	<#if AuthenticationType != "none">
+	@PreAuthorize("hasAnyAuthority('EMAILVARIABLEENTITY_DELETE')")
+	</#if>
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void Delete(@PathVariable String id) {
+		FindEmailVariableByIdOutput eo = emailVariableAppService.FindById(Long.valueOf(id));
 
-		        if (eo == null) {
-		        	logHelper.getLogger().error("There does not exist a email wth a id=%s", id);
-				throw new EntityNotFoundException(
+		if (eo == null) {
+		    logHelper.getLogger().error("There does not exist a email wth a id=%s", id);
+			throw new EntityNotFoundException(
 						String.format("There does not exist a email wth a id=%s", id));
-			}
-	        emailVariableAppService.Delete(Long.valueOf(id));
-	    }
+		}
+	    emailVariableAppService.Delete(Long.valueOf(id));
+	}
 	    // ------------ Update an email ------------
 
-        <#if AuthenticationType != "none">
-//		@PreAuthorize("hasAnyAuthority('EMAILVARIABLESENTITY_UPDATE')")
-		</#if>
-	    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	    public ResponseEntity<UpdateEmailVariableOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateEmailVariableInput email) {
-	        FindEmailVariableByIdOutput currentEmail = emailVariableAppService.FindById(Long.valueOf(id));
-	        if (currentEmail == null) {
-	            logHelper.getLogger().error("Unable to update. Email with id {} not found.", id);
-	            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-	        }
-	        return new ResponseEntity(emailVariableAppService.Update(Long.valueOf(id), email), HttpStatus.OK);
+    <#if AuthenticationType != "none">
+	@PreAuthorize("hasAnyAuthority('EMAILVARIABLEENTITY_UPDATE')")
+	</#if>
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<UpdateEmailVariableOutput> Update(@PathVariable String id, @RequestBody @Valid UpdateEmailVariableInput email) {
+		FindEmailVariableByIdOutput currentEmail = emailVariableAppService.FindById(Long.valueOf(id));
+	    if (currentEmail == null) {
+	       logHelper.getLogger().error("Unable to update. Email with id {} not found.", id);
+	       return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+	   }
+	      return new ResponseEntity(emailVariableAppService.Update(Long.valueOf(id), email), HttpStatus.OK);
+	}
+
+    <#if AuthenticationType != "none">
+	@PreAuthorize("hasAnyAuthority('EMAILVARIABLEENTITY_READ')")
+	</#if>
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<FindEmailVariableByIdOutput> FindById(@PathVariable String id) {
+
+	    FindEmailVariableByIdOutput eo = emailVariableAppService.FindById(Long.valueOf(id));
+
+	    if (eo == null) {
+	        return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 	    }
+	    return new ResponseEntity(eo, HttpStatus.OK);
+	}
 
-        <#if AuthenticationType != "none">
-//		@PreAuthorize("hasAnyAuthority('EMAILVARIABLESENTITY_READ')")
-		</#if>
-	    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	    public ResponseEntity<FindEmailVariableByIdOutput> FindById(@PathVariable String id) {
+    <#if AuthenticationType != "none">
+	@PreAuthorize("hasAnyAuthority('EMAILVARIABLEENTITY_READ')")
+	</#if>
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity Find(@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
+	   if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+	   if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+	 //if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
-	        FindEmailVariableByIdOutput eo = emailVariableAppService.FindById(Long.valueOf(id));
-
-	        if (eo == null) {
-	            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-	        }
-	        return new ResponseEntity(eo, HttpStatus.OK);
-	    }
-
-        <#if AuthenticationType != "none">
-//		@PreAuthorize("hasAnyAuthority('EMAILVARIABLESENTITY_READ')")
-		</#if>
-	    @RequestMapping(method = RequestMethod.GET)
-	    public ResponseEntity Find(@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
-	        if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
-	        if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-	        //if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
-
-	        Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-	        SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+	   Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+	   SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		      
-	        return ResponseEntity.ok(emailVariableAppService.Find(searchCriteria,Pageable));
-	    }
+	   return ResponseEntity.ok(emailVariableAppService.Find(searchCriteria,Pageable));
+	}
 	
 }
