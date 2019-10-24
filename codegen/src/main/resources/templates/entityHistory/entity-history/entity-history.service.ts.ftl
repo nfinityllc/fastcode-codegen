@@ -21,7 +21,7 @@ export class EntityHistoryService {
   }
 
   public getAll(): Observable<IEntityHistory[]> {
-    return this.httpclient.get<IEntityHistory[]>(this.url + '/changes').pipe();
+    return this.httpclient.get<IEntityHistory[]>(this.url + '/audit/changes').pipe();
   }
 
 }

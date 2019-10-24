@@ -12,7 +12,7 @@
 		Add </button>
 	
 </mat-toolbar>
-<div class="container">
+<div class="list-container">
 	<app-list-filters [columnsList]="selectedColumns" (onSearch)="applyFilter($event)"></app-list-filters>
 	<div class="table-container" (onScroll)="onTableScroll()" appVirtualScroll>
 		<mat-table matSort [dataSource]="items" class="mat-elevation-z8">
