@@ -27,7 +27,7 @@ public class AuthenticationClassesTemplateGenerator {
 	static final String SECURITY_CLASSES_TEMPLATE_FOLDER = "/templates/backendTemplates/authenticationTemplates";
 	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
 
-	public static void generateAutheticationClasses(String destination, String packageName,Boolean audit,Boolean history,Boolean flowable, Boolean email,String authenticationType
+	public static void generateAutheticationClasses(String destination, String packageName,Boolean audit,Boolean history,Boolean flowable, Boolean scheduler, Boolean email,String authenticationType
 			,String schemaName,String authenticationTable,Map<String,EntityDetails> details) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, SECURITY_CLASSES_TEMPLATE_FOLDER + "/");
@@ -93,7 +93,7 @@ public class AuthenticationClassesTemplateGenerator {
 		}
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
 		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root, flowable);
-		generateAppStartupRunner(details, packageName, backendAppFolder, authenticationTable, flowable,email);
+		generateAppStartupRunner(details, backendAppFolder, email, scheduler,root);
 	}
 
 	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
@@ -643,7 +643,7 @@ public class AuthenticationClassesTemplateGenerator {
 		generateFiles(templates, root, destination);
 	}
 	
-	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String packageName, String backEndRootFolder, String authenticationTable, Boolean flowable,Boolean email){
+	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String backEndRootFolder,Boolean email, Boolean scheduler,Map<String, Object> root){
 		
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
@@ -666,12 +666,10 @@ public class AuthenticationClassesTemplateGenerator {
 		cfg.setDefaultEncoding("UTF-8"); 
 		cfg.setTemplateLoader(mtl); 
 
-		Map<String, Object> root = new HashMap<>();
 		root.put("entitiesMap", entitiesMap);
 		root.put("email", email);
-		root.put("PackageName", packageName);
-		root.put("authenticationTable" , authenticationTable);
-		root.put("Flowable", flowable);
+		root.put("scheduler", scheduler);
+		
 		Map<String, Object> template = new HashMap<>();
 		template.put("AppStartupRunner.java.ftl", "AppStartupRunner.java");
 

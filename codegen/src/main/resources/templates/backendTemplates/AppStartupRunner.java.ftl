@@ -39,7 +39,7 @@ public class AppStartupRunner implements ApplicationRunner {
     private IRoleManager rolesManager;
     
     @Autowired
-    private I[=authenticationTable]Manager userManager;
+    private I[=AuthenticationTable]Manager userManager;
     
 	@Autowired
     private IRolepermissionManager rolepermissionManager;
@@ -58,9 +58,9 @@ public class AppStartupRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
 <#if Flowable!false>
-        idmIdentityService.deleteAllUsersGroupsPrivileges();
+    idmIdentityService.deleteAllUsersGroupsPrivileges();
 </#if>
-        System.out.println("*****************Creating Default Users/Roles/Permissions *************************");
+     System.out.println("*****************Creating Default Users/Roles/Permissions *************************");
 
         // Create permissions for default entities
 
@@ -81,15 +81,20 @@ public class AppStartupRunner implements ApplicationRunner {
         entityList.add("permission");
         entityList.add("rolepermission");
         <#if email!false>
-        entityList.add("emailTemplate");
+        entityList.add("email");
         entityList.add("emailVariable");
         </#if>
         
-        <#if !authenticationTable??>
+        <#if scheduler!false>
+        entityList.add("jobDetails");
+        entityList.add("triggerDetails");
+        </#if>
+        
+        <#if !AuthenticationTable??>
 		entityList.add("user");
 		entityList.add("userpermission");
 		<#else>
-		entityList.add("[=authenticationTable?lower_case]permission");
+		entityList.add("[=AuthenticationTable?lower_case]permission");
         </#if>
 
         <#list entitiesMap as entityKey, entityMap>
@@ -170,14 +175,40 @@ public class AppStartupRunner implements ApplicationRunner {
     }
     
     private void addDefaultUser(RoleEntity role) {
-    	[=authenticationTable]Entity admin = new [=authenticationTable]Entity();
-    	admin.setFirstName("test");
+    	[=AuthenticationTable]Entity admin = new [=AuthenticationTable]Entity();
+    	
+ <#list Fields as key,value>
+ <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
+        <#if AuthenticationFields??>
+  	    <#list AuthenticationFields as authKey,authValue>
+  	    <#if value.fieldName == authValue.fieldName>
+  	    <#if authKey== "Password">
+        admin.set[=value.fieldName?cap_first](pEncoder.encode("secret"));
+        <#elseif authKey== "UserName">
+        admin.set[=value.fieldName?cap_first]("admin");
+        <#elseif authKey== "FirstName">
+        admin.set[=value.fieldName?cap_first]("test");
+        <#elseif authKey== "LastName">
+        admin.set[=value.fieldName?cap_first]("admin");
+        <#elseif authKey== "EmailAddress">
+        admin.set[=value.fieldName?cap_first]("admin@demo.com");
+        </#if>
+        </#if>
+        </#list>
+        </#if>
+        <#else>
+        admin.setFirstName("test");
     	admin.setLastName("admin");
     	admin.setUserName("admin");
     	admin.setEmailAddress("admin@demo.com");
     	admin.setPassword(pEncoder.encode("secret"));
-    	admin.setRole(role);
+        </#if> 
+ 	</#if>
+	</#list>
+	    admin.setRole(role);
     	admin = userManager.Create(admin);
     	actIdUserMapper.createUsersEntityToActIdUserEntity(admin);
+
     }
 }
