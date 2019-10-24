@@ -8,7 +8,7 @@ import {
   Output
 } from '@angular/core';
 import { cloneDeep, isEqual } from 'lodash';
-import { IDropResult } from 'ngx-smooth-dnd';
+import {  DropResult } from 'ngx-smooth-dnd';
 import { IpEmailBuilderService } from './ip-email-builder.service';
 import { IStructure, IMjmlServerResponse } from './interfaces';
 import { IPDefaultEmail } from './classes/DefaultEmail';
@@ -17,7 +17,6 @@ import { createWidthHeight, createPadding } from './utils';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent } from './components/dialog.component';
 import { IBlocks } from './classes/Elements';
-import { TranslateService } from '@ngx-translate/core';
 
 // https://github.com/kutlugsahin/ngx-smooth-dnd/blob/master/apps/demo/src/pages/cards.ts
 @Component({
@@ -48,8 +47,7 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
   @Output() onEmailTemplateSave = new EventEmitter();
   constructor(
     private _ngb: IpEmailBuilderService,
-    private confirmDialog: MatDialog,
-    private translate: TranslateService,
+    private confirmDialog: MatDialog
   ) {
     this.email = _ngb.Email;
     this.cloneEmail = cloneDeep(_ngb.Email);
@@ -68,7 +66,7 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
     return !isEqual(this.email, this.cloneEmail);
   }
 
-  onSegmentDrop({ addedIndex, removedIndex, payload }: IDropResult) {
+  onSegmentDrop({ addedIndex, removedIndex, payload }: DropResult) {
     let addItem = payload;
     if (removedIndex !== null) {
       addItem = this.email.structures.splice(removedIndex, 1)[0];
@@ -113,8 +111,8 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
 */
    saveEmail = ()=>{
     if (!this._hasChanges()) {
-      this._ngb.notify(this.translate.instant('EMAIL-BUILDER.MESSAGES.NO-CHANGES'));
-      return Promise.reject(this.translate.instant('EMAIL-BUILDER.MESSAGES.NO-CHANGES'));
+      this._ngb.notify(`There's no changes to be saved.`);
+      return Promise.reject(`There's no changes to be saved`);
     } else {
       // this.generatingTemplate = true;
       //await this._ngb.sendRequest();
@@ -124,7 +122,7 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
   }
   togglePreview(): void {
     if (!this.previewTemplate && this._hasChanges()) {
-      this._ngb.notify(this.translate.instant('EMAIL-BUILDER.MESSAGES.UNSAVED-CHANGES-WARNING'));
+      this._ngb.notify('Please save unsaved changes to preview template.');
     } else {
       this.previewTemplate = !this.previewTemplate;
     }
@@ -134,7 +132,7 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
     this.confirmDialog
       .open(ConfirmDialogComponent, {
         data: {
-          message: this.translate.instant('EMAIL-BUILDER.MESSAGES.DIALOG-TITLE')
+          message: 'Are you sure?'
         }
       })
       .afterClosed()

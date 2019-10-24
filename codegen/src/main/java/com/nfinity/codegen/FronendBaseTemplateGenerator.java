@@ -38,7 +38,7 @@ public class FronendBaseTemplateGenerator {
 	static final String FRONTEND_BASE_TEMPLATE_FOLDER = "/templates/frontendBaseTemplate";
 
 
-	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable, String authenticationType, String authenticationTable) {
+	public static void generate(String destination, String clientSubfolder, Boolean email, Boolean scheduler,Boolean flowable, String authenticationType, String authenticationTable, Boolean history) {
 
 		String command = "ng new " + clientSubfolder + " --skipInstall=true";
 		runCommand(command, destination);
@@ -59,6 +59,7 @@ public class FronendBaseTemplateGenerator {
 		root.put("EmailModule", email);
 		root.put("SchedulerModule", scheduler);
 		root.put("FlowableModule", flowable);
+		root.put("History", history);
 
 		root.put("AuthenticationType",authenticationType);
 		if(authenticationTable!=null) {

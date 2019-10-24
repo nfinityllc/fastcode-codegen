@@ -8,8 +8,8 @@ import { first } from 'rxjs/operators';
 //import { Globals } from '../globals';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 //import { BaseNewComponent } from '../base/base-new.component';
-import { BaseNewComponent,Globals,PickerDialogService } from 'fastCodeCore'; // from 'projects/fast-code-core/src/public_api';
-
+//import { BaseNewComponent,Globals,PickerDialogService } from 'fastCodeCore'; // from 'fastCodeCore';
+import { BaseNewComponent,Globals,PickerDialogService, GlobalPermissionService, ErrorService } from 'projects/fast-code-core/src/public_api';// 'fastCodeCore';
 @Component({
   selector: 'app-email-variable-new',
   templateUrl: './email-variable-new.component.html',
@@ -17,7 +17,8 @@ import { BaseNewComponent,Globals,PickerDialogService } from 'fastCodeCore'; // 
 })
 export class EmailVariableNewComponent extends BaseNewComponent<IEmailVariable> implements OnInit {
   
-    title:string = "New Email Variable";
+	title:string = "New Email Variable";
+	entityName:string =  'EmailVariable';
 		constructor(
 			public formBuilder: FormBuilder,
 			public router: Router,
@@ -28,8 +29,10 @@ export class EmailVariableNewComponent extends BaseNewComponent<IEmailVariable> 
 			public global: Globals,
 			public pickerDialogService:PickerDialogService,
 			public dataService: EmailVariableService,
+			public globalPermissionService: GlobalPermissionService,
+			public errorService: ErrorService
 		) {
-			super(formBuilder, router, route, dialog, dialogRef, data, global,pickerDialogService, dataService);
+			super(formBuilder, router, route, dialog, dialogRef, data, global,pickerDialogService, dataService, errorService);
 	  }
  
     ngOnInit() {

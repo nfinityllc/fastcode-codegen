@@ -1,4 +1,4 @@
-<div *ngIf="item" class="container">
+<div *ngIf="item" class="details-container">
 	<mat-toolbar class="action-tool-bar" color="primary">
 		<button mat-flat-button (click)="onBack()">
 	    {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>

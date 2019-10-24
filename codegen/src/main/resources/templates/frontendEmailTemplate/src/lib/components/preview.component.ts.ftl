@@ -40,7 +40,7 @@ export class PreviewTemplateComponent implements OnInit {
   @Input('template')
   template: string;
 
-  @ViewChild('iframe', { read: ElementRef })
+  @ViewChild('iframe', { read: ElementRef,static: false })
   iframe: ElementRef;
 
   device: 'desktop' | 'smartphone' | 'tablet' = 'desktop';

@@ -1,4 +1,4 @@
-<div class="container">
+<div *ngIf="trigger" class="details-container">
   <mat-toolbar class="action-tool-bar" color="primary">
     <button mat-flat-button (click)="onCancel()">
       {{'SCHEDULER-GENERAL.ACTIONS.CANCEL' | translate}} </button>

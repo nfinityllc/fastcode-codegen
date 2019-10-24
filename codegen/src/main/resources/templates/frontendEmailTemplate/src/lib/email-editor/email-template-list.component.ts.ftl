@@ -8,13 +8,12 @@ import { EmailTemplateService } from './email-template.service';
 
 import { Router, ActivatedRoute } from '@angular/router';
 //import {EmailNewComponent} from './email-new.component';
-import {BaseListComponent,IListColumn, listColumnType,Globals,PickerDialogService } from 'fastCodeCore';
-//import { BaseListComponent,IListColumn, listColumnType,Globals,PickerDialogService,IFCDialogConfig } from 'projects/fast-code-core/src/public_api';
+//import {BaseListComponent,IListColumn, listColumnType,Globals,PickerDialogService } from 'fastCodeCore';
+import { BaseListComponent,IListColumn, listColumnType,Globals,PickerDialogService,IFCDialogConfig, GlobalPermissionService, ErrorService } from 'projects/fast-code-core/src/public_api';
 //import { Globals } from '../globals';
 //import { IListColumn, listColumnType } from '../common/ilistColumn';
 //import { PickerDialogService } from '../common/components/picker/picker-dialog.service';
 //import {,IFCDialogConfig} from '../picker/picker-dialog.service';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-emailtemplate-list',
@@ -24,74 +23,74 @@ import { TranslateService } from '@ngx-translate/core';
   export class EmailTemplateListComponent extends BaseListComponent<IEmailTemplate> implements OnInit {
 
 	title:string = "Email Template";
-  
+	entityName:string =  'Email';
 	columns: IListColumn[] = [
 		{
 			column: 'templatename',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.TEMPLATE-NAME'),
+			label: 'Template Name',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'subject',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.SUBJECT'),
+			label: 'subject',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'category',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CATEGORY'),
+			label: 'category',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		/*{
 			column: 'cc',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CC'),
+			label: 'cc',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'contenthtml',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CONTENT-HTML'),
+			label: 'contenthtml',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'contentjson',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CONTENT-JSON'),
+			label: 'contentjson',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'creationtime',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CREATION-TIME'),
+			label: 'creationtime',
 			sort: false,
 			filter: false,
 			type: listColumnType.Date
 		},
 		{
 			column: 'creatoruserid',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CREATOR-USER-ID'),
+			label: 'creatoruserid',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},*/
 		{
 			column: 'lastModifierUserId',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.LAST-MODIFIER-USER-ID'),
+			label: 'Modified By',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'lastModificationTime',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.LAST-MODIFICATION-TIME'),
+			label: 'Modified Time',
 			sort: false,
 			filter: false,
 			type: listColumnType.Date
@@ -99,7 +98,7 @@ import { TranslateService } from '@ngx-translate/core';
 		
   	{
 			column: 'actions',
-			label: this.translate.instant('EMAIL-GENERAL.ACTIONS.ACTIONS'),
+			label: 'Actions',
 			sort: false,
 			filter: false,
 			type: listColumnType.String
@@ -118,9 +117,11 @@ import { TranslateService } from '@ngx-translate/core';
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
 		public emailService: EmailTemplateService,
-		private translate: TranslateService
+		public globalPermissionService: GlobalPermissionService,
+		public errorService: ErrorService
 	) { 
-		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, emailService)
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, emailService, errorService)
+		//this.globalPermissionService = localGlobalPermissionService;
   }
 
   ngOnInit() {

@@ -1,6 +1,6 @@
 @import "../../../styles/base.scss";
 
-.container {
+.select-job-container {
     margin: $fc-margin3;
 }
 

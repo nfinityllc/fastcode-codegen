@@ -14,7 +14,7 @@ export interface IEmailTemplate{
     lastModificationTime?:string;
     lastModifierUserId?: string;   
     active?:boolean;
-    attachment?:string;
+    attachmentpath?:string;
    
     
     

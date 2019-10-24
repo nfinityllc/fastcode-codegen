@@ -8,7 +8,7 @@
     add
   </i>
 </mat-toolbar>
-<div class="container">
+<div class="list-container">
   <table mat-table [dataSource]="executingJobs" class="mat-elevation-z8 full-width">
 
     <!-- Trigger Name Column -->

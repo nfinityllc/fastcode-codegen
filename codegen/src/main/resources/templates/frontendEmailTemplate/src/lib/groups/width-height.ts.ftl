@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IWidthHeight } from '../interfaces';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ip-width-height',
@@ -12,8 +11,8 @@ import { TranslateService } from '@ngx-translate/core';
         <input matInput [(ngModel)]="model.value" [disabled]="disableValueField()" type="number" [placeholder]="label">
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>{{'GROUPS.WIDTH-HEIGHT.FIELDS.UNIT' | translate}}</mat-label>
-        <mat-select placeholder="{{'GROUPS.WIDTH-HEIGHT.FIELDS.UNIT' | translate}}" [disabled]="model.auto" [(value)]="model.unit" disableRipple>
+        <mat-label>Unit</mat-label>
+        <mat-select placeholder="Unit" [disabled]="model.auto" [(value)]="model.unit" disableRipple>
           <mat-option *ngFor="let unit of getUnits()" [value]="unit">
             {{getUnitLabel(unit)}}
           </mat-option>
@@ -28,16 +27,15 @@ export class WidthHeightComponent implements OnInit {
   model: IWidthHeight;
   @Input()
   label: string;
-  
 
   private units: Map<string, string> = new Map([
-    ['%', this.translate.instant('GROUPS.WIDTH-HEIGHT.UNITS.PERCENTS')],
-    ['px', this.translate.instant('GROUPS.WIDTH-HEIGHT.UNITS.PIXELS')],
-    ['contain', this.translate.instant('GROUPS.WIDTH-HEIGHT.UNITS.CONTAINS')],
-    ['cover', this.translate.instant('GROUPS.WIDTH-HEIGHT.UNITS.COVER')]
+    ['%', 'Percents'],
+    ['px', 'Pixels'],
+    ['contain', 'Contain'],
+    ['cover', 'Cover']
   ]);
 
-  constructor(private translate: TranslateService){}
+  constructor() {}
 
   toggleChange({ checked }) {
     this.model.auto = checked;

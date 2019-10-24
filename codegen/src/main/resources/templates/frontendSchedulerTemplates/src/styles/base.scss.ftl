@@ -73,3 +73,11 @@ $fc-accent-color: mat-color($fc-theme-accent);
     display: none;
 }
 
+.list-container{
+    margin:$fc-margin3;
+    height: 100%;
+}
+
+.details-container{
+    height: 100%;
+}

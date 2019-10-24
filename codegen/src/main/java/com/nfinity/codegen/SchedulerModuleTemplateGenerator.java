@@ -46,7 +46,7 @@ public class SchedulerModuleTemplateGenerator {
 		generateFiles(frontendTemplates,root, frontendDestination + "/"+ clientSubfolder + "/projects/scheduler");
 		generateBackendFiles(root, backendAppFolder);
 		
-		Map<String,Object> propertyInfo = getInfoForQuartzPropertiesFile(connectionString);
+		Map<String,Object> propertyInfo = getInfoForQuartzPropertiesFile(connectionString, schemaName);
 		generateQuartzProperties(propertyInfo, destination + "/src/main/resources");
 
 	}
@@ -112,11 +112,12 @@ public class SchedulerModuleTemplateGenerator {
 		
 	}
 	
-	private static Map<String,Object> getInfoForQuartzPropertiesFile(String connectionString){
+	private static Map<String,Object> getInfoForQuartzPropertiesFile(String connectionString, String schemaName){
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
-
+		propertyInfo.put("Schema", schemaName);
+		
 		return propertyInfo;
 	}
 

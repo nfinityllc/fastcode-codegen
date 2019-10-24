@@ -9,9 +9,8 @@ import {EmailVariableNewComponent} from './email-variable-new.component';
 //import { Globals } from '../globals';
 //import { IListColumn, listColumnType } from '../common/ilistColumn';
 //import { PickerDialogService } from '../common/components/picker/picker-dialog.service';
-import { BaseListComponent,Globals,IListColumn, listColumnType,PickerDialogService } from 'fastCodeCore';// from 'projects/fast-code-core/src/public_api';
-import { TranslateService } from '@ngx-translate/core';
-
+//import { BaseListComponent,Globals,IListColumn, listColumnType,PickerDialogService } from 'fastCodeCore';// from 'fastCodeCore';
+import { BaseListComponent,Globals,IListColumn, listColumnType,PickerDialogService, GlobalPermissionService, ErrorService } from 'projects/fast-code-core/src/public_api';// 'fastCodeCore';
 @Component({
 	selector: 'app-email-variable-list',
 	templateUrl: './email-variable-list.component.html',
@@ -24,14 +23,14 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 	columns: IListColumn[] = [
 		{
 			column: 'propertyName',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-NAME'),
+			label: 'propertyName',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'propertyType',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-TYPE'),
+			label: 'propertyType',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
@@ -40,14 +39,14 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 		
 		{
 			column: 'lastModificationTime',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFICATION-TIME'),
+			label: 'lastModificationTime',
 			sort: false,
 			filter: false,
 			type: listColumnType.Date
 		},
 		{
 			column: 'lastModifierUserId',
-			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFIER-USER-ID'),
+			label: 'lastModifierUserId',
 			sort: true,
 			filter: true,
 			type: listColumnType.String
@@ -55,7 +54,7 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 		
   	{
 			column: 'actions',
-			label: this.translate.instant('EMAIL-GENERAL.ACTIONS.ACTIONS'),
+			label: 'Actions',
 			sort: false,
 			filter: false,
 			type: listColumnType.String
@@ -65,7 +64,7 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 	selectedColumns = this.columns;
 	displayedColumns: string[] = this.columns.map((obj) => { return obj.column });
 
-  
+    entityName:string =  'EmailVariable';
 	constructor(
 		public router: Router,
 		public route: ActivatedRoute,
@@ -74,9 +73,10 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 		public changeDetectorRefs: ChangeDetectorRef,
 		public pickerDialogService: PickerDialogService,
 		public emailvariableService: EmailVariableService,
-		private translate: TranslateService
+		public globalPermissionService: GlobalPermissionService,
+		public errorService: ErrorService
 	) { 
-		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, emailvariableService)
+		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, emailvariableService, errorService)
   }
 
 	ngOnInit() {

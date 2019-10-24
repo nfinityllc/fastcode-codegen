@@ -16,7 +16,7 @@ import { IFontFamily } from '../interfaces';
   encapsulation: ViewEncapsulation.Emulated
 })
 export class BuilderContainerComponent implements OnInit, OnDestroy {
-  @ViewChild('header', { read: ElementRef })
+  @ViewChild('header', { read: ElementRef,static:true })
   header: ElementRef;
   fonts: IFontFamily;
 

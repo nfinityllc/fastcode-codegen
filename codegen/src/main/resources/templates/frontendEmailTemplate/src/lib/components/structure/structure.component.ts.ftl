@@ -7,13 +7,12 @@ import {
   EventEmitter
 } from '@angular/core';
 import { IStructure } from '../../interfaces';
-import { IDropResult } from 'ngx-smooth-dnd';
+import {  DropResult } from 'ngx-smooth-dnd';
 import { Structure } from '../../classes/Structure';
 import { createBorder, createPadding, createWidthHeight } from '../../utils';
 import { cloneDeep } from 'lodash';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent } from '../dialog.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ip-structure',
@@ -30,9 +29,9 @@ export class StructureComponent implements OnInit {
 
   editingBlock;
 
-  constructor(private confirmDialog: MatDialog, private translate: TranslateService) {}
+  constructor(private confirmDialog: MatDialog) {}
 
-  onBlockDrop(column, { removedIndex, addedIndex, payload }: IDropResult) {
+  onBlockDrop(column, { removedIndex, addedIndex, payload }: DropResult) {
     if (removedIndex !== null) {
       column.splice(removedIndex, 1);
     }
@@ -74,7 +73,7 @@ export class StructureComponent implements OnInit {
     this.confirmDialog
       .open(ConfirmDialogComponent, {
         data: {
-          message: this.translate.instant('COMPONENTS.STRUCTURE.REMOVE-BLOCK-MESSAGE'),
+          message: 'Are you sure?'
         }
       })
       .afterClosed()

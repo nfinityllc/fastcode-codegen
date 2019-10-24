@@ -23,7 +23,7 @@ export class PickerDialogService  {
   dialogRef: MatDialogRef <any> ;
   smallDeviceOrLessDialogSize:string = "100%";
   largerDeviceDialogWidthSize:string = "50%";
-  largerDeviceDialogHeightSize:string = "100%";
+  largerDeviceDialogHeightSize:string = "85%";
   constructor(private global:Globals, 
     public dialog: MatDialog) { 
       this.global.isSmallDevice$.subscribe(value=> {

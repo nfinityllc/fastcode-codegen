@@ -1,4 +1,4 @@
-<div class="container">
+<div>
   <mat-toolbar class="action-tool-bar" color="primary">
     <button name="cancel" mat-flat-button (click)="onCancel()">
       {{'SCHEDULER-GENERAL.ACTIONS.CANCEL' | translate}} </button>

@@ -1,8 +1,8 @@
 <div class="container">
 	<mat-toolbar class="action-tool-bar" color="primary">
-		<button mat-flat-button (click)="onCancel()">{{'EMAIL-GENERAL.ACTIONS.CANCEL' | translate}}</button>
+		<button mat-flat-button (click)="onCancel()">Cancel</button>
 			<span class="middle">{{title}}</span>
-			<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading">{{'EMAIL-GENERAL.ACTIONS.SAVE' | translate}}</button>
+			<button mat-flat-button (click)="itemNgForm.ngSubmit.emit()"   [disabled]="!itemForm.valid || !IsUpdatePermission || loading">Save</button>
 	</mat-toolbar>
 	<mat-card>
 		<h2>{{title}}</h2>
@@ -10,22 +10,21 @@
 				
 			
 			<mat-form-field>
-				<input formControlName="propertyName" matInput placeholder="{{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-NAME' | translate}}">
-				<mat-error *ngIf="!itemForm.get('propertyName').valid && itemForm.get('propertyName').touched">{{'EMAIL-GENERAL.ERRORS.REQUIRED' | translate}}</mat-error>
+				<input formControlName="propertyName" matInput placeholder="Enter property name">
+				<mat-error *ngIf="!itemForm.get('propertyName').valid && itemForm.get('propertyName').touched">propertyname is required</mat-error>
 			</mat-form-field>
 			<mat-form-field>
-				<input formControlName="propertyType" matInput placeholder="{{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-TYPE' | translate}}">
-				<mat-error *ngIf="!itemForm.get('propertyType').valid && itemForm.get('propertyType').touched">{{'EMAIL-GENERAL.ERRORS.REQUIRED' | translate}}</mat-error>
+				<input formControlName="propertyType" matInput placeholder="Enter property type">
+				<mat-error *ngIf="!itemForm.get('propertyType').valid && itemForm.get('propertyType').touched">propertytype is required</mat-error>
 			</mat-form-field>
 			<mat-form-field>
-				<input formControlName="defaultValue" matInput placeholder="{{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.DEFAULT-VALUE' | translate}}">
+				<input formControlName="defaultValue" matInput placeholder="Enter default value">
 			</mat-form-field>
 			
-			<div *ngFor="let association of toOne" class="button-row">
-				<button mat-raised-button color="accent" (click)="$event.preventDefault();selectAssociation(association)">{{'EMAIL-EDITOR.EMAIL-VARIABLE.MESSAGES.SELECT-ASSOCIATION' | translate: { table: association.table } }}</button>:
-				<a [routerLink]="['/' + association.table + '/' + itemForm.get(association.column.key).value]" *ngIf="itemForm.get(association.column.key).value">{{itemForm.get(association.descriptiveField).value}}</a>
-				<label *ngIf="!itemForm.get(association.column.key).value">{{'EMAIL-EDITOR.EMAIL-VARIABLE.MESSAGES.NO-ASSOCIATION-SELECTED' | translate: { table: association.table } }}</label>
-			</div>       
+			<mat-form-field *ngFor="let association of parentAssociations">
+				<input formControlName="{{association.descriptiveField}}" matInput placeholder="{{association.table}}">
+				<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
+			</mat-form-field>       
 		</form>
 	</mat-card>
 </div>

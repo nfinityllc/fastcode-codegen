@@ -44,12 +44,14 @@
  
         </mat-nav-list> 
       </mat-expansion-panel> 
-      </#if> 
-      <!-- 
- 
+      
+      </#if>
+      <#if History!false>
       <a mat-list-item class="sidenav-list-item" routerLink="entityHistory">{{'MainNav.EntityHistory' | translate }} 
-      </a> 
- 
+      </a>
+      
+      </#if>
+      <#if EmailModule!false>
       <mat-expansion-panel class="expansion-panel"> 
         <mat-expansion-panel-header class="subnav-header"> 
           {{'MainNav.Email.Title' | translate }} 
@@ -82,8 +84,9 @@
             | translate }} </a> 
  
         </mat-nav-list> 
-      </mat-expansion-panel> --> 
- 
+      </mat-expansion-panel>
+      
+      </#if>
       <mat-expansion-panel class="expansion-panel"> 
         <mat-expansion-panel-header class="subnav-header"> 
           {{'MainNav.Language' | translate}} 

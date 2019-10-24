@@ -6,11 +6,12 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { EmailVariableService } from './email-variable.service';
 import {  IEmailVariable } from './iemail-variable';
-import { PickerDialogService } from 'fastCodeCore';
+//import { PickerDialogService } from 'fastCodeCore';
 
 //import {BaseDetailsComponent} from '../base/base-details.component';
 //import { Globals } from '../globals';
-import { BaseDetailsComponent,Globals } from 'fastCodeCore';// from 'projects/fast-code-core/src/public_api';
+//import { BaseDetailsComponent,Globals,PickerDialogService } from 'fastCodeCore';// from 'fastCodeCore';
+import { BaseDetailsComponent,Globals,PickerDialogService, GlobalPermissionService, ErrorService } from 'projects/fast-code-core/src/public_api';// 'fastCodeCore';
 @Component({
   selector: 'app-role-detail',
   templateUrl: './email-variable-detail.component.html',
@@ -19,6 +20,7 @@ import { BaseDetailsComponent,Globals } from 'fastCodeCore';// from 'projects/fa
 export class EmailVariableDetailComponent extends BaseDetailsComponent<IEmailVariable> implements OnInit {
   title:string='Email Variable';
   parentUrl:string='./emailvariables';
+  entityName:string =  'Email';
   //roles: IRole[];  
 	constructor(
 		public formBuilder: FormBuilder,
@@ -28,8 +30,10 @@ export class EmailVariableDetailComponent extends BaseDetailsComponent<IEmailVar
 		public global: Globals,
 		public pickerDialogService: PickerDialogService,
 		public dataService: EmailVariableService,
+		public globalPermissionService: GlobalPermissionService,
+		public errorService: ErrorService
 	) {
-		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService);
+		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
 		var u = this.route.parent.toString();
   }
 

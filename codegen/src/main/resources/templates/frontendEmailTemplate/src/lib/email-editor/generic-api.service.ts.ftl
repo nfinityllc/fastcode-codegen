@@ -4,7 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { environment } from '../environment';
 import { IP_CONFIG } from '../tokens';
-import { IForRootConf } from '../interfaces';
+//import { ILibraryRootConfg } from '../interfaces';
+//import {ILibraryRootConfg } from 'fastCodeCore';
+import { ILibraryRootConfg} from 'projects/fast-code-core/src/public_api';// 'fastCodeCore';
 //import { IUser } from '../users/iuser';
 
 const API_URL = environment.apiUrl;
@@ -13,7 +15,7 @@ const API_URL = environment.apiUrl;
 export class GenericApiService<T> {
     private url = environment.apiUrl;
     private suffix = '';
-  constructor(  private http: HttpClient, private  config: IForRootConf,suffix:string  ) {
+  constructor(  private http: HttpClient, private  config: ILibraryRootConfg,suffix:string  ) {
     //this.url = environment.apiUrl + '/' + suffix;
     this.url = config.apiPath + '/' + suffix;
     this.suffix = suffix;

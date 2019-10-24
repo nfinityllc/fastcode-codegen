@@ -8,7 +8,7 @@
     add
   </i>
 </mat-toolbar>
-<div class="container">
+<div class="list-container">
   <app-list-filters [columnsList]="columns" (onSearch)="applyFilter($event)"></app-list-filters>
 
   <mat-table class="mat-elevation-z8" matSort (onScroll)="onTableScroll()" appVirtualScroll [dataSource]="dataSource">

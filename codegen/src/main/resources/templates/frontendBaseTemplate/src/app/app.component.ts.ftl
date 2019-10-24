@@ -5,11 +5,11 @@ import { FastCodeCoreTranslateUiService } from 'fastCodeCore';
 import { SchedulerTranslateUiService } from 'scheduler';
 </#if>
 <#if EmailModule!false>
-import { EmailBuilderTranslateUiService } from 'ip-email-builder';
+import { EmailBuilderTranslateUiService } from '../../projects/ip-email-builder/src/public_api';
 </#if>
 <#if FlowableModule!false>
 import { UpgradeModule } from "@angular/upgrade/static";
-import { TaskAppTranslateUiService } from 'task-app';
+//import { TaskAppTranslateUiService } from '../../projects/task-app/src/public_api';
 </#if>
 <#if AuthenticationType != 'none'>
 import { AuthenticationService } from './core/authentication.service';
@@ -30,7 +30,7 @@ export class AppComponent {
     private schedulerTranslateUiService: SchedulerTranslateUiService,
     </#if>
     <#if EmailModule!false>
-    private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
+    //private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
     </#if>
 	<#if AuthenticationType != 'none'>
     private authService: AuthenticationService,
@@ -45,7 +45,7 @@ export class AppComponent {
       <#if SchedulerModule!false>
       this.schedulerTranslateUiService.init(browserLang);</#if>
       <#if EmailModule!false>
-      this.emailBuilderTranslateUiService.init(browserLang);</#if>
+      //this.emailBuilderTranslateUiService.init(browserLang);</#if>
       <#if FlowableModule!false>
       this.taskAppTranslateUiService.init();</#if>
     });

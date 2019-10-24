@@ -16,7 +16,7 @@ import { TaskAppRoutes } from '../../projects/task-app/src/public_api';
 import { SchedulerRoutes } from 'scheduler';
 </#if>
 <#if EmailModule!false>
-import { EmailRoutes } from 'ip-email-builder';
+import { EmailRoutes } from '../../projects/ip-email-builder/src/public_api';
 </#if>
 
 const routes: Routes = [

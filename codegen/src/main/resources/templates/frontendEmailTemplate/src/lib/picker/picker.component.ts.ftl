@@ -17,7 +17,7 @@ export class PickerComponent implements OnInit {
   submitted = false;
   title: string;
   items:IPickerItem[]=[];
-  @ViewChild(MatSelectionList) selectionList: MatSelectionList;
+  @ViewChild(MatSelectionList,{  static: false }) selectionList: MatSelectionList;
 
   selectedItem:IPickerItem;
   selectedItems:IPickerItem[]=[];

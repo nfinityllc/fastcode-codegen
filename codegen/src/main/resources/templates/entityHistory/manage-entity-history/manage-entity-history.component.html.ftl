@@ -1,4 +1,4 @@
-<div class="container">
+<div>
   <mat-toolbar class="action-tool-bar" color="primary">
     <button mat-flat-button (click)="onCancel()">
       Cancel </button>

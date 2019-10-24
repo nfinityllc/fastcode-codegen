@@ -1,6 +1,6 @@
 import { IBlocks } from './classes/Elements';
 
-export interface IForRootConf {
+export interface ILibraryRootConfg {
   xApiKey: string;
   apiPath?: string;
 }

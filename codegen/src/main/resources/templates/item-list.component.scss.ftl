@@ -1,8 +1,5 @@
 @import 'src/styles/base.scss';
-.list-container {
-    margin:$fc-margin3;
-    height: 100%;
-}
+
 .action-tool-bar {    
     height:$fc-row-height5;
     justify-content: space-between;

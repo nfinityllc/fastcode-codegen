@@ -1,8 +1,5 @@
 @import 'src/styles/base.scss';
-.container {
-    height: '400px';
-    width: '600px';
-}
+
 .action-tool-bar {    
     height:$fc-row-height5;
     justify-content: space-between;

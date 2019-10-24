@@ -10,6 +10,7 @@
     "inlineSources": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "rootDir": "/",
     "importHelpers": true,
     "types": [],
     "lib": [

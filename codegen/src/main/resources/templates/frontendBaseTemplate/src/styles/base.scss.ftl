@@ -1,7 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 //@import '~@angular/material/theming'; //uncomment for prod
 @import './node_modules/@angular/material/_theming.scss'; //for testing purpose
-@import 'lightgreen-amber.scss';
+//@import 'lightgreen-amber.scss';
+//@import 'light-indigo.scss';
+@import 'light-purple-teal.scss';
+//@import 'green-lime.scss';
 $fc-margin:8px;
 $fc-margin-half:4px;
 $fc-margin2:16px;
@@ -67,5 +70,14 @@ $fc-accent-color: mat-color($fc-theme-accent);
 
 .mobile-label {
     display: none;
+}
+
+.list-container{
+    margin:$fc-margin3;
+    height: 100%;
+}
+
+.details-container{
+    height: 100%;
 }
 

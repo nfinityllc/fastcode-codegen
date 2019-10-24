@@ -3,8 +3,7 @@ import { BehaviorSubject, Observable, combineLatest, throwError } from 'rxjs';
 import { catchError, retry, tap, distinctUntilChanged } from 'rxjs/operators';
 import {
   IStructure,
-  IFontFamily,
-  IForRootConf,
+  IFontFamily, 
   ITestEmail,
   IMjmlServerResponse
 } from './interfaces';
@@ -27,7 +26,9 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material';
-
+import { EmailTemplateService } from './email-editor/email-template.service';
+//import {ILibraryRootConfg } from 'fastCodeCore';
+import { ILibraryRootConfg} from 'projects/fast-code-core/src/public_api';// 'fastCodeCore';
 @Injectable({
   providedIn: 'root'
 })
@@ -53,7 +54,7 @@ export class IpEmailBuilderService implements OnInit {
     ],
     ['Ubuntu', 'https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700']
   ]);
-  private _mergeTags = new Set();
+  private _mergeTags = new Set<string>();
 
   /**
    * Private read-only Structures from aside!
@@ -82,8 +83,9 @@ export class IpEmailBuilderService implements OnInit {
   isLoading = new BehaviorSubject(false);
 
   constructor(
-    @Inject(IP_CONFIG) private _config: IForRootConf,
+    @Inject(IP_CONFIG) private _config: ILibraryRootConfg,
     private _http: HttpClient,
+    
     public snackBar: MatSnackBar
   ) {
     this._config = {
@@ -93,6 +95,7 @@ export class IpEmailBuilderService implements OnInit {
   }
 
   private handleError(error: HttpErrorResponse) {
+    this.isLoading.next(false);
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);
@@ -119,8 +122,9 @@ export class IpEmailBuilderService implements OnInit {
    */
   sendRequest(): Promise<IMjmlServerResponse> {
     this.isLoading.next(true);
+    
     return this._http
-      .post<IMjmlServerResponse>(this._config.apiPath, this._email.value, {
+      .post<IMjmlServerResponse>(this._config.apiPath + "/mail", this._email.value, {
         headers: this.getHeaders()
       })
       .pipe(

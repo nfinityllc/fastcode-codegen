@@ -28,7 +28,7 @@ import { CallbackComponent } from './oauth/callback.component';
 </#if>
 
 <#if EmailModule!false>
-import { IpEmailBuilderModule } from 'ip-email-builder';
+import { IpEmailBuilderModule } from '../../projects/ip-email-builder/src/public_api';
 </#if>
 <#if SchedulerModule!false>
 import { SchedulerModule } from 'scheduler';

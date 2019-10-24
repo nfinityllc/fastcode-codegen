@@ -32,7 +32,7 @@ import 'hammerjs';
 import 'quill';
 import { QuillModule } from 'ngx-quill';
 
-import { IForRootConf } from './interfaces';
+
 import { IP_CONFIG, GENERAL_OPTIONS } from './tokens';
 import { TextElementComponent } from './elements/text-element/text-element.component';
 import { StructureComponent } from './components/structure/structure.component';
@@ -58,7 +58,7 @@ import { DirectionComponent } from './groups/direction';
 import { BackRepatComponent } from './groups/back-repeat';
 import { ConfirmDialogComponent } from './components/dialog.component';
 import { EmptyBlockComponent } from './elements/empty-block.component';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { PreviewTemplateComponent } from './components/preview.component';
 import {Globals} from './globals';
 //
@@ -72,18 +72,11 @@ import { PickerComponent } from './picker/picker.component';
 //import {EmailTemplateListComponent,TemplateEditorComponent, EmailVariableListComponent, EmailVariableNewComponent, EmailVariableDetailComponent} from  './email-editor/index';
 import { RouterModule } from '@angular/router';
 import { EmailRoutes } from './email-routing.module';
+//import { ILibraryRootConfg } from './interfaces';
 //import { EmailRoutingModule } from './email-routing.module';
-import {FastCodeCoreModule} from 'fastCodeCore';
-//import { FastCodeCoreModule } from 'projects/fast-code-core/src/lib/fast-code-core.module';
+//import {FastCodeCoreModule,EmailRoutes} from 'fastCodeCore';
+import { FastCodeCoreModule ,ILibraryRootConfg,GlobalPermissionService} from 'projects/fast-code-core/src/public_api';//'fastCodeCore';
 //import {GenericApiService} from 'fastCodeCore/public_api';
-
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-export function HttpLoaderFactory(httpClient: HttpClient) {
-  return new TranslateHttpLoader(httpClient);
-}
-
 @NgModule({
   imports: [
    // EmailRoutingModule,
@@ -93,7 +86,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     BrowserAnimationsModule,
     FlexLayoutModule,
     NgxSmoothDnDModule,
-    QuillModule,
+    QuillModule.forRoot(),
     FormsModule,
     MatButtonModule,
     MatIconModule,
@@ -119,14 +112,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatSortModule,
     MatPaginatorModule,
     ReactiveFormsModule,
-    MatCardModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
+    MatCardModule
   ],
   declarations: [
     IpEmailBuilderComponent,
@@ -175,10 +161,10 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
   ]
 })
 export class IpEmailBuilderModule {
-  static forRoot(config: IForRootConf): ModuleWithProviders {
+  static forRoot(config: ILibraryRootConfg): ModuleWithProviders {
     return {
       ngModule: IpEmailBuilderModule,
-      providers: [
+      providers: [GlobalPermissionService,
         {
           provide: IP_CONFIG,
           useValue: config
