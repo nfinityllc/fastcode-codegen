@@ -29,6 +29,16 @@ public class EmailVariableEntity <#if Audit!false>extends AuditedEntity<String><
     private String propertyType;
     private String defaultValue;
 
+
+	public EmailVariableEntity() {
+	}
+
+	public EmailVariableEntity(String propertyName, String propertyType, String defaultValue) {
+		this.propertyName = propertyName;
+		this.propertyType = propertyType;
+		this.defaultValue = defaultValue;
+	}
+	
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
