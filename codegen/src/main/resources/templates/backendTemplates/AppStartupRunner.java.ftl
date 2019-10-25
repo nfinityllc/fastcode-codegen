@@ -36,7 +36,7 @@ public class AppStartupRunner implements ApplicationRunner {
     private IPermissionManager permissionManager;
 
     @Autowired
-    private IRoleManager rolesManager;
+    private IRoleManager roleManager;
     
     @Autowired
     private I[=AuthenticationTable]Manager userManager;
@@ -70,7 +70,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
         RoleEntity role = new RoleEntity();
         role.setName("ROLE_Admin");
-        role = rolesManager.Create(role);
+        role = roleManager.Create(role);
         <#if Flowable!false>
         idmIdentityService.createGroup("ROLE_Admin");
         </#if>
