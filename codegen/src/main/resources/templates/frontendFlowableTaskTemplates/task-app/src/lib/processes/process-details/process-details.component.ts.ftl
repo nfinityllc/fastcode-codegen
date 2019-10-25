@@ -8,7 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProcessService } from '../process.service';
 import { CommentService } from '../../common/services/comment.service';
 import { TaskService } from '../../tasks/task.service';
-import { CommentNewComponent } from '../../tasks/task-details/comment-new/comment-new.component'
+import { CommentNewComponent } from '../../tasks/task-details/comment-new/comment-new.component';
+import { UserService } from '../../common/services/user.service';
 
 import { ConfirmDialogComponent } from '../../common/components/confirm-dialog/confirm-dialog.component';
 
@@ -37,20 +38,19 @@ export class ProcessDetailsComponent implements OnInit {
   largerDeviceDialogWidthSize: string = "50%";
   largerDeviceDialogHeightSize: string = "85%";
 
-  constructor(private taskService: TaskService, private processService: ProcessService,
-    private commentService: CommentService, public dialog: MatDialog, private global: Globals,
-    private router: Router, private translateService: TranslateService) { }
+  constructor(
+    private taskService: TaskService,
+    private processService: ProcessService,
+    private commentService: CommentService,
+    public dialog: MatDialog,
+    private global: Globals,
+    private router: Router,
+    private translateService: TranslateService,
+    private userService: UserService
+    ) { }
 
   ngOnInit() {
-    this.account = {
-      "id": "admin",
-      "firstName": "Test",
-      "lastName": "Administrator",
-      "email": "admin@flowable.org",
-      "fullName": "Test Administrator",
-      "groups": [],
-      "privileges": ["access-idm", "access-rest-api", "access-task", "access-modeler", "access-admin"]
-    }
+    this.setCurrentUser();
     if(this.processInstance){
       this.getProcessInstance(this.processInstance.id);
     }
@@ -68,6 +68,12 @@ export class ProcessDetailsComponent implements OnInit {
         }
       }
     }
+  }
+
+  setCurrentUser(){
+    this.userService.getAccount().subscribe(account => {
+      this.account = account;
+    })
   }
 
   getProcessInstance(processInstanceId) {
@@ -166,7 +172,7 @@ export class ProcessDetailsComponent implements OnInit {
 
   openTask(task) {
     this.taskService.selectedTask = task;
-    this.router.navigate(['/app/tasks']);
+    this.router.navigate(['/task-app/tasks']);
   };
 
   createProcessInstance(){

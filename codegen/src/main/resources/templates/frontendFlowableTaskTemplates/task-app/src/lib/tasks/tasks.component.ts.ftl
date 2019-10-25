@@ -9,6 +9,7 @@ import { RuntimeAppDefinitionService } from '../runtime-app-definition/runtime-a
 import { ProcessService } from '../processes/process.service';
 import { TaskService } from './task.service';
 import { TaskNewComponent } from './task-new/task-new.component';
+import { UserService } from '../common/services/user.service';
 
 import { Globals } from '../globals';
 
@@ -23,29 +24,6 @@ export class TasksComponent implements OnInit {
 
   tasks: any[] = [];
   forms: any[] = [
-    {
-      "id": "cea15c1f-1330-11e9-b532-6214b3b4ad9f",
-      "name": "Test Form 1",
-      "description": null,
-      "key": "testForm1",
-      "version": 3,
-      "fields": [
-        {
-          "fieldType": "FormField",
-          "id": "data1",
-          "name": "data1",
-          "type": "text",
-          "value": null,
-          "required": false,
-          "readOnly": false,
-          "overrideId": false,
-          "placeholder": null,
-          "layout": null
-        }
-      ],
-      "outcomes": [],
-      "outcomeVariableName": null
-    }
   ];
   selectedTask: any = null;
   state: any = {};
@@ -108,29 +86,14 @@ constructor(
   public dialog: MatDialog,
   private global: Globals,
   private processService: ProcessService,
+  private userService: UserService,
   private runtimeAppDefinitionService: RuntimeAppDefinitionService,
   private route: ActivatedRoute,
   private router: Router,
 ) { }
 
 ngOnInit() {
-  this.account = {
-    "id": "admin",
-    "firstName": "Test",
-    "lastName": "Administrator",
-    "email": "admin@flowable.org",
-    "fullName": "Test Administrator",
-    "groups": [],
-    "privileges": ["access-idm", "access-rest-api", "access-task", "access-modeler", "access-admin"]
-  }
-
-  if (this.account && this.account.groups && this.account.groups.length > 0) {
-    for (var i = 0; i < this.account.groups.length; i++) {
-      if (this.account.groups[i].type == 1) {
-        this.assignmentOptions.push({ id: 'group_' + this.account.groups[i].id, title: this.translate.instant('TASK.FILTER.ASSIGNMENT-GROUP', this.account.groups[i]) });
-      }
-    }
-  }
+  this.setCurrentUser();
 
   this.manageScreenResizing();
 
@@ -142,6 +105,19 @@ ngOnInit() {
   this.selectPassedTask();
 
 };
+
+setCurrentUser(){
+  this.userService.getAccount().subscribe(account => {
+    this.account = account;
+    if (this.account && this.account.groups && this.account.groups.length > 0) {
+      for (var i = 0; i < this.account.groups.length; i++) {
+        if (this.account.groups[i].type == 1) {
+          this.assignmentOptions.push({ id: 'group_' + this.account.groups[i].id, title: this.translate.instant('TASK.FILTER.ASSIGNMENT-GROUP', this.account.groups[i]) });
+        }
+      }
+    }
+  })
+}
 
 getRunTimeApplications() {
   this.runtimeAppDefinitionService.getApplications().subscribe((response) => {
