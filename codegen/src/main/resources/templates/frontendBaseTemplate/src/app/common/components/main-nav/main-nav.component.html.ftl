@@ -59,10 +59,10 @@
 
         <mat-nav-list class="subnav">
 
-          <a mat-list-item class="mat-sub-list-item" routerLink="email/emailtemplates">{{'MainNav.Email.EmailTemplate' | translate }}
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('emailtemplate')" routerLink="email/emailtemplates">{{'MainNav.Email.EmailTemplate' | translate }}
           </a>
-          <a mat-list-item class="mat-sub-list-item" routerLink="email/emailvariables">{{'MainNav.Email.EmailVariables' | 
-              translate }} </a>
+          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('emailvariable')" routerLink="email/emailvariables">{{'MainNav.Email.EmailVariables' | translate }}
+          </a>
 
         </mat-nav-list>
       </mat-expansion-panel>

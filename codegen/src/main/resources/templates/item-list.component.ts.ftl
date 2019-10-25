@@ -29,7 +29,7 @@ import { GlobalPermissionService } from 'fastCodeCore';
 export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> implements OnInit {
 
 	title:string = "[=ClassName]";
-	
+	entityName:string =  '[=ClassName]';
 	constructor(
 		public router: Router,
 		public route: ActivatedRoute,

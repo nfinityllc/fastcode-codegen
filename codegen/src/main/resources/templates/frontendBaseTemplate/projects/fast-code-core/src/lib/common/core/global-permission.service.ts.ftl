@@ -43,7 +43,10 @@ decodeToken():ITokenDetail {
     return null;
 }
 }
-  hasPermissionOnEntity(entity:string, crudType:string):Boolean {   
+  hasPermissionOnEntity(entity:string, crudType:string):Boolean {
+    if(!entity){
+      return false;
+    }
     let tokenDetails:ITokenDetail = this.
     decodeToken();
     //tokenDetails.scopes = tokenDetails.scopes.filter(item=>item != "USERSENTITY_CREATE");

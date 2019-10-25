@@ -60,7 +60,9 @@ export class MainNavComponent {
 	
 	logout() {
 		this.Auth.logout();
-		this.router.navigate(['/']);
+		this.router.navigate(['/']).then(()=>{
+			window.location.reload();
+		});
 	}
 	
 	<#if FlowableModule!false>

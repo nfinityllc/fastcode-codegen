@@ -13,7 +13,10 @@ export class GlobalPermissionService implements IGlobalPermissionService {
   constructor( private authService:AuthenticationService ) { 
   }
   
-  hasPermissionOnEntity(entity:string, crudType:string):Boolean {   
+  hasPermissionOnEntity(entity:string, crudType:string):Boolean {
+    if(!entity){
+      return false;
+    }
     let tokenDetails:ITokenDetail = this.authService.decodeToken();
     crudType = crudType != "READ"? crudType : crudType + "|" + "CREATE" + "|" + "UPDATE" + "|" + "DELETE";
     let filtered=   tokenDetails.scopes.filter(perm => {
