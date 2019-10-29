@@ -274,7 +274,7 @@ public class SchedulerService {
 		System.out.println(" path " + System.getProperty("user.dir"));
 		String packageName=env.getProperty("fastCode.jobs.default");
 		System.out.println(" package  " + packageName);
-		CGenClassLoader loader = new CGenClassLoader(path+"/target/classes");
+		CGenClassLoader loader = new CGenClassLoader(path.replace('\\', '/') +"/target/classes");
 		ArrayList<Class<?>> jobClasses=null;
 		try {
 			jobClasses = loader.findClasses(packageName);

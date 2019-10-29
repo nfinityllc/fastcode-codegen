@@ -190,11 +190,11 @@ public class FlowableIdentityService {
 
     public void deleteUser(String id) {
 
-        List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByUserId(id);
-
-        for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
-            _actIdMembershipManager.delete(actIdMembership);
-        }
+     //    List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByUserId(id);
+     //
+     //   for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
+     //       _actIdMembershipManager.delete(actIdMembership);
+     //   }
 
         List<ActIdPrivMappingEntity> actIdPrivMappings = _actIdPrivMappingManager.findAllByUserId(id);
 
