@@ -23,7 +23,7 @@ private String pwd;
 private Long rev;
 private String tenantId;
 
-@ManyToMany(cascade = {CascadeType.ALL})
+@ManyToMany(cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 @JoinTable(name = "act_id_membership", schema = "[=SchemaName]",
 joinColumns = {@JoinColumn(name = "user_id_", referencedColumnName = "id_")},
 inverseJoinColumns = {@JoinColumn(name = "group_id_", referencedColumnName = "id_")})

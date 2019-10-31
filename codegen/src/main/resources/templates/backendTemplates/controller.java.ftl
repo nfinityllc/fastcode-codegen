@@ -289,7 +289,7 @@ public class [=ClassName]Controller {
 		<#if AuthenticationFields??>
 		<#list AuthenticationFields as authKey,authValue>
         <#if authKey== "Password">
-	    [=ClassName?uncap_first].set[=authValue.fieldName?cap_first](pEncoder.encode([=ClassName?uncap_first].get[=authValue.fieldName?cap_first]()));
+	    [=ClassName?uncap_first].set[=authValue.fieldName?cap_first](pEncoder.encode(current[=ClassName].get[=authValue.fieldName?cap_first]()));
 	    </#if>
 	    </#list>
         </#if>
