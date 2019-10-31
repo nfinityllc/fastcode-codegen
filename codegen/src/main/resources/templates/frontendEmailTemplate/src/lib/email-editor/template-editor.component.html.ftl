@@ -11,7 +11,7 @@
 <mat-toolbar class="action-tool-bar" color="primary" >
   <button mat-flat-button (click)="onBack()">
     Cancel </button>
-  <span class="middle">Template Detaill</span>
+  <span class="middle">Template Details</span>
   <button mat-flat-button   [hidden]="editorView" >
      </button>
   <button mat-flat-button    (click)="saveEmail()" [hidden]="!editorView" >

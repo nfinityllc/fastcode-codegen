@@ -1,47 +1,47 @@
 {
   "GENERAL": {
         "ACTIONS": {
-            "SAVE": "Save",
-            "CANCEL": "Cancel",
-            "OK": "OK",
-            "DELETE": "Delete",
-            "CONFIRM": "Confirm",
-            "SELECT": "Select",
+            "SAVE": "enregistrer",
+            "CANCEL": "Annuler",
+            "OK": "D'accord",
+            "DELETE": "Effacer",
+            "CONFIRM": "Confirmer",
+            "SELECT": "Sélectionner",
             "PAUSE": "Pause",
-            "BACK": "Back",
+            "BACK": "Retour",
             "ACTIONS": "Actions",
-			"DE-LINK": "De-link",
-            "ADD": "Add"
+			      "DE-LINK": "De-link",
+            "ADD": "Ajouter"
         },
         "ERRORS": {
-            "REQUIRED": "Field is required.",
-            "LENGTH-EXCEEDING": "Length cannot be greater than {{length}}.",
-            "LENGTH-SHORT": "Length cannot be less than {{length}}.",
-            "INVALID-FORMAT": "Invalid format."
+            "REQUIRED": "Champ requis.",
+            "LENGTH-EXCEEDING": "La longueur ne peut être supérieure à {{length}}.",
+            "LENGTH-SHORT": "La longueur ne peut être inférieure à {{length}}.",
+            "INVALID-FORMAT": "Format invalide."
 
         }
     },
   "en": "Anglais",
-  "fr": "français",
+  "fr": "française",
   "MainNav": {
     
     "Home": "Accueil",
     "Admin": "Admin",
-    "Entities": "Entités",
-    "AccessMgmt": "Access Management",
+    "Entities": "entités",
+    "AccessMgmt": "Gestion des accès",
     "Users": "Utilisateurs",
     "EntityHistory": "Histoire d'entité",
-    "EmailTemplate": "Email Templates",
+    "EmailTemplate": "Modèles de courrier électronique",
     "Email": {
-      "Title":"Responsive Email",
-      "EmailTemplate":"Email Templates",
-      "EmailVariables":"Email Merge Fields"
+      "Title":"Email réactif",
+      "EmailTemplate":"Modèles de courrier électronique",
+      "EmailVariables":"Champs de fusion d'email"
       
     },
     "JobScheduling": {
-      "Title":"Jobs Scheduler",
+      "Title":"Planificateur d'travail",
       "Jobs":"Travail",
-      "ExecutingJobs":"Executing Jobs",
+      "ExecutingJobs":"L'exécution du travail",
       "Triggers":"Triggers",
       "ExecutionHistory":"Execution History"
     },
@@ -49,29 +49,29 @@
     "Monitoring": "Monitoring",
     "Message" : "Bienvenue à Fastcode"<#if FlowableModule!false>,
     "ProcessAdmin": {
-      "Title": "Process Admin",
-      "ProcessEngine": "Process Engine",
-      "CmmnEngine": "CMMN Engine",
-      "AppEngine": "App Engine",
-      "FormEngine": "Form Engine",
-      "ContentEngine": "Content Engine",
-      "DmnEngine": "DMN Engine",
-      "Deployments": "Deployments",
-      "Definitions": "Definitions",
-      "Instances": "Instances",
-      "Tasks": "Tasks",
-      "Jobs": "Jobs",
-      "EventSubscriptions": "Event subscriptions",
+      "Title": "Processus admin",
+      "ProcessEngine": "Moteur de processus",
+      "CmmnEngine": "Moteur de CMMN",
+      "AppEngine": "Moteur de App",
+      "FormEngine": "Moteur de Forme",
+      "ContentEngine": "Moteur de Contenu",
+      "DmnEngine": "Moteur de DMN",
+      "Deployments": "Les déploiements",
+      "Definitions": "Définitions",
+      "Instances": "Les instances",
+      "Tasks": "Les tâches",
+      "Jobs": "Travails",
+      "EventSubscriptions": "Abonnements aux événements",
       "Configuration": "Configuration",
-      "ConfigurationEngine": "API URL Configuration",
-      "DecisionTables": "Decision tables",
-      "DecisionTableExecutions": "Executions",
-      "ContentItems": "Content items"
+      "ConfigurationEngine": "Configuration de l'URL de l'API",
+      "DecisionTables": "Tables de décision",
+      "DecisionTableExecutions": "Exécutions",
+      "ContentItems": "Éléments de contenu"
     },
     "Task":{
-      "Title": "Task Application",
-      "Tasks": "Tasks",
-      "Processes": "Processes"
+      "Title": "Application de tâche",
+      "Tasks": "Tâches",
+      "Processes": "Processus"
     }
     </#if>
   }

@@ -18,21 +18,21 @@
 						<ng-container matColumnDef="displayName">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('displayName')"> displayName</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("DisplayName")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("DisplayName")}}:</span>
 					{{ item.displayName }}
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="id">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('id')"> id</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Id")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("Id")}}:</span>
 					{{ item.id }}
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="name">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('name')"> name</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Name")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("Name")}}:</span>
 					{{ item.name }}
 				</mat-cell>
 			</ng-container>

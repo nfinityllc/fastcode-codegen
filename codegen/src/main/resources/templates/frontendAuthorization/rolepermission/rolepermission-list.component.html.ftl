@@ -18,14 +18,14 @@
 						<ng-container matColumnDef="Permission">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Permission')">Permission </mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Permission")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("Permission")}}:</span>
 					{{ item.permissionDescriptiveField }}
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="Role">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Role')">Role </mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Role")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("Role")}}:</span>
 					{{ item.roleDescriptiveField }}
 				</mat-cell>
 			</ng-container>

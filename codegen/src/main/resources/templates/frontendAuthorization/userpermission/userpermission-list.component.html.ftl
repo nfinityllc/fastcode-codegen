@@ -18,7 +18,7 @@
 			<ng-container matColumnDef="[=AuthenticationTable?cap_first]">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('[=AuthenticationTable?cap_first]')">[=AuthenticationTable?cap_first]</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("[=AuthenticationTable?cap_first]")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("[=AuthenticationTable?cap_first]")}}:</span>
 				<#if UserInput??>
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				{{ item.[=DescriptiveField[AuthenticationTable].description?uncap_first] }}
@@ -41,7 +41,7 @@
 			<ng-container matColumnDef="Permission">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Permission')">Permission </mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Permission")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("Permission")}}:</span>
 					{{ item.permissionDescriptiveField }}
 				</mat-cell>
 			</ng-container>

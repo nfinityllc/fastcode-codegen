@@ -19,7 +19,7 @@
 			<ng-container matColumnDef="emailAddress">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('emailAddress')"> emailAddress</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("EmailAddress")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("EmailAddress")}}:</span>
 					{{ item.emailAddress }}
 				</mat-cell>
 			</ng-container>
@@ -27,7 +27,7 @@
 			<ng-container matColumnDef="firstName">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('firstName')"> firstName</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("FirstName")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("FirstName")}}:</span>
 					{{ item.firstName }}
 				</mat-cell>
 			</ng-container>
@@ -35,7 +35,7 @@
 			<ng-container matColumnDef="isActive">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('isActive')"> isActive</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("IsActive")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("IsActive")}}:</span>
 					{{ item.isActive }}
 				</mat-cell>
 			</ng-container>
@@ -43,7 +43,7 @@
 			<ng-container matColumnDef="lastName">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('lastName')"> lastName</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("LastName")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("LastName")}}:</span>
 					{{ item.lastName }}
 				</mat-cell>
 			</ng-container>
@@ -51,7 +51,7 @@
 			<ng-container matColumnDef="userName">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('userName')"> userName</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("UserName")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("UserName")}}:</span>
 					{{ item.userName }}
 				</mat-cell>
 			</ng-container>
@@ -59,7 +59,7 @@
 			<ng-container matColumnDef="Role">
 				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Role')">Role </mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Role")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("Role")}}:</span>
 					{{ item.roleDescriptiveField }}
 				</mat-cell>
 			</ng-container>
