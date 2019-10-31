@@ -18,44 +18,44 @@
 		<mat-table matSort [dataSource]="items" class="mat-elevation-z8">
 			
 			<ng-container matColumnDef="templatename">
-				<mat-header-cell mat-sort-header *matHeaderCellDef> Template Name</mat-header-cell>
+				<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("TemplateName")}}</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Templatename")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("TemplateName")}}:</span>
 					<a routerLink="./{{item.id}}" >{{item.templateName}} </a>
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="subject">
-				<mat-header-cell mat-sort-header *matHeaderCellDef> Subject</mat-header-cell>
+				<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("Subject")}}</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getMobileLabelForField("Subject")}}:</span>
+					<span class="mobile-label">{{getFieldLabel("Subject")}}:</span>
 					{{ item.subject }}
 				</mat-cell>
 			</ng-container>
 		
 		<ng-container matColumnDef="category">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> Category</mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("Category")}}</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-				<span class="mobile-label">{{getMobileLabelForField("Category")}}:</span>
+				<span class="mobile-label">{{getFieldLabel("Category")}}:</span>
 				{{ item.category }}
 			</mat-cell>
 		</ng-container>
 		<ng-container matColumnDef="lastModifierUserId">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> Modified By</mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("LastModifierUserId")}}</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-				<span class="mobile-label">{{getMobileLabelForField("Lastmodifieruserid")}}:</span>
+				<span class="mobile-label">{{getFieldLabel("LastModifierUserId")}}:</span>
 				{{ item.lastModifierUserId }}
 			</mat-cell>
 		</ng-container>
 		<ng-container matColumnDef="lastModificationTime">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> Modified Time </mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("LastModificationTime")}}</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-				<span class="mobile-label">{{getMobileLabelForField("Lastmodificationtime")}}:</span>
+				<span class="mobile-label">{{getFieldLabel("LastModificationTime")}}:</span>
 				{{item.lastModificationTime | date:'short'}}
 			</mat-cell>
 		</ng-container>	
 		
 		<ng-container matColumnDef="actions">
-			<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+			<mat-header-cell *matHeaderCellDef> {{getFieldLabel("Actions")}}</mat-header-cell>
 			<mat-cell *matCellDef="let item"> 
 				<button mat-button color="accent" [disabled]="!IsDeletePermission" (click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany")?'De-link':'Delete'}}</button>
 			</mat-cell>

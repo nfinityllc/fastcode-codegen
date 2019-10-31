@@ -1,6 +1,4 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { PermissionService } from './permission.service';
-import { IPermission } from './ipermission';
 
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -8,6 +6,9 @@ import { first } from 'rxjs/operators';
 import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+import { PermissionService } from './permission.service';
+import { IPermission } from './ipermission';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-permission-new',
@@ -28,11 +29,13 @@ export class PermissionNewComponent extends BaseNewComponent<IPermission> implem
 			public pickerDialogService: PickerDialogService,
 			public dataService: PermissionService,
 			public errorService: ErrorService,
+			public globalPermissionService: GlobalPermissionService,
 		) {
 			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
 	  }
  
 	ngOnInit() {
+		this.entityName = 'Permission';
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

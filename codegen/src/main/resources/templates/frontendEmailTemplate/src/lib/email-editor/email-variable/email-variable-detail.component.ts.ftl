@@ -18,9 +18,9 @@ import { BaseDetailsComponent,Globals,PickerDialogService, GlobalPermissionServi
   styleUrls: ['./email-variable-detail.component.scss']
 })
 export class EmailVariableDetailComponent extends BaseDetailsComponent<IEmailVariable> implements OnInit {
-  title:string='Email Variable';
+  title:string='Email Merge Fields';
   parentUrl:string='./emailvariables';
-  entityName:string =  'Email';
+  entityName:string =  'EmailVariable';
   //roles: IRole[];  
 	constructor(
 		public formBuilder: FormBuilder,

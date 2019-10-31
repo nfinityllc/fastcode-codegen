@@ -8,6 +8,7 @@ import { first } from 'rxjs/operators';
 import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+import { GlobalPermissionService } from '../core/global-permission.service';
 import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
 
@@ -32,11 +33,13 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 			public errorService: ErrorService,
 			public [=AuthenticationTable?uncap_first]Service: [=AuthenticationTable]Service,
 			public permissionService: PermissionService,
+			public globalPermissionService: GlobalPermissionService,
 		) {
 			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
 	  }
  
 	ngOnInit() {
+		this.entityName = "Userpermission";
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

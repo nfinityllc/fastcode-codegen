@@ -1,13 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { RoleService } from './role.service';
-import { IRole } from './irole';
 
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
 
+import { RoleService } from './role.service';
+import { IRole } from './irole';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-role-new',
@@ -28,11 +29,13 @@ export class RoleNewComponent extends BaseNewComponent<IRole> implements OnInit 
 			public pickerDialogService: PickerDialogService,
 			public dataService: RoleService,
 			public errorService: ErrorService,
+			public globalPermissionService: GlobalPermissionService,
 		) {
 			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
 	  }
  
 	ngOnInit() {
+		this.entityName = 'Role';
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

@@ -21,7 +21,7 @@ import { RoleService} from '../role/role.service';
 
 import { BaseDetailsComponent, Globals } from 'fastCodeCore';
 <#if AuthenticationType !="none" >
-import { GlobalPermissionService } from 'fastCodeCore';
+import { GlobalPermissionService } from '../core/global-permission.service';
 </#if>
 
 @Component({
@@ -60,6 +60,7 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
   }
 
 	ngOnInit() {
+		this.entityName = '[=ClassName]';
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

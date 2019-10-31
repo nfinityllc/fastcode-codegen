@@ -6,12 +6,11 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { RolepermissionService } from './rolepermission.service';
 import { IRolepermission } from './irolepermission';
-import { PickerDialogService, ErrorService } from 'fastCodeCore';
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
 
-import { PermissionService } from '../permission/permission.service'
-import { RoleService } from '../role/role.service'
-
-import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PermissionService } from '../permission/permission.service';
+import { RoleService } from '../role/role.service';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-rolepermission-details',
@@ -33,11 +32,13 @@ export class RolepermissionDetailsComponent extends BaseDetailsComponent<IRolepe
 		public errorService: ErrorService,
 		public permissionService: PermissionService,
 		public roleService: RoleService,
+		public globalPermissionService: GlobalPermissionService,
 	) {
 		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
   }
 
 	ngOnInit() {
+		this.entityName = "Rolepermission";
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

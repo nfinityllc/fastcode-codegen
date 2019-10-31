@@ -8,9 +8,8 @@
 		</span>
 	</span>
 	<span class="middle">{{title}}</span>
-	<i class="material-icons" (click)="addNew()">
-		add
-	</i>
+	<button mat-button [disabled]="!IsCreatePermission" (click)="addNew()">
+ 		{{'GENERAL.ACTIONS.ADD' | translate}} </button>
 </mat-toolbar>
 <div class="list-container">
 	<app-list-filters [columnsList]="selectedColumns" (onSearch)="applyFilter($event)"></app-list-filters>

@@ -1,6 +1,4 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { UserService } from './user.service';
-import { IUser } from './iuser';
 
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -9,6 +7,9 @@ import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fa
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { RoleService } from '../role/role.service';
+import { GlobalPermissionService } from '../core/global-permission.service';
+import { UserService } from './user.service';
+import { IUser } from './iuser';
 
 @Component({
   selector: 'app-user-new',
@@ -30,11 +31,13 @@ export class UserNewComponent extends BaseNewComponent<IUser> implements OnInit 
 			public dataService: UserService,
 			public errorService: ErrorService,
 			public roleService: RoleService,
+			public globalPermissionService: GlobalPermissionService,
 		) {
 			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
 	  }
  
 	ngOnInit() {
+		this.entityName = "User";
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

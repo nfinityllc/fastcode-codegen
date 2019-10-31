@@ -1,13 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
+
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 import { IRole } from './irole';
 import { RoleService } from './role.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import {RoleNewComponent} from './role-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
-
-
+import { RoleNewComponent } from './role-new.component';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-role-list',
@@ -27,11 +27,13 @@ export class RoleListComponent extends BaseListComponent<IRole> implements OnIni
 		public pickerDialogService: PickerDialogService,
 		public dataService: RoleService,
 		public errorService: ErrorService,
+		public globalPermissionService: GlobalPermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
   }
 
 	ngOnInit() {
+		this.entityName = 'Role';
 		this.setAssociation();
 		this.setColumns();
 		this.primaryKeys = [ "id",  ]

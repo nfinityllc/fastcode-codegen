@@ -10,6 +10,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dial
 
 import { PermissionService } from '../permission/permission.service';
 import { RoleService } from '../role/role.service';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-rolepermission-new',
@@ -32,11 +33,13 @@ export class RolepermissionNewComponent extends BaseNewComponent<IRolepermission
 			public errorService: ErrorService,
 			public permissionService: PermissionService,
 			public roleService: RoleService,
+			public globalPermissionService: GlobalPermissionService,
 		) {
 			super(formBuilder, router, route, dialog, dialogRef, data, global, pickerDialogService, dataService, errorService);
 	  }
  
 	ngOnInit() {
+		this.entityName = "Rolepermission";
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

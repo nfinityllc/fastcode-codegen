@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
-import { IUser } from './iuser';
-import { UserService } from './user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import {UserNewComponent} from './user-new.component';
 import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
-
+import { IUser } from './iuser';
+import { UserService } from './user.service';
 import { RoleService } from '../role/role.service';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-user-list',
@@ -29,11 +29,13 @@ export class UserListComponent extends BaseListComponent<IUser> implements OnIni
 		public dataService: UserService,
 		public errorService: ErrorService,
 		public roleService: RoleService,
+		public globalPermissionService: GlobalPermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
   }
 
 	ngOnInit() {
+		this.entityName = "User";
 		this.setAssociation();
 		this.setColumns();
 		this.primaryKeys = [ "id",  ]

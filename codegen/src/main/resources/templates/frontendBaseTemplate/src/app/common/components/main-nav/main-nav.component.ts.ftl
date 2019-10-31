@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Globals } from '../../../globals';
@@ -8,13 +8,18 @@ import { GlobalPermissionService } from '../../../core/global-permission.service
 </#if>
 import { Router, Event } from '@angular/router';
 import entities from './entities.json';
+import { MatSidenav, MatSidenavContent } from '@angular/material';
 
 @Component({
 	selector: 'app-main-nav',
 	templateUrl: './main-nav.component.html',
 	styleUrls: ['./main-nav.component.scss']
 })
-export class MainNavComponent {
+export class MainNavComponent {	
+	@ViewChild("drawer", { static: false }) drawer: MatSidenav;
+	@ViewChild("navContent", { static: false }) navContent: MatSidenavContent;
+	
+	appName: string = '[=AppName]';
 	selectedLanguage = "en";
 	entityList = entities;
 
@@ -60,9 +65,7 @@ export class MainNavComponent {
 	
 	logout() {
 		this.Auth.logout();
-		this.router.navigate(['/']).then(()=>{
-			window.location.reload();
-		});
+		this.router.navigate(['/']);
 	}
 	
 	<#if FlowableModule!false>

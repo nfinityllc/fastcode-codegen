@@ -17,7 +17,7 @@ import { BaseNewComponent,Globals,PickerDialogService, GlobalPermissionService, 
 })
 export class EmailVariableNewComponent extends BaseNewComponent<IEmailVariable> implements OnInit {
   
-	title:string = "New Email Variable";
+	title:string = "New Email Merge Field";
 	entityName:string =  'EmailVariable';
 		constructor(
 			public formBuilder: FormBuilder,

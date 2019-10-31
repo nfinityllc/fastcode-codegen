@@ -18,7 +18,7 @@ import { BaseListComponent,Globals,IListColumn, listColumnType,PickerDialogServi
   })
 export class EmailVariableListComponent extends BaseListComponent<IEmailVariable> implements OnInit {
 
-	title:string = "Emailvariable";
+	title:string = "Email Merge Fields";
   
 	columns: IListColumn[] = [
 		{

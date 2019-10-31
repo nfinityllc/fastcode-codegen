@@ -3,7 +3,7 @@
 }
 
 .sidenav {
-  width: 200px;
+  width: 260px;
   box-shadow: 3px 0 6px rgba(0,0,0,.24);
   .sidenav-list-item {
     box-shadow: 0 0px 0px 0px rgba(0,0,0,.2) !important;
@@ -36,6 +36,10 @@
     height: 26px;
     font-size: 13px;
    // box-shadow: 3px 0 6px rgba(0,0,0,.24) ;
+  }
+  .nav-list{
+    height: calc(100% - 65px);
+    overflow: auto;
   }
 }
 

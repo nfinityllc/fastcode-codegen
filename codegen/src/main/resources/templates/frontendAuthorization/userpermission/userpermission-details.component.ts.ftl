@@ -6,12 +6,11 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { [=AuthenticationTable]permissionService } from './[=moduleName]permission.service';
 import { I[=AuthenticationTable]permission } from './i[=moduleName]permission';
-import { PickerDialogService, ErrorService } from 'fastCodeCore';
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
 
 import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
-
-import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-[=moduleName]permission-details',
@@ -33,11 +32,13 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		public errorService: ErrorService,
 		public [=AuthenticationTable?uncap_first]Service: [=AuthenticationTable]Service,
 		public permissionService: PermissionService,
+		public globalPermissionService: GlobalPermissionService,
 	) {
 		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
   }
 
 	ngOnInit() {
+		this.entityName = "Userpermission";
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

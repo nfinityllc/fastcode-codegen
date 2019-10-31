@@ -1,13 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
+
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 import { IPermission } from './ipermission';
 import { PermissionService } from './permission.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import {PermissionNewComponent} from './permission-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
-
-
+import { PermissionNewComponent } from './permission-new.component';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-permission-list',
@@ -27,11 +27,13 @@ export class PermissionListComponent extends BaseListComponent<IPermission> impl
 		public pickerDialogService: PickerDialogService,
 		public dataService: PermissionService,
 		public errorService: ErrorService,
+		public globalPermissionService: GlobalPermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
   }
 
 	ngOnInit() {
+		this.entityName = 'Permission';
 		this.setAssociation();
 		this.setColumns();
 		this.primaryKeys = [ "id",  ]

@@ -9,6 +9,7 @@ public class FieldDetails {
 	boolean isPrimaryKey;
 	int length;
 	String description;
+	private String FieldLabel;
 	
 	
 	public String getDescription() {
@@ -54,4 +55,11 @@ public class FieldDetails {
 	public void setLength(int length) {
 		this.length = length;
 	}
+	public String getFieldLabel() {
+		return FieldLabel;
+	}
+	public void setFieldLabel(String fieldLabel) {
+		FieldLabel = fieldLabel;
+	}
+	
 }

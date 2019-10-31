@@ -22,7 +22,7 @@ import { BaseListComponent,IListColumn, listColumnType,Globals,PickerDialogServi
   })
   export class EmailTemplateListComponent extends BaseListComponent<IEmailTemplate> implements OnInit {
 
-	title:string = "Email Template";
+	title:string = "Email Templates";
 	entityName:string =  'Email';
 	columns: IListColumn[] = [
 		{

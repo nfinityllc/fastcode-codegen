@@ -19,7 +19,7 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 import { RoleService} from '../role/role.service';
 </#if>
 <#if AuthenticationType !="none" >
-import { GlobalPermissionService } from 'fastCodeCore';
+import { GlobalPermissionService } from '../core/global-permission.service';
 </#if>
 
 @Component({
@@ -59,6 +59,7 @@ export class [=ClassName]NewComponent extends BaseNewComponent<[=IEntity]> imple
 	}
  
 	ngOnInit() {
+		this.entityName = '[=ClassName]';
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

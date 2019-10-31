@@ -18,7 +18,7 @@ import { [=relationValue.eName]Service } from '../[=relationValue.eModuleName]/[
 import { RoleService} from '../role/role.service';
 </#if>
 <#if AuthenticationType !="none" >
-import { GlobalPermissionService } from 'fastCodeCore';
+import { GlobalPermissionService } from '../core/global-permission.service';
 </#if>
 
 @Component({
@@ -29,7 +29,6 @@ import { GlobalPermissionService } from 'fastCodeCore';
 export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> implements OnInit {
 
 	title:string = "[=ClassName]";
-	entityName:string =  '[=ClassName]';
 	constructor(
 		public router: Router,
 		public route: ActivatedRoute,
@@ -57,6 +56,7 @@ export class [=ClassName]ListComponent extends BaseListComponent<[=IEntity]> imp
   }
 
 	ngOnInit() {
+		this.entityName = '[=ClassName]';
 		this.setAssociation();
 		this.setColumns();
 		this.primaryKeys = [ <#list PrimaryKeys as key,value>"[=key]", </#list> ]

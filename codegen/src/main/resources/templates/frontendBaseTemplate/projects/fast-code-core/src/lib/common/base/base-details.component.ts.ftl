@@ -73,7 +73,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
     public route: ActivatedRoute,
     public dialog: MatDialog,
     public global: Globals,
-		public pickerDialogService: PickerDialogService,
+	public pickerDialogService: PickerDialogService,
     public dataService: GenericApiService<E>,
     public errorService: ErrorService
     
@@ -125,7 +125,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
     }
 
     this.loading = true;
-    this.dataService.update(this.itemForm.value, this.idParam)
+    this.dataService.update(this.itemForm.getRawValue(), this.idParam)
       .pipe(first())
       .subscribe(
         data => {
@@ -201,7 +201,7 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
 
 	initializePickerPageInfo() {
 		this.hasMoreRecordsPicker = true;
-		this.pickerPageSize = 20;
+		this.pickerPageSize = 30;
 		this.lastProcessedOffsetPicker = -1;
 		this.currentPickerPage = 0;
 	}

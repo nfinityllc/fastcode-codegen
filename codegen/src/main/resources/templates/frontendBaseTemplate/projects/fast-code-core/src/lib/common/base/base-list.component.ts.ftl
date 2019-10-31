@@ -318,7 +318,7 @@ export class BaseListComponent<E> implements OnInit {
 
   initializePageInfo() {
     this.hasMoreRecords = true;
-    this.pageSize = 10;
+    this.pageSize = 30;
     this.lastProcessedOffset = -1;
     this.currentPage = 0;
   }
@@ -375,7 +375,7 @@ export class BaseListComponent<E> implements OnInit {
     )
   }
 
-  getMobileLabelForField(field: string) {
+  getFieldLabel(field: string) {
     return field.replace(/([a-z])([A-Z])/g, '$1 $2');
   }
   

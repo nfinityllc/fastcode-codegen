@@ -10,7 +10,8 @@
             "PAUSE": "Pause",
             "BACK": "Back",
             "ACTIONS": "Actions",
-			      "DE-LINK": "De-link"
+			"DE-LINK": "De-link",
+            "ADD": "Add"
         },
         "ERRORS": {
             "REQUIRED": "Field is required.",
@@ -27,18 +28,18 @@
     "Home": "Home",
     "Admin": "Admin",
     "Entities": "Entities",
-    "AccessMgmt": "Access Mgmt",
+    "AccessMgmt": "Access Management",
     "Users": "Users",
     "EntityHistory": "Entity History",
-    "EmailTemplate": "Email Template",
+    "EmailTemplate": "Email Templates",
     "Email": {
-      "Title":"Email",
-      "EmailTemplate":"Email Template",
-      "EmailVariables":"Email Variable"
+      "Title":"Responsive Email",
+      "EmailTemplate":"Email Templates",
+      "EmailVariables":"Email Merge Fields"
       
     },
     "JobScheduling": {
-      "Title":"Job Scheduling",
+      "Title":"Jobs Scheduler",
       "Jobs":"Jobs",
       "ExecutingJobs":"Executing Jobs",
       "Triggers":"Triggers",
@@ -46,7 +47,7 @@
     },
     "Language": "Language",   
     "Monitoring": "Monitoring",
-    "Message" : "Welcome to fast code"<#if FlowableModule!false>,
+    "Message" : "Welcome to Fastcode"<#if FlowableModule!false>,
     "ProcessAdmin": {
       "Title": "Process Admin",
       "ProcessEngine": "Process Engine",
@@ -62,13 +63,13 @@
       "Jobs": "Jobs",
       "EventSubscriptions": "Event subscriptions",
       "Configuration": "Configuration",
-      "ConfigurationEngine": "Engine",
+      "ConfigurationEngine": "API URL Configuration",
       "DecisionTables": "Decision tables",
       "DecisionTableExecutions": "Executions",
       "ContentItems": "Content items"
     },
     "Task":{
-      "Title": "Task App",
+      "Title": "Task Application",
       "Tasks": "Tasks",
       "Processes": "Processes"
     }

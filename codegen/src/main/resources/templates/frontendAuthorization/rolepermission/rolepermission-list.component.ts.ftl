@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import {RolepermissionNewComponent} from './rolepermission-new.component';
 import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
-
+import { GlobalPermissionService } from '../core/global-permission.service';
 import { PermissionService } from '../permission/permission.service';
 import { RoleService } from '../role/role.service';
 
@@ -31,11 +31,13 @@ export class RolepermissionListComponent extends BaseListComponent<IRolepermissi
 		public errorService: ErrorService,
 		public permissionService: PermissionService,
 		public roleService: RoleService,
+		public globalPermissionService: GlobalPermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
   }
 
 	ngOnInit() {
+		this.entityName = "Rolepermission";
 		this.setAssociation();
 		this.setColumns();
 		this.primaryKeys = [ "permissionId", "roleId",  ]

@@ -4,12 +4,11 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
+
 import { RoleService } from './role.service';
 import { IRole } from './irole';
-import { PickerDialogService, ErrorService } from 'fastCodeCore';
-
-
-import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-role-details',
@@ -29,11 +28,13 @@ export class RoleDetailsComponent extends BaseDetailsComponent<IRole> implements
 		public dataService: RoleService,
 		public pickerDialogService: PickerDialogService,
 		public errorService: ErrorService,
+		public globalPermissionService: GlobalPermissionService,
 	) {
 		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
   }
 
 	ngOnInit() {
+		this.entityName = 'Role';
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

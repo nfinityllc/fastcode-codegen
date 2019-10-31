@@ -4,13 +4,12 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
+
 import { UserService } from './user.service';
 import { IUser } from './iuser';
-import { PickerDialogService, ErrorService } from 'fastCodeCore';
-
-import { RoleService } from '../role/role.service'
-
-import { BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { RoleService } from '../role/role.service';
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
   selector: 'app-user-details',
@@ -31,11 +30,13 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 		public pickerDialogService: PickerDialogService,
 		public errorService: ErrorService,
 		public roleService: RoleService,
+		public globalPermissionService: GlobalPermissionService,
 	) {
 		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
   }
 
 	ngOnInit() {
+		this.entityName = "User";
 		this.setAssociations();
 		super.ngOnInit();
 		this.itemForm = this.formBuilder.group({

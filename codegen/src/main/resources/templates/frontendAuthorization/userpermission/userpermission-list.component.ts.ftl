@@ -6,7 +6,7 @@ import { [=AuthenticationTable]permissionService } from './[=moduleName]permissi
 import { Router, ActivatedRoute } from '@angular/router';
 import { [=AuthenticationTable]permissionNewComponent} from './[=moduleName]permission-new.component';
 import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
-
+import { GlobalPermissionService } from '../core/global-permission.service';
 
 import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
@@ -31,11 +31,13 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 		public errorService: ErrorService,
 		public [=AuthenticationTable?uncap_first]Service: [=AuthenticationTable]Service,
 		public permissionService: PermissionService,
+		public globalPermissionService: GlobalPermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
   }
 
 	ngOnInit() {
+		this.entityName = "Userpermission";
 		this.setAssociation();
 		this.setColumns();
 		<#if !UserInput??>
@@ -87,7 +89,7 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
     			</#if>
 				</#if>
 				<#elseif !UserInput??>
-				descriptiveField: '[=AuthenticationTable?uncap_first]UserName',
+				descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
 				referencedDescriptiveField: 'userName',
 				</#if>
 				service: this.[=AuthenticationTable?uncap_first]Service,
