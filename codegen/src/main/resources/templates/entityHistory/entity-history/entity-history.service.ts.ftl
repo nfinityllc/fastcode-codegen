@@ -20,8 +20,8 @@ export class EntityHistoryService {
     //super.sufix
   }
 
-  public getAll(): Observable<IEntityHistory[]> {
-    return this.httpclient.get<IEntityHistory[]>(this.url + '/audit/changes').pipe();
+  public getAll(search:string, offset:number, limit: number): Observable<IEntityHistory[]> {
+    return this.httpclient.get<IEntityHistory[]>(this.url + '/audit/changes' + "?search=" + search + "&offset=" + offset + "&limit=" + limit).pipe();
   }
 
 }

@@ -93,6 +93,7 @@
       </div>
     </div>
 
+	<mat-progress-bar *ngIf="filter.loading" mode="indeterminate"></mat-progress-bar>
     <div class="list">
       <div *ngFor="let task of tasks" [ngClass]="{'list-item': true, 'active': (selectedTask.id === task.id)}" class="list-item"
         (click)="selectTask(task)">

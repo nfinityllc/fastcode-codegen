@@ -28,12 +28,20 @@ table {
 @media (min-width: 1024px) {
     .mat-form-field {
         width: 33%;
+        padding-right: 1%;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
     }
 }
 
 @media (max-width: 1024px) {
     .mat-form-field {
         width: 50%;
+        padding-right: 1%;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
     }
 }
 
@@ -49,10 +57,6 @@ table {
     font-size: 1.5rem;
 }
 
-.filter-form {
-    display: flex;
-}
-
 .example-container {
     display: flex;
     flex-direction: column;
@@ -64,3 +68,7 @@ table {
     word-break: break-all;
 }
 
+.filter-form {
+    display: flex;
+    flex-direction: column;
+}

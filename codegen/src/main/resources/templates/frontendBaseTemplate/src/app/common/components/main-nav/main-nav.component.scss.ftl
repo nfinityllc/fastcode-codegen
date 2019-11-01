@@ -7,6 +7,8 @@
   box-shadow: 3px 0 6px rgba(0,0,0,.24);
   .sidenav-list-item {
     box-shadow: 0 0px 0px 0px rgba(0,0,0,.2) !important;
+    height:36px !important;
+    font-size: 15px;
   }
   .expansion-panel{
     box-shadow: 0 0 0 0;
@@ -18,10 +20,9 @@
     }
     
     .radio-button {
-      margin: 5px;
-    }
-      
-  
+      margin: 5px 5px 5px 0px;
+      padding-left: 16px; 
+    }  
   }
   .subnav {
     //margin-left: 8px;
