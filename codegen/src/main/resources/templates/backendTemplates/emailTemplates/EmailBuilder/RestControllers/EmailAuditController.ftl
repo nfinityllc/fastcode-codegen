@@ -102,10 +102,10 @@ public class EmailAuditController {
 		}
 		if(searchMap.containsKey("to") )
 		{
-			LocalDateTime from=SearchUtils.stringToDate(searchMap.get("from").toString()).toInstant()
+			LocalDateTime to=SearchUtils.stringToDate(searchMap.get("to").toString()).toInstant()
 					.atZone(ZoneId.systemDefault())
 					.toLocalDateTime();
-			searchMap.put("to",from);
+			searchMap.put("to",to);
 		}
 		else
 		{
