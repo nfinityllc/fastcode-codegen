@@ -152,7 +152,7 @@ public class CodeGenerator {
 
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
-			generateEntityHistoryComponent(appFolderPath);
+			generateEntityHistoryComponent(appFolderPath, authenticationTable, details);
 			addhistoryComponentsToAppModule(appFolderPath);
 			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType, flowable);
 			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType,authenticationTable,email,scheduler);
@@ -264,9 +264,38 @@ public class CodeGenerator {
 
 	}
 
-	private static void generateEntityHistoryComponent(String destFolder){
-
-
+	private static void generateEntityHistoryComponent(String destFolder, String authenticationTable, Map<String,EntityDetails> details){
+		
+		Map<String, Object> root = new HashMap<>();
+		
+		if(authenticationTable!=null) {
+			root.put("AuthenticationTable", authenticationTable);
+			EntityDetails authTableDetails = details.get(authenticationTable);
+			Map<String, FieldDetails> descFieldMap = authTableDetails.getEntitiesDescriptiveFieldMap();
+			FieldDetails authTableDescField = descFieldMap.get(authenticationTable);
+			root.put("DescriptiveField", authTableDescField.getFieldName());
+			Map<String, FieldDetails> authFieldMap = authTableDetails.getAuthenticationFieldsMap();
+			root.put("UserNameField",authFieldMap.get("UserName").getFieldName());
+			
+			String entityClassName = authenticationTable.concat("Entity");
+			String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(authenticationTable);
+			splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
+			String instanceName = StringUtils.join(splittedNames);
+			for (int i = 0; i < splittedNames.length; i++) {
+				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
+			}
+			String moduleName = StringUtils.join(splittedNames, "-");
+			
+			root.put("ModuleName", moduleName);
+			
+		}
+		else
+		{
+			root.put("UserNameField","userName");
+			root.put("AuthenticationTable", "User");
+			root.put("ModuleName", "user");
+		}	
+		
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/");
 		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 });
 
@@ -284,7 +313,7 @@ public class CodeGenerator {
 		template.put("entityHistory/entity-history/filter-item.directive.ts.ftl", "filter-item.directive.ts");
 
 		new File(destFolder + "/entity-history").mkdirs();
-		generateFiles(template, null, destFolder + "/entity-history");
+		generateFiles(template, root, destFolder + "/entity-history");
 
 		template = new HashMap<>();
 		template.put("entityHistory/manage-entity-history/manage-entity-history.component.html.ftl", "manage-entity-history.component.html");
@@ -293,7 +322,7 @@ public class CodeGenerator {
 		template.put("entityHistory/manage-entity-history/manage-entity-history.component.ts.ftl", "manage-entity-history.component.ts");
 
 		new File(destFolder + "/manage-entity-history").mkdirs();
-		generateFiles(template, null, destFolder + "/manage-entity-history");
+		generateFiles(template, root, destFolder + "/manage-entity-history");
 
 	}
 

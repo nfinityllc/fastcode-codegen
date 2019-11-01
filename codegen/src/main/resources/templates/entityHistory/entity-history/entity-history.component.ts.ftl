@@ -10,7 +10,7 @@ import { merge, of as observableOf, Observable, SubscriptionLike } from 'rxjs';
 import { ErrorService, PickerDialogService, IFCDialogConfig, ISearchField, operatorType } from 'fastCodeCore';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
-import { UserService } from '../user/user.service';
+import { [=AuthenticationTable]Service } from '../[=ModuleName]/[=ModuleName].service';
 
 enum listProcessingType {
   Replace = "Replace",
@@ -55,7 +55,7 @@ export class EntityHistoryComponent implements OnInit {
     private changeDetectorRefs: ChangeDetectorRef,
     public dialog: MatDialog,
     public errorService: ErrorService,
-    public userService: UserService,
+    public [=AuthenticationTable?uncap_first]Service: [=AuthenticationTable]Service,
     public pickerDialogService: PickerDialogService,
     private formBuilder: FormBuilder,
   ) { }
@@ -218,13 +218,13 @@ export class EntityHistoryComponent implements OnInit {
 		let dialogConfig: IFCDialogConfig = <IFCDialogConfig>{
 			Title: "Author",
 			IsSingleSelection: true,
-			DisplayField: "userName"
+			DisplayField: "[=UserNameField]"
 		};
 
 		this.pickerDialogRef = this.pickerDialogService.open(dialogConfig);
 
 		this.initializePickerPageInfo();
-		this.userService.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {
+		this.[=AuthenticationTable?uncap_first]Service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(items => {
 			this.isLoadingPickerResults = false;
 			this.pickerDialogRef.componentInstance.items = items;
 			this.updatePickerPageInfo(items);
@@ -246,7 +246,7 @@ export class EntityHistoryComponent implements OnInit {
 
 		this.pickerDialogRef.afterClosed().subscribe(user => {
       if (user) {
-				this.basicFilterForm.get('author').setValue(user.userName);
+				this.basicFilterForm.get('author').setValue(user.[=UserNameField?uncap_first]);
 			}
 		});
   }
@@ -282,7 +282,7 @@ export class EntityHistoryComponent implements OnInit {
 	onPickerScroll() {
 		if (!this.isLoadingPickerResults && this.hasMoreRecordsPicker && this.lastProcessedOffsetPicker < this.pickerDialogRef.componentInstance.items.length) {
 			this.isLoadingPickerResults = true;
-			this.userService.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
+			this.[=AuthenticationTable?uncap_first]Service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
 				items => {
 					this.isLoadingPickerResults = false;
 					this.pickerDialogRef.componentInstance.items = this.pickerDialogRef.componentInstance.items.concat(items);
@@ -309,7 +309,7 @@ export class EntityHistoryComponent implements OnInit {
 
 		this.initializePickerPageInfo();
 
-		this.userService.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
+		this.[=AuthenticationTable?uncap_first]Service.getAll(this.searchValuePicker, this.currentPickerPage * this.pickerPageSize, this.pickerPageSize).subscribe(
       items => {
 				this.isLoadingPickerResults = false;
 				this.pickerDialogRef.componentInstance.items = items;
