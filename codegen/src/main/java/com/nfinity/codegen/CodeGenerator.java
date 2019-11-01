@@ -242,6 +242,7 @@ public class CodeGenerator {
 		root.put("entitiesMap", entitiesMap);
 		root.put("PackageName", packageName);
 		root.put("AuthenticationType", authenticationType);
+		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("email", email);
 		root.put("scheduler", scheduler);
 		if(authenticationTable!=null) {
