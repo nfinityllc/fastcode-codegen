@@ -72,3 +72,10 @@ table {
     display: flex;
     flex-direction: column;
 }
+
+.card-class{
+    margin: 10px;
+}
+.history-table{
+    margin: 10px 10px 110px 10px;
+}

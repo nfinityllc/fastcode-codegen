@@ -74,12 +74,8 @@ export class EntityHistoryComponent implements OnInit {
   getEntityHistory() {
     this.isLoadingResults = true;
     this.initializePageInfo();
-    return this.entityHistoryService.getAll(this.searchValue, this.currentPage * this.pageSize, this.pageSize).subscribe(data => {
-      this.entityHistory = data;
-      this.dataSource = new MatTableDataSource(this.entityHistory);
-      //manage pages for virtual scrolling
-      this.updatePageInfo(data);
-    });
+    this.itemsObservable = this.entityHistoryService.getAll(this.searchValue, this.currentPage * this.pageSize, this.pageSize);
+    this.processListObservable(this.itemsObservable, listProcessingType.Replace);
   }
 
   manageScreenResizing() {
@@ -164,11 +160,11 @@ export class EntityHistoryComponent implements OnInit {
   pageSize: number;
   lastProcessedOffset: number;
   hasMoreRecords: boolean;
-  searchValue: string;
+  searchValue: string = "";
 
   initializePageInfo() {
     this.hasMoreRecords = true;
-    this.pageSize = 30;
+    this.pageSize = 10;
     this.lastProcessedOffset = -1;
     this.currentPage = 0;
   }

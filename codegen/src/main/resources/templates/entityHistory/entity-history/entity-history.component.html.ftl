@@ -10,7 +10,7 @@
 </mat-toolbar>
 
 <div class="example-container mat-elevation-z8">
-  <mat-card>
+  <mat-card class="card-class">
     <form [formGroup]="basicFilterForm" class="filter-form">
       <div class="full-width">
 
@@ -37,7 +37,7 @@
       {{'LIST-FILTERS.SEARCH-BUTTON-TEXT' | translate}}
     </button>
   </mat-card>
-  <mat-table [dataSource]="dataSource" (onScroll)="onTableScroll()" appVirtualScroll>
+  <mat-table [dataSource]="dataSource" (onScroll)="onTableScroll()" appVirtualScroll class="history-table">
 
     <ng-container matColumnDef="entity">
       <mat-header-cell *matHeaderCellDef> Entity </mat-header-cell>
