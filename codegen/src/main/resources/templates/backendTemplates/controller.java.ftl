@@ -86,9 +86,6 @@ public class [=ClassName]Controller {
 
 	@Autowired
     private [=AuthenticationTable]permissionAppService _[=AuthenticationTable?uncap_first]permissionAppService;
-    </#if>
-    
-    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 
     @Autowired
  	private I[=AuthenticationTable]Manager _userMgr;
@@ -447,6 +444,15 @@ public class [=ClassName]Controller {
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}  
+	
+	@RequestMapping(value = "/{id}/role", method = RequestMethod.GET)
+	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String id) {
+    GetRoleOutput output= _[=AuthenticationTable?uncap_first]AppService.GetRole(Long.valueOf(id));
+		if (output == null) {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity(output, HttpStatus.OK);
+	}
 	</#if>
 
 

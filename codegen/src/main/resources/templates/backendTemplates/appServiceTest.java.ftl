@@ -678,6 +678,43 @@ public class [=ClassName]AppServiceTest {
  
    </#if>
   </#list>
+  <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+  	//Roles
+	@Test
+	public void GetRole_If[=ClassName]IdAndRoleIdIsNotNullAnd[=ClassName]Exists_ReturnRole() {
+		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
+		RoleEntity role = mock(RoleEntity.class);
+
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
+		Mockito.when(_[=ClassName?uncap_first]Manager.GetRole(anyLong())).thenReturn(role);
+		Assertions.assertThat(_appService.GetRole(ID)).isEqualTo(_mapper.RoleEntityToGetRoleOutput(role,[=ClassName?uncap_first]));
+	}
+
+	@Test 
+	public void GetRole_If[=ClassName]IdAndRoleIdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
+
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
+		Assertions.assertThat(_appService.GetRole(ID)).isEqualTo(null);
+	}
+	
+	@Test 
+	public void find[=ClassName]ByName_NameIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
+
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindBy[=ClassName]Name(anyString())).thenReturn(null);	
+		Assertions.assertThat(_appService.FindBy[=ClassName]Name("User1")).isEqualTo(null);	
+
+	}
+
+	@Test
+	public void find[=ClassName]ByName_NameIsNotNullAnd[=ClassName]Exists_ReturnA[=ClassName]() {
+
+		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
+
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindBy[=ClassName]Name(anyString())).thenReturn([=ClassName?uncap_first]);
+		Assertions.assertThat(_appService.FindBy[=ClassName]Name("User1")).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]));
+	}
+
+	</#if>
 
 }
 

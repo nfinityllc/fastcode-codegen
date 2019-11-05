@@ -291,6 +291,20 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
  	    Find[=ClassName]WithAllFieldsByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]WithAllFieldsByIdOutput(found[=ClassName]); 
 		return output;
 	}
+	
+	//Role
+	// ReST API Call - GET /user/1/role
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
+	public GetRoleOutput GetRole(Long [=ClassName?uncap_first]Id) {
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		if (found[=ClassName] == null) {
+			return null;
+		}
+		RoleEntity re = _[=ClassName?uncap_first]Manager.GetRole([=ClassName?uncap_first]Id);
+		return mapper.RoleEntityToGetRoleOutput(re, found[=ClassName]);
+	}
 	<#if AuthenticationFields??>
 	<#list AuthenticationFields as authKey,authValue>
 	<#if authKey== "UserName">
@@ -436,6 +450,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	public void checkProperties(List<String> list) throws Exception  {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		list.get(i).replace("%20","").trim().equals("roleId") ||
+		</#if>
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 		<#if relationValue.isParent==false>
@@ -443,7 +460,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
         <#if !Fields[joinDetails.joinColumn]?? >
-		 list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]") ||
+		list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]") ||
 		</#if>
         </#if>
         </#if>
@@ -451,12 +468,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#if>
 		</#list>
-		
         <#list Fields?keys as key>
         <#if key_has_next>
-		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]") ||
+		list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]") ||
 		<#else>
-		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]")
+		list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]")
         </#if> 
         </#list>
 		)) 
@@ -534,6 +550,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#list>
 		</#if>
 		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		  if(list.get(i).replace("%20","").trim().equals("roleId")) {
+			builder.or([=ClassName?uncap_first].role.id.eq(Long.parseLong(value)));
+			}
+		</#if>
 		}
 		return builder;
 	}
@@ -684,6 +705,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
         </#if> 
 		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
+			if(joinCol != null && joinCol.getKey().equals("roleId")) {
+				builder.and([=ClassName?uncap_first].role.id.eq(Long.parseLong(joinCol.getValue())));
+			}
+		}
+		</#if>
 		return builder;
 	}
 	
