@@ -134,7 +134,6 @@
     width: calc(100% - 85px);
     position: relative;
     top: 5px;
-    padding: 0 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
