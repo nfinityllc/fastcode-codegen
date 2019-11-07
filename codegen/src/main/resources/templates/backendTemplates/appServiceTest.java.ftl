@@ -1,4 +1,4 @@
-package [=PackageName].application<#if ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -45,7 +45,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#if>
 </#list>
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.model.RoleEntity;
 <#if Flowable!false>
@@ -83,7 +83,7 @@ public class [=ClassName]AppServiceTest {
 	@Mock
 	private LoggingHelper logHelper;
 	
-	<#if ClassName == AuthenticationTable>
+	<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 	@Mock
 	private RoleManager _roleManager;
 	
@@ -185,7 +185,7 @@ public class [=ClassName]AppServiceTest {
         </#if>
 		</#list>
         
-       <#if ClassName == AuthenticationTable>
+       <#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
        RoleEntity foundRole = mock(RoleEntity.class);
        Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
        <#if Flowable!false>
@@ -410,7 +410,7 @@ public class [=ClassName]AppServiceTest {
 
 		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
 		Update[=ClassName]Input [=ClassName?uncap_first]= mock(Update[=ClassName]Input.class);
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
         RoleEntity foundRole = mock(RoleEntity.class);
         Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
         <#if Flowable!false>
@@ -430,7 +430,7 @@ public class [=ClassName]AppServiceTest {
 
 		[=EntityClassName] [=ClassName?uncap_first]= mock([=EntityClassName].class);
 		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]);
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 		<#if Flowable!false>
 		doNothing().when(idmIdentityService).deleteUser(anyString()); 
 		</#if>

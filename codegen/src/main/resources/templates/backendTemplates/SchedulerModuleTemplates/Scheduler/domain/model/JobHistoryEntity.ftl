@@ -1,19 +1,12 @@
 package [=PackageName].domain.model;
 
-<#if Audit!false>
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=AuditPackage].domain.BaseClasses.AuditedEntity;
-</#if>
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "JobHistory")
-<#if Audit!false>
-@EntityListeners(AuditingEntityListener.class)
-</#if>
-public class JobHistoryEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class JobHistoryEntity implements Serializable {
 
     private Long id;
     private String jobName;

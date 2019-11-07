@@ -37,12 +37,12 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
        
     }
-    
-	logout() {
-		this.oauthService.logOut();
-  	}
   	
    <#if AuthenticationType != "none">
+   logout() {
+		this.oauthService.logOut();
+  	}
+   
 	onSubmit() {
 		if(this.authService.loginType == 'oidc') {
 			this.logout();

@@ -20,8 +20,8 @@ public class SchedulerModuleTemplateGenerator {
 	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/SchedulerModuleTemplates/Scheduler";
 	static final String FRONTEND_SCHEDULER_TEMPLATE_FOLDER = "/templates/frontendSchedulerTemplates";
 	
-	public static void generateSchedulerModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,Boolean audit,
-			Boolean history,String schemaName,String connectionString) {
+	public static void generateSchedulerModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,
+			Boolean history,String schemaName,String connectionString, String authenticationType) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");
 		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, FRONTEND_SCHEDULER_TEMPLATE_FOLDER + "/");
@@ -35,11 +35,10 @@ public class SchedulerModuleTemplateGenerator {
 		Map<String, Object> root = new HashMap<>();
 		root.put("AuditPackage", packageName);
 		root.put("PackageName", packageName.concat(".Scheduler"));
-		root.put("Audit", audit);
 		root.put("History", history);
 		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("Schema",schemaName);
-		
+		root.put("AuthenticationType", authenticationType);
 		
 		Map<String, Object> frontendTemplates = getFrontendTempaltes();
 

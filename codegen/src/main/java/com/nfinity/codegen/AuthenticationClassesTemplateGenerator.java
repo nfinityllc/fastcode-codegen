@@ -27,7 +27,7 @@ public class AuthenticationClassesTemplateGenerator {
 	static final String SECURITY_CLASSES_TEMPLATE_FOLDER = "/templates/backendTemplates/authenticationTemplates";
 	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
 
-	public static void generateAutheticationClasses(String destination, String packageName,Boolean audit,Boolean history,Boolean flowable, Boolean scheduler, Boolean email,String authenticationType
+	public static void generateAutheticationClasses(String destination, String packageName, Boolean history, Boolean cache,Boolean flowable, Boolean scheduler, Boolean email,String authenticationType
 			,String schemaName,String authenticationTable,Map<String,EntityDetails> details) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, SECURITY_CLASSES_TEMPLATE_FOLDER + "/");
@@ -41,9 +41,9 @@ public class AuthenticationClassesTemplateGenerator {
 
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
-		root.put("Audit", audit);
 		root.put("History", history);
 		root.put("Flowable", flowable);
+		root.put("Cache", cache);
 		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("AuthenticationType",authenticationType);
 		root.put("SchemaName",schemaName);

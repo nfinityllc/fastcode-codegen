@@ -12,17 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
-<#if Audit!false>
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=AuditPackage].domain.BaseClasses.AuditedEntity;
-</#if>
-
 @Entity
 @Table(name = "Email", schema = "[=Schema]")
-<#if Audit!false>
-@EntityListeners(AuditingEntityListener.class)
-</#if>
-public class EmailTemplateEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class EmailTemplateEntity implements Serializable {
 
     private Long id;
     private String templateName;

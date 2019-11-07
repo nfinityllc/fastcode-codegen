@@ -10,8 +10,6 @@ import java.util.Map;
 
 import [=PackageName].domain.EmailTemplate.IEmailTemplateManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -62,14 +60,12 @@ public class EmailTemplateAppService implements IEmailTemplateAppService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Email", key = "#eid")
 	public void Delete(Long eid) {
 		EmailTemplateEntity existing = _emailTemplateManager.FindById(eid);
 		_emailTemplateManager.Delete(existing);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Email", key = "#eid")
 	public UpdateEmailTemplateOutput Update(Long eid, UpdateEmailTemplateInput email) {
 
 		EmailTemplateEntity ue = emailTemplateMapper.UpdateEmailTemplateInputToEmailTemplateEntity(email);
@@ -80,7 +76,6 @@ public class EmailTemplateAppService implements IEmailTemplateAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Email", key = "#eid")
 	public FindEmailTemplateByIdOutput FindById(Long eid) {
 		EmailTemplateEntity foundEmail = _emailTemplateManager.FindById(eid);
 
@@ -93,7 +88,6 @@ public class EmailTemplateAppService implements IEmailTemplateAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Email", key = "#name")
 	public FindEmailTemplateByNameOutput FindByName(String name) {
 		EmailTemplateEntity foundEmail = _emailTemplateManager.FindByName(name);
 		if (foundEmail == null) {
@@ -104,7 +98,6 @@ public class EmailTemplateAppService implements IEmailTemplateAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Email")
 	public List<FindEmailTemplateByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception {
 		Page<EmailTemplateEntity> foundEmail = _emailTemplateManager.FindAll(Search(search),pageable);
 		List<EmailTemplateEntity> emailList = foundEmail.getContent();

@@ -11,17 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-<#if Audit!false>
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=AuditPackage].domain.BaseClasses.AuditedEntity;
-</#if>
-
 @Entity
 @Table(name = "EmailVariable", schema = "[=Schema]")
-<#if Audit!false>
-@EntityListeners(AuditingEntityListener.class)
-</#if>
-public class EmailVariableEntity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class EmailVariableEntity implements Serializable {
 	
 
     private Long id;

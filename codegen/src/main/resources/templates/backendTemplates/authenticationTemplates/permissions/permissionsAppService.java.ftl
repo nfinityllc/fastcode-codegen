@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+<#if Cache !false>
 import org.springframework.cache.annotation.*;
+</#if>
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +56,9 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="Permission", key = "#permissionId")
+	</#if>
 	public UpdatePermissionOutput Update(Long permissionId, UpdatePermissionInput input) {
 	<#if Flowable!false>
 		String oldPermissionName = null;
@@ -72,8 +76,9 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="Permission", key = "#permissionId")
-
+	</#if>
 	public void Delete(Long permissionId) {
 
 		PermissionEntity existing = _permissionManager.FindById(permissionId) ; 
@@ -84,7 +89,9 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
 	@Cacheable(value = "Permission", key = "#permissionId")
+	</#if>
 	public FindPermissionByIdOutput FindById(Long permissionId) {
 
 		PermissionEntity foundPermission = _permissionManager.FindById(permissionId);
@@ -96,7 +103,9 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable(value = "Permission", key = "#permissionName")
+    </#if>
 	public FindPermissionByNameOutput FindByPermissionName(String permissionName) {
 
 		PermissionEntity foundPermission = _permissionManager.FindByPermissionName(permissionName);
@@ -108,7 +117,9 @@ public class PermissionAppService implements IPermissionAppService {
 	}
 	
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
 	@Cacheable(value = "Permission")
+	</#if>
 	public List<FindPermissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<PermissionEntity> foundPermission = _permissionManager.FindAll(Search(search), pageable);

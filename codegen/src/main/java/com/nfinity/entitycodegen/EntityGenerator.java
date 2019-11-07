@@ -30,7 +30,7 @@ public class EntityGenerator {
 	}
 
 	public static Map<String, EntityDetails> generateEntities(String connectionString, String schema,
-			List<String> tableList, String packageName, String destination, Boolean audit,Boolean history,Boolean flowable,String authenticationTable,String authenticationType) { 
+			List<String> tableList, String packageName, String destination, Boolean history, Boolean flowable, String authenticationTable, String authenticationType) { 
 		Map<String, String> connectionProps = parseConnectionString(connectionString);
 		String entityPackage = packageName + ".domain.model";
 		final String tempPackageName = entityPackage.concat(".Temp");
@@ -86,16 +86,15 @@ public class EntityGenerator {
 
 					EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
-					if(audit)
-					{
-						details.setFieldsMap(removeAuditFieldsIfExists(details.getFieldsMap()));
-						for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-							entry.getValue().setfDetails(removeAuditFieldsIfExistsFromList(entry.getValue().getfDetails()));
-						}
-
-					}
+//					if(audit)
+//					{
+//						details.setFieldsMap(removeAuditFieldsIfExists(details.getFieldsMap()));
+//						for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
+//							entry.getValue().setfDetails(removeAuditFieldsIfExistsFromList(entry.getValue().getfDetails()));
+//						}
+//
+//					}
 					details.setCompositeKeyClasses(compositePrimaryKeyEntities);
-
 
 					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
 					relationMap = EntityDetails.FindOneToOneJoinColFromChildEntity(relationMap, classList);
@@ -122,7 +121,7 @@ public class EntityGenerator {
 					details.setEntitiesDescriptiveFieldMap(descriptiveFieldEntities);
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 					// Generate Entity based on template
-					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath, audit,compositePrimaryKeyEntities,authenticationTable,authenticationType);
+					EntityGenerator.Generate(entityName, details, schema, packageName, destinationPath,compositePrimaryKeyEntities,authenticationTable,authenticationType);
 
 				}
 			}
@@ -133,51 +132,51 @@ public class EntityGenerator {
 			}
 			if(authenticationType !="none")
 			{
-				EntityGenerator.GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath, audit,authenticationTable,authenticationType);
-				if(audit)
-				{
-					generateAuditEntity(destinationPath , packageName);
-				}
+				EntityGenerator.GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath,authenticationTable,authenticationType);
+//				if(audit)
+//				{
+//					generateAuditEntity(destinationPath , packageName);
+//				}
 			}
 
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
 
-		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+	//	deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
 		return entityDetailsMap;
 	}
 
-	public static List<FieldDetails> removeAuditFieldsIfExistsFromList(List<FieldDetails> fieldDetailsList)
-	{
-		Iterator<FieldDetails> iterator = fieldDetailsList.iterator();
-		while (iterator.hasNext()) {
-			FieldDetails fieldObj = iterator.next();
-			if("creatorUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "creationTime".equalsIgnoreCase(fieldObj.getFieldName())
-					|| "lastModifierUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "lastModificationTime".equalsIgnoreCase(fieldObj.getFieldName()) ) 	
-			{
-
-				iterator.remove();
-			}
-		}
-	
-		return fieldDetailsList;
-	}
-	public static Map<String,FieldDetails> removeAuditFieldsIfExists(Map<String,FieldDetails> fieldDetailsMap)
-	{
-
-		Iterator<Map.Entry<String,FieldDetails>> iter = fieldDetailsMap.entrySet().iterator();
-		while (iter.hasNext()) {
-			Map.Entry<String,FieldDetails> entry = iter.next();
-			if("creatorUserId".equalsIgnoreCase(entry.getKey()) || "creationTime".equalsIgnoreCase(entry.getKey()) ||
-					"lastModifierUserId".equalsIgnoreCase(entry.getKey()) || "lastModificationTime".equalsIgnoreCase(entry.getKey())){
-				iter.remove();
-			}
-		}
-		return fieldDetailsMap;
-	}
+//	public static List<FieldDetails> removeAuditFieldsIfExistsFromList(List<FieldDetails> fieldDetailsList)
+//	{
+//		Iterator<FieldDetails> iterator = fieldDetailsList.iterator();
+//		while (iterator.hasNext()) {
+//			FieldDetails fieldObj = iterator.next();
+//			if("creatorUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "creationTime".equalsIgnoreCase(fieldObj.getFieldName())
+//					|| "lastModifierUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "lastModificationTime".equalsIgnoreCase(fieldObj.getFieldName()) ) 	
+//			{
+//
+//				iterator.remove();
+//			}
+//		}
+//	
+//		return fieldDetailsList;
+//	}
+//	public static Map<String,FieldDetails> removeAuditFieldsIfExists(Map<String,FieldDetails> fieldDetailsMap)
+//	{
+//
+//		Iterator<Map.Entry<String,FieldDetails>> iter = fieldDetailsMap.entrySet().iterator();
+//		while (iter.hasNext()) {
+//			Map.Entry<String,FieldDetails> entry = iter.next();
+//			if("creatorUserId".equalsIgnoreCase(entry.getKey()) || "creationTime".equalsIgnoreCase(entry.getKey()) ||
+//					"lastModifierUserId".equalsIgnoreCase(entry.getKey()) || "lastModificationTime".equalsIgnoreCase(entry.getKey())){
+//				iter.remove();
+//			}
+//		}
+//		return fieldDetailsMap;
+//	}
 	public static Map<String,EntityDetails> validateAuthenticationTable(Map<String,EntityDetails> entityDetailsMap, String authenticationTable, Boolean flowable)
 	{
 		Boolean isTableExits=false;
@@ -271,12 +270,11 @@ public class EntityGenerator {
 	}
 
 	public static void GenerateAutheticationEntities(Map<String,EntityDetails> entityDetails, String schemaName, String packageName,
-			String destPath, Boolean audit,String authenticationTable,String authenticationType) {
+			String destPath, String authenticationTable,String authenticationType) {
 
 		Map<String,FieldDetails> primaryKeys= new HashMap<>();
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
-		root.put("Audit", audit);
 		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("AuthenticationType",authenticationType);
 		root.put("SchemaName",schemaName);
@@ -319,7 +317,7 @@ public class EntityGenerator {
 	}
 
 	public static void Generate(String entityName, EntityDetails entityDetails, String schemaName, String packageName,
-			String destPath, Boolean audit,List<String> compositePrimaryKeyEntities,String authenticationTable,String authenticationType) {
+			String destPath, List<String> compositePrimaryKeyEntities,String authenticationTable,String authenticationType) {
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
 		String entityClassName = className.concat("Entity");
@@ -337,7 +335,6 @@ public class EntityGenerator {
 			root.put("AuthenticationTable", authenticationTable);
 		else
 			root.put("AuthenticationTable", "User");
-		root.put("Audit", audit);
 		root.put("AuthenticationFields", entityDetails.getAuthenticationFieldsMap());
 
 		setTemplateLoader();
@@ -408,18 +405,18 @@ public class EntityGenerator {
 		return backEndTemplate;
 	}
 
-	public static void generateAuditEntity(String destPath, String packageName) {
-		setTemplateLoader();
-		Map<String, Object> backEndTemplate = new HashMap<>();
-		Map<String, Object> root = new HashMap<>();
-		root.put("PackageName", packageName);
-		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditedEntity.java.ftl", "AuditedEntity.java");
-		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");
-		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/BaseClasses";
-		new File(destinationFolder).mkdirs();
-		generateFiles(backEndTemplate, root, destinationFolder);
-
-	}
+//	public static void generateAuditEntity(String destPath, String packageName) {
+//		setTemplateLoader();
+//		Map<String, Object> backEndTemplate = new HashMap<>();
+//		Map<String, Object> root = new HashMap<>();
+//		root.put("PackageName", packageName);
+//		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditedEntity.java.ftl", "AuditedEntity.java");
+//		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");
+//		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/BaseClasses";
+//		new File(destinationFolder).mkdirs();
+//		generateFiles(backEndTemplate, root, destinationFolder);
+//
+//	}
 
 	public static void deleteFile(String directory) {
 		File file = new File(directory);
@@ -444,7 +441,7 @@ public class EntityGenerator {
 
 	public static List<Class<?>> filterOnlyRelevantEntities(ArrayList<Class<?>> entityClasses) {
 		List<Class<?>> relevantEntities = entityClasses.stream()
-				.filter((e) -> !(e.getName().endsWith("Id$Tokenizer")))
+				.filter((e) -> !(e.getName().endsWith("Id$Tokenizer") || e.getName().endsWith("JvCommit") || e.getName().endsWith("JvCommitProperty") || e.getName().endsWith("JvCommitPropertyId") || e.getName().endsWith("JvSnapshot") || e.getName().endsWith("JvGlobalIdent")  ))
 				.collect(Collectors.toList());
 		return relevantEntities;
 	}
@@ -454,7 +451,7 @@ public class EntityGenerator {
 		List<Class<?>> otherEntities = entityClasses.stream().filter((e) -> e.getName().endsWith("Id")) 
 				.collect(Collectors.toList()); 
 		List<Class<?>> relevantEntities = entityClasses.stream() 
-				.filter((e) -> !(e.getName().endsWith("Id") || e.getName().endsWith("Id$Tokenizer"))) 
+				.filter((e) -> !(e.getName().endsWith("Id") || e.getName().endsWith("Id$Tokenizer") || e.getName().endsWith("JvCommit") || e.getName().endsWith("JvCommitProperty") || e.getName().endsWith("JvCommitPropertyId") || e.getName().endsWith("JvSnapshot") || e.getName().endsWith("JvGlobalIdent"))) 
 				.collect(Collectors.toList()); 
 		for (Class<?> currentClass : otherEntities) { 
 			String className = currentClass.getName().substring(0, currentClass.getName().indexOf("Id")); 

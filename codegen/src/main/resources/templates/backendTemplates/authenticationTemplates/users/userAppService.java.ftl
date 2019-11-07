@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+<#if Cache!false>
 import org.springframework.cache.annotation.*;
+</#if>
 import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 <#if Flowable!false>
@@ -82,7 +84,9 @@ public class UserAppService implements IUserAppService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache!false>
 	@CacheEvict(value="User", key = "#userId")
+	</#if>
 	public UpdateUserOutput Update(Long userId, UpdateUserInput input) {
 
 		UserEntity user = mapper.UpdateUserInputToUserEntity(input);
@@ -124,8 +128,9 @@ public class UserAppService implements IUserAppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache!false>
 	@CacheEvict(value="User", key = "#userId")
-
+    </#if>
 	public void Delete(Long userId) {
 
 		UserEntity existing = _userManager.FindById(userId) ; 
@@ -137,8 +142,10 @@ public class UserAppService implements IUserAppService {
 <#if Flowable!false>
 </#if>
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache!false>
 	@Cacheable(value = "User", key = "#userId")
-	public FindUserByIdOutput FindById(Long  userId) {
+	</#if>
+	public FindUserByIdOutput FindById(Long userId) {
 
 		UserEntity foundUser = _userManager.FindById(userId);
 		if (foundUser == null)  
@@ -149,7 +156,9 @@ public class UserAppService implements IUserAppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache!false>
 	@Cacheable(value = "User", key = "#userName")
+	</#if>
 	public FindUserByNameOutput FindByUserName(String userName) {
 
 		UserEntity foundUser = _userManager.FindByUserName(userName);
@@ -161,7 +170,9 @@ public class UserAppService implements IUserAppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache!false>
 	@Cacheable(value = "User", key = "#userId")
+	</#if>
 	public FindUserWithAllFieldsByIdOutput FindWithAllFieldsById(Long userId) {
 
 		UserEntity foundUser = _userManager.FindById(userId);
@@ -175,8 +186,10 @@ public class UserAppService implements IUserAppService {
 	 //Role
 	// ReST API Call - GET /user/1/role
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache!false>
     @Cacheable (value = "User", key="#userId")
-	public GetRoleOutput GetRole(Long  userId) {
+    </#if>
+	public GetRoleOutput GetRole(Long userId) {
 
 		UserEntity foundUser = _userManager.FindById(userId);
 		if (foundUser == null) {
@@ -188,7 +201,9 @@ public class UserAppService implements IUserAppService {
 	}
 	
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache!false>
 	@Cacheable(value = "User")
+	</#if>
 	public List<FindUserByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<UserEntity> foundUser = _userManager.FindAll(Search(search), pageable);

@@ -6,18 +6,11 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Date;
-<#if Audit!false>
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=PackageName].domain.BaseClasses.AuditedEntity;
-</#if>
 
 @Entity
 @Table(name = "[=AuthenticationTable]permission", schema = "[=SchemaName]")
-<#if Audit!false>
-@EntityListeners(AuditingEntityListener.class)
-</#if>
 @IdClass([=AuthenticationTable]permissionId.class)
-public class [=AuthenticationTable]permissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
+public class [=AuthenticationTable]permissionEntity implements Serializable {
 
   private Long permissionId;
   <#if (AuthenticationType!="none" && !UserInput??)>

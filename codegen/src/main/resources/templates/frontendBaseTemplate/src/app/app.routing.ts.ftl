@@ -36,7 +36,7 @@ const routes: Routes = [
     {path: 'scheduler', children: SchedulerRoutes},
     </#if>
     <#if EmailModule!false>
-    {path: 'email', children: EmailRoutes,canActivate: [ AuthGuard ]  },
+    {path: 'email', children: EmailRoutes<#if AuthenticationType != "none">,canActivate: [ AuthGuard ]</#if> },
 
     </#if>
     { path: '', component: HomeComponent },

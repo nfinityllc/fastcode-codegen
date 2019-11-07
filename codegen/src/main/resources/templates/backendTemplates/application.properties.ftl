@@ -23,6 +23,12 @@ spring.jackson.serialization.fail-on-empty-beans=false
 #applciation context path
 server.servlet.contextPath=/
 
+<#if Cache!false>
+// Redis setup
+redis.server.port=6379
+redis.server.address=localhost
+</#if>
+
 # SLF4J is a facade for logging frameworks
 # Spring Boot overrides the default logging level of Logback by setting the root logger to info
 logging.level.root=WARN

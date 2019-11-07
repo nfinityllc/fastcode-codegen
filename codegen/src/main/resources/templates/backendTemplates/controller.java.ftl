@@ -1,12 +1,14 @@
 package [=PackageName].RestControllers;
 
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import javax.persistence.EntityExistsException;
 </#if>
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+<#if AuthenticationType != "none">
 import org.springframework.security.access.prepost.PreAuthorize;
+</#if>
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Pageable;

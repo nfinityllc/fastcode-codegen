@@ -1,17 +1,10 @@
 package [=PackageName].domain.model;
 
-<#if Audit!false>
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-</#if>
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "qrtzTriggers")
-<#if Audit!false>
-@EntityListeners(AuditingEntityListener.class)
-</#if>
 public class TriggerDetailsEntity implements Serializable {
 	
 	    private Long id; 

@@ -17,6 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+<#if AuthenticationType != "none">
+import org.springframework.security.access.prepost.PreAuthorize;
+</#if>
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
@@ -32,6 +35,9 @@ public class TriggerController {
 	@Autowired
 	private Environment env;
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_CREATE')")
+    </#if>
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<TriggerCreationDetails> CreateTrigger(@RequestBody @Valid TriggerCreationDetails obj) throws Exception {
 		if (obj.getJobName() == null || obj.getJobGroup() == null || obj.getTriggerName() == null || obj.getTriggerGroup() == null) {
@@ -45,6 +51,9 @@ public class TriggerController {
 		return new ResponseEntity(obj, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_UPDATE')")
+    </#if>
 	@RequestMapping(value = "/{triggerName}/{triggerGroup}", method = RequestMethod.PUT)
 	public ResponseEntity<String> UpdateTrigger(@PathVariable String triggerName, @PathVariable String triggerGroup, @RequestBody @Valid TriggerCreationDetails obj) throws SchedulerException {
 		if(triggerName == null || triggerGroup == null) {
@@ -60,7 +69,10 @@ public class TriggerController {
 		}
 		return new ResponseEntity("Trigger Updation Status " + status, HttpStatus.OK);
 	}
-
+    
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/{triggerName}/{triggerGroup}", method = RequestMethod.GET)
 	public ResponseEntity<GetTriggerOutput> ReturnTrigger(@PathVariable String triggerName, @PathVariable String triggerGroup) throws SchedulerException {
 		if(triggerName == null || triggerGroup == null) {
@@ -74,7 +86,10 @@ public class TriggerController {
 		}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
-
+  
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<GetTriggerOutput>> ListAllTriggers( @RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -88,6 +103,9 @@ public class TriggerController {
 		return new ResponseEntity(list, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/getTriggerGroups", method = RequestMethod.GET)
 	public ResponseEntity<List<String>> ListAllTriggerGroups() throws SchedulerException {
 		List<String> list = schedulerService.ListAllTriggerGroups();
@@ -95,6 +113,9 @@ public class TriggerController {
 		return new ResponseEntity(list, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/pauseTrigger/{triggerName}/{triggerGroup}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> PauseTrigger(@PathVariable String triggerName, @PathVariable String triggerGroup) throws SchedulerException {
 		if(triggerName == null || triggerGroup == null) {
@@ -108,6 +129,9 @@ public class TriggerController {
 		return new ResponseEntity(status, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/resumeTrigger/{triggerName}/{triggerGroup}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> ResumeTrigger(@PathVariable String triggerName, @PathVariable String triggerGroup) throws SchedulerException {
 		if(triggerName == null || triggerGroup == null) {
@@ -121,6 +145,9 @@ public class TriggerController {
 		return new ResponseEntity(status, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_DELETE')")
+    </#if>
 	@RequestMapping(value = "/{triggerName}/{triggerGroup}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> CancelTrigger(@PathVariable String triggerName, @PathVariable String triggerGroup) throws SchedulerException {
 		if(triggerName == null || triggerGroup == null) {
@@ -134,6 +161,9 @@ public class TriggerController {
 		return new ResponseEntity(status, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('TRIGGERDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/{triggerName}/{triggerGroup}/jobExecutionHistory", method = RequestMethod.GET)
 	public ResponseEntity<List<GetJobOutput>> ExecutionHistoryByTrigger(@PathVariable String triggerName, @PathVariable String triggerGroup) {
 		if(triggerName == null || triggerGroup == null) {

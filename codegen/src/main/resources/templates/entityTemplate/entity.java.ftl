@@ -6,25 +6,18 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Date;
-<#if Audit!false>
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=PackageName].domain.BaseClasses.AuditedEntity;
-</#if>
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType!="none" && ClassName == AuthenticationTable>
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 </#if>
 @Entity
 @Table(<#if TableName??>name = "[=TableName]",</#if> schema = "[=SchemaName]")
-<#if Audit!false>
-@EntityListeners(AuditingEntityListener.class)
-</#if>
 <#list CompositeKeyClasses as compositeClass>
 <#if ClassName == compositeClass>
 @IdClass([=ClassName]Id.class)
 </#if>
 </#list>
-public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></#if> implements Serializable {
+public class [=ClassName]Entity implements Serializable {
 
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long">
@@ -266,8 +259,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
  </#if> 
 </#list>
 
-<#if AuthenticationType!="none">
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType!="none" && ClassName == AuthenticationTable>
 @OneToMany(mappedBy = "[=AuthenticationTable?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 
        return [=AuthenticationTable?uncap_first]permissionSet; 
@@ -290,7 +282,7 @@ public class [=ClassName]Entity <#if Audit!false>extends AuditedEntity<String></
 
     private RoleEntity role;
 </#if>
-</#if>
+
 //  @Override
 //  public boolean equals(Object o) {
 //    if (this == o) return true;

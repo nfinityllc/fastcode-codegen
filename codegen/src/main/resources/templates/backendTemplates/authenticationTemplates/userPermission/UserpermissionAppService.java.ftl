@@ -17,7 +17,9 @@ import [=PackageName].domain.model.[=AuthenticationTable]Id;
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
+<#if Cache !false>
 import org.springframework.cache.annotation.*;
+</#if>
 
 import java.util.Date;
 import java.util.Map;
@@ -103,7 +105,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="[=AuthenticationTable]permission", key = "#[=AuthenticationTable?uncap_first]permissionId")
+	</#if>
 	public Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input) {
 
 		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission = mapper.Update[=AuthenticationTable]permissionInputTo[=AuthenticationTable]permissionEntity(input);
@@ -167,8 +171,10 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=AuthenticationTable]permission", key = "#id")
-	public void Delete([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
+	<#if Cache !false>
+	@CacheEvict(value="[=AuthenticationTable]permission", key = "#[=AuthenticationTable?uncap_first]permissionId")
+	</#if>
+	public void Delete([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId) {
 
 		[=AuthenticationTable]permissionEntity existing = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId) ; 
 		_[=AuthenticationTable?uncap_first]permissionManager.Delete(existing);
@@ -184,7 +190,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "[=AuthenticationTable]permission", key = "#id")
+	<#if Cache !false>
+	@Cacheable(value = "[=AuthenticationTable]permission", key = "#[=AuthenticationTable?uncap_first]permissionId")
+	</#if>
 	public Find[=AuthenticationTable]permissionByIdOutput FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
 		[=AuthenticationTable]permissionEntity found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId);
@@ -197,7 +205,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
     //[=AuthenticationTable]
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]permission/1/[=AuthenticationTable?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "[=AuthenticationTable]permission", key="#[=AuthenticationTable?uncap_first]permissionId")
+    </#if>
 	public Get[=AuthenticationTable]Output Get[=AuthenticationTable]([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
 		[=AuthenticationTable]permissionEntity found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId);
@@ -212,7 +222,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
     //Permission
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]permission/1/permission
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "[=AuthenticationTable]permission", key="#[=AuthenticationTable?uncap_first]permissionId")
+	</#if>
 	public GetPermissionOutput GetPermission([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
 		[=AuthenticationTable]permissionEntity found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindById([=AuthenticationTable?uncap_first]permissionId);
@@ -225,7 +237,9 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	}
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
 	@Cacheable(value = "[=AuthenticationTable]permission")
+	</#if>
 	public List<Find[=AuthenticationTable]permissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<[=AuthenticationTable]permissionEntity> found[=AuthenticationTable]permission = _[=AuthenticationTable?uncap_first]permissionManager.FindAll(Search(search), pageable);

@@ -8,7 +8,7 @@
 		</span>
 	</span>
 	<span class="middle">{{title}}</span>
-	<button mat-button [disabled]="!IsCreatePermission" (click)="addNew()">
+	<button mat-button<#if AuthenticationType!="none"> [disabled]="!IsCreatePermission"</#if> (click)="addNew()">
  		{{'GENERAL.ACTIONS.ADD' | translate}} </button>
 </mat-toolbar>
 <div class="list-container">
@@ -85,7 +85,7 @@
 			<ng-container matColumnDef="actions">
 				<mat-header-cell *matHeaderCellDef> {{getFieldLabel("Actions")}}</mat-header-cell>
 				<mat-cell *matCellDef="let item" (click)="$event.stopPropagation()"> 
-					<button mat-button [disabled]="!IsDeletePermission" color="accent" (click)="delete(item)">{{'GENERAL.ACTIONS.DELETE' | translate }}</button>
+					<button mat-button<#if AuthenticationType!="none"> [disabled]="!IsDeletePermission"</#if> color="accent" (click)="delete(item)">{{'GENERAL.ACTIONS.DELETE' | translate }}</button>
 				</mat-cell>
 			</ng-container>
 			<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

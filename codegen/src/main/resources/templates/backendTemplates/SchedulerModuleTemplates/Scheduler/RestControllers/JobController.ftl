@@ -19,6 +19,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+<#if AuthenticationType != "none">
+import org.springframework.security.access.prepost.PreAuthorize;
+</#if>
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -36,6 +39,9 @@ public class JobController {
 	@Autowired
 	private Environment env;
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<JobListOutput>> ListAllJobs(@RequestParam(value = "search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -49,7 +55,9 @@ public class JobController {
 		return new ResponseEntity(list, HttpStatus.OK);
 	}
 
-
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/getJobGroups", method = RequestMethod.GET)
 	public ResponseEntity<List<String>> ListAllJobGroups() throws SchedulerException, IOException {
 		List<String> list = schedulerService.ListAllJobGroups();
@@ -57,7 +65,9 @@ public class JobController {
 		return new ResponseEntity(list, HttpStatus.OK);
 	}
 
-
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/{jobName}/{jobGroup}", method = RequestMethod.GET)
 	public ResponseEntity<JobDetails> ReturnJob(@PathVariable String jobName, @PathVariable String jobGroup) throws SchedulerException {
 
@@ -75,6 +85,9 @@ public class JobController {
 		return new ResponseEntity(detail, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/getJobClasses", method = RequestMethod.GET)
 	public ResponseEntity<List<String>> ListAllJobClasses() throws SchedulerException {
 		List<String> list = schedulerService.ListAllJobClasses();
@@ -82,6 +95,9 @@ public class JobController {
 		return new ResponseEntity(list, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/executingJobs", method = RequestMethod.GET)
 	public ResponseEntity<JobDetails> ListCurrentlyExecutingJobs() throws SchedulerException {
 		List<JobDetails> list = schedulerService.CurrentlyExecutingJobs();
@@ -89,7 +105,9 @@ public class JobController {
 		return new ResponseEntity(list, HttpStatus.OK);
 	}
 
-
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_DELETE')")
+    </#if>
 	@RequestMapping(value = "/{jobName}/{jobGroup}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> DeleteJob(@PathVariable String jobName, @PathVariable String jobGroup) throws SchedulerException {
 
@@ -106,6 +124,9 @@ public class JobController {
 		return new ResponseEntity(status, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_UPDATE')")
+    </#if>
 	@RequestMapping(value = "/{jobName}/{jobGroup}", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> UpdateJob(@PathVariable String jobName, @PathVariable String jobGroup, @RequestBody @Valid JobDetails obj) throws SchedulerException {
 
@@ -124,6 +145,9 @@ public class JobController {
 		return new ResponseEntity(status, HttpStatus.OK);
 	}
 
+	<#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/pauseJob/{jobName}/{jobGroup}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> PauseJob(@PathVariable String jobName, @PathVariable String jobGroup) throws SchedulerException {
 		if(jobName == null || jobGroup == null)
@@ -139,6 +163,9 @@ public class JobController {
 		return new ResponseEntity(status, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/resumeJob/{jobName}/{jobGroup}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> ResumeJob(@PathVariable String jobName, @PathVariable String jobGroup) throws SchedulerException {
 		if(jobName == null || jobGroup == null)
@@ -154,6 +181,9 @@ public class JobController {
 		return new ResponseEntity(status, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_CREATE')")
+    </#if>
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<JobDetails> CreateJob(@RequestBody @Valid JobDetails obj) throws SchedulerException, ClassNotFoundException {
 		if(obj.getJobClass() == null || obj.getJobName() == null || obj.getJobGroup() == null)
@@ -165,11 +195,14 @@ public class JobController {
 		{
 			throw new EntityExistsException(
 					String.format("There already exists a job with a jobName=%s and jobGroup=%s", obj.getJobName() ,obj.getJobGroup()));
-}
+    }
 		
 		return new ResponseEntity(obj, HttpStatus.OK);
 	}
 
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/{jobName}/{jobGroup}/triggers", method = RequestMethod.GET)
 	public ResponseEntity<List<TriggerDetails>> ReturnTriggerForJob(@PathVariable String jobName, @PathVariable String jobGroup) throws SchedulerException {
 		if(jobName == null || jobGroup == null)
@@ -185,7 +218,10 @@ public class JobController {
 		}
 		return new ResponseEntity(triggerDetails, HttpStatus.OK);
 	}
-
+    
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value = "/{jobName}/{jobGroup}/jobExecutionHistory", method = RequestMethod.GET)
 	public ResponseEntity<List<GetJobOutput>> ExecutionHistoryByJob(@PathVariable String jobName, @PathVariable String jobGroup) {
 		if(jobName == null || jobGroup == null)
@@ -195,7 +231,10 @@ public class JobController {
 		List<GetJobOutput> list = schedulerService.ExecutionHistoryByJob(jobName, jobGroup);
 		return new ResponseEntity(list, HttpStatus.OK);
 	}
-
+    
+    <#if AuthenticationType != "none">
+    @PreAuthorize("hasAnyAuthority('JOBDETAILSENTITY_READ')")
+    </#if>
 	@RequestMapping(value= "/jobExecutionHistory", method = RequestMethod.GET)
 	public ResponseEntity<List<GetJobOutput>> ExecutionHistory (@RequestParam(value = "search", required=false) String search,@RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception
 	{

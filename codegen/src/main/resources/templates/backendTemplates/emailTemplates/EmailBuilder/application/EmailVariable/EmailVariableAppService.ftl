@@ -8,8 +8,6 @@ import java.util.Map;
 
 import [=PackageName].domain.EmailVariable.IEmailVariableManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,8 +50,6 @@ public class EmailVariableAppService implements IEmailVariableAppService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="EmailVariable", key = "#eid")
-
 	public void Delete(Long eid) {
 		EmailVariableEntity existing = _emailVariableManager.FindById(eid);
 		_emailVariableManager.Delete(existing);
@@ -61,8 +57,7 @@ public class EmailVariableAppService implements IEmailVariableAppService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="EmailVariable", key = "#eid")
-	public UpdateEmailVariableOutput Update(Long uid, UpdateEmailVariableInput email) {
+	public UpdateEmailVariableOutput Update(Long eid, UpdateEmailVariableInput email) {
 		EmailVariableEntity ue = emailVariableMapper.UpdateEmailVariableInputToEmailVariableEntity(email);
 		EmailVariableEntity updatedEmail = _emailVariableManager.Update(ue);
 
@@ -71,7 +66,6 @@ public class EmailVariableAppService implements IEmailVariableAppService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Cacheable(value = "EmailVariable", key = "#eid")
 	public FindEmailVariableByIdOutput FindById(Long eid) {
 		EmailVariableEntity foundEmail = _emailVariableManager.FindById(eid);
 
@@ -84,7 +78,6 @@ public class EmailVariableAppService implements IEmailVariableAppService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Cacheable(value = "EmailVariable", key = "#name")
 	public FindEmailVariableByNameOutput FindByName(String name) {
 	    	EmailVariableEntity foundEmail = _emailVariableManager.FindByName(name);
 	    	if (foundEmail == null) {
@@ -95,7 +88,6 @@ public class EmailVariableAppService implements IEmailVariableAppService {
 		}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Cacheable(value = "EmailVariable")
 	public List<FindEmailVariableByIdOutput> Find(SearchCriteria search,Pageable pageable) throws Exception {
 		
 		Page<EmailVariableEntity> foundEmail = _emailVariableManager.FindAll(Search(search),pageable);

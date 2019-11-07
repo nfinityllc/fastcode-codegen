@@ -10,16 +10,23 @@ public class UserInput {
 	String schemaName;
 	String connectionStr;
 	List<String> tablesList;
-	Boolean audit=false;
+	Boolean cache=false;
+//	Boolean audit=false;
 	Boolean email;
 	Boolean scheduler;
 	Boolean history;
 	Boolean flowable;
 	String authenticationType=null;
-	String authenticationSchema;
+	String authenticationSchema=null;
 	Boolean doUpgrade;
 
 	
+	public Boolean getCache() {
+		return cache;
+	}
+	public void setCache(Boolean cache) {
+		this.cache = cache;
+	}
 	public String getAuthenticationSchema() {
 		return authenticationSchema;
 	}
@@ -63,12 +70,12 @@ public class UserInput {
 	public void setConnectionStr(String connectionStr) {
 		this.connectionStr = connectionStr;
 	}
-	public Boolean getAudit() {
-		return audit;
-	}
-	public void setAudit(Boolean audit) {
-		this.audit = audit;
-	}
+//	public Boolean getAudit() {
+//		return audit;
+//	}
+//	public void setAudit(Boolean audit) {
+//		this.audit = audit;
+//	}
 	public List<String> getTablesList() {
 		return tablesList;
 	}

@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+<#if Cache !false>
 import org.springframework.cache.annotation.*;
+</#if>
 import org.apache.commons.lang3.StringUtils;
 <#if Flowable!false>
 import [=PackageName].application.Flowable.ActIdGroupMapper;
@@ -63,8 +65,10 @@ public class RoleAppService implements IRoleAppService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="Role", key = "#roleId")
-	public UpdateRoleOutput Update(Long  roleId, UpdateRoleInput input) {
+	</#if>
+	public UpdateRoleOutput Update(Long roleId, UpdateRoleInput input) {
 
 		<#if Flowable!false>
 		String oldRoleName = null;
@@ -83,9 +87,10 @@ public class RoleAppService implements IRoleAppService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Role", key = "#id")
-
-	public void Delete(Long  roleId) {
+	<#if Cache !false>
+	@CacheEvict(value="Role", key = "#roleId")
+    </#if>
+	public void Delete(Long roleId) {
 
 		RoleEntity existing = _roleManager.FindById(roleId) ; 
 		_roleManager.Delete(existing);
@@ -96,8 +101,10 @@ public class RoleAppService implements IRoleAppService{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Role", key = "#id")
-	public FindRoleByIdOutput FindById(Long  roleId) {
+	<#if Cache !false>
+	@Cacheable(value = "Role", key = "#roleId")
+	</#if>
+	public FindRoleByIdOutput FindById(Long roleId) {
 
 		RoleEntity foundRole = _roleManager.FindById(roleId);
 		if (foundRole == null)  
@@ -108,6 +115,9 @@ public class RoleAppService implements IRoleAppService{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
+    @Cacheable(value = "Role", key = "#roleName")
+    </#if>
 	public FindRoleByNameOutput FindByRoleName(String roleName) {
 
 		RoleEntity foundRole = _roleManager.FindByRoleName(roleName);
@@ -119,7 +129,9 @@ public class RoleAppService implements IRoleAppService{
 	}
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
 	@Cacheable(value = "Role")
+	</#if>
 	public List<FindRoleByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<RoleEntity> foundRole = _roleManager.FindAll(Search(search), pageable);

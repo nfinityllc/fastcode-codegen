@@ -21,7 +21,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#if>
 </#list>
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 <#if Flowable!false>
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 import [=PackageName].application.Flowable.ActIdUserMapper;
@@ -31,7 +31,6 @@ import [=PackageName].application.Flowable.FlowableIdentityService;
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
-import org.springframework.cache.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -47,7 +46,11 @@ import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=ClassName]permissionEntity;
 </#if>
+
 import org.apache.commons.lang3.StringUtils;
+<#if Cache !false>
+import org.springframework.cache.annotation.*;
+</#if>
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page; 
@@ -166,7 +169,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		</#if>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		<#if Flowable!false>
 		//Map and create flowable user
 		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(created[=ClassName]);
@@ -177,7 +180,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	</#if>
 	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>, Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
@@ -234,7 +239,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
 		
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 		<#if Flowable!false>
 		String oldRoleName = null;
 		//TODO: how to map Role in custom User table?
@@ -250,12 +255,14 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	</#if>
 	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id) ; 
 		_[=ClassName?uncap_first]Manager.Delete(existing);
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 		<#if Flowable!false>
 		<#if AuthenticationFields??>
 		<#list AuthenticationFields as authKey,authValue>
@@ -269,7 +276,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
 	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	</#if>
 	public Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -281,7 +290,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
 	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
+	</#if>
 	public Find[=ClassName]WithAllFieldsByIdOutput FindWithAllFieldsById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -295,7 +306,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	//Role
 	// ReST API Call - GET /user/1/role
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
 	@Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
+	</#if>
 	public GetRoleOutput GetRole(Long [=ClassName?uncap_first]Id) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -310,7 +323,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	<#if authKey== "UserName">
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
 	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=authValue.fieldName?uncap_first]")
+	</#if>
 	public Find[=ClassName]By[=authValue.fieldName?cap_first]Output FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindBy[=authValue.fieldName?cap_first]([=authValue.fieldName?uncap_first]);
@@ -329,7 +344,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
+    </#if>
 	public Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
@@ -344,7 +361,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
    </#if>
    </#list>
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
 	@Cacheable(value = "[=ClassName]")
+	</#if>
 	public List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<[=EntityClassName]> found[=ClassName] = _[=ClassName?uncap_first]Manager.FindAll(Search(search), pageable);
