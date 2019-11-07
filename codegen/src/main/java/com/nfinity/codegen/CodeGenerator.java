@@ -142,13 +142,7 @@ public class CodeGenerator {
 					destPath, type, entry.getValue(), authenticationType, scheduler, email,cache, schema,authenticationTable, flowable);
 		}
 
-		//FileUtils.copyFile(new File(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/keystore.p12"), new File(destPath + "/" + backEndRootFolder + "/src/main/resources/keystore.p12"));
-        FileUtils.copyFile(new File("src/main/resources/keystore.p12"), new File(destPath + "/" + backEndRootFolder + "/src/main/resources/keystore.p12"));
-
-		//	PomFileModifier.update(destPath + "/" + backEndRootFolder + "/pom.xml",authenticationType,scheduler);
-		//	modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java",appName);
-
-
+		FileUtils.copyFile(new File("src/main/resources/keystore.p12"), new File(destPath + "/" + backEndRootFolder + "/src/main/resources/keystore.p12"));
 
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
@@ -297,10 +291,8 @@ public class CodeGenerator {
 			Map<String, FieldDetails> authFieldMap = authTableDetails.getAuthenticationFieldsMap();
 			root.put("UserNameField",authFieldMap.get("UserName").getFieldName());
 			
-			String entityClassName = authenticationTable.concat("Entity");
 			String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(authenticationTable);
 			splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
-			String instanceName = StringUtils.join(splittedNames);
 			for (int i = 0; i < splittedNames.length; i++) {
 				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
 			}
@@ -465,14 +457,13 @@ public class CodeGenerator {
 				destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder,authenticationTable);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString(),authenticationTable);
-				//	generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
 			} else {
 				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
 				generateFiles(uiTemplate2DestMapping, root, destFolder);
 				destFolder = destPath +"/"+ backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder,authenticationTable);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString(),authenticationTable);
-				//	generateCustomRepositoryTemplates(root, destFolder,root.get("ClassName").toString());
+				
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -602,23 +593,6 @@ public class CodeGenerator {
 
 		return backEndTemplate;
 	}
-
-	//	private static Map<String, Object> generateCustomRepositoryTemplates(Map<String,Object> root,String destPath,String className) {
-	//		List<String> relationInput= (List<String>) root.get("RelationInput");
-	//		destPath=destPath + "/domain/IRepository";
-	//		Map<String, Object> backEndTemplate = new HashMap<>();
-	//		for(String str : relationInput)
-	//		{
-	//			if(className.equals(str.substring(0,str.lastIndexOf("-")).toString()))
-	//			{
-	//				backEndTemplate.put("icustomRepository.java.ftl", className + "CustomRepository.java");
-	//				backEndTemplate.put("customRepositoryImpl.java.ftl", className + "CustomRepositoryImpl.java");
-	//				generateFiles(backEndTemplate, root, destPath);
-	//			}
-	//		}
-	//
-	//		return backEndTemplate;
-	//	}
 
 	private static Map<String, Object> getRepositoryTemplates(String className) {
 

@@ -38,7 +38,7 @@ public class CodegenApplication implements ApplicationRunner {
 		input.setConnectionStr(root.get("conn") != null ? root.get("conn")
 				: (configProperties.getConnectionStr() != null ? configProperties.getConnectionStr()
 						: GetUserInput.getInput(scanner, "DB Connection String")));
-		input.setConnectionStr("jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode");
+		
 		input.setSchemaName(root.get("s") == null ? GetUserInput.getInput(scanner, "Db schema") : root.get("s"));
 		input.setDestinationPath(
 				root.get("d") == null ? GetUserInput.getInput(scanner, "destination folder") : root.get("d"));
@@ -49,9 +49,6 @@ public class CodegenApplication implements ApplicationRunner {
 		input.setCache(root.get("c") == null ? (GetUserInput.getInput(scanner, "cache").toLowerCase().equals("true") ? true : false)
 		       : (root.get("c").toLowerCase().equals("true") ? true : false));
 
-		//		input.setAudit(root.get("audit") == null
-		//				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
-		//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 		input.setEmail(root.get("email") == null
 				? (false) : (root.get("email").toLowerCase().equals("true") ? true : false));
 		input.setScheduler(root.get("scheduler") == null
@@ -80,13 +77,8 @@ public class CodegenApplication implements ApplicationRunner {
 			input.setFlowable(false);
 		} 
 		else if (value>1) {
-//			System.out.print("\nDo you want to enable auditing ? (y/n)");
 			scanner.nextLine();
 			String str;
-//			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes") )
-//			{
-//				input.setAudit(true);
-//			}
 			System.out.print("\nDo you have your own user table? (y/n)");
 			str= scanner.nextLine();
 			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes"))
@@ -110,10 +102,6 @@ public class CodegenApplication implements ApplicationRunner {
 				input.setAuthenticationType("oidc");
 			}
 		}
-
-		//		input.setDatabaseAuthentication(root.get("db-autentication") == null
-		//				? (GetUserInput.getInput(scanner, "database authentication").toLowerCase().equals("true") ? true : false)
-		//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 
 		return input;
 	}

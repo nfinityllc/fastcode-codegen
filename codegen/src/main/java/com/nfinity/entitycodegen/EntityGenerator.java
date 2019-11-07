@@ -86,14 +86,6 @@ public class EntityGenerator {
 
 					EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
-//					if(audit)
-//					{
-//						details.setFieldsMap(removeAuditFieldsIfExists(details.getFieldsMap()));
-//						for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
-//							entry.getValue().setfDetails(removeAuditFieldsIfExistsFromList(entry.getValue().getfDetails()));
-//						}
-//
-//					}
 					details.setCompositeKeyClasses(compositePrimaryKeyEntities);
 
 					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
@@ -133,50 +125,19 @@ public class EntityGenerator {
 			if(authenticationType !="none")
 			{
 				EntityGenerator.GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath,authenticationTable,authenticationType);
-//				if(audit)
-//				{
-//					generateAuditEntity(destinationPath , packageName);
-//				}
+
 			}
 
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
 
-	//	deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+		deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
 		return entityDetailsMap;
 	}
 
-//	public static List<FieldDetails> removeAuditFieldsIfExistsFromList(List<FieldDetails> fieldDetailsList)
-//	{
-//		Iterator<FieldDetails> iterator = fieldDetailsList.iterator();
-//		while (iterator.hasNext()) {
-//			FieldDetails fieldObj = iterator.next();
-//			if("creatorUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "creationTime".equalsIgnoreCase(fieldObj.getFieldName())
-//					|| "lastModifierUserId".equalsIgnoreCase(fieldObj.getFieldName()) || "lastModificationTime".equalsIgnoreCase(fieldObj.getFieldName()) ) 	
-//			{
-//
-//				iterator.remove();
-//			}
-//		}
-//	
-//		return fieldDetailsList;
-//	}
-//	public static Map<String,FieldDetails> removeAuditFieldsIfExists(Map<String,FieldDetails> fieldDetailsMap)
-//	{
-//
-//		Iterator<Map.Entry<String,FieldDetails>> iter = fieldDetailsMap.entrySet().iterator();
-//		while (iter.hasNext()) {
-//			Map.Entry<String,FieldDetails> entry = iter.next();
-//			if("creatorUserId".equalsIgnoreCase(entry.getKey()) || "creationTime".equalsIgnoreCase(entry.getKey()) ||
-//					"lastModifierUserId".equalsIgnoreCase(entry.getKey()) || "lastModificationTime".equalsIgnoreCase(entry.getKey())){
-//				iter.remove();
-//			}
-//		}
-//		return fieldDetailsMap;
-//	}
 	public static Map<String,EntityDetails> validateAuthenticationTable(Map<String,EntityDetails> entityDetailsMap, String authenticationTable, Boolean flowable)
 	{
 		Boolean isTableExits=false;
@@ -190,16 +151,6 @@ public class EntityGenerator {
 			{
 				System.out.println(" INVALID AUTHORIZATION SCHEMA ");
 				System.exit(0);
-				//			System.out.println("Enter Valid Authorization Table : ");
-				//			String str=scanner.nextLine();
-				//			str=str.substring(0, 1).toUpperCase() + str.substring(1);
-				//			System.out.println("  j" + str);
-				//			if(entityDetailsMap.containsKey(str))
-				//			{
-				//				isTableExits=true;
-				//				
-				//				authenticationTable=str;
-				//			}
 			}
 
 			return getAuthenticationTableFieldsMapping(entityDetailsMap, authenticationTable, flowable, scanner);
@@ -404,19 +355,6 @@ public class EntityGenerator {
 		backEndTemplate.put("entityTemplate/idClass.java.ftl", className + "Id.java");
 		return backEndTemplate;
 	}
-
-//	public static void generateAuditEntity(String destPath, String packageName) {
-//		setTemplateLoader();
-//		Map<String, Object> backEndTemplate = new HashMap<>();
-//		Map<String, Object> root = new HashMap<>();
-//		root.put("PackageName", packageName);
-//		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditedEntity.java.ftl", "AuditedEntity.java");
-//		backEndTemplate.put("backendTemplates/BaseClassTemplates/AuditorAwareImpl.java.ftl", "AuditorAwareImpl.java");
-//		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/BaseClasses";
-//		new File(destinationFolder).mkdirs();
-//		generateFiles(backEndTemplate, root, destinationFolder);
-//
-//	}
 
 	public static void deleteFile(String directory) {
 		File file = new File(directory);
