@@ -125,7 +125,6 @@ public class EntityGenerator {
 			if(authenticationType !="none")
 			{
 				EntityGenerator.GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath,authenticationTable,authenticationType);
-
 			}
 
 		} catch (ClassNotFoundException ex) {
@@ -247,6 +246,7 @@ public class EntityGenerator {
 			if(className.equalsIgnoreCase(authenticationTable))
 			{
 				root.put("ClassName", className);
+				root.put("IdClass", entry.getValue().getIdClass());
 				root.put("TableName", entry.getValue().getEntityTableName());
 				root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
 				root.put("Fields", entry.getValue().getFieldsMap());
@@ -281,6 +281,7 @@ public class EntityGenerator {
 		root.put("CompositeKeyClasses", entityDetails.getCompositeKeyClasses());
 		root.put("TableName", entityDetails.getEntityTableName());
 		root.put("SchemaName", schemaName);
+		root.put("IdClass", entityDetails.getIdClass());
 		root.put("AuthenticationType",authenticationType);
 		if(authenticationTable !=null)
 			root.put("AuthenticationTable", authenticationTable);
@@ -309,10 +310,11 @@ public class EntityGenerator {
 		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
 
 		generateEntity(root, destinationFolder);
-		if (compositePrimaryKeyEntities.contains(className)) {
+
+		String idClassName = entityDetails.getIdClass().substring(0,entityDetails.getIdClass().indexOf("Id"));
+		if (compositePrimaryKeyEntities.contains(idClassName) && root.get("ClassName").toString().equals(idClassName)) {
 			generateIdClass(root, destinationFolder);
 		}
-
 
 	}
 

@@ -9,7 +9,8 @@ public class FieldDetails {
 	boolean isPrimaryKey;
 	int length;
 	String description;
-	private String FieldLabel;
+	private String relationFieldName;
+
 	
 	
 	public String getDescription() {
@@ -55,11 +56,11 @@ public class FieldDetails {
 	public void setLength(int length) {
 		this.length = length;
 	}
-	public String getFieldLabel() {
-		return FieldLabel;
+	public String getRelationFieldName() {
+		return relationFieldName;
 	}
-	public void setFieldLabel(String fieldLabel) {
-		FieldLabel = fieldLabel;
+	public void setrelationFieldName(String relationFieldName) {
+		this.relationFieldName = relationFieldName;
 	}
 	
 }

@@ -4,7 +4,7 @@ package [=PackageName].domain.IRepository;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 </#if>
 <#if CompositeKeyClasses?seq_contains(ClassName)>
-import [=PackageName].domain.model.[=ClassName]Id;
+import [=PackageName].domain.model.[=IdClass];
 </#if>
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +22,7 @@ import [=PackageName].domain.model.[=EntityClassName];
 @JaversSpringDataAuditable
 </#if>
 @RepositoryRestResource(collectionResourceRel = "[=ApiPath]", path = "[=ApiPath]")
-public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName], <#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list></#if>>,QuerydslPredicateExecutor<[=EntityClassName]> {
+public interface I[=ClassName]Repository extends JpaRepository<[=EntityClassName], <#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list></#if>>,QuerydslPredicateExecutor<[=EntityClassName]> {
 <#if CompositeKeyClasses?seq_contains(ClassName)>
     <#assign count = 0>
 //    @Query("select e from [=EntityClassName] e where <#list PrimaryKeys?keys as key><#assign count = count+1><#if key_has_next>e.[=key] = ?[=count] and <#else>e.[=key] = ?[=count]"</#if></#list>)

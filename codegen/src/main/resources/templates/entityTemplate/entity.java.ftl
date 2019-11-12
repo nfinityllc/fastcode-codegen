@@ -14,7 +14,7 @@ import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 @Table(<#if TableName??>name = "[=TableName]",</#if> schema = "[=SchemaName]")
 <#list CompositeKeyClasses as compositeClass>
 <#if ClassName == compositeClass>
-@IdClass([=ClassName]Id.class)
+@IdClass([=IdClass].class)
 </#if>
 </#list>
 public class [=ClassName]Entity implements Serializable {

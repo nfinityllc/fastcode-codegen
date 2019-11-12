@@ -26,8 +26,16 @@ public class EntityDetails {
 	Map<String, FieldDetails> entitiesDescriptiveFieldMap = new HashMap<>();
 	Map<String, FieldDetails> authenticationFieldsMap = null;
 	String entityTableName;
+	String idClass;
 
-	
+	public String getIdClass() {
+		return idClass;
+	}
+
+	public void setIdClass(String idClass) {
+		this.idClass = idClass;
+	}
+
 	public String getEntityTableName() {
 		return entityTableName;
 	}
@@ -52,11 +60,12 @@ public class EntityDetails {
 		this.entitiesDescriptiveFieldMap = entitiesDescriptiveFieldMap;
 	}
 
-	public EntityDetails(Map<String, FieldDetails> fieldsMap, Map<String, RelationDetails> relationsMap,String tableName) {
+	public EntityDetails(Map<String, FieldDetails> fieldsMap, Map<String, RelationDetails> relationsMap,String tableName,String idClass) {
 		super();
 		this.fieldsMap = fieldsMap;
 		this.relationsMap = relationsMap;
 		this.entityTableName = tableName;
+		this.idClass = idClass;
 	}
 
 	public Map<String, FieldDetails> getFieldsMap() {
@@ -91,6 +100,7 @@ public class EntityDetails {
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
         String tableName=null;
+        String idClass=className+"Id";
 		try {
 
 			Class<?> myClass = entityClass;
@@ -113,6 +123,7 @@ public class EntityDetails {
 				String str = field.getType().toString();
 				int index = str.lastIndexOf(".") + 1;
 				details.setFieldName(field.getName());
+			//	details.setrelationFieldName(field.getName());
 				String fieldType=str.substring(index);
 				if(fieldType.equals("int"))
 				{
@@ -144,6 +155,7 @@ public class EntityDetails {
 						relation.setfName(field.getName());
 						relation.seteName(details.getFieldType());
 						relation.seteModuleName(geteModuleName(details.getFieldType()));
+						
 						joinDetails.setJoinEntityName(details.getFieldType());
 					}
 					if (a.annotationType().toString().equals("interface javax.persistence.OneToOne")) {
@@ -155,14 +167,23 @@ public class EntityDetails {
 						joinDetails.setJoinEntityName(details.getFieldType());
 
 						String mappedBy = oneToOne.mappedBy();
+						idClass=details.getFieldType()+"Id";
 						if(!mappedBy.isEmpty())
+						{
 							relation.setIsParent(true);	
-						String entity = StringUtils.substringBeforeLast(entityName, ".");
+							//idClass=details.getFieldType()+"Id";
+							idClass=className+"Id";
+						}
+						
+//						String entity = StringUtils.substringBeforeLast(entityName, ".");
 
-						String referenceColumn = findPrimaryKey(
-								entity.concat("." + relation.geteName()), classList);
-						if (referenceColumn != null)
-							joinDetails.setReferenceColumn(referenceColumn);
+//						String referenceColumn = findPrimaryKey(
+//								entity.concat("." + relation.geteName()), classList);
+//						if (referenceColumn != null) {
+//							details.setFieldName(referenceColumn);
+//							System.out.println(" RES  " + referenceColumn);
+//							joinDetails.setReferenceColumn(referenceColumn);
+//						}
 						joinDetails.setMappedBy(mappedBy);
 					}
 
@@ -184,7 +205,6 @@ public class EntityDetails {
 							else
 								joinDetails.setReferenceColumn(referenceCol);
 							joinDetails.setJoinColumn(name); 
-
 							joinDetails.setIsJoinColumnOptional(j.nullable());
 
 							String columnType = j.columnDefinition();
@@ -229,7 +249,7 @@ public class EntityDetails {
 					if (a.annotationType().toString().equals("interface javax.persistence.OneToMany")) {
 						String relationalEntity = a.toString();
 						OneToMany oneToMany=(javax.persistence.OneToMany) a;
-
+                     
 						String entityPackage = null;
 						String[] word = relationalEntity.split("[\\(,//)]");
 						for (String s : word) {
@@ -249,9 +269,10 @@ public class EntityDetails {
 						relation.seteName(targetEntity);
 						relation.seteModuleName(geteModuleName(targetEntity));
 						relation.setfName(targetEntity.toLowerCase());
+					
 						joinDetails.setJoinEntityName(details.getFieldType());
+		
 						String mappedBy = oneToMany.mappedBy();
-
 						joinDetails.setMappedBy(mappedBy);
 					}
 
@@ -278,7 +299,7 @@ public class EntityDetails {
 			e.printStackTrace();
 		}
 		Map<String, FieldDetails> sortedMap = new TreeMap<>(fieldsMap);
-		return new EntityDetails(sortedMap, relationsMap,tableName);
+		return new EntityDetails(sortedMap, relationsMap,tableName,idClass);
 	}
 	
 	private static String geteModuleName(String className) {

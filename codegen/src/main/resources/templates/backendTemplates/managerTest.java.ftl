@@ -37,7 +37,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 import [=PackageName].domain.model.RoleEntity;
 </#if>
 <#if CompositeKeyClasses?seq_contains(ClassName)>
-import [=PackageName].domain.model.[=ClassName]Id;
+import [=PackageName].domain.model.[=IdClass];
 </#if>
 import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 import [=CommonModulePackage].logging.LoggingHelper;
@@ -66,7 +66,7 @@ public class [=ClassName]ManagerTest {
 	
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
 	@Mock
-	private [=ClassName]Id [=ClassName?uncap_first]Id;
+	private [=IdClass] [=IdClass?uncap_first];
 	<#else><#list Fields as key,value>
 	<#if value.isPrimaryKey!false>
 	<#if value.fieldType?lower_case == "long">
@@ -95,15 +95,15 @@ public class [=ClassName]ManagerTest {
 		[=ClassName]Entity [=ClassName?uncap_first] =mock([=ClassName]Entity.class);
 
         Optional<[=ClassName]Entity> db[=ClassName] = Optional.of(([=ClassName]Entity) [=ClassName?uncap_first]);
-		Mockito.<Optional<[=ClassName]Entity>>when(_[=ClassName?uncap_first]Repository.findById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(db[=ClassName]);
-		Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo([=ClassName?uncap_first]);
+		Mockito.<Optional<[=ClassName]Entity>>when(_[=ClassName?uncap_first]Repository.findById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=IdClass].class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(db[=ClassName]);
+		Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo([=ClassName?uncap_first]);
 	}
 
 	@Test 
 	public void find[=ClassName]ById_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
 
-	    Mockito.<Optional<[=ClassName]Entity>>when(_[=ClassName?uncap_first]Repository.findById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(Optional.empty());
-		Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo(null);
+	    Mockito.<Optional<[=ClassName]Entity>>when(_[=ClassName?uncap_first]Repository.findById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=IdClass].class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(Optional.empty());
+		Assertions.assertThat(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo(null);
 	}
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	<#if AuthenticationFields??>
@@ -188,9 +188,9 @@ public class [=ClassName]ManagerTest {
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first] = mock([=relationValue.eName]Entity.class);
 		
         Optional<[=EntityClassName]> db[=ClassName] = Optional.of(([=EntityClassName]) [=ClassName?uncap_first]);
-		Mockito.<Optional<[=EntityClassName]>>when(_[=ClassName?uncap_first]Repository.findById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=ClassName]Id.class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(db[=ClassName]);
+		Mockito.<Optional<[=EntityClassName]>>when(_[=ClassName?uncap_first]Repository.findById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=IdClass].class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(db[=ClassName]);
 		Mockito.when([=ClassName?uncap_first].get[=relationValue.eName]()).thenReturn([=relationValue.eName?uncap_first]);
-		Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo([=relationValue.eName?uncap_first]);
+		Assertions.assertThat(_[=ClassName?uncap_first]Manager.Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo([=relationValue.eName?uncap_first]);
 
 	}
 	

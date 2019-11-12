@@ -69,6 +69,7 @@ public class CodeGenerator {
 		root.put("PackageName", packageName);
 		root.put("InstanceName", instanceName);
 		root.put("CompositeKeyClasses",details.getCompositeKeyClasses());
+		root.put("IdClass", details.getIdClass());
 		root.put("DescriptiveField",details.getEntitiesDescriptiveFieldMap());
 		root.put("AuthenticationFields",details.getAuthenticationFieldsMap());
 		root.put("History", history);
