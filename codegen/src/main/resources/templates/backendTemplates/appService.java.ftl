@@ -128,8 +128,12 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
-			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+        <#if relationValue.relation == "ManyToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
+        [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+        </#if>
+	    <#if relationValue.relation == "OneToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.referenceColumn?cap_first]()!=null</#if></#list>) {
+	    [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first](),<#else> input.get[=joinDetails.referenceColumn?cap_first]()</#if></#list>));
+	    </#if>
 			if(found[=relationValue.eName]!=null) {
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
 			}
@@ -214,9 +218,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
-			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
-			if(found[=relationValue.eName]!=null){
+        <#if relationValue.relation == "ManyToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
+        [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+        </#if>
+	    <#if relationValue.relation == "OneToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.referenceColumn?cap_first]()!=null</#if></#list>) {
+	    [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first](),<#else> input.get[=joinDetails.referenceColumn?cap_first]()</#if></#list>));
+	    </#if>
+	    	if(found[=relationValue.eName]!=null){
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
 			}
 			else {
@@ -749,12 +757,12 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
 				}
 				else {
-					//error
+					return null;
 				}
 			}
 		}
 		else {
-			//error
+			return null;
 		}
 		
 		<#list PrimaryKeys as fieldName,fieldType>

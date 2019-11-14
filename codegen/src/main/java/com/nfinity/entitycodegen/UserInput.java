@@ -14,7 +14,7 @@ public class UserInput {
 //	Boolean audit=false;
 	Boolean email;
 	Boolean scheduler;
-	Boolean history;
+	Boolean history=false;
 	Boolean flowable;
 	String authenticationType=null;
 	String authenticationSchema=null;

@@ -156,14 +156,14 @@ public class [=ClassName]AppServiceTest {
        Create[=ClassName]Input [=ClassName?uncap_first] = new Create[=ClassName]Input();
    
         <#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-		<#if relationValue.isParent==false>
+		<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent==false)>
 		[=relationValue.eName]Entity [=relationValue.eName?uncap_first]= mock([=relationValue.eName]Entity.class);
         <#assign i=relationValue.joinDetails?size>
         <#if i !=0 >
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
+        <#if relationValue.relation == "ManyToOne">
         <#if joinDetails.joinColumnType == "String">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
         <#elseif joinDetails.joinColumnType == "Long">
@@ -175,16 +175,39 @@ public class [=ClassName]AppServiceTest {
 		<#elseif joinDetails.joinColumnType == "Short">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
 		</#if>
-		
+		<#else>
+		<#if i==1>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		<#else>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		</#if>
+		</#if>
         </#if>
         </#if>
         </#list>
 		</#if>
 		Mockito.when(_[=relationValue.eName?uncap_first]Manager.FindById(<#if i ==1 ><#list relationValue.joinDetails as joinDetails><#if joinDetails.joinEntityName == relationValue.eName><#if joinDetails.joinColumn??>
         <#if joinDetails.joinColumnType == "String">any(String.class)<#elseif joinDetails.joinColumnType == "Long">any(Long.class)<#elseif joinDetails.joinColumnType == "Integer">any(Integer.class)<#elseif joinDetails.joinColumnType == "Double">any(Double.class)<#elseif joinDetails.joinColumnType == "Short">any(Short.class)</#if></#if></#if></#list><#else>any([=relationValue.eName]Id.class)</#if>)).thenReturn([=relationValue.eName?uncap_first]);
-		
-        </#if>
-        
         </#if>
 		</#list>
         
@@ -204,8 +227,7 @@ public class [=ClassName]AppServiceTest {
        Assertions.assertThat(_appService.Create([=ClassName?uncap_first])).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]Entity)); 
     } 
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne"  >
-<#if relationValue.isParent==false>
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent==false)>
 <#assign i=relationValue.joinDetails?size>
 <#if i==1>
 <#list relationValue.joinDetails as joinDetails>
@@ -231,18 +253,45 @@ public class [=ClassName]AppServiceTest {
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
-        <#if joinDetails.joinColumnType?lower_case == "string">
+        <#if relationValue.relation == "ManyToOne">
+        <#if joinDetails.joinColumnType == "String">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        <#elseif joinDetails.joinColumnType == "Long">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        <#elseif joinDetails.joinColumnType == "Integer">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
-		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		<#elseif joinDetails.joinColumnType == "Double">
 		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
-		<#elseif joinDetails.joinColumnType?lower_case == "short">
+		<#elseif joinDetails.joinColumnType == "Short">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
 		</#if>
-		
+		<#else>
+		<#if i==1>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		<#else>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		</#if>
+		</#if>
         </#if>
         </#if>
         </#list>
@@ -271,16 +320,44 @@ public class [=ClassName]AppServiceTest {
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
-        <#if joinDetails.joinColumnType?lower_case == "string">
+        <#if relationValue.relation == "ManyToOne">
+        <#if joinDetails.joinColumnType == "String">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        <#elseif joinDetails.joinColumnType == "Long">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        <#elseif joinDetails.joinColumnType == "Integer">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
-		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		<#elseif joinDetails.joinColumnType == "Double">
 		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
-		<#elseif joinDetails.joinColumnType?lower_case == "short">
+		<#elseif joinDetails.joinColumnType == "Short">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		<#else>
+		<#if i==1>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		<#else>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		</#if>
 		</#if>
 		
         </#if>
@@ -341,16 +418,44 @@ public class [=ClassName]AppServiceTest {
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
-        <#if joinDetails.joinColumnType?lower_case == "string">
+       <#if relationValue.relation == "ManyToOne">
+        <#if joinDetails.joinColumnType == "String">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        <#elseif joinDetails.joinColumnType == "Long">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        <#elseif joinDetails.joinColumnType == "Integer">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
-		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		<#elseif joinDetails.joinColumnType == "Double">
 		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
-		<#elseif joinDetails.joinColumnType?lower_case == "short">
+		<#elseif joinDetails.joinColumnType == "Short">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		<#else>
+		<#if i==1>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		<#else>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		</#if>
 		</#if>
 		
         </#if>
@@ -381,18 +486,45 @@ public class [=ClassName]AppServiceTest {
 	  	<#list relationValue.joinDetails as joinDetails>
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
-        <#if joinDetails.joinColumnType?lower_case == "string">
+        <#if relationValue.relation == "ManyToOne">
+        <#if joinDetails.joinColumnType == "String">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "long">
+        <#elseif joinDetails.joinColumnType == "Long">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
-        <#elseif joinDetails.joinColumnType?lower_case == "integer">
+        <#elseif joinDetails.joinColumnType == "Integer">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
-		<#elseif joinDetails.joinColumnType?lower_case == "double">
+		<#elseif joinDetails.joinColumnType == "Double">
 		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
-		<#elseif joinDetails.joinColumnType?lower_case == "short">
+		<#elseif joinDetails.joinColumnType == "Short">
         [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
 		</#if>
-		
+		<#else>
+		<#if i==1>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.joinColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		<#else>
+		<#if joinDetails.joinColumnType == "String">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](String.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Long">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Long.valueOf(ID));
+        <#elseif joinDetails.joinColumnType == "Integer">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Integer.valueOf(ID));
+		<#elseif joinDetails.joinColumnType == "Double">
+		[=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Double.valueOf(ID)); 
+		<#elseif joinDetails.joinColumnType == "Short">
+        [=ClassName?uncap_first].set[=joinDetails.referenceColumn?cap_first](Short.valueOf(ID));
+		</#if>
+		</#if>
+		</#if>
         </#if>
         </#if>
         </#list>
@@ -402,7 +534,6 @@ public class [=ClassName]AppServiceTest {
 		Assertions.assertThat(_appService.Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>,[=ClassName?uncap_first])).isEqualTo(null);
 	}
 
-</#if>
 </#if>
 		
 <#break>

@@ -49,15 +49,18 @@ public class CodegenApplication implements ApplicationRunner {
 		input.setCache(root.get("c") == null ? (GetUserInput.getInput(scanner, "cache").toLowerCase().equals("true") ? true : false)
 		       : (root.get("c").toLowerCase().equals("true") ? true : false));
 
-		input.setEmail(root.get("email") == null
-				? (false) : (root.get("email").toLowerCase().equals("true") ? true : false));
-		input.setScheduler(root.get("scheduler") == null
-				? (false) : (root.get("scheduler").toLowerCase().equals("true") ? true : false));
-		input.setFlowable(root.get("flowable") == null
-				? (false): (root.get("flowable").toLowerCase().equals("true") ? true : false));
-		input.setHistory(root.get("h") == null
-				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
-						: (root.get("h").toLowerCase().equals("true") ? true : false));
+		input.setEmail(root.get("email") == null 
+                ? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false) 
+                        : (root.get("email").toLowerCase().equals("true") ? true : false)); 
+        input.setScheduler(root.get("scheduler") == null 
+                ? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false) 
+                        : (root.get("scheduler").toLowerCase().equals("true") ? true : false)); 
+        input.setFlowable(root.get("flowable") == null 
+                ? (GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false) 
+                        : (root.get("flowable").toLowerCase().equals("true") ? true : false)); 
+//		input.setHistory(root.get("h") == null
+//				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
+//						: (root.get("h").toLowerCase().equals("true") ? true : false));
 
 		System.out.print("\nSelect Authentication and Authorization method :");
 		System.out.print("\n1. none");
@@ -78,7 +81,13 @@ public class CodegenApplication implements ApplicationRunner {
 		} 
 		else if (value>1) {
 			scanner.nextLine();
-			String str;
+			//String str;
+			 System.out.print("\nDo you want to enable history ? (y/n)"); 
+			 String str= scanner.nextLine(); 
+	            if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes")) 
+	            { 
+	                input.setHistory(true); 
+	            } 
 			System.out.print("\nDo you have your own user table? (y/n)");
 			str= scanner.nextLine();
 			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes"))

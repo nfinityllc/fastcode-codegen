@@ -11,8 +11,7 @@ public class FieldDetails {
 	String description;
 	private String relationFieldName;
 
-	
-	
+
 	public String getDescription() {
 		return description;
 	}

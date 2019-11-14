@@ -51,7 +51,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 		return _[=InstanceName]Repository.save([=InstanceName]);
 	}
 
-	public [=EntityClassName] FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	public [=EntityClassName] FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
     	Optional<[=EntityClassName]> db[=ClassName]= _[=InstanceName]Repository.findById([=IdClass?uncap_first]);
 		if(db[=ClassName].isPresent()) {
 			[=EntityClassName] existing[=ClassName] = db[=ClassName].get();
@@ -93,7 +93,7 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
   <#if relationValue.relation == "ManyToOne"|| relationValue.relation == "OneToOne">
   
    //[=relationValue.eName]
-	public [=relationValue.eName]Entity Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	public [=relationValue.eName]Entity Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 		
 		Optional<[=EntityClassName]> db[=ClassName]= _[=InstanceName]Repository.findById([=IdClass?uncap_first]);
 		if(db[=ClassName].isPresent()) {

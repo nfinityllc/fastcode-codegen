@@ -23,6 +23,8 @@ public class EntityDetails {
 	Map<String, FieldDetails> fieldsMap = new HashMap<>();
 	Map<String, RelationDetails> relationsMap = new HashMap<>();
 	List<String> compositeKeyClasses = new ArrayList<>();
+	Map<String,String> primaryKeys = new HashMap<>();
+			
 	Map<String, FieldDetails> entitiesDescriptiveFieldMap = new HashMap<>();
 	Map<String, FieldDetails> authenticationFieldsMap = null;
 	String entityTableName;
@@ -34,6 +36,15 @@ public class EntityDetails {
 
 	public void setIdClass(String idClass) {
 		this.idClass = idClass;
+	}
+	
+
+	public Map<String, String> getPrimaryKeys() {
+		return primaryKeys;
+	}
+
+	public void setPrimaryKeys(Map<String, String> primaryKeys) {
+		this.primaryKeys = primaryKeys;
 	}
 
 	public String getEntityTableName() {
@@ -123,7 +134,6 @@ public class EntityDetails {
 				String str = field.getType().toString();
 				int index = str.lastIndexOf(".") + 1;
 				details.setFieldName(field.getName());
-			//	details.setrelationFieldName(field.getName());
 				String fieldType=str.substring(index);
 				if(fieldType.equals("int"))
 				{
@@ -167,23 +177,12 @@ public class EntityDetails {
 						joinDetails.setJoinEntityName(details.getFieldType());
 
 						String mappedBy = oneToOne.mappedBy();
-						idClass=details.getFieldType()+"Id";
+				
 						if(!mappedBy.isEmpty())
 						{
 							relation.setIsParent(true);	
-							//idClass=details.getFieldType()+"Id";
-							idClass=className+"Id";
 						}
-						
-//						String entity = StringUtils.substringBeforeLast(entityName, ".");
 
-//						String referenceColumn = findPrimaryKey(
-//								entity.concat("." + relation.geteName()), classList);
-//						if (referenceColumn != null) {
-//							details.setFieldName(referenceColumn);
-//							System.out.println(" RES  " + referenceColumn);
-//							joinDetails.setReferenceColumn(referenceColumn);
-//						}
 						joinDetails.setMappedBy(mappedBy);
 					}
 
@@ -205,6 +204,7 @@ public class EntityDetails {
 							else
 								joinDetails.setReferenceColumn(referenceCol);
 							joinDetails.setJoinColumn(name); 
+
 							joinDetails.setIsJoinColumnOptional(j.nullable());
 
 							String columnType = j.columnDefinition();

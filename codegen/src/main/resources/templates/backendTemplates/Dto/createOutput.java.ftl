@@ -27,7 +27,7 @@ public class Create[=ClassName]Output {
   	private java.util.Date lastModificationTime;
 </#if>
 <#list Relationship as relationKey,relationValue>
- <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+ <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
  <#if joinDetails.joinColumn??>
@@ -38,7 +38,7 @@ public class Create[=ClassName]Output {
  </#if>
 </#list>
 </#if>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
 	private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first];
   </#if>
@@ -65,7 +65,7 @@ public class Create[=ClassName]Output {
   </#if>
 	
   <#list Relationship as relationKey,relationValue>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if CompositeKeyClasses?seq_contains(ClassName)>
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>
@@ -106,7 +106,7 @@ public class Create[=ClassName]Output {
 </#list>
 </#if>
   </#if>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
   public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=DescriptiveField[relationValue.eName].description?cap_first]() {
   	return [=DescriptiveField[relationValue.eName].description?uncap_first];

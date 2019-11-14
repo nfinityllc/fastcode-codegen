@@ -92,25 +92,7 @@ public class CodeGenerator {
 		}	
 
 		Map<String, FieldDetails> actualFieldNames = details.getFieldsMap();
-		Map<String,String> primaryKeys= new HashMap<>();
-		for (Map.Entry<String, FieldDetails> entry : actualFieldNames.entrySet()) {
-			if(entry.getValue().getIsPrimaryKey())
-			{
-				if(entry.getValue().getFieldType().equalsIgnoreCase("long"))
-					primaryKeys.put(entry.getValue().getFieldName(),"Long");
-				else
-					primaryKeys.put(entry.getValue().getFieldName(), entry.getValue().getFieldType());
-			}
-		}
-		Map<String, String> sorted =primaryKeys
-				.entrySet()
-				.stream()
-				.sorted(comparingByKey())
-				.collect(
-						toMap(e -> e.getKey(), e -> e.getValue(),
-								(e1, e2) -> e2, LinkedHashMap::new));
-
-		root.put("PrimaryKeys", sorted);
+		root.put("PrimaryKeys", details.getPrimaryKeys());
 		Map<String, RelationDetails> relationMap = details.getRelationsMap();
 		List<String> searchFields = new ArrayList<>();
 
