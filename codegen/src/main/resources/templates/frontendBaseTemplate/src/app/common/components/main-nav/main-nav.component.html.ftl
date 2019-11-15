@@ -190,9 +190,9 @@
       <span>
 	      <button mat-button [matMenuTriggerFor]="notification"><mat-icon>account_box</mat-icon></button>
 	      <#if AuthenticationType != "none">
-	      <mat-menu #notification="matMenu" [overlapTrigger]="false" class="my-full-width-menu">
-	        <a mat-menu-item *ngIf="!Auth.token" (click)="login()">Login</a>
-	        <a mat-menu-item *ngIf="Auth.token" (click)="logout()">Logout</a>
+	      <mat-menu #notification="matMenu">
+	        <button mat-menu-item *ngIf="!Auth.token" (click)="login()">Login</button>
+	        <button mat-menu-item *ngIf="Auth.token" (click)="logout()">Logout</button>
 	      </mat-menu>
 	      </#if>
       </span>

@@ -34,6 +34,11 @@ $fc-accent-color: mat-color($fc-theme-accent);
         padding-left: 24px;
         padding-right: 24px;
     }
+    
+    mat-cell{
+        padding: 2px;
+        word-break: break-all;
+    }
 
     mat-cell:first-child, mat-footer-cell:first-child, mat-header-cell:first-child {
         padding-left: 0;
