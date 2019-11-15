@@ -37,3 +37,7 @@
     margin-top: $fc-margin;
     margin-bottom: $fc-margin;
 }
+
+.action-button{
+    margin-left: $fc-margin-half
+}

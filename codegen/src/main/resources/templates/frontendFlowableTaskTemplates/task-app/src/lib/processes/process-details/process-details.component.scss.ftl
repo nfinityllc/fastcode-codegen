@@ -11,4 +11,4 @@
 
 .content .split-right{
     border-left: solid 1px #ccc;
- }
+}

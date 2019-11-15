@@ -1,3 +1,5 @@
+@import "../../../styles/base.scss";
+
 [hidden] {
     display: none;
 }
@@ -19,4 +21,13 @@
     height: 100%;
     padding: 0 30px;
     margin: 0px auto;
+}
+
+.detail-label{
+    white-space: nowrap;
+    margin-left: $fc-margin-half
+}
+
+.mat-button-focus-overlay {
+    background-color: transparent!important;
 }

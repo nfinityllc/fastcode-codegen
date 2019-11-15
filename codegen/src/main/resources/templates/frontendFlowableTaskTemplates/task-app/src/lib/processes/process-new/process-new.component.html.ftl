@@ -1,11 +1,11 @@
 <div class="container1">
   <mat-toolbar class="action-tool-bar" color="primary">
-    <button mat-flat-button (click)="onCancel()">
+    <button mat-button (click)="onCancel()">
       {{'GENERAL.ACTION.CANCEL' | translate}}
     </button>
     <span class="middle">{{'PROCESS.TITLE.CREATE-NEW' | translate}}</span>
 
-    <button mat-flat-button (click)="processNgForm.ngSubmit.emit()" [disabled]="!processForm.valid || loading">
+    <button mat-button (click)="processNgForm.ngSubmit.emit()" [disabled]="!processForm.valid || loading">
       {{'PROCESS.ACTION.CREATE-CONFIRM' | translate}}
     </button>
 

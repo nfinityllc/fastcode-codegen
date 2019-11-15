@@ -38,6 +38,9 @@ export class ProcessDetailsComponent implements OnInit {
   largerDeviceDialogWidthSize: string = "50%";
   largerDeviceDialogHeightSize: string = "85%";
 
+  tasksColSpan: number;
+  commentsColSpan: number;
+
   constructor(
     private taskService: TaskService,
     private processService: ProcessService,
@@ -54,6 +57,27 @@ export class ProcessDetailsComponent implements OnInit {
     if(this.processInstance){
       this.getProcessInstance(this.processInstance.id);
     }
+    this.manageScreenResizing();
+  }
+
+  manageScreenResizing() {
+    this.global.isMediumDeviceOrLess$.subscribe(value => {
+      this.isMediumDeviceOrLess = value;
+
+      if (this.dialogRef)
+        this.dialogRef.updateSize(value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
+          value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize);
+
+      if (this.isMediumDeviceOrLess) {
+        this.tasksColSpan = 2;
+        this.commentsColSpan = 2;
+      }
+      else {
+        this.tasksColSpan = 1;
+        this.commentsColSpan = 1;
+      }
+
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {

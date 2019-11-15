@@ -47,19 +47,20 @@ export var en:any = {
             "CLAIM": "Claim",
             "ASSIGN": "Assign",
             "REASSIGN": "Reassign",
-            "CREATE": "+ Create Task",
+            "CREATE": "Create Task",
             "CREATE-SUB-TASK": "Create sub task",
             "CREATE-CONFIRM": "Create",
-            "INVOLVE": "+ Involve people",
-            "ADD-COMMENT": "+ Add comment",
+            "INVOLVE": "Involve people",
+            "ADD-COMMENT": "Add comment",
             "ADD-COMMENT-CONFIRM": "Add comment",
-            "ADD-CONTENT": "+ Add content",
+            "ADD-CONTENT": "Add content",
             "CLEAR-DUEDATE": "Clear due date",
             "DUE-TODAY": "Due today",
             "CLEAR-DATE": "Clear date",
             "DATE-TODAY": "Date today",
             "AUDIT-LOG": "Audit Log",
-            "TOGGLE-LIST": "Back to task list"
+            "TOGGLE-LIST": "Back to task list",
+            "ADD-SUB-TASK": "Add sub task"
         },
         "TITLE": {
             "ASSIGN": "Select assignee",
@@ -108,11 +109,11 @@ export var en:any = {
             "NO-RELATED-CONTENT": "This task has no related content yet...",
             "NO-PEOPLE-INVOLVED": "This task has no people involved yet...",
             "NO-COMMENTS": "This task has no comments yet...",
-            "INVOLVE-PEOPLE-PLACEHOLDER": "+ Add person",
+            "INVOLVE-PEOPLE-PLACEHOLDER": "Add person",
             "CONTENT-UPLOADED-BY": "Added by ",
             "ASSIGNEE": "Assigned to",
             "NEW-COMMENT-PLACEHOLDER": "Enter a comment to add to this task",
-            "COMMENT-HEADER": "Added by {{createdBy}}, {{created}}",
+            "COMMENT-HEADER": "Added by {{createdBy}},",
             "NO-FILTER": "Showing your tasks, no filter applied",
             "FILTERED": "Showing your tasks, filtered",
             "NO-TASKS": "No matching tasks found...",
@@ -140,6 +141,9 @@ export var en:any = {
             "TITLE": "Select due date",
             "DUE-TODAY": "Due today",
             "CLEAR": "Clear due date"
+        },
+        "NEW-COMMENT": {
+            "TITLE": "Add Comment"
         }
     },
     "PROCESS": {
@@ -193,14 +197,14 @@ export var en:any = {
             "NO-PROCESS-DEFINITION-SELECTED-HELP": "Please select a process definition"
         },
         "ACTION": {
-            "CREATE": "+ Start a process",
+            "CREATE": "Start a process",
             "CREATE-CONFIRM": "Create",
             "BACK-TO-LIST": "Back to process instances",
             "SHOW-DIAGRAM": "Show diagram",
             "CANCEL": "Cancel process",
             "EXECUTE": "Execute",
             "DELETE": "Delete process",
-            "ADD-COMMENT": "+ Add comment",
+            "ADD-COMMENT": "Add comment",
             "ADD-COMMENT-CONFIRM": "Add comment",
             "AUDIT-LOG": "Audit Log",
             "TOGGLE-LIST": "Back to task list"

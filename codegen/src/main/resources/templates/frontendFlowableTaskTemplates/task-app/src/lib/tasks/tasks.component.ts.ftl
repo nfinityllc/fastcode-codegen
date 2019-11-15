@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { of } from 'rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from "@angular/router";
@@ -18,7 +18,7 @@ import { Globals } from '../globals';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
-export class TasksComponent implements OnInit {
+export class TasksComponent implements OnInit, OnDestroy {
 
   account: any = {}
 
@@ -106,6 +106,10 @@ ngOnInit() {
 
 };
 
+ngOnDestroy(){
+  this.taskService.selectedTask = null;
+}
+
 setCurrentUser(){
   this.userService.getAccount().subscribe(account => {
     this.account = account;
@@ -182,7 +186,6 @@ setPassedAppDefinition() {
 selectPassedTask() {
   if (this.taskService.selectedTask) {
     this.selectTask(this.taskService.selectedTask);
-    this.taskService.selectedTask = null;
   }
 }
 
@@ -249,9 +252,8 @@ getTasks(filterData, params) {
     this.filter.loading = false;
     console.log(response);
     if (response.start === 0) {
-      this.selectedTask = null;
-      console.log(this.selectedTask)
-      if (response.data.length > 0) {
+      this.selectedTask = this.taskService.selectedTask;
+      if (response.data.length > 0 && !this.selectedTask) {
         this.selectedTask = response.data[0]
       }
 
@@ -321,6 +323,7 @@ resetPaging() {
 };
 
 onTaskCompletion() {
+  this.taskService.selectedTask = null;
   this.resetPaging();
   this.refreshFilter();
 }

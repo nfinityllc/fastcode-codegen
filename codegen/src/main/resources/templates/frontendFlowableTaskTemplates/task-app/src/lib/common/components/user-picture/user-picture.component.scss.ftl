@@ -1,3 +1,4 @@
+@import "../../../../styles/base.scss";
 .user-picture {
     text-align: center;
     font-size: 15px;
@@ -8,14 +9,14 @@
     margin: 0 2px 0 0;
     overflow: hidden;
     color: #ffffff;
-    background: #2980b9 no-repeat center center;
+    background: $fc-accent-color no-repeat center center;
     background-size: 32px 32px;
     cursor: pointer;
     border: 1px solid transparent;
 }
 
 .user-picture.no-picture {
-    border-color: #2980b9;
+    border-color: $fc-accent-color;
 }
 
 .user-picture span {
