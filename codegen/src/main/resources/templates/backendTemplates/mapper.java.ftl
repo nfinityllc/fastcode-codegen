@@ -19,6 +19,9 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#list>
 import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
+<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+import [=PackageName].domain.model.RoleEntity;
+</#if>
 
 @Mapper(componentModel = "spring")
 public interface [=ClassName]Mapper {
@@ -176,6 +179,30 @@ public interface [=ClassName]Mapper {
 </#if>
 </#list>
 </#if>
+   @Mappings({
+      @Mapping(source = "role.id", target = "id"),
+      <#if Audit!false>
+      @Mapping(source = "role.creationTime", target = "creationTime"),
+      @Mapping(source = "role.creatorUserId", target = "creatorUserId"),
+      @Mapping(source = "role.lastModifierUserId", target = "lastModifierUserId"),
+      @Mapping(source = "role.lastModificationTime", target = "lastModificationTime"),
+      </#if>
+      <#if PrimaryKeys??>
+  	  <#list PrimaryKeys as key,value>
+   	  <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+      @Mapping(source = "[=ClassName?uncap_first].[=key?uncap_first]", target = "[=ClassName?uncap_first][=key?cap_first]"),
+  	  </#if> 
+  	  </#list>
+  	  </#if>
+      <#if AuthenticationFields??>
+      <#list AuthenticationFields as authKey,authValue>
+      <#if authKey== "UserName">
+      @Mapping(source = "[=ClassName?uncap_first].[=authValue.fieldName]", target = "[=ClassName?uncap_first]DescriptiveField")
+      </#if>
+      </#list>
+      </#if>
+    })
+    GetRoleOutput RoleEntityToGetRoleOutput(RoleEntity role, UserEntity user);
 </#if>
    <#list Relationship as relationKey, relationValue>
 

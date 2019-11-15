@@ -35,7 +35,7 @@ public class Update[=ClassName]Input {
   </#if>
 </#list>
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
  <#if CompositeKeyClasses?seq_contains(ClassName)>
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
@@ -59,7 +59,7 @@ public class Update[=ClassName]Input {
 </#list>
 
 <#list Relationship as relationKey,relationValue>
-<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if CompositeKeyClasses?seq_contains(ClassName)>
    <#list relationValue.joinDetails as joinDetails>
    <#if joinDetails.joinEntityName == relationValue.eName>

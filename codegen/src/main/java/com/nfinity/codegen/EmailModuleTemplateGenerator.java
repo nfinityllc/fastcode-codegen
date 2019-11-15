@@ -18,7 +18,7 @@ public class EmailModuleTemplateGenerator {
 	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/emailTemplates/EmailBuilder";
 	static final String FRONTEND_EMAIL_TEMPLATE_FOLDER = "/templates/frontendEmailTemplate";
 	
-	public static void generateEmailModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,Boolean audit,Boolean history,
+	public static void generateEmailModuleClasses(String destination,String frontendDestination,String clientSubfolder, String packageName,Boolean history,
 			String authenticationType,String schemaName) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");
@@ -36,7 +36,6 @@ public class EmailModuleTemplateGenerator {
 		root.put("AuditPackage", packageName);
 		root.put("PackageName", packageName.concat(".EmailBuilder"));
 		root.put("AuthenticationType", authenticationType);
-		root.put("Audit", audit);
 		root.put("History", history);
 		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
 		root.put("Schema",schemaName);

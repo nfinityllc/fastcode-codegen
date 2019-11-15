@@ -260,7 +260,7 @@ public class UserAppServiceTest {
 
 	}
 
-	 //Roles
+	//Roles
 	@Test
 	public void GetRole_IfUserIdAndRoleIdIsNotNullAndUserExists_ReturnRole() {
 		UserEntity user = mock(UserEntity.class);

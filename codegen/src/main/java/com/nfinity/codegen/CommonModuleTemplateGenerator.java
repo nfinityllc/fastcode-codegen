@@ -17,7 +17,7 @@ public class CommonModuleTemplateGenerator {
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates/commonModuleTemplates/CommonModule";
 	
-	public static void generateCommonModuleClasses(String destination, String packageName,Boolean audit) {
+	public static void generateCommonModuleClasses(String destination, String packageName) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, BACKEND_TEMPLATE_FOLDER + "/");
 		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl};
@@ -32,8 +32,6 @@ public class CommonModuleTemplateGenerator {
 		root.put("AuditPackage", packageName);
 		packageName = packageName.concat(".CommonModule");
 		root.put("PackageName", packageName);
-		root.put("Audit", audit);
-		
 		generateBackendFiles(root, backendAppFolder);
 
 	}
@@ -53,14 +51,6 @@ public class CommonModuleTemplateGenerator {
 		destFolderBackend = destPath + "/domain" ;
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getCommonModuleDomainLayerTemplates(), root, destFolderBackend);
-		
-//		if(Boolean.parseBoolean(root.get("Audit").toString()))
-//		{
-//			destFolderBackend = destPath + "/domain/BaseClasses" ;
-//			new File(destFolderBackend).mkdirs();
-//			generateFiles(getCommonModuleAuditedEntityTemplates(), root, destFolderBackend);
-//		}
-		
 		
 		destFolderBackend = destPath + "/error" ;
 		new File(destFolderBackend).mkdirs();
@@ -132,16 +122,7 @@ public class CommonModuleTemplateGenerator {
 
 		return backEndTemplate;
 	}
-	
-//	private static Map<String, Object> getCommonModuleAuditedEntityTemplates() {
-//
-//		Map<String, Object> backEndTemplate = new HashMap<>();
-//
-//		backEndTemplate.put("domain/BaseClasses/AuditedEntity.java.ftl", "AuditedEntity.java");
-//
-//		return backEndTemplate;
-//	}
-	
+
 	private static Map<String, Object> getCommonModuleErrorTemplates() {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
@@ -174,7 +155,5 @@ public class CommonModuleTemplateGenerator {
 		
 		return backEndTemplate;
 	}
-	
-	
 	
 }

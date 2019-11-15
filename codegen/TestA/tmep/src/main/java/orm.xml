@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd" version="2.0">
+    <package>
+        com.testg.tmep.domain.model.Temp
+    </package>
+    <access>
+        PROPERTY
+    </access>
+    <entity class="JvCommit">
+        <table schema="test4" name="jv_commit"/>
+        <attributes>
+            <id name="commitPk">
+                <column name="commit_pk" column-definition="int8"/>
+            </id>
+            <basic name="author">
+                <column name="author" length="200"/>
+            </basic>
+            <basic name="commitDate">
+                <column name="commit_date"/>
+            </basic>
+            <basic name="commitId">
+                <column name="commit_id"/>
+            </basic>
+            <one-to-many name="jvCommitPropertys" target-entity="com.testg.tmep.domain.model.Temp.JvCommitProperty" mapped-by="jvCommit">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="jvSnapshots" target-entity="com.testg.tmep.domain.model.Temp.JvSnapshot" mapped-by="jvCommit">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="JvCommitProperty">
+        <table schema="test4" name="jv_commit_property"/>
+        <id-class class="JvCommitPropertyId"/>
+        <attributes>
+            <id name="commitFk">
+                <column name="commit_fk" column-definition="int8"/>
+            </id>
+            <id name="propertyName">
+                <column name="property_name" length="191"/>
+            </id>
+            <basic name="propertyValue">
+                <column name="property_value" length="600"/>
+            </basic>
+            <many-to-one name="jvCommit" fetch="LAZY">
+                <join-column name="commit_fk" column-definition="int8"/>
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="JvGlobalIdent">
+        <table schema="test4" name="jv_global_id"/>
+        <attributes>
+            <id name="globalIdPk">
+                <column name="global_id_pk" column-definition="int8"/>
+            </id>
+            <basic name="fragment">
+                <column name="fragment" length="200"/>
+            </basic>
+            <basic name="localId">
+                <column name="local_id" length="191"/>
+            </basic>
+            <basic name="typeName">
+                <column name="type_name" length="200"/>
+            </basic>
+            <many-to-one name="jvGlobalIdent" fetch="LAZY">
+                <join-column name="owner_id_fk" column-definition="int8"/>
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+            <one-to-many name="jvGlobalIdents" target-entity="com.testg.tmep.domain.model.Temp.JvGlobalIdent" mapped-by="jvGlobalIdent">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="jvSnapshots" target-entity="com.testg.tmep.domain.model.Temp.JvSnapshot" mapped-by="jvGlobalIdent">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="JvSnapshot">
+        <table schema="test4" name="jv_snapshot"/>
+        <attributes>
+            <id name="snapshotPk">
+                <column name="snapshot_pk" column-definition="int8"/>
+            </id>
+            <basic name="changedProperties">
+                <column name="changed_properties" column-definition="text" length="2147483647"/>
+            </basic>
+            <basic name="managedType">
+                <column name="managed_type" length="200"/>
+            </basic>
+            <basic name="state">
+                <column name="state" column-definition="text" length="2147483647"/>
+            </basic>
+            <basic name="type">
+                <column name="type" length="200"/>
+            </basic>
+            <basic name="version">
+                <column name="version" column-definition="int8"/>
+            </basic>
+            <many-to-one name="jvCommit" fetch="LAZY">
+                <join-column name="commit_fk" column-definition="int8"/>
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+            <many-to-one name="jvGlobalIdent" fetch="LAZY">
+                <join-column name="global_id_fk" column-definition="int8"/>
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="Post">
+        <table schema="test4" name="post"/>
+        <id-class class="PostId"/>
+        <attributes>
+            <id name="postid">
+                <column name="postid" length="256"/>
+            </id>
+            <id name="title">
+                <column name="title" length="256"/>
+            </id>
+            <basic name="description">
+                <column name="description" length="256"/>
+            </basic>
+            <one-to-many name="postdetails" target-entity="com.testg.tmep.domain.model.Temp.Postdetails" mapped-by="post">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="Postdetails">
+        <table schema="test4" name="postdetails"/>
+        <id-class class="PostdetailsId"/>
+        <attributes>
+            <id name="pdid">
+                <column name="pdid" length="2147483647"/>
+            </id>
+            <id name="pid">
+                <column name="pid" length="256"/>
+            </id>
+            <basic name="country">
+                <column name="country" length="256"/>
+            </basic>
+            <many-to-one name="post" fetch="LAZY">
+                <join-column name="pid" referenced-column-name="postid"/>
+                <join-column name="title"/>
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="Tag">
+        <table schema="test4" name="tag"/>
+        <id-class class="TagId"/>
+        <attributes>
+            <id name="tagid">
+                <column name="tagid" length="256"/>
+            </id>
+            <id name="title">
+                <column name="title" length="256"/>
+            </id>
+            <basic name="description">
+                <column name="description" length="256"/>
+            </basic>
+            <one-to-one name="tagdetails" fetch="LAZY" mapped-by="tag">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="Tagdetails">
+        <table schema="test4" name="tagdetails"/>
+        <id-class class="TagdetailsId"/>
+        <attributes>
+            <id name="tid">
+                <column name="tid" length="256"/>
+            </id>
+            <id name="title">
+                <column name="title" length="256"/>
+            </id>
+            <basic name="country">
+                <column name="country" length="256"/>
+            </basic>
+            <one-to-one name="tag" fetch="LAZY">
+                <join-column name="tid" referenced-column-name="tagid"/>
+                <join-column name="title"/>
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+</entity-mappings>

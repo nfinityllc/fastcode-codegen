@@ -1,10 +1,6 @@
 package [=PackageName].domain.model;
 
 import [=PackageName].domain.model.RoleEntity;
-<#if Audit!false>
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import [=PackageName].domain.BaseClasses.AuditedEntity;
-</#if>
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,11 +9,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Permission", schema = "[=SchemaName]")
-<#if Audit!false>
-@EntityListeners(AuditingEntityListener.class)
-</#if>
 
-public class PermissionEntity<#if Audit!false> extends AuditedEntity<String></#if> implements Serializable {
+public class PermissionEntity implements Serializable {
     private Long id;
     private String name;
     private String displayName;

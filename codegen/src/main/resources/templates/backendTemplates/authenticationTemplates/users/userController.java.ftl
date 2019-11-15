@@ -213,8 +213,8 @@ public class UserController {
  
     @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
 	@RequestMapping(value = "/{userid}/role", method = RequestMethod.GET)
-	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String id) {
-    GetRoleOutput output= _userAppService.GetRole(Long.valueOf(id));
+	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String userid) {
+    GetRoleOutput output= _userAppService.GetRole(Long.valueOf(userid));
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

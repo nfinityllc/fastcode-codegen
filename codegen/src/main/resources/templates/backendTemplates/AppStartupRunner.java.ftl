@@ -49,10 +49,6 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Autowired
     private PasswordEncoder pEncoder;
-
-    @Autowired
-    private Environment env;
-    
     
     @Override
     public void run(ApplicationArguments args) {
@@ -208,7 +204,9 @@ public class AppStartupRunner implements ApplicationRunner {
 	</#list>
 	    admin.setRole(role);
     	admin = userManager.Create(admin);
+    	<#if Flowable!false>
     	actIdUserMapper.createUsersEntityToActIdUserEntity(admin);
+    	</#if>
 
     }
 }

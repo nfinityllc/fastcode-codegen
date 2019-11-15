@@ -30,12 +30,12 @@ public class CodegenApplication implements ApplicationRunner {
 		Scanner scanner = new Scanner(System.in);
 		//System.out.println(" v " + root.get("c") + "\n ss " + root.get("s"));
 		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
-		// jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
+		// jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode
 		// /Users/getachew/fc/exer/root
 		input.setUpgrade(root.get("upgrade") == null
 				? false
 						: (root.get("upgrade").toLowerCase().equals("true") ? true : false));
-		input.setConnectionStr(root.get("c") != null ? root.get("c")
+		input.setConnectionStr(root.get("conn") != null ? root.get("conn")
 				: (configProperties.getConnectionStr() != null ? configProperties.getConnectionStr()
 						: GetUserInput.getInput(scanner, "DB Connection String")));
 		
@@ -46,22 +46,21 @@ public class CodegenApplication implements ApplicationRunner {
 				root.get("a") == null ? GetUserInput.getInput(scanner, "application name") : root.get("a"));
 		input.setGenerationType(
 				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
+		input.setCache(root.get("c") == null ? (GetUserInput.getInput(scanner, "cache").toLowerCase().equals("true") ? true : false)
+		       : (root.get("c").toLowerCase().equals("true") ? true : false));
 
-		//		input.setAudit(root.get("audit") == null
-		//				? (GetUserInput.getInput(scanner, "auditing").toLowerCase().equals("true") ? true : false)
-		//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
-		input.setEmail(root.get("email") == null
-				? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false)
-						: (root.get("email").toLowerCase().equals("true") ? true : false));
-		input.setScheduler(root.get("scheduler") == null
-				? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false)
-						: (root.get("scheduler").toLowerCase().equals("true") ? true : false));
-		input.setFlowable(root.get("flowable") == null
-				? (GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false)
-						: (root.get("flowable").toLowerCase().equals("true") ? true : false));
-		input.setHistory(root.get("h") == null
-				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
-						: (root.get("h").toLowerCase().equals("true") ? true : false));
+		input.setEmail(root.get("email") == null 
+                ? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false) 
+                        : (root.get("email").toLowerCase().equals("true") ? true : false)); 
+        input.setScheduler(root.get("scheduler") == null 
+                ? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false) 
+                        : (root.get("scheduler").toLowerCase().equals("true") ? true : false)); 
+        input.setFlowable(root.get("flowable") == null 
+                ? (GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false) 
+                        : (root.get("flowable").toLowerCase().equals("true") ? true : false)); 
+//		input.setHistory(root.get("h") == null
+//				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
+//						: (root.get("h").toLowerCase().equals("true") ? true : false));
 
 		System.out.print("\nSelect Authentication and Authorization method :");
 		System.out.print("\n1. none");
@@ -78,15 +77,17 @@ public class CodegenApplication implements ApplicationRunner {
 		}
 		if (value == 1) {
 			input.setAuthenticationType("none");
+			input.setFlowable(false);
 		} 
 		else if (value>1) {
 			scanner.nextLine();
-			System.out.print("\nDo you want to enable auditing ? (y/n)");
-			String str= scanner.nextLine();
-			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes") )
-			{
-				input.setAudit(true);
-			}
+			//String str;
+			 System.out.print("\nDo you want to enable history ? (y/n)"); 
+			 String str= scanner.nextLine(); 
+	            if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes")) 
+	            { 
+	                input.setHistory(true); 
+	            } 
 			System.out.print("\nDo you have your own user table? (y/n)");
 			str= scanner.nextLine();
 			if(str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes"))
@@ -110,10 +111,6 @@ public class CodegenApplication implements ApplicationRunner {
 				input.setAuthenticationType("oidc");
 			}
 		}
-
-		//		input.setDatabaseAuthentication(root.get("db-autentication") == null
-		//				? (GetUserInput.getInput(scanner, "database authentication").toLowerCase().equals("true") ? true : false)
-		//				: (root.get("audit").toLowerCase().equals("true") ? true : false));
 
 		return input;
 	}
@@ -168,6 +165,10 @@ public class CodegenApplication implements ApplicationRunner {
 		// c=jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// String connectionString = root.get("c");
 		String dependencies ="web,data-jpa,data-rest";
+		if(input.getCache())
+		{
+			dependencies = dependencies.concat(",cache");
+		}
 		if(input.getAuthenticationType()!="none")
 		{
 			dependencies = dependencies.concat(",security");
@@ -180,11 +181,10 @@ public class CodegenApplication implements ApplicationRunner {
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
-				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,
-				input.getAudit(),input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
+				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
 
 		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory(),input.getFlowable());
-		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId, input.getAudit());
+		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId);
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
 
 		FronendBaseTemplateGenerator.generate(input.getDestinationPath(), artifactId, input.getEmail(),input.getScheduler(),input.getFlowable(), input.getAuthenticationType(), input.getAuthenticationSchema(), input.getHistory());
@@ -195,12 +195,11 @@ public class CodegenApplication implements ApplicationRunner {
 
 		if(!input.getAuthenticationType().equals("none"))
 		{
-			AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath(), groupArtifactId, input.getAudit(),
-					input.getHistory(),input.getFlowable(),input.getScheduler(),input.getEmail(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema(),details);
+			AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath(), groupArtifactId,
+					input.getHistory(),input.getCache(),input.getFlowable(),input.getScheduler(),input.getEmail(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema(),details);
 		}
 
-		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId, input.getAudit(),
-				input.getHistory(),
+		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId,input.getHistory(),input.getCache(),
 				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
 						+ (groupArtifactId + ".model").replace(".", "/"),
 						input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
@@ -208,12 +207,12 @@ public class CodegenApplication implements ApplicationRunner {
 
 		if(input.getEmail())
 		{
-			EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
+			EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
 		}
 		if(input.getScheduler())
 		{
-			SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getAudit(), input.getHistory(), input.getSchemaName(),
-					input.getConnectionStr());
+			SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getHistory(), input.getSchemaName(),
+					input.getConnectionStr(),input.getAuthenticationType());
 		}
 		if(input.getFlowable())
 		{

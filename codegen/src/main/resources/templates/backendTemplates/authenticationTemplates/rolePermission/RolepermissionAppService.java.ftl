@@ -12,7 +12,9 @@ import [=PackageName].domain.model.RoleEntity;
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
+<#if Cache !false>
 import org.springframework.cache.annotation.*;
+</#if>
 
 import java.util.Date;
 import java.util.Map;
@@ -88,7 +90,9 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="Rolepermission", key = "#rolepermissionId")
+	</#if>
 	public UpdateRolepermissionOutput Update(RolepermissionId rolepermissionId , UpdateRolepermissionInput input) {
 
 		RolepermissionEntity rolepermission = mapper.UpdateRolepermissionInputToRolepermissionEntity(input);
@@ -118,8 +122,9 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Rolepermission", key = "#id")
-
+	<#if Cache !false>
+	@CacheEvict(value="Rolepermission", key = "#rolepermissionId")
+    </#if>
 	public void Delete(RolepermissionId rolepermissionId ) {
 
 		RolepermissionEntity existing = _rolepermissionManager.FindById(rolepermissionId) ; 
@@ -132,8 +137,10 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Rolepermission", key = "#id")
-	public FindRolepermissionByIdOutput FindById(RolepermissionId rolepermissionId ) {
+	<#if Cache !false>
+	@Cacheable(value = "Rolepermission", key = "#rolepermissionId")
+	</#if>
+	public FindRolepermissionByIdOutput FindById(RolepermissionId rolepermissionId) {
 
 		RolepermissionEntity foundRolepermission = _rolepermissionManager.FindById(rolepermissionId);
 		if (foundRolepermission == null)  
@@ -145,7 +152,9 @@ public class RolepermissionAppService implements IRolepermissionAppService {
     //Permission
 	// ReST API Call - GET /rolepermission/1/permission
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "Rolepermission", key="#rolepermissionId")
+    </#if>
 	public GetPermissionOutput GetPermission(RolepermissionId rolepermissionId ) {
 
 		RolepermissionEntity foundRolepermission = _rolepermissionManager.FindById(rolepermissionId);
@@ -160,7 +169,9 @@ public class RolepermissionAppService implements IRolepermissionAppService {
     //Role
 	// ReST API Call - GET /rolepermission/1/role
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "Rolepermission", key="#rolepermissionId")
+    </#if>
 	public GetRoleOutput GetRole(RolepermissionId rolepermissionId ) {
 
 		RolepermissionEntity foundRolepermission = _rolepermissionManager.FindById(rolepermissionId);
@@ -174,7 +185,9 @@ public class RolepermissionAppService implements IRolepermissionAppService {
     
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
 	@Cacheable(value = "Rolepermission")
+	</#if>
 	public List<FindRolepermissionByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<RolepermissionEntity> foundRolepermission = _rolepermissionManager.FindAll(Search(search), pageable);

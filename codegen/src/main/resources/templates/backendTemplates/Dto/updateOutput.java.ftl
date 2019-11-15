@@ -27,7 +27,7 @@ public class Update[=ClassName]Output {
   private java.util.Date lastModificationTime;
 </#if>
 <#list Relationship as relationKey,relationValue>
- <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+ <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if CompositeKeyClasses?seq_contains(ClassName)>
  <#list relationValue.joinDetails as joinDetails>
  <#if joinDetails.joinEntityName == relationValue.eName>
@@ -48,7 +48,7 @@ public class Update[=ClassName]Output {
 </#list>
  </#if>  
  </#if>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
 	private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=DescriptiveField[relationValue.eName].description?uncap_first];
   </#if>
@@ -75,11 +75,11 @@ public class Update[=ClassName]Output {
   </#if>
 
   <#list Relationship as relationKey,relationValue>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if CompositeKeyClasses?seq_contains(ClassName)>
-   <#list relationValue.joinDetails as joinDetails>
-   <#if joinDetails.joinEntityName == relationValue.eName>
- <#if !Fields[joinDetails.joinColumn]?? >
+  <#list relationValue.joinDetails as joinDetails>
+  <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
   return [=joinDetails.joinColumn];
@@ -95,8 +95,8 @@ public class Update[=ClassName]Output {
 </#list>
   <#else>
   <#list relationValue.joinDetails as joinDetails>
- <#if joinDetails.joinEntityName == relationValue.eName>
- <#if joinDetails.joinColumn??>
+  <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if joinDetails.joinColumn??>
   <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
@@ -114,7 +114,7 @@ public class Update[=ClassName]Output {
 </#list>
 </#if>
   </#if>
-  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+  <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
   public [=DescriptiveField[relationValue.eName].fieldType?cap_first] get[=DescriptiveField[relationValue.eName].description?cap_first]() {
   	return [=DescriptiveField[relationValue.eName].description?uncap_first];

@@ -15,6 +15,7 @@ public class RelationDetails {
 	Boolean isParent=false;
 	List<JoinDetails> joinDetails = new ArrayList<JoinDetails>();
 	List<FieldDetails> fDetails = new ArrayList<>();
+	
 
 	public List<JoinDetails> getJoinDetails() {
 		return joinDetails;

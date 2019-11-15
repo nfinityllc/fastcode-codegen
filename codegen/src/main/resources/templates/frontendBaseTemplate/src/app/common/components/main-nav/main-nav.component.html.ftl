@@ -68,7 +68,7 @@
       
       </#if>
       <#if FlowableModule!false> 
-      <mat-expansion-panel class="expansion-panel" *ngIf="isFlowableMenuVisible('access-admin')"> 
+      <mat-expansion-panel class="expansion-panel" <#if AuthenticationType != "none">*ngIf="isFlowableMenuVisible('access-admin')"</#if> > 
         <mat-expansion-panel-header class="subnav-header"> 
           {{'MainNav.ProcessAdmin.Title' | translate }} 
         </mat-expansion-panel-header> 
@@ -122,7 +122,7 @@
         </mat-expansion-panel> 
  
       </mat-expansion-panel> 
-      <mat-expansion-panel class="expansion-panel"  *ngIf="isFlowableMenuVisible('access-task')"> 
+      <mat-expansion-panel class="expansion-panel" <#if AuthenticationType != "none"> *ngIf="isFlowableMenuVisible('access-task')"</#if>>
         <mat-expansion-panel-header class="subnav-header"> 
           {{'MainNav.Task.Title' | translate }} 
         </mat-expansion-panel-header> 
@@ -144,9 +144,9 @@
 
         <mat-nav-list class="subnav">
 
-          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('email')" routerLink="email/emailtemplates">{{'MainNav.Email.EmailTemplate' | translate }}
+          <a mat-list-item class="mat-sub-list-item"  <#if AuthenticationType != "none">*ngIf="isMenuVisible('email')"</#if> routerLink="email/emailtemplates">{{'MainNav.Email.EmailTemplate' | translate }}
           </a>
-          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('emailvariable')" routerLink="email/emailvariables">{{'MainNav.Email.EmailVariables' | translate }}
+          <a mat-list-item class="mat-sub-list-item"  <#if AuthenticationType != "none">*ngIf="isMenuVisible('emailvariable')"</#if> routerLink="email/emailvariables">{{'MainNav.Email.EmailVariables' | translate }}
           </a>
 
         </mat-nav-list>

@@ -1,0 +1,66 @@
+<mat-sidenav-container class="sidenav-container"> 
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true" [attr.role]="(isSmallDevice$ | async) ? 'dialog' : 'navigation'" 
+    [mode]="(isSmallDevice$ | async) ? 'over' : 'side'" 
+    [opened]="!(isSmallDevice$ | async) && !isCurrentRootRoute "> 
+ 
+    <mat-toolbar color="primary">Menu</mat-toolbar> 
+    <mat-nav-list class="nav-list"> 
+      <a mat-list-item class="sidenav-list-item" routerLink="/">{{'MainNav.Home' | translate }}</a> 
+      
+      <mat-expansion-panel class="expansion-panel"> 
+        <mat-expansion-panel-header class="subnav-header"> 
+          {{'MainNav.Language' | translate}} 
+        </mat-expansion-panel-header> 
+ 
+        <mat-nav-list class="subnav"> 
+          <mat-radio-group class="radio-group" [(ngModel)]="selectedLanguage"> 
+            <mat-radio-button class="radio-button" *ngFor="let lang of translate.getLangs()" (click)="switchLanguage(lang)" 
+              [value]="lang"> 
+              {{lang | translate}} 
+            </mat-radio-button> 
+          </mat-radio-group> 
+ 
+        </mat-nav-list> 
+      </mat-expansion-panel>
+      
+      <mat-expansion-panel class="expansion-panel"> 
+        <mat-expansion-panel-header class="subnav-header"> 
+          {{'MainNav.Entities' | translate }} 
+        </mat-expansion-panel-header> 
+ 
+        <mat-nav-list class="subnav"> 
+ 
+          <ng-container *ngFor="let entity of entityList"> 
+            <a  mat-list-item class="mat-sub-list-item" [routerLink]="[entity]"> 
+              {{entity}} 
+            </a> 
+          </ng-container> 
+ 
+        </mat-nav-list> 
+      </mat-expansion-panel>
+      
+       
+ 
+    </mat-nav-list> 
+  </mat-sidenav> 
+  <mat-sidenav-content #navContent class="fc-sidenav-content"> 
+    <mat-toolbar class="fc-tool-bar" color="primary" *ngIf="!(Global.isSmallDevice$ | async)"> 
+ 
+      <i class="material-icons"> 
+        account_balance 
+      </i> 
+ 
+      <span>{{appName}}</span>
+      
+      <span>
+	      <button mat-button [matMenuTriggerFor]="notification"><mat-icon>account_box</mat-icon></button>
+      </span>
+      
+    </mat-toolbar> 
+     
+    <router-outlet></router-outlet> 
+    <bottom-tab-nav (onNavMenuClicked)="drawer.toggle()" *ngIf=" (Global.isSmallDevice$ | async)" class="fc-bottom-nav"> 
+ 
+    </bottom-tab-nav> 
+  </mat-sidenav-content> 
+</mat-sidenav-container> 

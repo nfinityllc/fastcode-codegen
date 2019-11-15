@@ -2,7 +2,7 @@
 	<mat-toolbar class="action-tool-bar" color="primary">
 		<button mat-button (click)="onCancel()">{{'GENERAL.ACTIONS.CANCEL' | translate}}</button>
 		<span class="middle">{{title}}</span>
-		<button mat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading || !IsCreatePermission">{{'GENERAL.ACTIONS.SAVE' | translate}}</button>
+		<button mat-button (click)="itemNgForm.ngSubmit.emit()" [disabled]="!itemForm.valid || loading <#if AuthenticationType!="none">|| !IsCreatePermission</#if>">{{'GENERAL.ACTIONS.SAVE' | translate}}</button>
 	</mat-toolbar>
 	<mat-card>
 		<h2>{{title}}</h2>

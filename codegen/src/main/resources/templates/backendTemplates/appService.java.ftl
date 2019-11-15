@@ -5,7 +5,7 @@ import [=PackageName].domain<#if AuthenticationType != "none"  && ClassName == A
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
 <#if CompositeKeyClasses?seq_contains(ClassName)>
-import [=PackageName].domain.model.[=ClassName]Id;
+import [=PackageName].domain.model.[=IdClass];
 </#if>
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
@@ -14,14 +14,14 @@ import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eN
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
-<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent==false)>
-<#assign i=relationValue.joinDetails?size>
+<#if relationValue.relation == "ManyToOne" >
+<#assign i= relationValue.joinDetails?size>
 <#if i!=0 && i!=1>
 import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#if>
 </#list>
-<#if ClassName == AuthenticationTable>
+<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 <#if Flowable!false>
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 import [=PackageName].application.Flowable.ActIdUserMapper;
@@ -31,7 +31,6 @@ import [=PackageName].application.Flowable.FlowableIdentityService;
 import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
-import org.springframework.cache.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -47,7 +46,11 @@ import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=ClassName]permissionEntity;
 </#if>
+
 import org.apache.commons.lang3.StringUtils;
+<#if Cache !false>
+import org.springframework.cache.annotation.*;
+</#if>
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page; 
@@ -125,8 +128,12 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
-			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+        <#if relationValue.relation == "ManyToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
+        [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+        </#if>
+	    <#if relationValue.relation == "OneToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.referenceColumn?cap_first]()!=null</#if></#list>) {
+	    [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first](),<#else> input.get[=joinDetails.referenceColumn?cap_first]()</#if></#list>));
+	    </#if>
 			if(found[=relationValue.eName]!=null) {
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
 			}
@@ -166,7 +173,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		}
 		</#if>
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		<#if Flowable!false>
 		//Map and create flowable user
 		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(created[=ClassName]);
@@ -177,8 +184,10 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
-	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=ClassName?uncap_first]Id</#if>, Update[=ClassName]Input input) {
+	<#if Cache !false>
+	@CacheEvict(value="[=ClassName]", key = "#[=IdClass?uncap_first]")
+	</#if>
+	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first] <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=IdClass?uncap_first]</#if>, Update[=ClassName]Input input) {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mapper.Update[=ClassName]InputTo[=EntityClassName](input);
 		<#list Relationship as relationKey,relationValue>
@@ -209,9 +218,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#list>
         <#else>
-        if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
-			[=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
-			if(found[=relationValue.eName]!=null){
+        <#if relationValue.relation == "ManyToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.joinColumn?cap_first]()!=null</#if></#list>) {
+        [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.joinColumn?cap_first](),<#else> input.get[=joinDetails.joinColumn?cap_first]()</#if></#list>));
+        </#if>
+	    <#if relationValue.relation == "OneToOne">if(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first]()!=null &&<#else> input.get[=joinDetails.referenceColumn?cap_first]()!=null</#if></#list>) {
+	    [=relationValue.eName]Entity found[=relationValue.eName] = _[=relationValue.eName?uncap_first]Manager.FindById(new [=relationValue.eName]Id(<#list relationValue.joinDetails as joinDetails><#if joinDetails_has_next>input.get[=joinDetails.referenceColumn?cap_first](),<#else> input.get[=joinDetails.referenceColumn?cap_first]()</#if></#list>));
+	    </#if>
+	    	if(found[=relationValue.eName]!=null){
 				[=ClassName?uncap_first].set[=relationValue.eName](found[=relationValue.eName]);
 			}
 			else {
@@ -234,7 +247,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
 		
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 		<#if Flowable!false>
 		String oldRoleName = null;
 		//TODO: how to map Role in custom User table?
@@ -250,12 +263,14 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="[=ClassName]", key = "#[=ClassName?uncap_first]Id")
-	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	<#if Cache !false>
+	@CacheEvict(value="[=ClassName]", key = "#[=IdClass?uncap_first]")
+	</#if>
+	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 
-		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id) ; 
+		[=EntityClassName] existing = _[=ClassName?uncap_first]Manager.FindById([=IdClass?uncap_first]) ; 
 		_[=ClassName?uncap_first]Manager.Delete(existing);
-		<#if ClassName == AuthenticationTable>
+		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 		<#if Flowable!false>
 		<#if AuthenticationFields??>
 		<#list AuthenticationFields as authKey,authValue>
@@ -269,10 +284,12 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
-	public Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	<#if Cache !false>
+	@Cacheable(value = "[=ClassName]", key = "#[=IdClass?uncap_first]")
+	</#if>
+	public Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=IdClass?uncap_first]);
 		if (found[=ClassName] == null)  
 			return null ; 
  	   
@@ -281,22 +298,42 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	}
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "[=ClassName]", key = "#[=ClassName?uncap_first]Id")
-	public Find[=ClassName]WithAllFieldsByIdOutput FindWithAllFieldsById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+	<#if Cache !false>
+	@Cacheable(value = "[=ClassName]", key = "#[=IdClass?uncap_first]")
+	</#if>
+	public Find[=ClassName]WithAllFieldsByIdOutput FindWithAllFieldsById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=IdClass?uncap_first]);
 		if (found[=ClassName] == null)  
 			return null ; 
  	   
  	    Find[=ClassName]WithAllFieldsByIdOutput output=mapper.[=EntityClassName]ToFind[=ClassName]WithAllFieldsByIdOutput(found[=ClassName]); 
 		return output;
 	}
+	
+	//Role
+	// ReST API Call - GET /user/1/role
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
+	@Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
+	</#if>
+	public GetRoleOutput GetRole(Long [=ClassName?uncap_first]Id) {
+
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		if (found[=ClassName] == null) {
+			return null;
+		}
+		RoleEntity re = _[=ClassName?uncap_first]Manager.GetRole([=ClassName?uncap_first]Id);
+		return mapper.RoleEntityToGetRoleOutput(re, found[=ClassName]);
+	}
 	<#if AuthenticationFields??>
 	<#list AuthenticationFields as authKey,authValue>
 	<#if authKey== "UserName">
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
 	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=authValue.fieldName?uncap_first]")
+	</#if>
 	public Find[=ClassName]By[=authValue.fieldName?cap_first]Output FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
 
 		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindBy[=authValue.fieldName?cap_first]([=authValue.fieldName?uncap_first]);
@@ -315,22 +352,26 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     //[=relationValue.eName]
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
-	public Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=ClassName]Id [=ClassName?uncap_first]Id<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=ClassName?uncap_first]Id</#if>) {
+    </#if>
+	public Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
+		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=IdClass?uncap_first]);
 		if (found[=ClassName] == null) {
-			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] wth a id=%s", [=ClassName?uncap_first]Id);
+			logHelper.getLogger().error("There does not exist a [=ClassName?uncap_first] wth a id=%s", [=IdClass?uncap_first]);
 			return null;
 		}
-		[=relationValue.eName]Entity re = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=ClassName?uncap_first]Id);
+		[=relationValue.eName]Entity re = _[=ClassName?uncap_first]Manager.Get[=relationValue.eName]([=IdClass?uncap_first]);
 		return mapper.[=relationValue.eName]EntityToGet[=relationValue.eName]Output(re, found[=ClassName]);
 	}
 	
    </#if>
    </#list>
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
 	@Cacheable(value = "[=ClassName]")
+	</#if>
 	public List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<[=EntityClassName]> found[=ClassName] = _[=ClassName?uncap_first]Manager.FindAll(Search(search), pageable);
@@ -436,6 +477,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	public void checkProperties(List<String> list) throws Exception  {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		list.get(i).replace("%20","").trim().equals("roleId") ||
+		</#if>
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 		<#if relationValue.isParent==false>
@@ -443,7 +487,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         <#if joinDetails.joinEntityName == relationValue.eName>
         <#if joinDetails.joinColumn??>
         <#if !Fields[joinDetails.joinColumn]?? >
-		 list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]") ||
+		list.get(i).replace("%20","").trim().equals("[=joinDetails.joinColumn]") ||
 		</#if>
         </#if>
         </#if>
@@ -451,12 +495,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
         </#if>
 		</#list>
-		
         <#list Fields?keys as key>
         <#if key_has_next>
-		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]") ||
+		list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]") ||
 		<#else>
-		 list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]")
+		list.get(i).replace("%20","").trim().equals("[=Fields[key].fieldName]")
         </#if> 
         </#list>
 		)) 
@@ -534,6 +577,11 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#list>
 		</#if>
 		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		  if(list.get(i).replace("%20","").trim().equals("roleId")) {
+			builder.or([=ClassName?uncap_first].role.id.eq(Long.parseLong(value)));
+			}
+		</#if>
 		}
 		return builder;
 	}
@@ -684,14 +732,21 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
         </#if> 
 		</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
+			if(joinCol != null && joinCol.getKey().equals("roleId")) {
+				builder.and([=ClassName?uncap_first].role.id.eq(Long.parseLong(joinCol.getValue())));
+			}
+		}
+		</#if>
 		return builder;
 	}
 	
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
-	public [=ClassName]Id parse[=ClassName]Key(String keysString) {
+	public [=IdClass] parse[=ClassName]Key(String keysString) {
 		
 		String[] keyEntries = keysString.split(",");
-		[=ClassName]Id [=ClassName?uncap_first]Id = new [=ClassName]Id();
+		[=IdClass] [=IdClass?uncap_first] = new [=IdClass]();
 		
 		Map<String,String> keyMap = new HashMap<String,String>();
 		if(keyEntries.length > 1) {
@@ -702,28 +757,28 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
 				}
 				else {
-					//error
+					return null;
 				}
 			}
 		}
 		else {
-			//error
+			return null;
 		}
 		
 		<#list PrimaryKeys as fieldName,fieldType>
 		<#if fieldType?lower_case == "string" >
-		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](keyMap.get("[=fieldName]"));
+		[=IdClass?uncap_first].set[=fieldName?cap_first](keyMap.get("[=fieldName]"));
 		<#elseif fieldType?lower_case == "long" >
-		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Long.valueOf(keyMap.get("[=fieldName]")));
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Long.valueOf(keyMap.get("[=fieldName]")));
 		<#elseif fieldType?lower_case == "integer">
-		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Integer.valueOf(keyMap.get("[=fieldName]")));
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Integer.valueOf(keyMap.get("[=fieldName]")));
         <#elseif fieldType?lower_case == "short">
-		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Short.valueOf(keyMap.get("[=fieldName]")));
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Short.valueOf(keyMap.get("[=fieldName]")));
         <#elseif fieldType?lower_case == "double">
-		[=ClassName?uncap_first]Id.set[=fieldName?cap_first](Double.valueOf(keyMap.get("[=fieldName]")));
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Double.valueOf(keyMap.get("[=fieldName]")));
 		</#if>
 		</#list>
-		return [=ClassName?uncap_first]Id;
+		return [=IdClass?uncap_first];
 		
 	}	
 	</#if>
