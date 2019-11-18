@@ -8,12 +8,12 @@ export interface I[=AuthenticationTable]permission {
 	<#elseif UserInput??>
 	<#if PrimaryKeys??>
 	<#list PrimaryKeys as key,value>
-	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double">
-	[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : number;
-	<#elseif value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-	[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : string;
-	<#elseif value.fieldType?lower_case == "boolean">
-	[=AuthenticationTable?uncap_first + value.fieldName?cap_first] : boolean;
+	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double">
+	[=AuthenticationTable?uncap_first + key?cap_first] : number;
+	<#elseif value?lower_case == "date" || value?lower_case == "string">
+	[=AuthenticationTable?uncap_first + key?cap_first] : string;
+	<#elseif value?lower_case == "boolean">
+	[=AuthenticationTable?uncap_first + key?cap_first] : boolean;
 	</#if> 
 	</#list>
 	</#if>

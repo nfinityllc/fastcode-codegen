@@ -5,6 +5,8 @@ import [=CommonModulePackage].Search.SearchFields;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=PackageName].application.Authorization.User.Dto.*;
 import [=PackageName].domain.model.RoleEntity;
+import [=PackageName].domain.IRepository.IJwtRepository;
+import [=PackageName].domain.model.JwtEntity;
 import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.Authorization.User.IUserManager;
 import [=PackageName].domain.model.RolepermissionEntity;
@@ -13,6 +15,7 @@ import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.model.QUserEntity;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
 <#if Cache!false>
 import org.springframework.cache.annotation.*;
 </#if>
@@ -57,7 +64,10 @@ public class UserAppService implements IUserAppService {
 	
     @Autowired
 	private FlowableIdentityService idmIdentityService;
+	
     </#if>
+    @Autowired
+ 	private IJwtRepository _jwtRepository;
 
     @Transactional(propagation = Propagation.REQUIRED)
 	public CreateUserOutput Create(CreateUserInput input) {
@@ -623,6 +633,18 @@ public class UserAppService implements IUserAppService {
 		joinColumnMap.put("userId", keysString);
 		return joinColumnMap;
 	}
+	
+	public void deleteAllUserTokens(String userName) { 
+ 
+    List<JwtEntity> userTokens = _jwtRepository.findAll(); 
+    userTokens.removeAll(Collections.singleton(null)); 
+ 
+    for (JwtEntity jwt : userTokens) { 
+    	if(jwt.getUserName().equals(userName)) { 
+        	_jwtRepository.delete(jwt); 
+        } 
+    } 
+    } 
 
 }
 

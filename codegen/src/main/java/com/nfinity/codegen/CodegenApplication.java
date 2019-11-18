@@ -183,7 +183,7 @@ public class CodegenApplication implements ApplicationRunner {
 		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
 
-		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory(),input.getFlowable());
+		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory(),input.getFlowable(),input.getCache());
 		CommonModuleTemplateGenerator.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId);
 		BaseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
 

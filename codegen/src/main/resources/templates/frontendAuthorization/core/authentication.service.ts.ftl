@@ -144,13 +144,20 @@ export class AuthenticationService {
   }
 
   logout() {
-    if (environment.loginType == "oidc") {
-      this.oauthService.logOut();
+     if(environment.loginType == "oidc")
+    {
+     localStorage.removeItem('token');
+        this.oauthService.logOut();
     }
-    this.cookieService.set(this.cookieName, 'UNKNOWN');
-    localStorage.removeItem('token');
-    this.decodedToken = null;
-  }
+    else if( localStorage.getItem('token')) {      
+     this.http.post<any>(this.apiUrl+'/auth/logout', null, this._reqOptionsArgs).subscribe(result => {
+     
+       this.oauthService.logOut();
+     })
+     localStorage.removeItem('token');
+   }
+  
+   }
 
   getTokenExpirationDate(token: string): Date {
     const decoded = helper.decodeToken(token);

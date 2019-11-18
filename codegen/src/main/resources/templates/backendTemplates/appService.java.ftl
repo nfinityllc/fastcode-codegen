@@ -22,6 +22,8 @@ import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#list>
 <#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
+import [=PackageName].domain.IRepository.IJwtRepository;
+import [=PackageName].domain.model.JwtEntity;
 <#if Flowable!false>
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 import [=PackageName].application.Flowable.ActIdUserMapper;
@@ -32,22 +34,19 @@ import [=CommonModulePackage].Search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ArrayList;
+import java.util.*;
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import java.util.Set;
+import javax.servlet.ServletContext;
 
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=ClassName]permissionEntity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 </#if>
-
-import org.apache.commons.lang3.StringUtils;
 <#if Cache !false>
 import org.springframework.cache.annotation.*;
 </#if>
@@ -58,6 +57,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.lang3.StringUtils;
 
 @Service
 @Validated
@@ -73,6 +73,9 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 	@Autowired
 	private RoleManager _roleManager;
+	
+	@Autowired
+ 	private IJwtRepository _jwtRepository;
     
     <#if Flowable!false>
 	@Autowired
@@ -297,6 +300,18 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+	public void deleteAllUserTokens(String userName) {
+ 
+         List<JwtEntity> userTokens = _jwtRepository.findAll();
+         userTokens.removeAll(Collections.singleton(null));
+ 
+         for (JwtEntity jwt : userTokens) {
+             if(jwt.getUserName().equals(userName)) {
+                 _jwtRepository.delete(jwt);
+             }
+         }
+	}
+	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
 	@Cacheable(value = "[=ClassName]", key = "#[=IdClass?uncap_first]")

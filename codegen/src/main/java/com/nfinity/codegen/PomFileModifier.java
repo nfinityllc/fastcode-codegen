@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 
 public class PomFileModifier {
 
-	public static void update(String path,String authenticationType,Boolean scheduler,Boolean history,Boolean flowable) {
+	public static void update(String path,String authenticationType,Boolean scheduler,Boolean history,Boolean flowable,Boolean cache) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
 		Dependency mapstruct = new Dependency("org.mapstruct", "mapstruct", "1.2.0.Final");
@@ -35,7 +35,6 @@ public class PomFileModifier {
 		Dependency springFoxSwagger = new Dependency("io.springfox","springfox-swagger2","2.7.0");
 		Dependency springFoxSwaggerUI = new Dependency("io.springfox","springfox-swagger-ui","2.7.0");
 		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
-
 	    Dependency httpComponents = new Dependency("org.apache.httpcomponents","httpclient","4.5");
 
 	    if(flowable) {
@@ -43,6 +42,14 @@ public class PomFileModifier {
 			dependencies.add(flowableRest);
 		}
 
+	    if(authenticationType !="none" || cache)
+	    {
+	    	Dependency springDataRedis = new Dependency("org.springframework.data","spring-data-redis","2.1.9.RELEASE");
+			Dependency redisClient = new Dependency("redis.clients","jedis","2.9.0","jar","compile");
+			dependencies.add(springDataRedis);
+			dependencies.add(redisClient);
+	    }
+	    
 		if(scheduler)
 		{
 			if(!history)
@@ -105,6 +112,8 @@ public class PomFileModifier {
 				String groupId = dependency.getGroupId();
 				String artifactId = dependency.getArtifactId();
 				String version = dependency.getVersion();
+				String scope = dependency.getScope();
+				String type = dependency.getType();
 
 				if(!groupId.isEmpty()){
 					Element elem = doc.createElement("groupId");
@@ -120,9 +129,23 @@ public class PomFileModifier {
 					dependenciesNode.appendChild(dependencyNode);
 				}
 
-				if(!groupId.isEmpty()){
+				if(!version.isEmpty()){
 					Element elem = doc.createElement("version");
 					elem.appendChild(doc.createTextNode(version));
+					dependencyNode.appendChild(elem);
+					dependenciesNode.appendChild(dependencyNode);
+				}
+				
+				if(!type.isEmpty()){
+					Element elem = doc.createElement("type");
+					elem.appendChild(doc.createTextNode(type));
+					dependencyNode.appendChild(elem);
+					dependenciesNode.appendChild(dependencyNode);
+				}
+				
+				if(!scope.isEmpty()){
+					Element elem = doc.createElement("scope");
+					elem.appendChild(doc.createTextNode(scope));
 					dependencyNode.appendChild(elem);
 					dependenciesNode.appendChild(dependencyNode);
 				}

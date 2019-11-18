@@ -833,19 +833,28 @@ public class [=ClassName]AppServiceTest {
 	
 	@Test 
 	public void find[=ClassName]ByName_NameIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindBy[=ClassName]Name(anyString())).thenReturn(null);	
-		Assertions.assertThat(_appService.FindBy[=ClassName]Name("User1")).isEqualTo(null);	
-
+        <#if AuthenticationFields??>
+	    <#list AuthenticationFields as authKey,authValue>
+	    <#if authKey== "UserName">
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindBy[=authValue.fieldName?cap_first](anyString())).thenReturn(null);	
+		Assertions.assertThat(_appService.FindBy[=authValue.fieldName?cap_first]("User1")).isEqualTo(null);	
+        </#if>
+	    </#list>
+        </#if>
 	}
 
 	@Test
 	public void find[=ClassName]ByName_NameIsNotNullAnd[=ClassName]Exists_ReturnA[=ClassName]() {
 
 		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindBy[=ClassName]Name(anyString())).thenReturn([=ClassName?uncap_first]);
-		Assertions.assertThat(_appService.FindBy[=ClassName]Name("User1")).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]));
+        <#if AuthenticationFields??>
+	    <#list AuthenticationFields as authKey,authValue>
+	    <#if authKey== "UserName">
+		Mockito.when(_[=ClassName?uncap_first]Manager.FindBy[=authValue.fieldName?cap_first](anyString())).thenReturn([=ClassName?uncap_first]);
+		Assertions.assertThat(_appService.FindBy[=authValue.fieldName?cap_first]("User1")).isEqualTo(_mapper.[=EntityClassName]ToCreate[=ClassName]Output([=ClassName?uncap_first]));
+		</#if>
+	    </#list>
+        </#if>
 	}
 
 	</#if>

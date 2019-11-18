@@ -23,8 +23,8 @@ public interface [=AuthenticationTable]permissionMapper {
    <#elseif AuthenticationType!="none" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
-   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]"),  
+   <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=key?uncap_first]", target = "[=AuthenticationTable?uncap_first][=key?cap_first]"),  
    </#if> 
    </#list>
    </#if>
@@ -35,7 +35,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authkey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -54,8 +54,8 @@ public interface [=AuthenticationTable]permissionMapper {
    <#elseif AuthenticationType!="none" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
-   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]"),  
+   <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=key?uncap_first]", target = "[=AuthenticationTable?uncap_first][=key?cap_first]"),  
    </#if> 
    </#list>
    </#if>
@@ -66,7 +66,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authkey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -83,8 +83,8 @@ public interface [=AuthenticationTable]permissionMapper {
    <#elseif AuthenticationType!="none" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
-   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=value.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]"),  
+   <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=key?uncap_first]", target = "[=AuthenticationTable?uncap_first][=key?cap_first]"),  
    </#if> 
    </#list>
    </#if>
@@ -95,7 +95,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authkey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -113,8 +113,8 @@ public interface [=AuthenticationTable]permissionMapper {
    <#elseif AuthenticationType!="none" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
-   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first][=value.fieldName?cap_first]"),
+   <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first][=key?cap_first]", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first][=key?cap_first]"),
    </#if> 
    </#list>
    </#if>
@@ -129,8 +129,8 @@ public interface [=AuthenticationTable]permissionMapper {
    <#elseif AuthenticationType!="none" && UserInput??>
    <#if PrimaryKeys??>
    <#list PrimaryKeys as key,value>
-   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first][=value.fieldName?cap_first]"),
+   <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+   @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first][=key?cap_first]", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first][=key?cap_first]"),
    </#if> 
    </#list>
    </#if>

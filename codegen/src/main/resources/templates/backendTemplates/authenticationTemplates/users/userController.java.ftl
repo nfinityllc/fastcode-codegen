@@ -156,6 +156,10 @@ public class UserController {
 		}
 		
 		user.setPassword(currentUser.getPassword());
+		if(currentUser.getIsActive() && !user.getIsActive()) { 
+ 
+            _userAppService.deleteAllUserTokens(currentUser.getUserName()); 
+        } 
     return new ResponseEntity(_userAppService.Update(Long.valueOf(id),user), HttpStatus.OK);
 	}
 
