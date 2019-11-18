@@ -1,10 +1,12 @@
+@import "../../styles/base.scss";
+
 .badge {
     font-size: 12px;
     line-height: 12px;
     padding-right: 0;
     border-radius: 3px;
     background-color: #e8edf1;
-    color: #2980b9;
+    color: $fc-accent-color;
     background-color: transparent;
     font-weight: normal;
 }
@@ -26,7 +28,7 @@
 }
 
 .active {
-    border-left-color: #2980b9;
+    border-left-color: $fc-accent-color;
 }
 
 .process-container{
@@ -57,7 +59,7 @@
     background-color: #e8edf1;
 }
 .list-item.active {
-    border-left-color: #2980b9;
+    border-left-color: $fc-accent-color;
     background-color: #e8edf1;
 }
 
@@ -141,7 +143,7 @@
 
 .filter-icon-expand,
 .filter-icon-collapse {
-    display: inline-block;
+    display: block;
     text-align: right;
 }
 

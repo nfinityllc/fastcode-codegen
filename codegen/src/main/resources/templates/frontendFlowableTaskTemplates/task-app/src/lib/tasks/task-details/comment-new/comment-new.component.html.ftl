@@ -1,12 +1,12 @@
 <div class="container1">
   <mat-toolbar class="action-tool-bar" color="primary">
-    <button mat-flat-button (click)="onCancel()">
+    <button mat-button (click)="onCancel()">
       {{'GENERAL.ACTION.CANCEL' | translate}}
     </button>
-    <span class="middle">New comment</span>
+    <span >{{'TASK.NEW-COMMENT.TITLE' | translate}}</span>
 
-    <button mat-flat-button (click)="commentNgForm.ngSubmit.emit()" [disabled]="!commentForm.valid || loading">
-      {{'TASK.ACTION.ADD-COMMENT-CONFIRM' | translate}}
+    <button mat-button (click)="commentNgForm.ngSubmit.emit()" [disabled]="!commentForm.valid || loading">
+      {{'GENERAL.ACTION.SAVE' | translate}}
     </button>
 
   </mat-toolbar>

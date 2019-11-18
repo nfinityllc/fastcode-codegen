@@ -25,11 +25,16 @@
     }
 }
 
-.user-form {
+.search-form {
     display: flex;
     flex-direction: column;
 }
 
-.full-width {
-    width: 100%;
+.form-field {
+    padding: $fc-margin;
+}
+
+mat-dialog-content{
+    margin: 0 !important;
+    padding: 0 !important;
 }

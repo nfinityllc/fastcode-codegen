@@ -41,8 +41,8 @@ export class UserPictureComponent implements OnInit, OnChanges {
   }
 
   setUserPicture() {
-    this.username = this.user.firstName && this.user.firstName != "null" ? this.username + this.user.firstName : this.username + "";
-    this.username = this.user.lastName && this.user.lastName != "null" ? this.username + " " + this.user.lastName : this.username + "";
+    // this.username = this.user.firstName && this.user.firstName != "null" ? this.username + this.user.firstName : this.username + "";
+    // this.username = this.user.lastName && this.user.lastName != "null" ? this.username + " " + this.user.lastName : this.username + "";
 
     if (this.user.pictureId) {
       this.userPic.class = "user-picture";

@@ -18,6 +18,7 @@
     border-bottom: 1px solid #cccccc;
     box-shadow: 0px 1px 1px 0px rgba(220, 220, 220, 0.65);
     z-index: 1;
+    overflow: auto;
 }
 
 .filter-text {
@@ -49,6 +50,12 @@
     margin-bottom: 10px;
 }
 
+
+.filter-icon-expand {
+    display: block;
+    padding-right: 5px;
+}
+
 .filter-icon-collapse {
     display: block;
     padding-right: 5px;
@@ -66,7 +73,7 @@
     padding-right: 0;
     border-radius: 3px;
     background-color: #e8edf1;
-    color: #2980b9;
+    color: $fc-accent-color;
     background-color: transparent;
     font-weight: normal;
 }
@@ -112,7 +119,7 @@
 }
 
 .list-item.active {
-    border-left-color: #2980b9;
+    border-left-color: $fc-accent-color;
     background-color: #e8edf1;
 }
 

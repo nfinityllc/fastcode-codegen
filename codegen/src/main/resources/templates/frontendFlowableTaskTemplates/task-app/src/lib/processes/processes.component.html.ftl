@@ -4,17 +4,11 @@
     <div class="process-list-header">
 
       <div *ngIf="!filter.expanded">
-
-        <div class="filter-text" *ngIf="filter.param.state">{{'PROCESS.FILTER.STATE-SUMMARY' | translate }}
-          {{filter.param.state.title | translate}}</div>
-        <div class="filter-text" *ngIf="!filter.param.state">{{'PROCESS.MESSAGE.NO-FILTER' | translate}}</div>
-
         <div class="filter-icon-expand noselect">
           <span (click)="expandFilter()">
             {{'TASK.FILTER.SHOW' | translate}}<i class="material-icons">expand_more</i>
           </span>
         </div>
-
       </div>
 
       <div *ngIf="filter.expanded">
@@ -29,7 +23,8 @@
         <div class="form-group">
           <label translate="PROCESS.FILTER.STATE"></label>
           <div class="state-selection toggle">
-            <div class="toggle-3" *ngFor="let option of stateFilterOptions" [ngClass]="{'active' : filter.param.state.id == option.id}">
+            <div class="toggle-3" *ngFor="let option of stateFilterOptions"
+              [ngClass]="{'active' : filter.param.state.id == option.id}">
               <button class="state-btn" (click)="selectStateFilter(option)">{{option.title | translate}}</button>
             </div>
           </div>
@@ -37,7 +32,8 @@
 
         <mat-form-field class="full-width">
           <label translate="PROCESS.FILTER.APP"></label>
-          <mat-select [disabled]="filter.loading" (selectionChange)="loadProcessInstances(false)" [(ngModel)]="filter.param.appDefinitionKey">
+          <mat-select [disabled]="filter.loading" (selectionChange)="loadProcessInstances(false)"
+            [(ngModel)]="filter.param.appDefinitionKey">
             <mat-option *ngFor="let option of apps" [value]="option.appDefinitionKey">
               {{ (option.name? option.name : 'PROCESS.FILTER.APP-PLACEHOLDER') | translate}}
             </mat-option>
@@ -59,7 +55,7 @@
       </div>
 
       <div class="create-process">
-        <button class="accent-button" mat-raised-button (click)="createProcessInstance()">
+        <button mat-flat-button color="primary" (click)="createProcessInstance()">
           {{'PROCESS.ACTION.CREATE' | translate}}
         </button>
       </div>
@@ -67,7 +63,8 @@
 
     <mat-progress-bar *ngIf="filter.loading" mode="indeterminate"></mat-progress-bar>
     <div class="list">
-      <div *ngFor="let processInstance of processInstances" [ngClass]="{'list-item': true,'active': selectedProcessInstance.id == processInstance.id}"
+      <div *ngFor="let processInstance of processInstances"
+        [ngClass]="{'list-item': true,'active': selectedProcessInstance.id == processInstance.id}"
         (click)="selectProcessInstance(processInstance)">
         <div fxLayout="row">
 
@@ -102,9 +99,10 @@
 
 
   <div fxLayout="column" *ngIf="!showList || !isMediumDeviceOrLess" fxFlex="{{detailsFlexWidth}}">
-    <button class="accent-button back-to-list" mat-raised-button *ngIf="isMediumDeviceOrLess" (click)="showList=!showList">{{'PROCESS.ACTION.TOGGLE-LIST'
-      | translate}}</button>
-    <app-process-details [ngClass]="{'process-details-wrap': !isMediumDeviceOrLess,'process-details-wrap-small': isMediumDeviceOrLess}" fxLayout="column" [processInstance]="selectedProcessInstance" (onCreateProcess)="createProcessInstance()"
+    <button color="accent" mat-flat-button *ngIf="isMediumDeviceOrLess" (click)="showList=!showList">{{'PROCESS.ACTION.TOGGLE-LIST' | translate}}</button>
+    <app-process-details
+      [ngClass]="{'process-details-wrap': !isMediumDeviceOrLess,'process-details-wrap-small': isMediumDeviceOrLess}"
+      fxLayout="column" [processInstance]="selectedProcessInstance" (onCreateProcess)="createProcessInstance()"
       (onCancelProcess)="onCancelProcess()"></app-process-details>
   </div>
 </div>

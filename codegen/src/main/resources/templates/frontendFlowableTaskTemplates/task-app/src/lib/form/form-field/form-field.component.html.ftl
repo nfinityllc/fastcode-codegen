@@ -75,7 +75,7 @@
 
   <div *ngSwitchCase="'people'" class="form-group">
     <label class="control-label">{{field.name}}</label>
-    <ul class="simple-list">
+    <ul class="generic-list">
       <li class="action">
         <div (click)="selectPeople()">
           <div *ngIf="field.value && field.value.id">
@@ -97,7 +97,7 @@
 
   <div *ngSwitchCase="'functional-group'" class="form-group">
     <label class="control-label">{{field.name}}</label>
-    <ul class="simple-list">
+    <ul class="generic-list">
       <li class="action">
         <div (click)="selectGroup()">
           <span *ngIf="!field.value && !field.placeholder" translate="FORM.MESSAGE.SELECT-GROUP"></span>
@@ -116,7 +116,7 @@
     <label class="control-label">{{field.name}}</label>
     <input *ngIf="!uploads || uploads.length == 0" type="file" (change)="fileChange($event)" #fileInput />
 
-    <ul class="simple-list">
+    <ul class="generic-list">
       <li *ngFor="let content of uploads">
         <i class="icon icon-{{content.simpleType}}"></i>
         {{content.name}}

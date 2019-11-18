@@ -13,7 +13,7 @@ import {
   MatSelectModule, MatCheckboxModule, MatAutocompleteModule,
   MatDatepickerModule, MatNativeDateModule, MatMenuModule, MatSortModule,
   MatPaginatorModule, MatProgressSpinnerModule,MatSnackBarModule, MatProgressBarModule,
-  MatChipsModule, MatExpansionModule, MatListModule, MatLineModule
+  MatChipsModule, MatExpansionModule, MatListModule, MatLineModule, MatGridListModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -64,7 +64,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatSelectModule, MatCheckboxModule, MatAutocompleteModule,
     MatDatepickerModule, MatNativeDateModule, MatMenuModule, MatSortModule,
     MatPaginatorModule, MatProgressSpinnerModule,MatSnackBarModule, MatProgressBarModule,
-    MatChipsModule, MatExpansionModule, MatListModule, MatLineModule, FlexLayoutModule,
+    MatChipsModule, MatExpansionModule, MatListModule, MatLineModule, FlexLayoutModule, MatGridListModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

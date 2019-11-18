@@ -19,4 +19,4 @@ body { margin: 0; font-family: 'Roboto', sans-serif; }
 
 .snackbar-background {
     background-color:  #8bc34a;     
-   }
+}

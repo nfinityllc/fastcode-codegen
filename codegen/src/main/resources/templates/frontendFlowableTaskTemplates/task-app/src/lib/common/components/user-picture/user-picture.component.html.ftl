@@ -1,3 +1,3 @@
-<div class="{{userPic.class}}" ng-style="{\'background-image\': userPic.style}" title="{{username}}">
+<div class="{{userPic.class}}" [ngStyle]="{'background-image': userPic.style}" title="{{userPic.userName}}">
   <span>{{userPic.text}}</span>
 </div>

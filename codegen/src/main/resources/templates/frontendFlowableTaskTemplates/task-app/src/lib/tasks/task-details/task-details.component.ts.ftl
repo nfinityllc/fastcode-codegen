@@ -50,6 +50,9 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   activeTab = 'form';
   taskUpdating: boolean = true;
 
+  commentsColSpan: number;
+  detailsColSpan: number;
+
   dialogRef: MatDialogRef<any>;
   isMediumDeviceOrLess: boolean;
   mediumDeviceOrLessDialogSize: string = "100%";
@@ -86,6 +89,15 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
         this.dialogRef.updateSize(value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogWidthSize,
           value ? this.mediumDeviceOrLessDialogSize : this.largerDeviceDialogHeightSize);
 
+      if (this.isMediumDeviceOrLess) {
+        this.detailsColSpan = 2;
+        this.commentsColSpan = 2;
+      }
+      else {
+        this.detailsColSpan = 1;
+        this.commentsColSpan = 1;
+      }
+
     });
   }
 
@@ -102,13 +114,13 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
       }
     }
   }
-  
-  setCurrentUser(){
+
+  setCurrentUser() {
     this.userService.getAccount().subscribe(account => {
       this.account = account;
     })
   }
-  
+
   loadAllDetails() {
     this.getProcessInstance();
     this.refreshInvolvmentSummary();
@@ -465,13 +477,15 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     }
   }
 
-  openTaskInstance(taskId) {
-    this.taskService.get(taskId).subscribe((response) => {
-      this.task = response;
-      this.loadAllDetails();
-      this.onOpenTask.emit(this.task);
-    })
-  };
+  openTaskInstance(task) {
+    if (task.assignee && (task.assignee.id == this.account.id)) {
+      this.taskService.get(task.id).subscribe((response) => {
+        this.task = response;
+        this.loadAllDetails();
+        this.onOpenTask.emit(this.task);
+      })
+    }
+  }
 
   completeTask() {
     this.completeButtonDisabled = true;
@@ -556,7 +570,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     });
   };
 
-  openProcessInstance(processId){
-    
+  openProcessInstance(processId) {
+
   }
 }

@@ -1,7 +1,11 @@
 @import 'src/styles/base.scss';
-.container {
-    height: '400px';
-    width: '600px';
+.login-container {
+    height: calc(100% - 60px);
+    overflow: auto;
+    display: flex;
+    // justify-content: center;
+    flex-direction: column;
+    // align-items: center;
 }
 .action-tool-bar {    
     background-color: $fc-primary-color-light !important;
@@ -18,21 +22,12 @@
   }
   .item-card {
     width: 400px;
+    margin: auto;
   }
   .item-form-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    height: 600px;
+    margin: auto;
   }
   .item-action {
     display: flex;
     justify-content: flex-end;
   }
-
-  
-
-
-
-

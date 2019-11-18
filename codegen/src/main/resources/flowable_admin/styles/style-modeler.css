@@ -12,11 +12,11 @@
 
 @font-face {
     font-family: 'cherokeeregular';
-    src: url('../../fonts/cherokee-webfont.eot');
-    src: url('../../fonts/cherokee-webfont.eot?#iefix') format('embedded-opentype'),
-    url('../../fonts/cherokee-webfont.woff') format('woff'),
-    url('../../fonts/cherokee-webfont.ttf') format('truetype'),
-    url('../../fonts/cherokee-webfont.svg#cherokeeregular') format('svg');
+    src: url('../../flowable_admin/fonts/cherokee-webfont.eot');
+    src: url('../../flowable_admin/fonts/cherokee-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../../flowable_admin/fonts/cherokee-webfont.woff') format('woff'),
+    url('../../flowable_admin/fonts/cherokee-webfont.ttf') format('truetype'),
+    url('../../flowable_admin/fonts/cherokee-webfont.svg#cherokeeregular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -74,88 +74,6 @@ hr {
     color: #999999;
     font-size: 13px;
 }
-
-
-.simple-list {
-    list-style: none inside;
-    padding: 0;
-    margin: 5px 0;
-}
-
-.simple-list.pack {
-    max-height: 250px;
-    overflow: auto;
-}
-
-.simple-list li {
-    padding: 6px;
-    position: relative;
-}
-
-.simple-list li > .icon {
-    padding-right: 5px;
-}
-
-.simple-list li:hover {
-    background-color:  #f8f8f9;
-}
-
-.simple-list li.nothing-to-see:hover {
-    background-color:  transparent;
-}
-
-.simple-list li.active {
-    background-color:  #eeeeee;
-}
-
-.simple-list li .actions {
-    visibility: hidden;
-    position: absolute;
-    top: 3px;
-    right: 5px;
-    font-size: 20px;
-    background-color: #f8f8f9;
-    padding: 0 0 0 4px;
-}
-
-.simple-list li .actions a {
-     padding: 4px 4px 0 4px;
- }
-
-.simple-list li .actions a:hover {
-    background-color: #ffffff;
-}
-
-.simple-list li:hover .actions {
-    visibility: visible;
-}
-
-.simple-list.grid li {
-    border-bottom: 1px solid #eeeeee;
-}
-
-.simple-list.grid li:first-child {
-    border-top: 1px solid #eeeeee;
-}
-
-.simple-list li .subtle {
-    color: #999999;
-    font-size: 13px;
-}
-
-.simple-list.selectable li:hover {
-    font-weight: bolder;
-}
-
-.simple-list .loading {
-    position: absolute;
-    left: 50%;
-    margin-left: -15px;
-    line-height: 30px;
-    top: 8px;
-    z-index: 1030;
-}
-
 
 .lt-ie9 .container {
     display: none !important;
@@ -819,30 +737,6 @@ a.dropdown-toggle {
     content: "\e134";
 }
 
-.simple-list .icon-image, .related-content .icon-image {
-    color: #484b84;
-}
-
-.simple-list .icon-pdf, .related-content .icon-pdf {
-    color: #ac2020;
-}
-
-.simple-list .icon-powerpoint, .related-content .icon-powerpoint {
-    color: #dc5b31;
-}
-
-.simple-list .icon-excel, .related-content .icon-excel {
-    color: #13743d;
-}
-
-.simple-list .icon-word, .related-content .icon-word {
-    color: #2974b8;
-}
-
-.simple-list .icon-content, .related-content .icon-content {
-    color: #666666;
-}
-
 .loading {
     margin: 0px 15px;
     text-align: center;
@@ -1289,97 +1183,6 @@ button.selection:active, button.selection:focus {
 
 .main-list .list-subheader > .btn-group {
     margin: 10px 5px 10px 10px;
-}
-
-.full-list li.more {
-    padding: 10px 15px;
-    background-color: #ffffff;
-    color: #666666;
-}
-
-.full-list li.more i.icon {
-    font-size: 70%;
-}
-
-.full-list {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 0;
-}
-
-.full-list li {
-    position: relative;
-    display: block;
-    border-bottom: 1px solid #f5f5f5;
-    cursor: pointer;
-    padding: 2px 0px 2px 0px;
-}
-
-.full-list li .badge, .simple-list li .badge{
-    font-size: 12px;
-    line-height: 12px;
-
-    padding-right: 0;
-    border-radius: 3px;
-    background-color: #e8edf1;
-    color: #2980b9;
-    background-color: transparent;
-    font-weight: normal;
-
-}
-
-
-.full-list li.active {
-    background-color: #fafafb;
-}
-
-.full-list li:hover {
-    background-color: #fafafb;
-}
-
-.full-list li > div:hover {
-    border-color: #d8dde1;
-}
-
-.full-list li > div {
-    margin: 0 6px 0 4px;
-    border-left: 4px solid #e8edf1;
-    min-height: 50px;
-    padding: 5px 5px 5px 5px;
-}
-
-.full-list li.active > div {
-    border-left-color: #2980b9;
-}
-
-.full-list li .title {
-    font-size: 16px;
-    margin: 0 0 0 5px;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.full-list li .summary {
-    clear: both;
-    margin: 3px 5px 0px 5px;
-    font-size: 13px;
-    color: #1a1a1a;
-    white-space: nowrap;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.full-list li .detail {
-    margin: 0 5px;
-    font-size: 12px;
-    color: #999999;
-    white-space: nowrap;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .main-content {
@@ -3144,55 +2947,6 @@ ul#strength > li:last-child {
     padding-left: 50px;
 }
 
-.content-list.simple-list li {
-    width: 50%;
-    float: left;
-    padding: 5px 10px;
-    margin-bottom: 10px;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.content-list.simple-list li .subtle {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.content-list.simple-list li:hover {
-    background-color: #ffffff;
-}
-
-.content-list.simple-list li .actions {
-    background-color: #ffffff;
-    border: 1px solid #eeeeee;
-    padding: 5px 4px 0 4px;
-    display: inline-block;
-    right: 0px;
-}
-
-.content-list.simple-list .subtle {
-    font-size: 12px;
-}
-.content-list.simple-list .nothing-to-see {
-    border: 1px solid #999999;
-    box-shadow: 1px 1px 2px #dddddd;
-    background-color: #ffffff;
-    width: 130px;
-    height: 155px;
-    padding: 50px 0 0 0;
-    text-align: center;
-}
-
-.content-list.simple-list .nothing-to-see .loading {
-    display: inline-block;
-    position: relative;
-    margin: 3px;
-    left: 0;
-}
-
 .frame {
     white-space: nowrap;
     text-align: left;
@@ -3279,4 +3033,3 @@ ul#strength > li:last-child {
 .noHeight {
   height:auto;
 }
-

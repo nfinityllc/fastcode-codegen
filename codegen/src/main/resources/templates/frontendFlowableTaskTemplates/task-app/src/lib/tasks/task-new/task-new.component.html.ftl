@@ -1,11 +1,11 @@
 <div class="container1">
   <mat-toolbar class="action-tool-bar" color="primary">
-    <button mat-flat-button (click)="onCancel()">
+    <button mat-button (click)="onCancel()">
       {{'GENERAL.ACTION.CANCEL' | translate}}
     </button>
     <span class="middle">{{'TASK.TITLE.CREATE-NEW' | translate}}</span>
 
-    <button mat-flat-button (click)="taskNgForm.ngSubmit.emit()" [disabled]="!taskForm.valid || loading">
+    <button mat-button (click)="taskNgForm.ngSubmit.emit()" [disabled]="!taskForm.valid || loading">
       {{'TASK.ACTION.CREATE-CONFIRM' | translate}}
     </button>
 
@@ -14,7 +14,7 @@
     <form [formGroup]="taskForm" #taskNgForm="ngForm" (ngSubmit)="onSubmit()" class="task-form">
       <div class="full-width">
         <mat-form-field class="full-width">
-          <textarea formControlName="name" matInput placeholder="{{'TASK.FIELD.NAME' | translate}}"></textarea>
+          <input formControlName="name" matInput placeholder="{{'TASK.FIELD.NAME' | translate}}">
           <mat-error *ngIf="taskForm.get('name').errors && taskForm.get('name').errors['required'] && taskForm.get('name').touched">Name
             {{'GENERAL.ERROR.REQUIRED' | translate}}</mat-error>
         </mat-form-field>
@@ -31,7 +31,7 @@
 
     <div class="button-row">
       <button mat-raised-button color="accent" (click)="addAssignee()">
-        <span class="glyphicon glyphicon-user"></span>
+        <mat-icon>person</mat-icon>
         {{'TASK.FIELD.ASSIGNEE' | translate}}
       </button>
       {{assignee.fullName}}

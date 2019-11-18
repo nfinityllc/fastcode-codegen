@@ -4,9 +4,6 @@
     <div class="task-list-header">
 
       <div *ngIf="!filter.expanded">
-        <div class="filter-text" *ngIf="filter.param.nonDefaultFilter">{{'TASK.MESSAGE.FILTERED' | translate}}</div>
-        <div class="filter-text" *ngIf="!filter.param.nonDefaultFilter">{{'TASK.MESSAGE.NO-FILTER' | translate}}</div>
-
         <div class="filter-icon-expand noselect">
           <span (click)="toggleFilter()">
             {{'TASK.FILTER.SHOW' | translate}}<i class="material-icons">expand_more</i>
@@ -67,7 +64,7 @@
         </mat-form-field>
 
         <div class="text-center">
-          <button class="accent-button" mat-raised-button (click)="resetFilters(); refreshFilter();">
+          <button color="accent" mat-flat-button (click)="resetFilters(); refreshFilter();">
             {{'TASK.FILTER.RESET' | translate}}
           </button>
         </div>
@@ -87,7 +84,7 @@
       </div>
 
       <div class="create-task">
-        <button class="accent-button" mat-raised-button (click)="createTask()">
+        <button color="primary" mat-flat-button (click)="createTask()">
           {{'TASK.ACTION.CREATE' | translate}}
         </button>
       </div>
@@ -129,7 +126,7 @@
   </div>
 
   <div fxLayout="column" *ngIf="!showList || !isMediumDeviceOrLess" fxFlex="{{detailsFlexWidth}}">
-    <button class="accent-button back-to-list" mat-raised-button *ngIf="isMediumDeviceOrLess" (click)="showList=!showList">{{'TASK.ACTION.TOGGLE-LIST' | translate}}</button>
+    <button color="accent" mat-flat-button *ngIf="isMediumDeviceOrLess" (click)="showList=!showList">{{'TASK.ACTION.TOGGLE-LIST' | translate}}</button>
     <app-task-details [ngClass]="{'task-details-wrap': !isMediumDeviceOrLess,'task-details-wrap-small': isMediumDeviceOrLess}" fxLayout="column" (onCreateTask)="createTask()" [task]="selectedTask" (onOpenTask)="onOpenTask($event)"
       (onTaskCompletion)="onTaskCompletion()"></app-task-details>
   </div>
