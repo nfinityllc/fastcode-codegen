@@ -9,6 +9,9 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.cache.transaction.TransactionAwareCacheManagerProxy;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 </#if>
 <#if AuthenticationType != "none">
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -19,6 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 </#if>
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -30,9 +35,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 <#if AuthenticationType != "none">
 @EnableTransactionManagement
 @EnableJpaRepositories
-@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 </#if>
 public class BeanConfig {
+    
+    @Autowired 
+    private Environment environment; 
 
 <#if AuthenticationType != "none">
     @Bean
@@ -41,9 +48,27 @@ public class BeanConfig {
     }
 </#if>
 
+<#if AuthenticationType != "none" || Cache !false>
+     @Bean
+     JedisConnectionFactory jedisConnectionFactory() {
+         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(environment.getProperty("redis.server.address"), Integer.parseInt(environment.getProperty("redis.server.port")));
+         return new JedisConnectionFactory(redisStandaloneConfiguration);
+     }
+ 
+     @Bean
+     public RedisTemplate<String, Object> redisTemplate() {
+         RedisTemplate<String, Object> template = new RedisTemplate<>();
+         JedisConnectionFactory jc = jedisConnectionFactory();
+         jc.getPoolConfig().setMaxIdle(30);
+         jc.getPoolConfig().setMinIdle(10);
+         template.setConnectionFactory(jc);
+	         return template;
+     }
+</#if>
+     
 <#if Cache !false>
-  @Bean
-    public CacheManager cacheManager() {
+     @Bean
+     public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
 
         List<Cache> caches = new ArrayList<>();
@@ -68,7 +93,7 @@ public class BeanConfig {
         return new TransactionAwareCacheManagerProxy( cacheManager );
     }
 </#if>    
-
+  
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)

@@ -43,7 +43,7 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 		<#if !UserInput??>
 		this.primaryKeys = [ "permissionId", "userId" ]
 		<#else>
-		this.primaryKeys = [ "permissionId", <#list PrimaryKeys as key,value>"[=AuthenticationTable?uncap_first + value.fieldName?cap_first]", </#list>]
+		this.primaryKeys = [ "permissionId", <#list PrimaryKeys as key,value>"[=AuthenticationTable?uncap_first + key?cap_first]", </#list>]
 		</#if>
 		super.ngOnInit();
 	}
@@ -62,11 +62,11 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 					<#elseif UserInput??>
 					<#if PrimaryKeys??>
 					<#list PrimaryKeys as key,value>
-					<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+					<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
 					{
-						key: '[=AuthenticationTable?uncap_first + value.fieldName?cap_first]',
+						key: '[=AuthenticationTable?uncap_first + key?cap_first]',
 						value: undefined,
-						referencedkey: '[=value.fieldName]'
+						referencedkey: '[=key]'
 					},
 					</#if>
 					</#list>

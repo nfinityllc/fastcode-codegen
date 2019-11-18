@@ -14,9 +14,9 @@ public class Create[=AuthenticationTable]permissionInput {
   	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
-   	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-    @NotNull(message = "[=value.fieldName?uncap_first] Should not be null")
-    private [=value.fieldType] [=AuthenticationTable?uncap_first][=value.fieldName?cap_first];
+   	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+    @NotNull(message = "[=key?uncap_first] Should not be null")
+    private [=value] [=AuthenticationTable?uncap_first][=key?cap_first];
   	</#if> 
   	</#list>
   	</#if>
@@ -41,13 +41,13 @@ public class Create[=AuthenticationTable]permissionInput {
   	<#elseif AuthenticationType!="none" && UserInput??>
   	<#if PrimaryKeys??>
   	<#list PrimaryKeys as key,value>
-  	<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-  	public [=value.fieldType] get[=AuthenticationTable][=value.fieldName?cap_first]() {
-  	return [=AuthenticationTable?uncap_first][=value.fieldName?cap_first];
+  	<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+  	public [=value] get[=AuthenticationTable][=key?cap_first]() {
+  	return [=AuthenticationTable?uncap_first][=key?cap_first];
   	}
 
-  	public void set[=AuthenticationTable][=value.fieldName?cap_first]([=value.fieldType] [=AuthenticationTable?uncap_first][=value.fieldName?cap_first]){
-  	this.[=AuthenticationTable?uncap_first][=value.fieldName?cap_first] = [=AuthenticationTable?uncap_first][=value.fieldName?cap_first];
+  	public void set[=AuthenticationTable][=key?cap_first]([=value] [=AuthenticationTable?uncap_first][=key?cap_first]){
+  	this.[=AuthenticationTable?uncap_first][=key?cap_first] = [=AuthenticationTable?uncap_first][=key?cap_first];
   	}
   	</#if> 
   	</#list>

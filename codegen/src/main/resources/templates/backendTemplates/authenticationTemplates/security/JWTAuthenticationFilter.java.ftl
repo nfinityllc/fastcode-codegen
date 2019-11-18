@@ -6,6 +6,8 @@ import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.Login
 <#if Flowable!false>
 import [=PackageName].application.Flowable.FlowableIdentityService;
 </#if>
+import [=PackageName].domain.IRepository.IJwtRepository;
+import [=PackageName].domain.model.JwtEntity;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
@@ -43,6 +45,7 @@ import java.util.stream.Collectors;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     IRoleManager _roleManager;
+    IJwtRepository jwtRepo;
 <#if Flowable!false>
     FlowableIdentityService idmIdentityService;
     private static final String COOKIE_NAME = "FLOWABLE_REMEMBER_ME";
@@ -122,6 +125,25 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET.getBytes())
                 .compact();
+                
+        // Add the user and token to the JwtEntity table 
+ 
+        JwtEntity jt = new JwtEntity(); 
+        jt.setToken("Bearer "+ token); 
+ 
+        User appUser = (User) auth.getPrincipal(); 
+        jt.setUserName(appUser.getUsername()); 
+ 
+        jt.setIsActive(true); 
+ 
+        if(jwtRepo==null){ 
+            ServletContext servletContext = req.getServletContext(); 
+            WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext); 
+            jwtRepo = webApplicationContext.getBean(IJwtRepository.class); 
+        } 
+ 
+        jwtRepo.save(jt); 
+        
         res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
         res.setContentType("application/json");
 

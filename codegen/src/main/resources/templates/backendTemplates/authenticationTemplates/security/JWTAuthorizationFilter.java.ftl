@@ -21,6 +21,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.stream.Collectors;
 import java.net.URL;
 import org.springframework.security.core.authority.AuthorityUtils;
+import [=PackageName].domain.IRepository.IJwtRepository;
+import [=PackageName].domain.model.JwtEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
@@ -43,6 +45,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     //@Autowired
     private Environment environment;
+    
+    private IJwtRepository jwtRepo;
 
     private I[=AuthenticationTable]Manager _userMgr;
 
@@ -62,8 +66,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
 
-
-
         UsernamePasswordAuthenticationToken authentication = null;
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
         LoggingHelper logHelper = new LoggingHelper();
@@ -76,19 +78,28 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         } catch (ExpiredJwtException exception) {
             apiError.setMessage(ExceptionMessageConstants.TOKEN_EXPIRED);
             logHelper.getLogger().error("An Exception Occurred:", exception);
+            res.setStatus(401);
         } catch (UnsupportedJwtException exception) {
             apiError.setMessage(ExceptionMessageConstants.TOKEN_UNSUPPORTED);
             logHelper.getLogger().error("An Exception Occurred:", exception);
+            res.setStatus(401);
         } catch (MalformedJwtException exception) {
             apiError.setMessage(ExceptionMessageConstants.TOKEN_MALFORMED);
             logHelper.getLogger().error("An Exception Occurred:", exception);
+            res.setStatus(401);
         } catch (SignatureException exception) {
             apiError.setMessage(ExceptionMessageConstants.TOKEN_INCORRECT_SIGNATURE);
             logHelper.getLogger().error("An Exception Occurred:", exception);
+            res.setStatus(401);
         } catch (IllegalArgumentException exception) {
             apiError.setMessage(ExceptionMessageConstants.TOKEN_ILLEGAL_ARGUMENT);
             logHelper.getLogger().error("An Exception Occurred:", exception);
-        }
+            res.setStatus(401);
+        } catch (JwtException exception) {
+             apiError.setMessage(ExceptionMessageConstants.TOKEN_UNAUTHORIZED);
+             logHelper.getLogger().error("An Exception Occurred:", exception);
+             res.setStatus(401);
+	    }
 
 
         OutputStream out = res.getOutputStream();
@@ -105,6 +116,26 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws JwtException {
 
         String token = request.getHeader(SecurityConstants.HEADER_STRING);
+        
+        if(jwtRepo==null){
+             ServletContext servletContext = request.getServletContext();
+             WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+             jwtRepo = webApplicationContext.getBean(IJwtRepository.class);
+         }
+ 
+         // Check that the token is inactive in the JwtEntity table
+ 
+         JwtEntity jwt = jwtRepo.findByToken(token);
+         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
+ 
+         if(jwt == null) {
+             throw new JwtException("Token Does Not Exist");
+         }
+ 
+         if(!jwt.getIsActive()) {
+             throw new JwtException("Token Inactive");
+	     }
+        
         Claims claims;
         if(environment==null){
             ServletContext servletContext = request.getServletContext();

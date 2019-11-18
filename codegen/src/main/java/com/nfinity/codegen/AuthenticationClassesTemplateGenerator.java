@@ -1,21 +1,16 @@
 package com.nfinity.codegen;
 
-import static java.util.Map.Entry.comparingByKey;
-import static java.util.stream.Collectors.toMap;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.nfinity.entitycodegen.EntityDetails;
-import com.nfinity.entitycodegen.FieldDetails;
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -74,6 +69,7 @@ public class AuthenticationClassesTemplateGenerator {
 			}
 
 		}
+		
 		generateBackendFiles(root, backendAppFolder,authenticationTable);
 		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root, flowable);
 		generateAppStartupRunner(details, backendAppFolder, email, scheduler,root);
@@ -441,6 +437,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		}
 
+		backEndTemplate.put("LoginController.java.ftl", "LoginController.java");
 		backEndTemplate.put("permissions/permissionsController.java.ftl", "PermissionController.java");
 		backEndTemplate.put("rolePermission/RolepermissionController.java.ftl", "RolepermissionController.java");
 		backEndTemplate.put("roles/rolesController.java.ftl", "RoleController.java");
@@ -465,7 +462,8 @@ public class AuthenticationClassesTemplateGenerator {
 			}
 
 		}
-
+		
+		backEndTemplate.put("IJwtRepository.java.ftl", "IJwtRepository.java");
 		backEndTemplate.put("permissions/ipermissionsRepository.java.ftl", "IPermissionRepository.java");
 		backEndTemplate.put("roles/irolesRepository.java.ftl", "IRoleRepository.java");
 		backEndTemplate.put("rolePermission/IRolepermissionRepository.java.ftl", "IRolepermissionRepository.java");
@@ -491,6 +489,7 @@ public class AuthenticationClassesTemplateGenerator {
 			}
 		}
 
+		backEndTemplate.put("backendTemplates/authenticationTemplates/entities/JwtEntity.java.ftl", "JwtEntity.java");
 		backEndTemplate.put("backendTemplates/authenticationTemplates/entities/permissionEntity.java.ftl", "PermissionEntity.java");
 		backEndTemplate.put("backendTemplates/authenticationTemplates/entities/roleEntity.java.ftl", "RoleEntity.java");
 		backEndTemplate.put("backendTemplates/authenticationTemplates/entities/RolepermissionEntity.java.ftl", "RolepermissionEntity.java");
@@ -628,7 +627,8 @@ public class AuthenticationClassesTemplateGenerator {
 			Map<String, String> entityMap = new HashMap<String,String>();
 			String key = entry.getKey();
 			String name = key.substring(key.lastIndexOf(".") + 1);
-
+            
+			
 			entityMap.put("entity" , name + "Entity");
 			entityMap.put("requestMapping" , "/" + name.toLowerCase());
 			entityMap.put("method" , "get" + name + "Changes");
@@ -642,6 +642,11 @@ public class AuthenticationClassesTemplateGenerator {
 		cfg.setDefaultEncoding("UTF-8"); 
 		cfg.setTemplateLoader(mtl); 
 
+		if(root.containsKey("Fields"))
+		{
+			System.out.println(" EXISTS  "  + root.get("Fields").toString());
+			
+		}
 		root.put("entitiesMap", entitiesMap);
 		root.put("email", email);
 		root.put("scheduler", scheduler);

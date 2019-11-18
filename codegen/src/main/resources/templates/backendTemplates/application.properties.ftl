@@ -23,7 +23,7 @@ spring.jackson.serialization.fail-on-empty-beans=false
 #applciation context path
 server.servlet.contextPath=/
 
-<#if Cache!false>
+<#if  AuthenticationType != "none" || Cache!false>
 // Redis setup
 redis.server.port=6379
 redis.server.address=localhost

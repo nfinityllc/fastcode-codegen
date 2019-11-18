@@ -172,12 +172,13 @@ public class AppStartupRunner implements ApplicationRunner {
     
     private void addDefaultUser(RoleEntity role) {
     	[=AuthenticationTable]Entity admin = new [=AuthenticationTable]Entity();
-    	
- <#list Fields as key,value>
- <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-    <#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
+    
+        <#if AuthenticationType != "none" && ClassName?? && ClassName == AuthenticationTable>  
         <#if AuthenticationFields??>
   	    <#list AuthenticationFields as authKey,authValue>
+  	    <#list Fields as key,value>
+        <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+    
   	    <#if value.fieldName == authValue.fieldName>
   	    <#if authKey== "Password">
         admin.set[=value.fieldName?cap_first](pEncoder.encode("secret"));
@@ -191,6 +192,8 @@ public class AppStartupRunner implements ApplicationRunner {
         admin.set[=value.fieldName?cap_first]("admin@demo.com");
         </#if>
         </#if>
+        </#if>
+	    </#list>
         </#list>
         </#if>
         <#else>
@@ -200,8 +203,7 @@ public class AppStartupRunner implements ApplicationRunner {
     	admin.setEmailAddress("admin@demo.com");
     	admin.setPassword(pEncoder.encode("secret"));
         </#if> 
- 	</#if>
-	</#list>
+ 	
 	    admin.setRole(role);
     	admin = userManager.Create(admin);
     	<#if Flowable!false>

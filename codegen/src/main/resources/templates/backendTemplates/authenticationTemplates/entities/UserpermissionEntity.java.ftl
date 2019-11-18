@@ -18,8 +18,8 @@ public class [=AuthenticationTable]permissionEntity implements Serializable {
   <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#list PrimaryKeys as key,value>
-  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-  private [=value.fieldType] [=AuthenticationTable?uncap_first][=value.fieldName?cap_first];
+  <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+  private [=value] [=AuthenticationTable?uncap_first][=key?cap_first];
   </#if> 
   </#list>
   </#if>
@@ -61,15 +61,15 @@ public class [=AuthenticationTable]permissionEntity implements Serializable {
   <#elseif AuthenticationType!="none" && UserInput??>
   <#if PrimaryKeys??>
   <#list PrimaryKeys as key,value>
-  <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+  <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
   @Id
-  @Column(name = "[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]", nullable = false)
-  public [=value.fieldType] get[=AuthenticationTable][=value.fieldName?cap_first]() {
-  return [=AuthenticationTable?uncap_first][=value.fieldName?cap_first];
+  @Column(name = "[=AuthenticationTable?uncap_first][=key?cap_first]", nullable = false)
+  public [=value] get[=AuthenticationTable][=key?cap_first]() {
+  return [=AuthenticationTable?uncap_first][=key?cap_first];
   }
 
-  public void set[=AuthenticationTable][=value.fieldName?cap_first]([=value.fieldType] [=AuthenticationTable?uncap_first][=value.fieldName?cap_first]){
-  this.[=AuthenticationTable?uncap_first][=value.fieldName?cap_first] = [=AuthenticationTable?uncap_first][=value.fieldName?cap_first];
+  public void set[=AuthenticationTable][=key?cap_first]([=value] [=AuthenticationTable?uncap_first][=key?cap_first]){
+  this.[=AuthenticationTable?uncap_first][=key?cap_first] = [=AuthenticationTable?uncap_first][=key?cap_first];
   }
   </#if> 
   </#list>
@@ -84,11 +84,11 @@ public class [=AuthenticationTable]permissionEntity implements Serializable {
   <#assign i=PrimaryKeys?size>
   <#if i==1>
   <#list PrimaryKeys as key,value>
-  @JoinColumn(name = "[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]", insertable=false, updatable=false)
+  @JoinColumn(name = "[=AuthenticationTable?uncap_first][=key?cap_first]", insertable=false, updatable=false)
   <#break>
   </#list>
   <#else>
-  @JoinColumns({<#list PrimaryKeys as key,value><#if key_has_next>@JoinColumn(name="[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]"<#if value.fieldType?lower_case !="string">,columnDefinition="[=value.fieldType?cap_first]"</#if>, referencedColumnName="[=value.fieldName?uncap_first]", nullable=false, insertable=false, updatable=false),<#else>@JoinColumn(name="[=AuthenticationTable?uncap_first][=value.fieldName?cap_first]"<#if value.fieldType?lower_case !="string">, columnDefinition="[=value.fieldType?cap_first]"</#if>, referencedColumnName="[=value.fieldName?uncap_first]", nullable=false,insertable=false, updatable=false)</#if></#list>})
+  @JoinColumns({<#list PrimaryKeys as key,value><#if key_has_next>@JoinColumn(name="[=AuthenticationTable?uncap_first][=key?cap_first]"<#if value?lower_case !="string">,columnDefinition="[=value?cap_first]"</#if>, referencedColumnName="[=key?uncap_first]", nullable=false, insertable=false, updatable=false),<#else>@JoinColumn(name="[=AuthenticationTable?uncap_first][=key?cap_first]"<#if value?lower_case !="string">, columnDefinition="[=value?cap_first]"</#if>, referencedColumnName="[=key?uncap_first]", nullable=false,insertable=false, updatable=false)</#if></#list>})
   </#if>
   </#if>
   </#if> 
