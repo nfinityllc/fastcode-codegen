@@ -49,7 +49,7 @@
 
   <div *ngSwitchCase="'dropdown'" class="form-group">
     <mat-form-field class="full-width">
-      <label>{{field.name}}</label>
+      <mat-label>{{field.name}}</mat-label>
       <mat-select formControlName="{{field.id}}">
         <mat-option *ngFor="let option of field.options" [value]="option">
           {{option.name}}
