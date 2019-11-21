@@ -1,6 +1,5 @@
 package [=PackageName].domain.Authorization.User;
 
-import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.UserEntity;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
@@ -19,10 +18,6 @@ public interface IUserManager {
     UserEntity FindByUserName(String userName);
 
     Page<UserEntity> FindAll(Predicate predicate, Pageable pageable);
-   
-    //Role
-    public RoleEntity GetRole(Long userId);
-   
   
 }
 

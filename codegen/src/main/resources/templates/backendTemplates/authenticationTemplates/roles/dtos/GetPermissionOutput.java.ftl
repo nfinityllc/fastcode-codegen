@@ -5,12 +5,6 @@ public class GetPermissionOutput {
     private Long id;
     private String displayName;
     private String name;
-    <#if Audit!false>
-    private String creatorUserId;
-    private java.util.Date creationTime;
-    private String lastModifierUserId;
-    private java.util.Date lastModificationTime;
-	</#if>
     private Long roleId;
     private String roleDescriptiveField;
 
@@ -56,37 +50,4 @@ public class GetPermissionOutput {
         this.name = name;
     }
 
-   <#if Audit!false>
-    public java.util.Date getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(java.util.Date creationTime) {
-      	this.creationTime = creationTime;
-    }
-
-    public String getLastModifierUserId() {
-      	return lastModifierUserId;
-    }
-
-    public void setLastModifierUserId(String lastModifierUserId) {
-      	this.lastModifierUserId = lastModifierUserId;
-    }
-
-    public java.util.Date getLastModificationTime() {
-      	return lastModificationTime;
-    }
-
-    public void setLastModificationTime(java.util.Date lastModificationTime) {
-      	this.lastModificationTime = lastModificationTime;
-    }
-
-    public String getCreatorUserId() {
-      	return creatorUserId;
-    }
-
-    public void setCreatorUserId(String creatorUserId) {
-      	this.creatorUserId = creatorUserId;
-    }
-	</#if>
 }

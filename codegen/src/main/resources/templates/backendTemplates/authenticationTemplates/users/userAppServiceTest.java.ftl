@@ -138,7 +138,6 @@ public class UserAppServiceTest {
 		CreateUserInput user=mock(CreateUserInput.class);
 		RoleEntity foundRole = mock(RoleEntity.class);
 		
-		
 		Mockito.when(roleManager.FindById(anyLong())).thenReturn(foundRole);
 		Mockito.when(userManager.Create(any(UserEntity.class))).thenReturn(userEntity);
 		<#if Flowable!false>
@@ -156,7 +155,7 @@ public class UserAppServiceTest {
 
 		CreateUserInput user = mock(CreateUserInput.class);
 		
-		Mockito.when(user.getRoleId()).thenReturn(null);
+		//Mockito.when(user.getRoleId()).thenReturn(null);
 		Assertions.assertThat(userAppService.Create(user)).isEqualTo(null);
 	}
 	
@@ -182,12 +181,12 @@ public class UserAppServiceTest {
 		verify(userManager).Delete(user);
 	}
 	
-		@Test
+	@Test
 	public void updateUser_UserIsNotNullAndUserDoesNotExistAndChildIsNullAndChildIsMandatory_ReturnNull() {
 
 		UpdateUserInput user = mock(UpdateUserInput.class);
 		
-		Mockito.when(user.getRoleId()).thenReturn(null);
+		//Mockito.when(user.getRoleId()).thenReturn(null);
 		Assertions.assertThat(userAppService.Update(ID,user)).isEqualTo(null);
 	}
 	
@@ -210,7 +209,7 @@ public class UserAppServiceTest {
 		ActIdUserEntity actIdUser = mock (ActIdUserEntity.class); 
 		Mockito.when(userManager.FindById(anyLong())).thenReturn(userEntity);
 		Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any(UserEntity.class))).thenReturn(actIdUser);
-		doNothing().when(idmIdentityService).updateUser(any(UserEntity.class),any(ActIdUserEntity.class),anyString());
+		doNothing().when(idmIdentityService).updateUser(any(UserEntity.class),any(ActIdUserEntity.class));
         </#if>
         
 		Mockito.when(roleManager.FindById(anyLong())).thenReturn(foundRole);
@@ -258,24 +257,6 @@ public class UserAppServiceTest {
 		Mockito.when(userManager.FindAll(any(Predicate.class),any(Pageable.class))).thenReturn(foundPage);
 		Assertions.assertThat(userAppService.Find(search,pageable)).isEqualTo(output);
 
-	}
-
-	//Roles
-	@Test
-	public void GetRole_IfUserIdAndRoleIdIsNotNullAndUserExists_ReturnRole() {
-		UserEntity user = mock(UserEntity.class);
-		RoleEntity role = mock(RoleEntity.class);
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(user);
-		Mockito.when(userManager.GetRole(anyLong())).thenReturn(role);
-		Assertions.assertThat(userAppService.GetRole(ID)).isEqualTo(userMapper.RoleEntityToGetRoleOutput(role, user));
-	}
-
-	@Test 
-	public void GetRole_IfUserIdAndRoleIdIsNotNullAndUserDoesNotExist_ReturnNull() {
-
-		Mockito.when(userManager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(userAppService.GetRole(ID)).isEqualTo(null);
 	}
 
 	@Test

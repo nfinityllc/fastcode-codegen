@@ -12,6 +12,7 @@ import java.util.Date;
 @IdClass([=AuthenticationTable]permissionId.class)
 public class [=AuthenticationTable]permissionEntity implements Serializable {
 
+  private Boolean revoked;
   private Long permissionId;
   <#if (AuthenticationType!="none" && !UserInput??)>
   private Long userId;
@@ -25,7 +26,17 @@ public class [=AuthenticationTable]permissionEntity implements Serializable {
   </#if>
   </#if>
   public [=AuthenticationTable]permissionEntity() {
-	}
+  }
+  
+  @Basic
+  @Column(name = "revoked", nullable = true)
+  public Boolean getRevoked() {
+     return revoked;
+  }
+
+  public void setRevoked(Boolean revoked) {
+     this.revoked = revoked;
+  }
 
   @ManyToOne
   @JoinColumn(name = "permissionId", insertable=false, updatable=false)

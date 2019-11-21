@@ -3,7 +3,7 @@ package [=PackageName].application.Authorization.[=AuthenticationTable]permissio
 public class Find[=AuthenticationTable]permissionByIdOutput {
 
     private Long permissionId;
-  	<#if AuthenticationType!="none" && !UserInput?? >
+  	<#if AuthenticationType!="none" && !UserInput??>
     private Long [=AuthenticationTable?uncap_first]Id;
     private String [=AuthenticationTable?uncap_first]DescriptiveField;
   	<#elseif AuthenticationType!="none" && UserInput??>
@@ -27,6 +27,15 @@ public class Find[=AuthenticationTable]permissionByIdOutput {
     </#if>
     </#if>
   	private String permissionDescriptiveField;
+  	private Boolean revoked;
+    
+    public Boolean getRevoked() {
+    	return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+    	this.revoked = revoked;
+    }
   
   	public String getPermissionDescriptiveField() {
    		return permissionDescriptiveField;

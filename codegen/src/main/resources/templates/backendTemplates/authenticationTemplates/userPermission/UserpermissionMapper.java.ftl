@@ -105,7 +105,6 @@ public interface [=AuthenticationTable]permissionMapper {
    }) 
    Find[=AuthenticationTable]permissionByIdOutput [=AuthenticationTable]permissionEntityToFind[=AuthenticationTable]permissionByIdOutput([=AuthenticationTable]permissionEntity entity);
 
-
    @Mappings({
    @Mapping(source = "[=AuthenticationTable?uncap_first]permission.permissionId", target = "[=AuthenticationTable?uncap_first]permissionPermissionId"),
    <#if (AuthenticationType!="none" && !UserInput??)>
@@ -122,7 +121,6 @@ public interface [=AuthenticationTable]permissionMapper {
    })
    Get[=AuthenticationTable]Output [=AuthenticationTable]EntityToGet[=AuthenticationTable]Output([=AuthenticationTable]Entity [=AuthenticationTable?uncap_first], [=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission);
  
-
    @Mappings({
    <#if (AuthenticationType!="none" && !UserInput??)>
    @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first]Id", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first]Id"),

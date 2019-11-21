@@ -18,7 +18,6 @@ public class [=AuthenticationTable]permissionId implements Serializable {
   	</#if>
     
     public [=AuthenticationTable]permissionId() {
-
     }
 
     public [=AuthenticationTable]permissionId(Long permissionId,<#if (AuthenticationType!="none" && !UserInput??)>Long userId<#elseif AuthenticationType!="none" && UserInput??><#list PrimaryKeys as key,value><#if key_has_next>[=value] [=AuthenticationTable?uncap_first][=key?cap_first],<#else>[=value] [=AuthenticationTable?uncap_first][=key?cap_first]</#if></#list></#if>){

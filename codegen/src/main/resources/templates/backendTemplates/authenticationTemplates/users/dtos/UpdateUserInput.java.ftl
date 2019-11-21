@@ -60,15 +60,6 @@ public class UpdateUserInput {
   @Length(max = 32, message = "userName must be less than 32 characters")
   private String userName;
   
-  private Long roleId;
-
-  public Long getRoleId() {
-  return roleId;
-  }
-
-  public void setRoleId(Long roleId){
-  this.roleId = roleId;
-  }
   public Integer getAccessFailedCount() {
   return accessFailedCount;
   }

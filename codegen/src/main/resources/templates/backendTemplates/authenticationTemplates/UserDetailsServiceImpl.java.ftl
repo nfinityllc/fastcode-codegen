@@ -3,6 +3,7 @@ package [=PackageName];
 import [=PackageName].application.Authorization.[=AuthenticationTable].I[=AuthenticationTable]AppService;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]roleEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].domain.IRepository.I[=AuthenticationTable]Repository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,46 +49,43 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 
-	private List<String> getAllPermissions([=AuthenticationTable]Entity user) {
-
+	private List<String> getAllPermissions(UserEntity user) {
 
 		List<String> permissions = new ArrayList<>();
-
-//        if (user.getRole() != null) {
-//			for (PermissionEntity item : user.getRole().getPermissions()) {
-//				permissions.add(item.getName());
-//			}
-//        }
-//
-//        if (user.getPermissions() != null) {
-//            for (PermissionEntity item : user.getPermissions()) {
-//                permissions.add(item.getName());
-//            }
-//        }
-		
-      if (user.getRole() != null) {
-    	  Set<RolepermissionEntity> spe= user.getRole().getRolepermissionSet();
-			for (RolepermissionEntity item : spe) {
+        Set<UserroleEntity> ure = user.getUserroleSet();
+        Iterator rIterator = ure.iterator();
+		while (rIterator.hasNext()) {
+            UserroleEntity re = (UserroleEntity) rIterator.next();
+            Set<RolepermissionEntity> srp= re.getRole().getRolepermissionSet();
+            for (RolepermissionEntity item : srp) {
 				permissions.add(item.getPermission().getName());
-			}
-      }
-
-      if (user.get[=AuthenticationTable]permissionSet() != null) {
-    	  Set<[=AuthenticationTable]permissionEntity> upe=user.get[=AuthenticationTable]permissionSet();
-          for ([=AuthenticationTable]permissionEntity item : upe) {
-              permissions.add(item.getPermission().getName());
-          }
-      }
-
-        return permissions
+            }
+		}
+		
+		Set<UserpermissionEntity> spe = user.getUserpermissionSet();
+        Iterator pIterator = spe.iterator();
+		while (pIterator.hasNext()) {
+            UserpermissionEntity pe = (UserpermissionEntity) pIterator.next();
+            
+            if(permissions.contains(pe.getPermission().getName()) && (pe.getRevoked() != null && pe.getRevoked()))
+            {
+            	permissions.remove(pe.getPermission().getName());
+            }
+            if(!permissions.contains(pe.getPermission().getName()) && (pe.getRevoked()==null || !pe.getRevoked()))
+            {
+            	permissions.add(pe.getPermission().getName());
+			
+            }
+         
+		}
+		
+		return permissions
 				.stream()
 				.distinct()
 				.collect(Collectors.toList());
- }
-
+	}
 
 	// Pass the results of getPermissions method above to the method below
-
 	private List<GrantedAuthority> getGrantedAuthorities(List<String> permissions) {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 

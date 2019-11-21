@@ -3,6 +3,7 @@ package [=PackageName];
 import [=PackageName].domain.model.*;
 import [=PackageName].domain.Authorization.Permission.IPermissionManager;
 import [=PackageName].domain.Authorization.Rolepermission.IRolepermissionManager;
+import [=PackageName].domain.Authorization.Userrole.IUserroleManager;
 import [=PackageName].domain.Authorization.User.IUserManager;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].CommonModule.logging.LoggingHelper;
@@ -43,6 +44,9 @@ public class AppStartupRunner implements ApplicationRunner {
     
 	@Autowired
     private IRolepermissionManager rolepermissionManager;
+    
+    @Autowired
+    private I[=AuthenticationTable]roleManager userroleManager;
     
     @Autowired
     private LoggingHelper loggingHelper;
@@ -89,8 +93,10 @@ public class AppStartupRunner implements ApplicationRunner {
         <#if !AuthenticationTable??>
 		entityList.add("user");
 		entityList.add("userpermission");
+		entityList.add("userrole");
 		<#else>
 		entityList.add("[=AuthenticationTable?lower_case]permission");
+		entityList.add("[=AuthenticationTable?lower_case]role");
         </#if>
 
         <#list entitiesMap as entityKey, entityMap>
@@ -172,7 +178,6 @@ public class AppStartupRunner implements ApplicationRunner {
     
     private void addDefaultUser(RoleEntity role) {
     	[=AuthenticationTable]Entity admin = new [=AuthenticationTable]Entity();
-    
         <#if AuthenticationType != "none" && ClassName?? && ClassName == AuthenticationTable>  
         <#if AuthenticationFields??>
   	    <#list AuthenticationFields as authKey,authValue>
@@ -202,13 +207,17 @@ public class AppStartupRunner implements ApplicationRunner {
     	admin.setUserName("admin");
     	admin.setEmailAddress("admin@demo.com");
     	admin.setPassword(pEncoder.encode("secret"));
+    	admin.setIsActive(true);
         </#if> 
- 	
-	    admin.setRole(role);
     	admin = userManager.Create(admin);
+    	
+    	[=AuthenticationTable]roleEntity urole = new [=AuthenticationTable]roleEntity(admin.getId(),role.getId());
+		urole=userroleManager.Create(urole);
     	<#if Flowable!false>
-    	actIdUserMapper.createUsersEntityToActIdUserEntity(admin);
+    	ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(admin);
+		idmIdentityService.createUser(admin, actIdUser);
+		idmIdentityService.addUserGroupMapping("admin", role.getName());
     	</#if>
-
+    	
     }
 }

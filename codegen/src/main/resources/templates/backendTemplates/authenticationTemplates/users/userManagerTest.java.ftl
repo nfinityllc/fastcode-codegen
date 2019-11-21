@@ -125,17 +125,5 @@ public class UserManagerTest {
 
 	}
 
-	 //Role
-	@Test
-	public void getRole_if_UserIdIsNotNull_returnRole() {
-
-		UserEntity userEntity = mock(UserEntity.class);
-		RoleEntity role = userEntity.getRole();
-		
-		Optional<UserEntity> dbUser = Optional.of((UserEntity) userEntity);
-		Mockito.<Optional<UserEntity>>when(_userRepository.findById(anyLong())).thenReturn(dbUser);
-		Assertions.assertThat(userManager.GetRole(ID)).isEqualTo(role);
-
-	}
 	
 }

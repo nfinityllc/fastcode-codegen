@@ -8,34 +8,42 @@ import java.util.List;
 
 @Repository
 public class ActIdMembershipManager implements IActIdMembershipManager {
-@Autowired
-private IActIdMembershipRepository _membershipsRepository;
-@Override
-public void create(ActIdMembershipEntity actIdMembership) {
-_membershipsRepository.save(actIdMembership);
-}
+	
+	@Autowired
+	private IActIdMembershipRepository _membershipsRepository;
+	
+	@Override
+	public void create(ActIdMembershipEntity actIdMembership) {
+		_membershipsRepository.save(actIdMembership);
+	}
 
-@Override
-public void delete(ActIdMembershipEntity actIdMembership) {
-_membershipsRepository.delete(actIdMembership);
-}
+	@Override
+	public void update(ActIdMembershipEntity actIdMembership) {
+		_membershipsRepository.save(actIdMembership);
+	}
 
-@Override
-public ActIdMembershipEntity findByUserGroupId(String userId, String groupId) {
-return _membershipsRepository.findByUserGroupId(userId, groupId);
-}
+	@Override
+	public void delete(ActIdMembershipEntity actIdMembership) {
+		_membershipsRepository.delete(actIdMembership);
+	}
 
-@Override
-public List<ActIdMembershipEntity> findAllByUserId(String id) {
-    return _membershipsRepository.findAllByUserId(id);
+	@Override
+	public ActIdMembershipEntity findByUserGroupId(String userId, String groupId) {
+		return _membershipsRepository.findByUserGroupId(userId, groupId);
+	}
+
+	@Override
+	public List<ActIdMembershipEntity> findAllByUserId(String id) {
+    	return _membershipsRepository.findAllByUserId(id);
     }
 
     @Override
     public List<ActIdMembershipEntity> findAllByGroupId(String groupId) {
         return _membershipsRepository.findAllByGroupId(groupId);
-        }
+    }
 
-        public void deleteAll() {
+    public void deleteAll() {
         _membershipsRepository.deleteAll();
-        }
-        }
+    }
+    
+}

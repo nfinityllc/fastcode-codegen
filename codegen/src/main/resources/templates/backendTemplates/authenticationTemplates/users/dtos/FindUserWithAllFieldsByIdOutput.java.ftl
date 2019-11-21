@@ -20,31 +20,8 @@ public class FindUserWithAllFieldsByIdOutput {
     private String lastName;
     private String userName;
     private String password;
-    <#if Audit!false>
-    private String creatorUserId;
-    private java.util.Date creationTime;
-    private String lastModifierUserId;
-    private java.util.Date lastModificationTime;
-    </#if>
     private String authenticationSource;     
-    private Long roleId;       
-     private String roleDescriptiveField;
-    
-    public Long getRoleId() {
-   		return roleId;
-    }
-
-  	public void setRoleId(Long roleId){
-  		 this.roleId = roleId;
-    }
-    public String getRoleDescriptiveField() {
-    	return roleDescriptiveField;
-    }
-
-  	public void setRoleDescriptiveField(String roleDescriptiveField){
-   		this.roleDescriptiveField = roleDescriptiveField;
-  	}
-    
+  
     public String getAuthenticationSource() {
         return authenticationSource;
     }

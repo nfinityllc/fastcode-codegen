@@ -216,10 +216,10 @@ public class [=AuthenticationTable]permissionAppServiceTest {
     @Test 
 	public void checkIfPermissionAlreadyAssigned_[=AuthenticationTable]EntityAndPermissionEntityIsNotNullAnd[=AuthenticationTable]PermissionSetIsEmpty_ReturnFalse() {
 
-		[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission= mock([=AuthenticationTable]permissionEntity.class);
+	  //[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission= mock([=AuthenticationTable]permissionEntity.class);
 		PermissionEntity permissionEntity= mock(PermissionEntity.class);
 		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]Entity = mock ([=AuthenticationTable]Entity.class);
-		Mockito.when([=AuthenticationTable?uncap_first]Entity.getRole()).thenReturn(null);
+	  //Mockito.when([=AuthenticationTable?uncap_first]Entity.getRole()).thenReturn(null);
 		Assertions.assertThat(_appService.checkIfPermissionAlreadyAssigned([=AuthenticationTable?uncap_first]Entity, permissionEntity)).isEqualTo(false);
 
 	}

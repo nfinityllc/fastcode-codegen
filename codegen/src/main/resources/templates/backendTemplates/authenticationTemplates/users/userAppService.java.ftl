@@ -48,12 +48,6 @@ public class UserAppService implements IUserAppService {
 	
 	@Autowired
 	private IUserManager _userManager;
-  
-    @Autowired
-	private RoleManager _roleManager;
-    
-	@Autowired
-	private LoggingHelper logHelper;
 
 	@Autowired
 	private UserMapper mapper;
@@ -72,19 +66,9 @@ public class UserAppService implements IUserAppService {
     @Transactional(propagation = Propagation.REQUIRED)
 	public CreateUserOutput Create(CreateUserInput input) {
 
-		UserEntity user = mapper.CreateUserInputToUserEntity(input);
-		if(input.getRoleId()!=null) {
-			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-		if(foundRole!=null) {
-			user.setRole(foundRole);
-		}
-		else 
-			return null;
-		}
-		else 
-			return null;
-			
+		UserEntity user = mapper.CreateUserInputToUserEntity(input);		
 		UserEntity createdUser = _userManager.Create(user);
+		
 		<#if Flowable!false>
 		//Map and create flowable user
 		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(createdUser);
@@ -100,39 +84,10 @@ public class UserAppService implements IUserAppService {
 	public UpdateUserOutput Update(Long userId, UpdateUserInput input) {
 
 		UserEntity user = mapper.UpdateUserInputToUserEntity(input);
-	  	if(input.getRoleId()!=null) {
-		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-		if(foundRole!=null) {
-			Set<UserpermissionEntity> userPermission = user.getUserpermissionSet();
-			Set<RolepermissionEntity> rolePermission = foundRole.getRolepermissionSet();
-			
-			Iterator pIterator = userPermission.iterator();
-			Iterator rIterator = rolePermission.iterator();
-				while (pIterator.hasNext()) { 
-					UserpermissionEntity up = (UserpermissionEntity) pIterator.next();
-					while(rIterator.hasNext()) {
-						RolepermissionEntity rp = (RolepermissionEntity) pIterator.next();
-					if (up.getPermission() == rp.getPermission() ) {
-                         userPermission.remove(rp.getPermission());
-					}
-					}
-				}
-		    user.setRole(foundRole);
-		}
-		else 
-			return null;
-		}
-		else 
-			return null;
 		UserEntity updatedUser = _userManager.Update(user);
 		<#if Flowable!false>
-		String oldRoleName = null;
-		UserEntity oldUserRole = _userManager.FindById(input.getId());
-		if(oldUserRole.getRole() != null) {
-			oldRoleName = oldUserRole.getRole().getName();
-		}
 		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(updatedUser);
-		idmIdentityService.updateUser(updatedUser, actIdUser, oldRoleName);
+		idmIdentityService.updateUser(updatedUser, actIdUser);
 		</#if>
 		return mapper.UserEntityToUpdateUserOutput(updatedUser);
 	}
@@ -176,7 +131,6 @@ public class UserAppService implements IUserAppService {
 			return null;
 		}
 		return  mapper.UserEntityToFindUserByNameOutput(foundUser);
-
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -191,23 +145,6 @@ public class UserAppService implements IUserAppService {
  	   
  	    FindUserWithAllFieldsByIdOutput output=mapper.UserEntityToFindUserWithAllFieldsByIdOutput(foundUser); 
 		return output;
-	}
-
-	 //Role
-	// ReST API Call - GET /user/1/role
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    <#if Cache!false>
-    @Cacheable (value = "User", key="#userId")
-    </#if>
-	public GetRoleOutput GetRole(Long userId) {
-
-		UserEntity foundUser = _userManager.FindById(userId);
-		if (foundUser == null) {
-			logHelper.getLogger().error("There does not exist a user wth a id=%s", userId);
-			return null;
-		}
-		RoleEntity re = _userManager.GetRole(userId);
-		return mapper.RoleEntityToGetRoleOutput(re, foundUser);
 	}
 	
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -329,7 +266,7 @@ public class UserAppService implements IUserAppService {
 		 list.get(i).replace("%20","").trim().equals("passwordResetCode") ||
 		 list.get(i).replace("%20","").trim().equals("phoneNumber") ||
 		 list.get(i).replace("%20","").trim().equals("profilePictureId") ||
-		 list.get(i).replace("%20","").trim().equals("role") ||
+		 list.get(i).replace("%20","").trim().equals("userrole") ||
 		 list.get(i).replace("%20","").trim().equals("isTwoFactorEnabled") ||
 		 list.get(i).replace("%20","").trim().equals("userName") ||
 		 list.get(i).replace("%20","").trim().equals("userpermission")
@@ -437,9 +374,7 @@ public class UserAppService implements IUserAppService {
 				else if(operator.equals("equals"))
 					builder.or(user.userName.eq(value));
 			}
-		  if(list.get(i).replace("%20","").trim().equals("roleId")) {
-			builder.or(user.role.id.eq(Long.parseLong(value)));
-			}
+		 
 		}
 		return builder;
 	}
@@ -619,11 +554,7 @@ public class UserAppService implements IUserAppService {
 					builder.and(user.userName.ne(details.getValue().getSearchValue()));
 			}
 		}
-		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
-        if(joinCol != null && joinCol.getKey().equals("roleId")) {
-		    builder.and(user.role.id.eq(Long.parseLong(joinCol.getValue())));
-		}
-        }
+	
 		return builder;
 	}
 	
@@ -632,6 +563,14 @@ public class UserAppService implements IUserAppService {
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
 		joinColumnMap.put("userId", keysString);
 		return joinColumnMap;
+	}
+	
+	public Map<String,String> parseUserroleJoinColumn(String keysString) {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("userId", keysString);
+		return joinColumnMap;
+		
 	}
 	
 	public void deleteAllUserTokens(String userName) { 

@@ -92,8 +92,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         Claims claims = Jwts.claims();
-        claims.put("scopes", (convertToPrivilegeAuthorities(auth.getAuthorities())).stream().map(s -> s.toString()).collect(Collectors.toList()));
-        //claims.put("scopes", (auth.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList())));
+       // claims.put("scopes", (convertToPrivilegeAuthorities(auth.getAuthorities())).stream().map(s -> s.toString()).collect(Collectors.toList()));
+        claims.put("scopes", (auth.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList())));
         <#if Flowable!false>
         //Flowable IDM Support
         if(idmIdentityService==null){
@@ -164,45 +164,46 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         //res.getWriter().flush();
     }
 
-    private List<GrantedAuthority> convertToPrivilegeAuthorities(Collection<? extends GrantedAuthority> authorities) {
-
-        List<GrantedAuthority> currentlistAuthorities = new ArrayList<GrantedAuthority>();
-        currentlistAuthorities.addAll(authorities);
-
-        List<GrantedAuthority> newlistAuthorities = new ArrayList<GrantedAuthority>();
-
-        // Iterate through the list and check for ROLE_ authorities. We need to convert these into privileges and then remove duplicate privileges
-
-        for (GrantedAuthority ga : currentlistAuthorities) {
-            if (ga.getAuthority().startsWith("ROLE_")) {
-
-                RoleEntity re = _roleManager.FindByRoleName(ga.getAuthority());
-                Set<RolepermissionEntity> spe= re.getRolepermissionSet();
-                if(spe.size() != 0) {
-                    for (RolepermissionEntity pe : spe) {
-                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getPermission().getName());
-                        newlistAuthorities.add(authority);
-                    }
-                }
-//                Set<PermissionEntity> spe = re.getPermissions();
+//    private List<GrantedAuthority> convertToPrivilegeAuthorities(Collection<? extends GrantedAuthority> authorities) {
+//
+//        List<GrantedAuthority> currentlistAuthorities = new ArrayList<GrantedAuthority>();
+//        currentlistAuthorities.addAll(authorities);
+//
+//        List<GrantedAuthority> newlistAuthorities = new ArrayList<GrantedAuthority>();
+//
+//        // Iterate through the list and check for ROLE_ authorities. We need to convert these into privileges and then remove duplicate privileges
+//
+//        for (GrantedAuthority ga : currentlistAuthorities) {
+//        	System.out.println(" Authorities " + ga.getAuthority());
+//            if (ga.getAuthority().startsWith("ROLE_")) {
+//
+//                RoleEntity re = _roleManager.FindByRoleName(ga.getAuthority());
+//                Set<RolepermissionEntity> spe= re.getRolepermissionSet();
 //                if(spe.size() != 0) {
-//                    for (PermissionEntity pe : spe) {
-//                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
+//                    for (RolepermissionEntity pe : spe) {
+//                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getPermission().getName());
 //                        newlistAuthorities.add(authority);
 //                    }
 //                }
-            }
-
-            else {
-
-                newlistAuthorities.add(ga);
-            }
-        }
-        return newlistAuthorities.stream()
-                .distinct()
-                .collect(Collectors.toList());
-
-    }
+////                Set<PermissionEntity> spe = re.getPermissions();
+////                if(spe.size() != 0) {
+////                    for (PermissionEntity pe : spe) {
+////                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(pe.getName());
+////                        newlistAuthorities.add(authority);
+////                    }
+////                }
+//            }
+//
+//            else {
+//
+//                newlistAuthorities.add(ga);
+//            }
+//        }
+//        return newlistAuthorities.stream()
+//                .distinct()
+//                .collect(Collectors.toList());
+//
+//    }
 
 
 }

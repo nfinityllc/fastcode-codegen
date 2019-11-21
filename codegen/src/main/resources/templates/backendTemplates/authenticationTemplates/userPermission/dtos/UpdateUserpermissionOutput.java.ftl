@@ -3,7 +3,6 @@ package [=PackageName].application.Authorization.[=AuthenticationTable]permissio
 public class Update[=AuthenticationTable]permissionOutput {
 
     private Long permissionId;
-
   	<#if (AuthenticationType!="none" && !UserInput??)>
     private Long [=AuthenticationTable?uncap_first]Id;
     private String [=AuthenticationTable?uncap_first]DescriptiveField;
@@ -28,7 +27,16 @@ public class Update[=AuthenticationTable]permissionOutput {
     </#if>
     </#if>
   	private String permissionDescriptiveField;
-  
+    private Boolean revoked;
+    
+    public Boolean getRevoked() {
+    	return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+    	this.revoked = revoked;
+    }
+    
   	public String getPermissionDescriptiveField() {
    		return permissionDescriptiveField;
   	}
@@ -45,7 +53,6 @@ public class Update[=AuthenticationTable]permissionOutput {
     	this.permissionId = permissionId;
     }
   
-
     <#if (AuthenticationType!="none" && !UserInput??)>
   	public Long get[=AuthenticationTable?cap_first]Id() {
   	 	return [=AuthenticationTable?uncap_first]Id;

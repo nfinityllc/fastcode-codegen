@@ -22,50 +22,17 @@ public interface UserMapper {
      */
 
     UserEntity CreateUserInputToUserEntity(CreateUserInput userDto);
-    
-    @Mappings({ 
-    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-    @Mapping(source = "role.id", target = "roleId"),                   
-    }) 
-     CreateUserOutput UserEntityToCreateUserOutput(UserEntity entity);
+   
+    CreateUserOutput UserEntityToCreateUserOutput(UserEntity entity);
 
     UserEntity UpdateUserInputToUserEntity(UpdateUserInput userDto);
 
-    @Mappings({ 
-    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-    @Mapping(source = "role.id", target = "roleId"),                   
-    }) 
     UpdateUserOutput UserEntityToUpdateUserOutput(UserEntity entity);
 
-    @Mappings({ 
-    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-    @Mapping(source = "role.id", target = "roleId"),                   
-    }) 
     FindUserByIdOutput UserEntityToFindUserByIdOutput(UserEntity entity);
-    
-    @Mappings({ 
-    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-    @Mapping(source = "role.id", target = "roleId"),                   
-    }) 
+     
     FindUserByNameOutput UserEntityToFindUserByNameOutput(UserEntity entity);
 
-	@Mappings({ 
-    @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-    @Mapping(source = "role.id", target = "roleId"),                   
-    }) 
     FindUserWithAllFieldsByIdOutput UserEntityToFindUserWithAllFieldsByIdOutput(UserEntity entity);
   
-
-    @Mappings({
-            @Mapping(source = "role.id", target = "id"),
-              <#if Audit!false>
-            @Mapping(source = "role.creationTime", target = "creationTime"),
-            @Mapping(source = "role.creatorUserId", target = "creatorUserId"),
-            @Mapping(source = "role.lastModifierUserId", target = "lastModifierUserId"),
-            @Mapping(source = "role.lastModificationTime", target = "lastModificationTime"),
-              </#if>
-            @Mapping(source = "user.id", target = "userId"),
-            @Mapping(source = "user.userName", target = "userDescriptiveField")
-    })
-    GetRoleOutput RoleEntityToGetRoleOutput(RoleEntity role, UserEntity user);
 }

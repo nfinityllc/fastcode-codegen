@@ -2,14 +2,12 @@ package [=PackageName].application.Flowable;
 
 <#if AuthenticationType != "none">
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
-import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
 import [=PackageName].domain.Flowable.Users.IActIdUserManager;
 import [=PackageName].domain.Flowable.Groups.ActIdGroupEntity;
 import [=PackageName].domain.Flowable.Groups.IActIdGroupManager;
 import [=PackageName].domain.Flowable.Memberships.ActIdMembershipEntity;
 import [=PackageName].domain.Flowable.Memberships.IActIdMembershipManager;
-import [=PackageName].domain.Flowable.Memberships.MembershipId;
 import [=PackageName].domain.Flowable.PrivilegeMappings.ActIdPrivMappingEntity;
 import [=PackageName].domain.Flowable.PrivilegeMappings.IActIdPrivMappingManager;
 import [=PackageName].domain.Flowable.Privileges.ActIdPrivEntity;
@@ -24,16 +22,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.EntityExistsException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -137,190 +131,197 @@ public class FlowableIdentityService {
             throw new EntityExistsException("Flowable user already exists.");
         }
         _actIdUserManager.create(actIdUser);
-        //Check if user is associated with a role
-        RoleEntity role = createdUser.getRole();
-        if(role != null)
-        {
-            //Check if the role already exists in the flowable group table
-            ActIdGroupEntity actIdGroup = _actIdGroupManager.findByGroupId(role.getName());
-            //Group doesn't exist. Create group
-            if(actIdGroup == null) {
-                createGroup(role.getName());
-            }
+     //   //Check if user is associated with a role
+     //   RoleEntity role = createdUser.getRole();
+     //   if(role != null)
+     //   {
+     //       //Check if the role already exists in the flowable group table
+     //       ActIdGroupEntity actIdGroup = _actIdGroupManager.findByGroupId(role.getName());
+     //       //Group doesn't exist. Create group
+     //       if(actIdGroup == null) {
+      //          createGroup(role.getName());
+     //       }
             <#if AuthenticationTable?? && AuthenticationFields??>
-            createMembership(role.getName(), createdUser.get[=AuthenticationFields.UserName.fieldName?cap_first]());
+      //      createMembership(role.getName(), createdUser.get[=AuthenticationFields.UserName.fieldName?cap_first]());
 		   <#else>
-			createMembership(role.getName(), createdUser.getUserName());
+		//	createMembership(role.getName(), createdUser.getUserName());
 		   </#if>
-        }
+      //  }
     }
 
-    public void updateUser([=AuthenticationTable]Entity updatedUser, ActIdUserEntity actIdUser, String oldRoleName) {
-        //Check if user already exists
-        ActIdUserEntity existingUser = _actIdUserManager.findByUserId(actIdUser.getId());
-        if (StringUtils.isNotBlank(actIdUser.getId()) && existingUser != null) {
-            //Increment the revision by 1
-            actIdUser.setRev(existingUser.getRev() + 1);
-            _actIdUserManager.update(actIdUser);
+	public void updateUser(UserEntity updatedUser, ActIdUserEntity actIdUser) {
+		//Check if user already exists
+		ActIdUserEntity existingUser = _actIdUserManager.findByUserId(actIdUser.getId());
+		if (StringUtils.isNotBlank(actIdUser.getId()) && existingUser != null) {
+			//Increment the revision by 1
+			actIdUser.setRev(existingUser.getRev() + 1);
+			_actIdUserManager.update(actIdUser);
+		}
+	}
 
-            //Get new group id
-            String newRoleName = null;
-            if(updatedUser.getRole() != null) {
-                newRoleName = updatedUser.getRole().getName();
-            }
+	public void deleteUser(String id) {
 
-            //Delete relationship with old role/group if applicable
-            if (oldRoleName != null && !oldRoleName.isEmpty() && !oldRoleName.equalsIgnoreCase(newRoleName)) {
-                ActIdMembershipEntity actIdMembership = _actIdMembershipManager.findByUserGroupId(actIdUser.getId(), oldRoleName);
-                _actIdMembershipManager.delete(actIdMembership);
-            }
-            //Create relationship if not exists
-            ActIdMembershipEntity actIdMembership = _actIdMembershipManager.findByUserGroupId(actIdUser.getId(), newRoleName);
-            if (actIdMembership == null) {
-                //Check if the group already exists in the flowable group table
-                ActIdGroupEntity actIdGroup = _actIdGroupManager.findByGroupId(newRoleName);
-                //Group doesn't exist. Create group
-                if(actIdGroup == null) {
-                    createGroup(newRoleName);
-                }
-                createMembership(newRoleName, actIdUser.getId());
-            }
-        }
-    }
+		List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByUserId(id);
 
-    public void deleteUser(String id) {
+		for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
+			_actIdMembershipManager.delete(actIdMembership);
+		}
 
-     //    List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByUserId(id);
-     //
-     //   for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
-     //       _actIdMembershipManager.delete(actIdMembership);
-     //   }
+		List<ActIdPrivMappingEntity> actIdPrivMappings = _actIdPrivMappingManager.findAllByUserId(id);
 
-        List<ActIdPrivMappingEntity> actIdPrivMappings = _actIdPrivMappingManager.findAllByUserId(id);
+		for (ActIdPrivMappingEntity actIdPrivMapping: actIdPrivMappings) {
+			_actIdPrivMappingManager.delete(actIdPrivMapping);
+		}
+		ActIdUserEntity actIdUser = _actIdUserManager.findByUserId(id);
+		if(actIdUser != null) {
+			_actIdUserManager.delete(actIdUser);
+		}
+	}
 
-        for (ActIdPrivMappingEntity actIdPrivMapping: actIdPrivMappings) {
-            _actIdPrivMappingManager.delete(actIdPrivMapping);
-        }
-        ActIdUserEntity actIdUser = _actIdUserManager.findByUserId(id);
-        if(actIdUser != null) {
-            _actIdUserManager.delete(actIdUser);
-        }
-    }
+	public void deleteAllUsersGroupsPrivileges() {
+		_actIdMembershipManager.deleteAll();
+		_actIdPrivMappingManager.deleteAll();
+		_actIdPrivManager.deleteAll();
+		_actIdGroupManager.deleteAll();
+		_actIdUserManager.deleteAll();
+	}
+	public void createGroup(String groupId) {
+		if (groupId == null) {
+			throw new IllegalArgumentException("groupid is null");
+		}
+		ActIdGroupEntity actIdGroup = new ActIdGroupEntity();
+		actIdGroup.setId(groupId);
+		actIdGroup.setName(groupId);
+		actIdGroup.setRev(0L);
+		actIdGroup.setType(null);
+		_actIdGroupManager.create(actIdGroup);
+	}
 
-    public void deleteAllUsersGroupsPrivileges() {
-        _actIdMembershipManager.deleteAll();
-        _actIdPrivMappingManager.deleteAll();
-        _actIdPrivManager.deleteAll();
-        _actIdGroupManager.deleteAll();
-        _actIdUserManager.deleteAll();
-    }
-    public void createGroup(String groupId) {
-        if (groupId == null) {
-            throw new IllegalArgumentException("groupid is null");
-        }
-        ActIdGroupEntity actIdGroup = new ActIdGroupEntity();
-        actIdGroup.setId(groupId);
-        actIdGroup.setName(groupId);
-        actIdGroup.setRev(0L);
-        actIdGroup.setType(null);
-        _actIdGroupManager.create(actIdGroup);
-    }
+	public void updateGroup(String groupId, String oldRoleName) {
+		//Check if group already exists
+		ActIdGroupEntity existingGroup = _actIdGroupManager.findByGroupId(oldRoleName);
+		if (existingGroup != null && groupId != null) {
+			if (oldRoleName != null && !oldRoleName.equalsIgnoreCase(groupId)) {
+				//Update relationship with old role/group if applicable
+				List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByGroupId(oldRoleName);
+				for (ActIdMembershipEntity actIdMembership : actIdMemberships) {
+					createMembership(groupId, actIdMembership.getUserId());
+					_actIdMembershipManager.delete(actIdMembership);
+				}
+				//Update Privilege mapping
+				List<ActIdPrivMappingEntity> actIdPrivMappings = _actIdPrivMappingManager.findAllByGroupId(oldRoleName);
+				for (ActIdPrivMappingEntity actIdPrivMapping : actIdPrivMappings) {
+					actIdPrivMapping.setGroupId(groupId);
+					updatePrivilegeMapping(actIdPrivMapping);
+				}
+			}
 
-    public void updateGroup(String groupId, String oldRoleName) {
-        //Check if group already exists
-        ActIdGroupEntity existingGroup = _actIdGroupManager.findByGroupId(oldRoleName);
-        if (existingGroup != null && groupId != null) {
-            if (oldRoleName != null && !oldRoleName.equalsIgnoreCase(groupId)) {
-                //Update relationship with old role/group if applicable
-                List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByGroupId(oldRoleName);
-                for (ActIdMembershipEntity actIdMembership : actIdMemberships) {
-                    createMembership(groupId, actIdMembership.getUserId());
-                    _actIdMembershipManager.delete(actIdMembership);
-                }
-                //Update Privilege mapping
-                List<ActIdPrivMappingEntity> actIdPrivMappings = _actIdPrivMappingManager.findAllByGroupId(oldRoleName);
-                for (ActIdPrivMappingEntity actIdPrivMapping : actIdPrivMappings) {
-                    actIdPrivMapping.setGroupId(groupId);
-                    updatePrivilegeMapping(actIdPrivMapping);
-                }
-            }
+			//Increment the revision by 1
+			ActIdGroupEntity actIdGroup = new ActIdGroupEntity();
+			actIdGroup.setId(groupId);
+			actIdGroup.setName(groupId);
+			actIdGroup.setRev(existingGroup.getRev() + 1);
+			actIdGroup.setType(null);
+			_actIdGroupManager.create(actIdGroup);
 
-            //Increment the revision by 1
-            ActIdGroupEntity actIdGroup = new ActIdGroupEntity();
-            actIdGroup.setId(groupId);
-            actIdGroup.setName(groupId);
-            actIdGroup.setRev(existingGroup.getRev() + 1);
-            actIdGroup.setType(null);
-            _actIdGroupManager.create(actIdGroup);
+			_actIdGroupManager.delete(existingGroup);
+		}
+	}
 
-            _actIdGroupManager.delete(existingGroup);
-        }
-    }
+	public void deleteGroup(String groupId) {
+		//Delete membership
+		List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByGroupId(groupId);
 
-    public void deleteGroup(String groupId) {
-        //Delete membership
-        List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByGroupId(groupId);
+		for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
+			_actIdMembershipManager.delete(actIdMembership);
+		}
+		//Delete group privilege mapping
+		List<ActIdPrivMappingEntity> actIdPrivMappings = _actIdPrivMappingManager.findAllByGroupId(groupId);
+		for (ActIdPrivMappingEntity actIdPrivMapping : actIdPrivMappings) {
+			_actIdPrivMappingManager.delete(actIdPrivMapping);
+		}
 
-        for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
-            _actIdMembershipManager.delete(actIdMembership);
-        }
-        //Delete group privilege mapping
-        List<ActIdPrivMappingEntity> actIdPrivMappings = _actIdPrivMappingManager.findAllByGroupId(groupId);
-        for (ActIdPrivMappingEntity actIdPrivMapping : actIdPrivMappings) {
-            _actIdPrivMappingManager.delete(actIdPrivMapping);
-        }
+		ActIdGroupEntity actIdGroup = _actIdGroupManager.findByGroupId(groupId);
+		if(actIdGroup != null) {
+			_actIdGroupManager.delete(actIdGroup);
+		}
+	}
 
-        ActIdGroupEntity actIdGroup = _actIdGroupManager.findByGroupId(groupId);
-        if(actIdGroup != null) {
-            _actIdGroupManager.delete(actIdGroup);
-        }
-    }
+	public void createMembership(String groupId, String userId) {
+		if (groupId == null) {
+			//User not valid
+			throw new IllegalArgumentException("groupid is null");
+		}
 
-    public void createMembership(String groupId, String userId) {
-        if (groupId == null) {
-            //User not valid
-            throw new IllegalArgumentException("groupid is null");
-        }
+		if (userId == null) {
+			//User not valid
+			throw new IllegalArgumentException("userId is null");
+		}
+		//MembershipId membershipId = new MembershipId(groupId, userId);
+		ActIdMembershipEntity actIdMembership = new ActIdMembershipEntity();
+		actIdMembership.setGroupId(groupId);
+		actIdMembership.setUserId(userId);
+		_actIdMembershipManager.create(actIdMembership);
+	}
 
-        if (userId == null) {
-            //User not valid
-            throw new IllegalArgumentException("userId is null");
-        }
-        //MembershipId membershipId = new MembershipId(groupId, userId);
-        ActIdMembershipEntity actIdMembership = new ActIdMembershipEntity();
-        actIdMembership.setGroupId(groupId);
-        actIdMembership.setUserId(userId);
-        _actIdMembershipManager.create(actIdMembership);
-    }
+	public void deleteMembership(String userId) {
+		List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByUserId(userId);
 
-    public void deleteMembership(String userId) {
-        List<ActIdMembershipEntity> actIdMemberships = _actIdMembershipManager.findAllByUserId(userId);
+		for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
+			_actIdMembershipManager.delete(actIdMembership);
+		}
+	}
 
-        for (ActIdMembershipEntity actIdMembership: actIdMemberships) {
-            _actIdMembershipManager.delete(actIdMembership);
-        }
-    }
+	public void createPrivilege(String name) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(name::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivEntity actIdPrivilege = new ActIdPrivEntity();
+			actIdPrivilege.setId(RandomStringUUID());
+			actIdPrivilege.setName(name);
+			_actIdPrivManager.create(actIdPrivilege);
+		}
+	}
 
-    public void createPrivilege(String name) {
-        boolean result = Arrays.stream(flowablePrivileges).anyMatch(name::equalsIgnoreCase);
-        if (result) {
-            ActIdPrivEntity actIdPrivilege = new ActIdPrivEntity();
-            actIdPrivilege.setId(RandomStringUUID());
-            actIdPrivilege.setName(name);
-            _actIdPrivManager.create(actIdPrivilege);
-        }
-    }
+	public void addUserGroupMapping(String userId, String groupName) {
 
-    public void addUserPrivilegeMapping(String userId, String privName) {
-        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
-        if (result) {
-            ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
-            actIdPrivMapping.setUserId(userId);
-            _actIdPrivMappingManager.create(actIdPrivMapping);
-        }
-    }
-    
-    public void updateUserPrivilegeMapping(String userId, String privName) {
+		ActIdMembershipEntity actIdGroupMapping = newGroupMapping(groupName);
+		actIdGroupMapping.setUserId(userId);
+		_actIdMembershipManager.create(actIdGroupMapping);
+
+	}
+
+	public void updateUserGroupMapping(String userId, String groupName) {
+		ActIdMembershipEntity actIdPrivMapping = _actIdMembershipManager.findByUserGroupId(userId, groupName);
+		_actIdMembershipManager.update(actIdPrivMapping);
+	}
+
+	public void deleteUserGroupMapping(String userId, String groupName) {
+		ActIdMembershipEntity actIdMembership= _actIdMembershipManager.findByUserGroupId(userId, groupName);
+		_actIdMembershipManager.delete(actIdMembership);
+	}
+
+	private ActIdMembershipEntity newGroupMapping(String groupName) {
+		ActIdGroupEntity actIdGroup = _actIdGroupManager.findByGroupId(groupName);
+		if(actIdGroup == null) {
+			createGroup(groupName);
+			actIdGroup = _actIdGroupManager.findByGroupId(groupName);
+		}
+
+		ActIdMembershipEntity actIdGroupMapping = new ActIdMembershipEntity();
+		actIdGroupMapping.setGroupId(groupName);
+		return actIdGroupMapping;
+	}
+
+	public void addUserPrivilegeMapping(String userId, String privName) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
+			actIdPrivMapping.setUserId(userId);
+			_actIdPrivMappingManager.create(actIdPrivMapping);
+		}
+	}
+
+	public void updateUserPrivilegeMapping(String userId, String privName) {
 		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
 		if (result) {
 			ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByUserPrivilege(userId, privName);
@@ -328,34 +329,34 @@ public class FlowableIdentityService {
 		}
 	}
 
-    public void deleteUserPrivilegeMapping(String userId, String privName) {
-        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
-        if (result) {
-            ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByUserPrivilege(userId, privName);
-            _actIdPrivMappingManager.delete(actIdPrivMapping);
-        }
-    }
+	public void deleteUserPrivilegeMapping(String userId, String privName) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByUserPrivilege(userId, privName);
+			_actIdPrivMappingManager.delete(actIdPrivMapping);
+		}
+	}
 
-    public void updatePrivilegeMapping(ActIdPrivMappingEntity actIdPrivMapping) {
-        ActIdPrivEntity actIdPrivilege = actIdPrivMapping.getActIdPriv();
-        if (actIdPrivilege != null) {
-            boolean result = Arrays.stream(flowablePrivileges).anyMatch(actIdPrivilege.getName()::equalsIgnoreCase);
-            if (result) {
-                _actIdPrivMappingManager.update(actIdPrivMapping);
-            }
-        }
-    }
+	public void updatePrivilegeMapping(ActIdPrivMappingEntity actIdPrivMapping) {
+		ActIdPrivEntity actIdPrivilege = actIdPrivMapping.getActIdPriv();
+		if (actIdPrivilege != null) {
+			boolean result = Arrays.stream(flowablePrivileges).anyMatch(actIdPrivilege.getName()::equalsIgnoreCase);
+			if (result) {
+				_actIdPrivMappingManager.update(actIdPrivMapping);
+			}
+		}
+	}
 
-    public void addGroupPrivilegeMapping(String groupId, String privName) {
-        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
-        if (result) {
-            ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
-            actIdPrivMapping.setGroupId(groupId);
-            _actIdPrivMappingManager.create(actIdPrivMapping);
-        }
-    }
-    
-    public void updateGroupPrivilegeMapping(String groupId, String privName) {
+	public void addGroupPrivilegeMapping(String groupId, String privName) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivMappingEntity actIdPrivMapping = newPrivMapping(privName);
+			actIdPrivMapping.setGroupId(groupId);
+			_actIdPrivMappingManager.create(actIdPrivMapping);
+		}
+	}
+
+	public void updateGroupPrivilegeMapping(String groupId, String privName) {
 		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
 		if (result) {
 			ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByGroupPrivilege(groupId, privName);
@@ -363,43 +364,43 @@ public class FlowableIdentityService {
 		}
 	}
 
-    private ActIdPrivMappingEntity newPrivMapping(String privName) {
-        ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(privName);
-        if(actIdPrivilege == null) {
-            createPrivilege(privName);
-            actIdPrivilege = _actIdPrivManager.findByName(privName);
-        }
+	private ActIdPrivMappingEntity newPrivMapping(String privName) {
+		ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(privName);
+		if(actIdPrivilege == null) {
+			createPrivilege(privName);
+			actIdPrivilege = _actIdPrivManager.findByName(privName);
+		}
 
-        ActIdPrivMappingEntity actIdPrivMapping = new ActIdPrivMappingEntity();
-        actIdPrivMapping.setId(RandomStringUUID());
-        actIdPrivMapping.setActIdPriv(actIdPrivilege);
-        return actIdPrivMapping;
-    }
+		ActIdPrivMappingEntity actIdPrivMapping = new ActIdPrivMappingEntity();
+		actIdPrivMapping.setId(RandomStringUUID());
+		actIdPrivMapping.setActIdPriv(actIdPrivilege);
+		return actIdPrivMapping;
+	}
 
-    public void deleteGroupPrivilegeMapping(String groupId, String privName) {
-        boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
-        if (result) {
-            ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByGroupPrivilege(groupId, privName);
-            _actIdPrivMappingManager.delete(actIdPrivMapping);
-        }
-    }
+	public void deleteGroupPrivilegeMapping(String groupId, String privName) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(privName::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivMappingEntity actIdPrivMapping = _actIdPrivMappingManager.findByGroupPrivilege(groupId, privName);
+			_actIdPrivMappingManager.delete(actIdPrivMapping);
+		}
+	}
 
-    public void deletePrivilege(String name) {
-        boolean result = Arrays.stream(flowablePrivileges).anyMatch(name::equalsIgnoreCase);
-        if (result) {
-            ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(name);
-            _actIdPrivManager.delete(actIdPrivilege);
-        }
-    }
+	public void deletePrivilege(String name) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(name::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(name);
+			_actIdPrivManager.delete(actIdPrivilege);
+		}
+	}
 
-    public void updatePrivilege(String oldName, String newName) {
-        boolean result = Arrays.stream(flowablePrivileges).anyMatch(newName::equalsIgnoreCase);
-        if (result) {
-            ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(oldName);
-            actIdPrivilege.setName(newName);
-            _actIdPrivManager.update(actIdPrivilege);
-        }
-    }
+	public void updatePrivilege(String oldName, String newName) {
+		boolean result = Arrays.stream(flowablePrivileges).anyMatch(newName::equalsIgnoreCase);
+		if (result) {
+			ActIdPrivEntity actIdPrivilege = _actIdPrivManager.findByName(oldName);
+			actIdPrivilege.setName(newName);
+			_actIdPrivManager.update(actIdPrivilege);
+		}
+	}
     </#if>
     public String createTokenAndCookie (String userId, HttpServletRequest request, HttpServletResponse response) {
         ActIdTokenEntity token = createToken(userId, request.getRemoteAddr(), request.getHeader("User-Agent"));

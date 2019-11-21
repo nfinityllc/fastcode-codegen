@@ -107,7 +107,6 @@ public class [=AuthenticationTable]permissionController {
     Find[=AuthenticationTable]ByIdOutput found[=AuthenticationTable] =_[=AuthenticationTable?uncap_first]AppService.FindById(<#if (AuthenticationType!="none" && !UserInput??)>current[=AuthenticationTable]permission.get[=AuthenticationTable]Id()<#elseif AuthenticationType!="none" && UserInput??><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>new [=AuthenticationTable]Id(</#if></#if><#list PrimaryKeys as key,value><#if key_has_next>current[=AuthenticationTable]permission.get[=AuthenticationTable][=key?cap_first](),<#else>current[=AuthenticationTable]permission.get[=AuthenticationTable][=key?cap_first]()</#if></#list></#if><#if CompositeKeyClasses??><#if CompositeKeyClasses?seq_contains(ClassName)>)</#if></#if>);
 	_[=AuthenticationTable?uncap_first]AppService.deleteAllUserTokens(found[=AuthenticationTable].get<#if AuthenticationType!= "none"><#if AuthenticationFields??><#list AuthenticationFields as authKey,authValue><#if authKey== "UserName">[=authValue.fieldName?cap_first]</#if></#list><#else>UserName</#if></#if>());  
 		
-		
 	return new ResponseEntity(_[=AuthenticationTable?uncap_first]permissionAppService.Update([=AuthenticationTable?uncap_first]permissionId,[=AuthenticationTable?uncap_first]permission), HttpStatus.OK);
 	}
 
@@ -121,10 +120,11 @@ public class [=AuthenticationTable]permissionController {
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
+	
 	Find[=AuthenticationTable]permissionByIdOutput output = _[=AuthenticationTable?uncap_first]permissionAppService.FindById([=AuthenticationTable?uncap_first]permissionId);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+	if (output == null) {
+		return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+	}
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -132,12 +132,11 @@ public class [=AuthenticationTable]permissionController {
     @PreAuthorize("hasAnyAuthority('[=AuthenticationTable?upper_case]PERMISSIONENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
-		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
-		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+	if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+	if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 
-		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+	Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+	SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		
 		return ResponseEntity.ok(_[=AuthenticationTable?uncap_first]permissionAppService.Find(searchCriteria,Pageable));
 	}
@@ -152,10 +151,12 @@ public class [=AuthenticationTable]permissionController {
 		throw new EntityNotFoundException(
 				String.format("Invalid id=%s", id));
 	}
+	
+	
 	Get[=AuthenticationTable]Output output= _[=AuthenticationTable?uncap_first]permissionAppService.Get[=AuthenticationTable]([=AuthenticationTable?uncap_first]permissionId);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+	if (output == null) {
+		return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+	}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
   
@@ -170,9 +171,9 @@ public class [=AuthenticationTable]permissionController {
 				String.format("Invalid id=%s", id));
 	}
 	GetPermissionOutput output= _[=AuthenticationTable?uncap_first]permissionAppService.GetPermission([=AuthenticationTable?uncap_first]permissionId);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+	if (output == null) {
+		return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+	}
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
   

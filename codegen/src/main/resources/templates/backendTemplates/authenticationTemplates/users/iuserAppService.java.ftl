@@ -20,7 +20,5 @@ public interface IUserAppService {
     FindUserByIdOutput FindById(Long id);
 
     List<FindUserByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception;
-	
-    //Role
-    GetRoleOutput GetRole(Long userid);
+
 }

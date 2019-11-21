@@ -71,15 +71,15 @@ public class RoleEntity implements Serializable {
 <#if AuthenticationType != "none">
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
-    public Set<[=AuthenticationTable]Entity> get[=AuthenticationTable]Set() { 
-      return [=AuthenticationTable?uncap_first]Set; 
+    public Set<[=AuthenticationTable]roleEntity> get[=AuthenticationTable]roleSet() { 
+      return [=AuthenticationTable?uncap_first]roleSet; 
     } 
  
-    public void set[=AuthenticationTable]Set(Set<[=AuthenticationTable]Entity> [=AuthenticationTable?uncap_first]) { 
-      this.[=AuthenticationTable?uncap_first]Set = [=AuthenticationTable?uncap_first]; 
+    public void set[=AuthenticationTable]roleSet(Set<[=AuthenticationTable]roleEntity> [=AuthenticationTable?uncap_first]role) { 
+      this.[=AuthenticationTable?uncap_first]roleSet = [=AuthenticationTable?uncap_first]role; 
     } 
  
-    private Set<[=AuthenticationTable]Entity> [=AuthenticationTable?uncap_first]Set = new HashSet<[=AuthenticationTable]Entity>(); 
+    private Set<[=AuthenticationTable]roleEntity> [=AuthenticationTable?uncap_first]roleSet = new HashSet<[=AuthenticationTable]roleEntity>(); 
 </#if>
     public RoleEntity() {
 

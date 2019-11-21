@@ -84,6 +84,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 				{
 					[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
 					[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
+					[=AuthenticationTable?uncap_first]permission.setRevoked(input.getRevoked());
 				}
 				else return null;
 		}
@@ -119,10 +120,11 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 		
 			if(found[=AuthenticationTable]!=null || foundPermission!=null)
 			{			
-				if(!checkIfPermissionAlreadyAssigned(found[=AuthenticationTable], foundPermission))
+				if(checkIfPermissionAlreadyAssigned(found[=AuthenticationTable], foundPermission))
 				{
 					[=AuthenticationTable?uncap_first]permission.setPermission(foundPermission);
 					[=AuthenticationTable?uncap_first]permission.set[=AuthenticationTable](found[=AuthenticationTable]);
+					[=AuthenticationTable?uncap_first]permission.setRevoked(input.getRevoked());
 				}
 				else return null;
 			}
@@ -143,19 +145,6 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	
 	public boolean checkIfPermissionAlreadyAssigned([=AuthenticationTable]Entity found[=AuthenticationTable],PermissionEntity foundPermission)
 	{
-		if(found[=AuthenticationTable].getRole() !=null)
-		{
-			Set<RolepermissionEntity> rolePermission = found[=AuthenticationTable].getRole().getRolepermissionSet();
-			Iterator iterator = rolePermission.iterator();
-			 
-			while (iterator.hasNext()) { 
-				RolepermissionEntity pe = (RolepermissionEntity) iterator.next();
-				if (pe.getPermission() == foundPermission ) {
-					return true;
-				}
-			}
-		}
-		 
 		
 		Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]Permission = found[=AuthenticationTable].get[=AuthenticationTable]permissionSet();
 		 

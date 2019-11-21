@@ -18,7 +18,7 @@ public class Get[=RelationEntityName]Output {
   	return [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
 
-  public void set[=ClassName?uncap_first][=fvalue.fieldName?cap_first]([=fvalue.fieldType?cap_first] [=ClassName?uncap_first][=fvalue.fieldName?cap_first]){
+  public void set[=ClassName?cap_first][=fvalue.fieldName?cap_first]([=fvalue.fieldType?cap_first] [=ClassName?uncap_first][=fvalue.fieldName?cap_first]){
   	this.[=ClassName?uncap_first][=fvalue.fieldName?cap_first] = [=ClassName?uncap_first][=fvalue.fieldName?cap_first];
   }
   </#if> 

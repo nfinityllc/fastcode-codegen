@@ -11,6 +11,7 @@ import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.PermissionEntity;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]roleEntity;
 </#if>
 import [=CommonModulePackage].Search.SearchUtils;
 
@@ -30,8 +31,6 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
 
 @RestController
 @RequestMapping(value = "/audit")
@@ -77,21 +76,28 @@ public class AuditController {
     }
     
     @RequestMapping("/[=AuthenticationTable?lower_case]permission")
-    public String getUserpermissionChanges(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit) {
+    public String get[=AuthenticationTable]permissionChanges(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit) {
         QueryBuilder jqlQuery = addPaginationAndFilters(QueryBuilder.byClass([=AuthenticationTable]permissionEntity.class),limit,offset,search);
+        List<Change> changes = javers.findChanges(jqlQuery.withNewObjectChanges().build());
+        return javers.getJsonConverter().toJson(changes);
+    }
+    
+    @RequestMapping("/[=AuthenticationTable?lower_case]role")
+    public String get[=AuthenticationTable]roleChanges(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit) {
+        QueryBuilder jqlQuery = addPaginationAndFilters(QueryBuilder.byClass([=AuthenticationTable]roleEntity.class),limit,offset,search);
         List<Change> changes = javers.findChanges(jqlQuery.withNewObjectChanges().build());
         return javers.getJsonConverter().toJson(changes);
     }
     </#if>
 
-		<#list entitiesMap as entityKey, entityMap>
+	<#list entitiesMap as entityKey, entityMap>
     @RequestMapping("[=entityMap.requestMapping]")
     public String [=entityMap.method](@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit) {
         QueryBuilder jqlQuery = addPaginationAndFilters(QueryBuilder.byClass([=entityMap.entity].class),limit,offset,search);
         List<Change> changes = javers.findChanges(jqlQuery.withNewObjectChanges().build());
         return javers.getJsonConverter().toJson(changes);
     }
-		</#list>
+	</#list>
     
     @RequestMapping("/changes")
     public String getAllChanges(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit) {

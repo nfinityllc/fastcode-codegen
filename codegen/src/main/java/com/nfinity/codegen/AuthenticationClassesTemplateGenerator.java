@@ -103,6 +103,18 @@ public class AuthenticationClassesTemplateGenerator {
 			destFolderBackend = destPath + "/application/Authorization/Userpermission/Dto";
 			new File(destFolderBackend).mkdirs();
 			generateFiles(getUserPermissionDtoTemplates(authenticationTable), root, destFolderBackend);
+			
+			destFolderBackend = destPath + "/domain/Authorization/Userrole" ;
+			new File(destFolderBackend).mkdirs();
+			generateFiles(getUserRoleManagerLayerTemplates(authenticationTable), root, destFolderBackend);
+
+			destFolderBackend = destPath + "/application/Authorization/Userrole" ;
+			new File(destFolderBackend).mkdirs();
+			generateFiles(getUserRoleApplicationLayerTemplates(authenticationTable), root, destFolderBackend);
+
+			destFolderBackend = destPath + "/application/Authorization/Userrole/Dto";
+			new File(destFolderBackend).mkdirs();
+			generateFiles(getUserRoleDtoTemplates(authenticationTable), root, destFolderBackend);
 		}
 		else if(authenticationType!="none" && authenticationTable != null)
 		{
@@ -332,6 +344,72 @@ public class AuthenticationClassesTemplateGenerator {
 
 		return backEndTemplate;
 	}
+	
+	private static Map<String, Object> getUserRoleApplicationLayerTemplates(String authenticationTable) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		if(authenticationTable!=null)
+		{
+			backEndTemplate.put("userRole/IUserroleAppService.java.ftl", "I"+authenticationTable+"roleAppService.java");
+			backEndTemplate.put("userRole/UserroleAppService.java.ftl", authenticationTable+"roleAppService.java");
+			backEndTemplate.put("userRole/UserroleMapper.java.ftl", authenticationTable+"roleMapper.java");
+			backEndTemplate.put("userRole/UserroleAppServiceTest.java.ftl", authenticationTable+"roleAppServiceTest.java");
+		}
+		else
+		{
+			backEndTemplate.put("userRole/IUserroleAppService.java.ftl", "IUserroleAppService.java");
+			backEndTemplate.put("userRole/UserroleAppService.java.ftl", "UserroleAppService.java");
+			backEndTemplate.put("userRole/UserroleMapper.java.ftl", "UserroleMapper.java");
+			backEndTemplate.put("userRole/UserroleAppServiceTest.java.ftl", "UserroleAppServiceTest.java");
+		}
+		return backEndTemplate;
+	}
+
+	private static Map<String, Object> getUserRoleManagerLayerTemplates(String authenticationTable) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		if(authenticationTable!=null)
+		{
+			backEndTemplate.put("userRole/IUserroleManager.java.ftl", "I"+authenticationTable+"roleManager.java");
+			backEndTemplate.put("userRole/UserroleManager.java.ftl", authenticationTable+"roleManager.java");
+			backEndTemplate.put("userRole/UserroleManagerTest.java.ftl",  authenticationTable+"roleManagerTest.java");
+		}
+		else
+		{
+			backEndTemplate.put("userRole/IUserroleManager.java.ftl", "IUserroleManager.java");
+			backEndTemplate.put("userRole/UserroleManager.java.ftl", "UserroleManager.java");
+			backEndTemplate.put("userRole/UserroleManagerTest.java.ftl", "UserroleManagerTest.java");
+		}
+		return backEndTemplate;
+	}
+
+	
+	private static Map<String, Object> getUserRoleDtoTemplates(String authenticationTable) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+		if(authenticationTable!=null)
+		{
+			backEndTemplate.put("userRole/dtos/CreateUserroleInput.java.ftl", "Create"+authenticationTable+"roleInput.java");
+			backEndTemplate.put("userRole/dtos/CreateUserroleOutput.java.ftl", "Create"+authenticationTable+"roleOutput.java");
+			backEndTemplate.put("userRole/dtos/UpdateUserroleInput.java.ftl", "Update"+authenticationTable+"roleInput.java");
+			backEndTemplate.put("userRole/dtos/UpdateUserroleOutput.java.ftl", "Update"+authenticationTable+"roleOutput.java");
+			backEndTemplate.put("userRole/dtos/FindUserroleByIdOutput.java.ftl", "Find"+authenticationTable+"roleByIdOutput.java");
+			backEndTemplate.put("userRole/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
+			backEndTemplate.put("userRole/dtos/GetCustomUserOutput.java.ftl", "Get"+authenticationTable+"Output.java");
+		}
+		else
+		{
+			backEndTemplate.put("userRole/dtos/CreateUserroleInput.java.ftl", "CreateUserroleInput.java");
+			backEndTemplate.put("userRole/dtos/CreateUserroleOutput.java.ftl", "CreateUserroleOutput.java");
+			backEndTemplate.put("userRole/dtos/UpdateUserroleInput.java.ftl", "UpdateUserroleInput.java");
+			backEndTemplate.put("userRole/dtos/UpdateUserroleOutput.java.ftl", "UpdateUserroleOutput.java");
+			backEndTemplate.put("userRole/dtos/FindUserroleByIdOutput.java.ftl", "FindUserroleByIdOutput.java");
+			backEndTemplate.put("userRole/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
+			backEndTemplate.put("userRole/dtos/GetUserOutput.java.ftl", "GetUserOutput.java");
+
+		}
+		return backEndTemplate;
+	}
 
 	private static Map<String, Object> getUserDtoTemplates() {
 
@@ -428,10 +506,11 @@ public class AuthenticationClassesTemplateGenerator {
 			{
 				backEndTemplate.put("users/userController.java.ftl", "UserController.java");
 				backEndTemplate.put("userPermission/UserpermissionController.java.ftl", "UserpermissionController.java");
+				backEndTemplate.put("userRole/UserroleController.java.ftl", "UserroleController.java");
 			}
 			else
 			{
-				//	backEndTemplate.put("users/userController.java.ftl", authenticationTable.substring(0, 1).toLowerCase() + authenticationTable.substring(1)+"Controller.java");
+				backEndTemplate.put("userRole/UserroleController.java.ftl", authenticationTable+"roleController.java");
 				backEndTemplate.put("userPermission/UserpermissionController.java.ftl", authenticationTable+"permissionController.java");
 			}
 
@@ -455,9 +534,11 @@ public class AuthenticationClassesTemplateGenerator {
 			{
 				backEndTemplate.put("users/iuserRepository.java.ftl", "IUserRepository.java");
 				backEndTemplate.put("userPermission/IUserpermissionRepository.java.ftl", "IUserpermissionRepository.java");
+				backEndTemplate.put("userRole/IUserroleRepository.java.ftl", "IUserroleRepository.java");
 			}
 			else
 			{
+				backEndTemplate.put("userRole/IUserroleRepository.java.ftl", "I"+authenticationTable+"roleRepository.java");
 				backEndTemplate.put("userPermission/IUserpermissionRepository.java.ftl", "I"+authenticationTable+"permissionRepository.java");
 			}
 
@@ -481,11 +562,15 @@ public class AuthenticationClassesTemplateGenerator {
 				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/userEntity.java.ftl", "UserEntity.java");
 				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionEntity.java.ftl", "UserpermissionEntity.java");
 				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionId.java.ftl", "UserpermissionId.java");
+				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserroleEntity.java.ftl", "UserroleEntity.java");
+				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserroleId.java.ftl", "UserroleId.java");
 			}
 			else
 			{
 				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionEntity.java.ftl", authenticationTable+"permissionEntity.java");
 				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserpermissionId.java.ftl", authenticationTable+"permissionId.java");
+				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserroleEntity.java.ftl", authenticationTable+"roleEntity.java");
+				backEndTemplate.put("backendTemplates/authenticationTemplates/entities/UserroleId.java.ftl", authenticationTable+"roleId.java");
 			}
 		}
 
@@ -558,7 +643,7 @@ public class AuthenticationClassesTemplateGenerator {
 			authorizationEntities.add("user");
 			entityList.add("User");
 			entityList.add("Userpermission");
-		}else {
+		} else {
 			entityList.add(authenticationTable + "permission");
 		}
 		authorizationEntities.add("userpermission");
@@ -642,11 +727,6 @@ public class AuthenticationClassesTemplateGenerator {
 		cfg.setDefaultEncoding("UTF-8"); 
 		cfg.setTemplateLoader(mtl); 
 
-		if(root.containsKey("Fields"))
-		{
-			System.out.println(" EXISTS  "  + root.get("Fields").toString());
-			
-		}
 		root.put("entitiesMap", entitiesMap);
 		root.put("email", email);
 		root.put("scheduler", scheduler);

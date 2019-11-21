@@ -19,9 +19,10 @@ public class [=ClassName]Id implements Serializable {
  </#if> 
  </#if>
 </#list>
-    public [=ClassName]Id() {
 
+    public [=ClassName]Id() {
     }
+    
     public [=ClassName]Id(<#list PrimaryKeys?keys?sort as key><#if key_has_next>[=PrimaryKeys[key]] [=key],<#else>[=PrimaryKeys[key]] [=key]</#if></#list>) {
     <#list Fields as key,value>
     <#if value.isPrimaryKey !false>

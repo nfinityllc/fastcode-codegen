@@ -270,14 +270,15 @@ public class  UserEntity implements Serializable {
  
     private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>();
 
-    @ManyToOne
-    @JoinColumn(name = "roleId")
-    public RoleEntity getRole() {
-        return role;
-    }
-    public void setRole(RoleEntity role) {
-        this.role = role;
-    }
-
-    private RoleEntity role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<UserroleEntity> getUserroleSet() { 
+      return userroleSet; 
+    } 
+ 
+    public void setUserroleSet(Set<UserroleEntity> userrole) { 
+      this.userroleSet = userrole; 
+    } 
+ 
+    private Set<UserroleEntity> userroleSet = new HashSet<UserroleEntity>(); 
+    
 }

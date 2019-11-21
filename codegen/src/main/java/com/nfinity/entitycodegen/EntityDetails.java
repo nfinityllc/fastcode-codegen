@@ -148,8 +148,10 @@ public class EntityDetails {
 					if (a.annotationType().toString().equals("interface javax.persistence.Column")) {
 						//String column = a.toString();
 						Column column=(javax.persistence.Column) a;
+						if(!details.getIsPrimaryKey())
 						details.setIsNullable(column.nullable());
-						details.setLength(column.length());
+						
+					    details.setLength(column.length());
 						String colDef=column.columnDefinition();
 						if(colDef.equalsIgnoreCase("bigserial") || colDef.equalsIgnoreCase("serial"))
 						{

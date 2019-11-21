@@ -3,8 +3,8 @@ package [=PackageName].RestControllers;
 import [=PackageName].application.Authorization.Rolepermission.RolepermissionAppService;
 import [=PackageName].application.Authorization.Rolepermission.Dto.FindRolepermissionByIdOutput;
 <#if AuthenticationType != "none">
-import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.Find[=AuthenticationTable]ByIdOutput;
-import [=PackageName].application.Authorization.[=AuthenticationTable].[=AuthenticationTable]AppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable]role.Dto.Find[=AuthenticationTable]roleByIdOutput;
+import [=PackageName].application.Authorization.[=AuthenticationTable]role.[=AuthenticationTable]roleAppService;
 </#if>
 import [=PackageName].application.Authorization.Role.RoleAppService;
 import [=PackageName].application.Authorization.Role.Dto.*;
@@ -32,12 +32,9 @@ import java.util.Map;
 @RequestMapping("/role")
 public class RoleController {
 
-    @Autowired
-    private RoleAppService roleAppService;
-    
     <#if AuthenticationType != "none">
     @Autowired
-	private [=AuthenticationTable]AppService  _[=AuthenticationTable?uncap_first]AppService;
+	private [=AuthenticationTable]roleAppService  _[=AuthenticationTable?uncap_first]roleAppService;
 	</#if>
 	@Autowired
 	private RoleAppService _roleAppService;
@@ -52,7 +49,6 @@ public class RoleController {
 	private Environment env;
 
     // CRUD Operations
-
     // ------------ Create a role ------------
     @PreAuthorize("hasAnyAuthority('ROLEENTITY_CREATE')")
     @RequestMapping(method = RequestMethod.POST)
@@ -120,22 +116,22 @@ public class RoleController {
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		
-		List<FindRoleByIdOutput> roles = roleAppService.Find(searchCriteria, Pageable);
+		List<FindRoleByIdOutput> roles = _roleAppService.Find(searchCriteria, Pageable);
  		return ResponseEntity.ok(roles);
 	}
-    <#if AuthenticationType != "none">
-  
-    @PreAuthorize("hasAnyAuthority('ROLEENTITY_READ')")
-	@RequestMapping(value = "/{roleid}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
-	public ResponseEntity Get[=AuthenticationTable](@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	
+	<#if AuthenticationType != "none">
+	@PreAuthorize("hasAnyAuthority('ROLEENTITY_READ')")
+	@RequestMapping(value = "/{roleid}/[=AuthenticationTable?uncap_first]role", method = RequestMethod.GET)
+	public ResponseEntity Get[=AuthenticationTable]role(@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-	//	if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		Map<String,String> joinColDetails=_roleAppService.parse[=AuthenticationTable]JoinColumn(roleid);
+		Map<String,String> joinColDetails=_roleAppService.parse[=AuthenticationTable]roleJoinColumn(roleid);
 		if(joinColDetails== null)
 		{
 			logHelper.getLogger().error("Invalid Join Column");
@@ -143,13 +139,13 @@ public class RoleController {
 		}
 		searchCriteria.setJoinColumns(joinColDetails);
 		
-    	List<Find[=AuthenticationTable]ByIdOutput> output = _[=AuthenticationTable?uncap_first]AppService.Find(searchCriteria,pageable);
+    	List<Find[=AuthenticationTable]roleByIdOutput> output = _[=AuthenticationTable?uncap_first]roleAppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity(output, HttpStatus.OK);
-	}    
+	} 
 	</#if>
 	
 	@PreAuthorize("hasAnyAuthority('ROLEENTITY_READ')")

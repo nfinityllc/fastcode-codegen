@@ -24,6 +24,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import [=PackageName].domain.IRepository.IJwtRepository;
 import [=PackageName].domain.model.JwtEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]roleEntity;
+import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
@@ -194,34 +196,42 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 // Add all the roles and permissions in a list and then convert the list into all permissions, removing duplicates
 
             	<#if UserInput?? && AuthenticationFields??>
-                [=AuthenticationTable]Entity userEntity = _userMgr.FindBy[=AuthenticationFields.UserName.fieldName?cap_first](userName);       
+                [=AuthenticationTable]Entity user = _userMgr.FindBy[=AuthenticationFields.UserName.fieldName?cap_first](userName);       
             	<#else>
-                [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName);
+                [=AuthenticationTable]Entity user = _userMgr.FindByUserName(userName);
             	</#if>
-
-                Set<[=AuthenticationTable]permissionEntity> spe = userEntity.get[=AuthenticationTable]permissionSet();
-                
-//              Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
-//              for (PermissionEntity item: permissions) { 
-//              	pList.add(item.getName()); 
-//              } 
-                List<String> pList = new ArrayList<String>(); 
+                List<String> permissions = new ArrayList<>();
+                Set<UserroleEntity> ure = user.getUserroleSet();
+                Iterator rIterator = ure.iterator();
+        		while (rIterator.hasNext()) {
+                    UserroleEntity re = (UserroleEntity) rIterator.next();
+                    Set<RolepermissionEntity> srp= re.getRole().getRolepermissionSet();
+                    for (RolepermissionEntity item : srp) {
+        				permissions.add(item.getPermission().getName());
+                    }
+        		}
+        		
+        		Set<UserpermissionEntity> spe = user.getUserpermissionSet();
                 Iterator pIterator = spe.iterator();
         		while (pIterator.hasNext()) {
-                    [=AuthenticationTable]permissionEntity pe = ([=AuthenticationTable]permissionEntity) pIterator.next();
-        			pList.add(pe.getPermission().getName());
+                    UserpermissionEntity pe = (UserpermissionEntity) pIterator.next();
+                    
+                    if(permissions.contains(pe.getPermission().getName()) && (pe.getRevoked() != null && pe.getRevoked()))
+                    {
+                    	permissions.remove(pe.getPermission().getName());
+                    }
+                    if(!permissions.contains(pe.getPermission().getName()) && (pe.getRevoked()==null || !pe.getRevoked()))
+                    {
+                    	permissions.add(pe.getPermission().getName());
+        			
+                    }
+                 
         		}
 
-                RoleEntity role = userEntity.getRole();
-                List<String> groups = new ArrayList<String>();
-
-                groups.add(role.getName());
-                groups.addAll(pList);
-
-                ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities();
-                String[] groupsArray = new String[groups.size()];
-
-                authorities = con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray)));
+        		String[] groupsArray = new String[permissions.size()];
+               // ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities();
+               // authorities = con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray)));
+        		authorities = AuthorityUtils.createAuthorityList(permissions.toArray(groupsArray));
             }
 
             if ((userName != null) && StringUtils.isNotEmpty(userName)) {

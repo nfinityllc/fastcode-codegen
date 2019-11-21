@@ -269,7 +269,7 @@ public class RoleAppService implements IRoleAppService{
 		return joinColumnMap;
 	}
 
-	public Map<String,String> parse[=AuthenticationTable]JoinColumn(String keysString) {
+	public Map<String,String> parse[=AuthenticationTable]roleJoinColumn(String keysString) {
 		
 		Map<String,String> joinColumnMap = new HashMap<String,String>();
 		joinColumnMap.put("roleId", keysString);

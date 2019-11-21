@@ -38,7 +38,7 @@ public class [=ClassName]Entity implements Serializable {
 </#list>
  
   public [=ClassName]Entity() {
-	}
+  }
 
 <#list Fields as key,value>
  <#if value.fieldType?lower_case == "long">
@@ -260,27 +260,27 @@ public class [=ClassName]Entity implements Serializable {
 </#list>
 
 <#if AuthenticationType!="none" && ClassName == AuthenticationTable>
-@OneToMany(mappedBy = "[=AuthenticationTable?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
-    public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 
-       return [=AuthenticationTable?uncap_first]permissionSet; 
-    } 
+  @OneToMany(mappedBy = "[=AuthenticationTable?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
+  public Set<[=AuthenticationTable]permissionEntity> get[=AuthenticationTable]permissionSet() { 
+	return [=AuthenticationTable?uncap_first]permissionSet; 
+  } 
  
-    public void set[=AuthenticationTable]permissionSet(Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permission) { 
-      this.[=AuthenticationTable?uncap_first]permissionSet = [=AuthenticationTable?uncap_first]permission; 
-    } 
+  public void set[=AuthenticationTable]permissionSet(Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permission) { 
+    this.[=AuthenticationTable?uncap_first]permissionSet = [=AuthenticationTable?uncap_first]permission; 
+  } 
  
-    private Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionSet = new HashSet<[=AuthenticationTable]permissionEntity>();
+  private Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionSet = new HashSet<[=AuthenticationTable]permissionEntity>();
 
-    @ManyToOne
-    @JoinColumn(name = "roleId")
-    public RoleEntity getRole() {
-        return role;
-    }
-    public void setRole(RoleEntity role) {
-        this.role = role;
-    }
+  @ManyToOne
+  @JoinColumn(name = "roleId")
+  public RoleEntity getRole() {
+    return role;
+  }
+  public void setRole(RoleEntity role) {
+    this.role = role;
+  }
 
-    private RoleEntity role;
+  private RoleEntity role;
 </#if>
 
 //  @Override

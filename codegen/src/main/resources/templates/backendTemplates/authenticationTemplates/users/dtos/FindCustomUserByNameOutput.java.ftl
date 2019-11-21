@@ -21,12 +21,6 @@ public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list Auth
     </#if> 
  </#if> 
 </#list>
-<#if Audit!false>
-  private String creatorUserId;
-  private java.util.Date creationTime;
-  private String lastModifierUserId;
-  private java.util.Date lastModificationTime;
-</#if>
 <#list Relationship as relationKey,relationValue>
  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -52,31 +46,12 @@ public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list Auth
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if DescriptiveField[relationValue.eName]??>
   <#if DescriptiveField[relationValue.eName].isPrimaryKey == false>
-  private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];
-  
+  private [=DescriptiveField[relationValue.eName].fieldType?cap_first] [=relationValue.eName?uncap_first][=DescriptiveField[relationValue.eName].fieldName?cap_first];  
   </#if>
   </#if>
   </#if>
 </#list>
-  private Long roleId;       
-  private String roleDescriptiveField;
-    
-  public Long getRoleId() {
-  	return roleId;
-  }
 
-  public void setRoleId(Long roleId){
-  	this.roleId = roleId;
-  }
-  
-  public String getRoleDescriptiveField() {
-    return roleDescriptiveField;
-  }
-
-  public void setRoleDescriptiveField(String roleDescriptiveField){
-   	this.roleDescriptiveField = roleDescriptiveField;
-  }
-  
 <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
   <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -165,38 +140,4 @@ public class Find[=AuthenticationTable]By<#if AuthenticationFields??><#list Auth
   </#if> 
   </#if> 
 </#list>
-<#if Audit!false>
-  public java.util.Date getCreationTime() {
-      return creationTime;
-  }
-
-  public void setCreationTime(java.util.Date creationTime) {
-      this.creationTime = creationTime;
-  }
-
-  public String getLastModifierUserId() {
-      return lastModifierUserId;
-  }
-
-  public void setLastModifierUserId(String lastModifierUserId) {
-      this.lastModifierUserId = lastModifierUserId;
-  }
-
-  public java.util.Date getLastModificationTime() {
-      return lastModificationTime;
-  }
-
-  public void setLastModificationTime(java.util.Date lastModificationTime) {
-      this.lastModificationTime = lastModificationTime;
-  }
-
-  public String getCreatorUserId() {
-      return creatorUserId;
-  }
-
-  public void setCreatorUserId(String creatorUserId) {
-      this.creatorUserId = creatorUserId;
-  }
-</#if>
-
 }

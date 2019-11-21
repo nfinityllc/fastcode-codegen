@@ -79,6 +79,7 @@ public class BeanConfig {
         caches.add(new ConcurrentMapCache("Role"));
         caches.add(new ConcurrentMapCache("Permission"));
         caches.add(new ConcurrentMapCache("Rolepermission"));
+        caches.add(new ConcurrentMapCache("[=AuthenticationTable]role"));
         caches.add(new ConcurrentMapCache("[=AuthenticationTable]permission"));
         </#if>
         <#list EntitiesMap as entityKey, entityMap>

@@ -8,12 +8,6 @@ public class Find[=ClassName]WithAllFieldsByIdOutput {
   private [=value.fieldType] [=value.fieldName];
  </#if> 
 </#list>
-<#if Audit!false>
-  private String creatorUserId;
-  private java.util.Date creationTime;
-  private String lastModifierUserId;
-  private java.util.Date lastModificationTime;
-</#if>
 <#list Relationship as relationKey,relationValue>
  <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
  <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -42,25 +36,6 @@ public class Find[=ClassName]WithAllFieldsByIdOutput {
   </#if>
   </#if>
 </#list>
-<#if AuthenticationType !="none" && ClassName == AuthenticationTable>  
-  private Long roleId;       
-  private String roleDescriptiveField;
-    
-  public Long getRoleId() {
-   	return roleId;
-  }
-
-  public void setRoleId(Long roleId){
-  	this.roleId = roleId;
-  }
-  public String getRoleDescriptiveField() {
-    return roleDescriptiveField;
-  }
-
-  public void setRoleDescriptiveField(String roleDescriptiveField){
-   	this.roleDescriptiveField = roleDescriptiveField;
-  }
-  </#if>
 
 <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -126,41 +101,7 @@ public class Find[=ClassName]WithAllFieldsByIdOutput {
   public void set[=value.fieldName?cap_first]([=value.fieldType?cap_first] [=value.fieldName]){
   	this.[=value.fieldName] = [=value.fieldName];
   }
-  
   </#if> 
 </#list>
-<#if Audit!false>
-  public java.util.Date getCreationTime() {
-  	return creationTime;
-  }
-
-  public void setCreationTime(java.util.Date creationTime) {
-  	this.creationTime = creationTime;
-  }
-
-  public String getLastModifierUserId() {
-      return lastModifierUserId;
-  }
-
-  public void setLastModifierUserId(String lastModifierUserId) {
-  	this.lastModifierUserId = lastModifierUserId;
-  }
-
-  public java.util.Date getLastModificationTime() {
-  	return lastModificationTime;
-  }
-
-  public void setLastModificationTime(java.util.Date lastModificationTime) {
-    this.lastModificationTime = lastModificationTime;
-  }
-
-  public String getCreatorUserId() {
-    return creatorUserId;
-  }
-
-  public void setCreatorUserId(String creatorUserId) {
-    this.creatorUserId = creatorUserId;
-  }
-</#if>
  
 }

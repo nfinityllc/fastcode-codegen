@@ -25,29 +25,7 @@ public class UpdateUserOutput {
     private Date signInTokenExpireTimeUtc;
     private String lastName;
     private String userName;
-    <#if Audit!false>
-    private String creatorUserId;
-    private java.util.Date creationTime;
-    private String lastModifierUserId;
-    private java.util.Date lastModificationTime; 
-    </#if>
-	private Long roleId;       
-    private String roleDescriptiveField;
     
-    public Long getRoleId() {
-   		return roleId;
-    }
-
-  	public void setRoleId(Long roleId){
-  		 this.roleId = roleId;
-    }
-    public String getRoleDescriptiveField() {
-    	return roleDescriptiveField;
-    }
-
-  	public void setRoleDescriptiveField(String roleDescriptiveField){
-   		this.roleDescriptiveField = roleDescriptiveField;
-  	}
     public Long getId() {
         return id;
     }
@@ -63,7 +41,6 @@ public class UpdateUserOutput {
     public void setAccessFailedCount(int accessFailedCount) {
         this.accessFailedCount = accessFailedCount;
     }
-
 
     public String getAuthenticationSource() {
         return authenticationSource;
@@ -81,7 +58,6 @@ public class UpdateUserOutput {
         this.emailAddress = emailAddress;
     }
 
-
     public String getEmailConfirmationCode() {
         return emailConfirmationCode;
     }
@@ -90,15 +66,13 @@ public class UpdateUserOutput {
         this.emailConfirmationCode = emailConfirmationCode;
     }
 
-
     public String getGoogleAuthenticatorKey() {
         return googleAuthenticatorKey;
     }
-
+    
     public void setGoogleAuthenticatorKey(String googleAuthenticatorKey) {
         this.googleAuthenticatorKey = googleAuthenticatorKey;
     }
-
 
     public Boolean getIsActive() {
         return isActive;
@@ -108,7 +82,6 @@ public class UpdateUserOutput {
         isActive = active;
     }
 
-
     public Boolean getIsEmailConfirmed() {
         return isEmailConfirmed;
     }
@@ -116,7 +89,6 @@ public class UpdateUserOutput {
     public void setIsEmailConfirmed(Boolean emailConfirmed) {
         isEmailConfirmed = emailConfirmed;
     }
-
 
     public Boolean getIsLockoutEnabled() {
         return isLockoutEnabled;
@@ -126,7 +98,6 @@ public class UpdateUserOutput {
         isLockoutEnabled = lockoutEnabled;
     }
 
-
     public Boolean getIsPhoneNumberEnabled() {
         return isPhoneNumberConfirmed;
     }
@@ -134,7 +105,6 @@ public class UpdateUserOutput {
     public void setIsPhoneNumberConfirmed(Boolean phoneNumberConfirmed) {
         isPhoneNumberConfirmed = phoneNumberConfirmed;
     }
-
 
     public Boolean isTwoFactorEnabled() {
         return isTwoFactorEnabled;
@@ -144,7 +114,6 @@ public class UpdateUserOutput {
         isTwoFactorEnabled = twoFactorEnabled;
     }
 
-
     public Date getLastLoginTime() {
         return lastLoginTime;
     }
@@ -153,7 +122,6 @@ public class UpdateUserOutput {
         this.lastLoginTime = lastLoginTime;
     }
 
-
     public Date getLockoutEndDateUtc() {
         return lockoutEndDateUtc;
     }
@@ -161,7 +129,6 @@ public class UpdateUserOutput {
     public void setLockoutEndDateUtc(Date lockoutEndDateUtc) {
         this.lockoutEndDateUtc = lockoutEndDateUtc;
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -211,7 +178,6 @@ public class UpdateUserOutput {
         this.signInToken = signInToken;
     }
 
-
     public Date getSignInTokenExpireTimeUtc() {
         return signInTokenExpireTimeUtc;
     }
@@ -219,7 +185,6 @@ public class UpdateUserOutput {
     public void setSignInTokenExpireTimeUtc(Date signInTokenExpireTimeUtc) {
         this.signInTokenExpireTimeUtc = signInTokenExpireTimeUtc;
     }
-
 
     public String getLastName() {
         return lastName;
@@ -236,40 +201,6 @@ public class UpdateUserOutput {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
- <#if Audit!false>
-    public java.util.Date getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(java.util.Date creationTime) {
-      	this.creationTime = creationTime;
-    }
-
-    public String getLastModifierUserId() {
-      	return lastModifierUserId;
-    }
-
-    public void setLastModifierUserId(String lastModifierUserId) {
-      	this.lastModifierUserId = lastModifierUserId;
-    }
-
-    public java.util.Date getLastModificationTime() {
-      	return lastModificationTime;
-    }
-
-    public void setLastModificationTime(java.util.Date lastModificationTime) {
-      	this.lastModificationTime = lastModificationTime;
-    }
-
-    public String getCreatorUserId() {
-      	return creatorUserId;
-    }
-
-    public void setCreatorUserId(String creatorUserId) {
-      	this.creatorUserId = creatorUserId;
-    }
-</#if>
 
     public Boolean isActive() {
         return isActive;

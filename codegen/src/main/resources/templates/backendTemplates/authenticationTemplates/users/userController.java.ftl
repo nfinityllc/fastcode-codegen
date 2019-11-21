@@ -1,6 +1,8 @@
 package [=PackageName].RestControllers;
 
 import [=PackageName].application.Authorization.Userpermission.UserpermissionAppService;
+import [=PackageName].application.Authorization.Userrole.UserroleAppService;
+import [=PackageName].application.Authorization.Userrole.Dto.FindUserroleByIdOutput;
 import [=PackageName].application.Authorization.Userpermission.Dto.FindUserpermissionByIdOutput;
 import [=PackageName].application.Authorization.User.UserAppService;
 import [=PackageName].application.Authorization.User.Dto.*;
@@ -18,20 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-<#if AuthenticationType != "none">
-import [=PackageName].domain.model.UserpermissionEntity;
-import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.User.IUserManager;
-import [=PackageName].domain.model.UserEntity;
-import [=PackageName].security.ConvertToPrivilegeAuthorities;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.Iterator;
-</#if>
+
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +39,9 @@ public class UserController {
 	private UserpermissionAppService  _userpermissionAppService;
 	
 	@Autowired
+	private UserroleAppService  _userroleAppService;
+	
+	@Autowired
     private PasswordEncoder pEncoder;
 
 	@Autowired
@@ -57,52 +49,8 @@ public class UserController {
 
 	@Autowired
 	private Environment env;
-<#if AuthenticationType != "none">
 
-    @Autowired
- 	private IUserManager _userMgr;
- 	
-    //current login user info 
- 
-    @RequestMapping(value = "/me", method = RequestMethod.GET) 
-    public ResponseEntity GetMeInfo() throws Exception{ 
- 
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
-        [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName); 
-        Set<UserpermissionEntity> spe = userEntity.getUserpermissionSet();
-        
-//      Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
-//      for (PermissionEntity item: permissions) { 
-//      	pList.add(item.getName()); 
-//      } 
-        List<String> pList = new ArrayList<String>(); 
-        Iterator pIterator = spe.iterator();
-		while (pIterator.hasNext()) { 
-			UserpermissionEntity pe = (UserpermissionEntity) pIterator.next();
-			pList.add(pe.getPermission().getName());
-		}
- 
-        RoleEntity role = userEntity.getRole();
-        List<String> groups = new ArrayList<String>(); 
- 
-        groups.add(role.getName()); 
-        groups.addAll(pList); 
-        ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities(); 
-        String[] groupsArray = new String[groups.size()]; 
- 
-        List<GrantedAuthority> authorities =  con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray))); 
-        //AuthorityUtils.authorityListToSet(authorities); 
-        List<String> resultingPermissions = new ArrayList<String>(); 
-        for (GrantedAuthority item: authorities) { 
-            resultingPermissions.add(item.getAuthority()); 
-        } 
- 
-        return new ResponseEntity(resultingPermissions, HttpStatus.OK); 
-    } 
-  </#if>  
-  
 	// CRUD Operations
-
 	// ------------ Create a user ------------
 	@PreAuthorize("hasAnyAuthority('USERENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
@@ -216,14 +164,30 @@ public class UserController {
 	}   
  
     @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
-	@RequestMapping(value = "/{userid}/role", method = RequestMethod.GET)
-	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String userid) {
-    GetRoleOutput output= _userAppService.GetRole(Long.valueOf(userid));
+	@RequestMapping(value = "/{id}/userrole", method = RequestMethod.GET)
+	public ResponseEntity GetUserrole(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
+
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		
+		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+		Map<String,String> joinColDetails=_userAppService.parseUserroleJoinColumn(id);
+		if(joinColDetails== null)
+		{
+			logHelper.getLogger().error("Invalid Join Column");
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		searchCriteria.setJoinColumns(joinColDetails);
+		
+    	List<FindUserroleByIdOutput> output = _userroleAppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
+		
 		return new ResponseEntity(output, HttpStatus.OK);
-	}
+	}   
 
 
 }

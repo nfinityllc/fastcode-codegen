@@ -156,7 +156,6 @@ public class EntityGenerator {
 		return entityDetailsMap;
 	}
 
-
 	public static boolean identifyOneToOneRelationContainsPrimaryKeys(List<FieldDetails> fDetails, Map<String,String> primaryKeysMap,List<JoinDetails> joinDetailsList)
 	{
 		List<String> relationEntityPrimaryKeys = getPrimaryKeysFromList(fDetails);
@@ -209,6 +208,7 @@ public class EntityGenerator {
 								(e1, e2) -> e2, LinkedHashMap::new));
 		return sortedKeys;
 	}
+	
 	public static EntityDetails updateFieldsListInRelationMap(EntityDetails entityDetails)
 	{
 

@@ -64,19 +64,6 @@ public class UserManager implements IUserManager {
 	public UserEntity FindByUserName(String userName) {
 		return  _userRepository.findByUserName(userName);
 	}
-
-  //Role
-	public RoleEntity GetRole(Long userId) {
-		
-		Optional<UserEntity> dbUser= _userRepository.findById(userId);
-		if(dbUser.isPresent()) {
-			UserEntity existingUser = dbUser.get();
-		    return existingUser.getRole();
-		} else {
-		    return null;
-		}
-
-	}
  
 }
 
