@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+<#if CompositeKeyClasses?? && CompositeKeyClasses?seq_contains(ClassName)>
+import [=PackageName].domain.model.[=AuthenticationTable]Id;
+</#if>
 import [=PackageName].domain.model.[=AuthenticationTable]roleId;
 import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchUtils;

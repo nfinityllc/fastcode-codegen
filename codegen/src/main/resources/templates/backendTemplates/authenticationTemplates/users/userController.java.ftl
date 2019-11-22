@@ -111,7 +111,6 @@ public class UserController {
     return new ResponseEntity(_userAppService.Update(Long.valueOf(id),user), HttpStatus.OK);
 	}
 
-
 	// ------------ Retrieve a user ------------
 	@PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -126,12 +125,11 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
+	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
-		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit));
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		
 		return ResponseEntity.ok(_userAppService.Find(searchCriteria,Pageable));
@@ -139,12 +137,11 @@ public class UserController {
    
     @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
 	@RequestMapping(value = "/{userid}/userpermission", method = RequestMethod.GET)
-	public ResponseEntity GetUserpermission(@PathVariable String userid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	public ResponseEntity GetUserpermission(@PathVariable String userid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
-		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit));
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		Map<String,String> joinColDetails=_userAppService.parseUserpermissionJoinColumn(userid);
@@ -165,12 +162,11 @@ public class UserController {
  
     @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
 	@RequestMapping(value = "/{id}/userrole", method = RequestMethod.GET)
-	public ResponseEntity GetUserrole(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+	public ResponseEntity GetUserrole(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
-
-		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit));
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		Map<String,String> joinColDetails=_userAppService.parseUserroleJoinColumn(id);

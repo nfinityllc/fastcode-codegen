@@ -17,9 +17,6 @@ import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
-<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-import [=PackageName].domain.model.RoleEntity;
-</#if>
 import [=PackageName].domain.IRepository.I[=ClassName]Repository;
 import com.querydsl.core.types.Predicate;
 
@@ -71,18 +68,6 @@ public class [=ClassName]Manager implements I[=ClassName]Manager {
 	</#if>
     </#list>
     </#if>
-    //Role
-	public RoleEntity GetRole(Long [=ClassName?uncap_first]Id) {
-		
-		Optional<[=EntityClassName]> db[=ClassName]= _[=InstanceName]Repository.findById([=ClassName?uncap_first]Id);
-		if(dbUser.isPresent()) {
-			[=EntityClassName] existing[=ClassName] = db[=ClassName].get();
-		    return existing[=ClassName].getRole();
-		} else {
-		    return null;
-		}
-
-	}
     </#if>
 
 	public Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable) {

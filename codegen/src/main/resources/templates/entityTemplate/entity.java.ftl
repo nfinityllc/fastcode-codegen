@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Date;
 <#if AuthenticationType!="none" && ClassName == AuthenticationTable>
-import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
+import [=PackageName].domain.model.[=AuthenticationTable]roleEntity;
 </#if>
 @Entity
 @Table(<#if TableName??>name = "[=TableName]",</#if> schema = "[=SchemaName]")
@@ -271,16 +271,16 @@ public class [=ClassName]Entity implements Serializable {
  
   private Set<[=AuthenticationTable]permissionEntity> [=AuthenticationTable?uncap_first]permissionSet = new HashSet<[=AuthenticationTable]permissionEntity>();
 
-  @ManyToOne
-  @JoinColumn(name = "roleId")
-  public RoleEntity getRole() {
-    return role;
-  }
-  public void setRole(RoleEntity role) {
-    this.role = role;
-  }
-
-  private RoleEntity role;
+  @OneToMany(mappedBy = "[=AuthenticationTable?uncap_first]", cascade = CascadeType.ALL, orphanRemoval = true) 
+    public Set<[=AuthenticationTable]roleEntity> get[=AuthenticationTable]roleSet() { 
+      return [=AuthenticationTable?uncap_first]roleSet; 
+    } 
+ 
+    public void set[=AuthenticationTable]roleSet(Set<[=AuthenticationTable]roleEntity> [=AuthenticationTable?uncap_first]role) { 
+      this.[=AuthenticationTable?uncap_first]roleSet = [=AuthenticationTable?uncap_first]role; 
+    } 
+ 
+    private Set<[=AuthenticationTable]roleEntity> [=AuthenticationTable?uncap_first]roleSet = new HashSet<[=AuthenticationTable]roleEntity>(); 
 </#if>
 
 //  @Override

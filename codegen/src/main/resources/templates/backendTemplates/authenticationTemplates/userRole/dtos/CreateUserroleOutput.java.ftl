@@ -1,7 +1,7 @@
 package [=PackageName].application.Authorization.[=AuthenticationTable]role.Dto;
 
 import java.util.Date;
-public class CreateUserroleOutput {
+public class Create[=AuthenticationTable]roleOutput {
 
     private Long roleId;
     <#if (AuthenticationType!="none" && !UserInput??)>
@@ -22,7 +22,7 @@ public class CreateUserroleOutput {
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "UserName">
-  	private [=authvalue] [=AuthenticationTable?uncap_first]DescriptiveField;
+  	private String [=AuthenticationTable?uncap_first]DescriptiveField;
     </#if>
     </#list>
     </#if>

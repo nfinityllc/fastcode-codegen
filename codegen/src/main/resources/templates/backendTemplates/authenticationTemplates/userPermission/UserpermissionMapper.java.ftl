@@ -35,7 +35,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authkey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authKey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -66,7 +66,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authkey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authKey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -95,7 +95,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authkey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authKey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -104,6 +104,7 @@ public interface [=AuthenticationTable]permissionMapper {
    @Mapping(source = "permission.id", target = "permissionId")                  
    }) 
    Find[=AuthenticationTable]permissionByIdOutput [=AuthenticationTable]permissionEntityToFind[=AuthenticationTable]permissionByIdOutput([=AuthenticationTable]permissionEntity entity);
+
 
    @Mappings({
    @Mapping(source = "[=AuthenticationTable?uncap_first]permission.permissionId", target = "[=AuthenticationTable?uncap_first]permissionPermissionId"),
@@ -121,6 +122,7 @@ public interface [=AuthenticationTable]permissionMapper {
    })
    Get[=AuthenticationTable]Output [=AuthenticationTable]EntityToGet[=AuthenticationTable]Output([=AuthenticationTable]Entity [=AuthenticationTable?uncap_first], [=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission);
  
+
    @Mappings({
    <#if (AuthenticationType!="none" && !UserInput??)>
    @Mapping(source = "[=AuthenticationTable?uncap_first]permission.[=AuthenticationTable?uncap_first]Id", target = "[=AuthenticationTable?uncap_first]permission[=AuthenticationTable?cap_first]Id"),

@@ -21,7 +21,7 @@ public class Update[=AuthenticationTable]permissionOutput {
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
   	<#if authKey== "UserName">
-  	private [=authvalue] [=AuthenticationTable?uncap_first]DescriptiveField;
+  	private String [=AuthenticationTable?uncap_first]DescriptiveField;
     </#if>
     </#list>
     </#if>

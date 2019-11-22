@@ -550,7 +550,7 @@ public class [=ClassName]AppServiceTest {
         <#if Flowable!false>
         ActIdUserEntity actIdUser = mock (ActIdUserEntity.class);
 		Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any([=ClassName]Entity.class))).thenReturn(actIdUser);
-		doNothing().when(idmIdentityService).updateUser(any([=ClassName]Entity.class),any(ActIdUserEntity.class),anyString()); 
+		doNothing().when(idmIdentityService).updateUser(any([=ClassName]Entity.class),any(ActIdUserEntity.class)); 
 		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=IdClass].class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]Entity);
 		</#if>
 		</#if>
@@ -813,24 +813,6 @@ public class [=ClassName]AppServiceTest {
    </#if>
   </#list>
   <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-  	//Roles
-	@Test
-	public void GetRole_If[=ClassName]IdAndRoleIdIsNotNullAnd[=ClassName]Exists_ReturnRole() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-		RoleEntity role = mock(RoleEntity.class);
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn([=ClassName?uncap_first]);
-		Mockito.when(_[=ClassName?uncap_first]Manager.GetRole(anyLong())).thenReturn(role);
-		Assertions.assertThat(_appService.GetRole(ID)).isEqualTo(_mapper.RoleEntityToGetRoleOutput(role,[=ClassName?uncap_first]));
-	}
-
-	@Test 
-	public void GetRole_If[=ClassName]IdAndRoleIdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
-
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(anyLong())).thenReturn(null);
-		Assertions.assertThat(_appService.GetRole(ID)).isEqualTo(null);
-	}
-	
 	@Test 
 	public void find[=ClassName]ByName_NameIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
         <#if AuthenticationFields??>

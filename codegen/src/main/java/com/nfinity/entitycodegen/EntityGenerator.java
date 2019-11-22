@@ -129,6 +129,7 @@ public class EntityGenerator {
 						details=updateFieldsListInRelationMap(details);
 						details.setPrimaryKeys(getPrimaryKeysFromMap(details.getFieldsMap()));
 					}
+					
 					details.setEntitiesDescriptiveFieldMap(descriptiveFieldEntities);
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 					// Generate Entity based on template
@@ -141,6 +142,7 @@ public class EntityGenerator {
 			{
 				entityDetailsMap=validateAuthenticationTable(entityDetailsMap, authenticationTable, flowable);
 			}
+			
 			if(authenticationType !="none")
 			{
 				EntityGenerator.GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath,authenticationTable,authenticationType);

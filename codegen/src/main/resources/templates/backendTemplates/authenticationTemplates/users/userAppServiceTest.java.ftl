@@ -60,7 +60,7 @@ public class UserAppServiceTest {
 	PermissionManager permissionManager;
 	
 	@Mock
-	private PermissionAppService  permissionsAppService;
+	private PermissionAppService permissionsAppService;
 
 	@Mock
 	RoleManager roleManager;

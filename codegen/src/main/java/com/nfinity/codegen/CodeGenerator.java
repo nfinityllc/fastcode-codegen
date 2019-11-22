@@ -270,7 +270,12 @@ public class CodeGenerator {
 			EntityDetails authTableDetails = details.get(authenticationTable);
 			Map<String, FieldDetails> descFieldMap = authTableDetails.getEntitiesDescriptiveFieldMap();
 			FieldDetails authTableDescField = descFieldMap.get(authenticationTable);
+			
+			if(authTableDescField !=null)
 			root.put("DescriptiveField", authTableDescField.getFieldName());
+			else
+		    root.put("DescriptiveField", "userName");
+			
 			Map<String, FieldDetails> authFieldMap = authTableDetails.getAuthenticationFieldsMap();
 			root.put("UserNameField",authFieldMap.get("UserName").getFieldName());
 			

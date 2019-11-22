@@ -149,7 +149,7 @@ public class FlowableIdentityService {
       //  }
     }
 
-	public void updateUser(UserEntity updatedUser, ActIdUserEntity actIdUser) {
+	public void updateUser([=AuthenticationTable]Entity updatedUser, ActIdUserEntity actIdUser) {
 		//Check if user already exists
 		ActIdUserEntity existingUser = _actIdUserManager.findByUserId(actIdUser.getId());
 		if (StringUtils.isNotBlank(actIdUser.getId()) && existingUser != null) {

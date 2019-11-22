@@ -4,18 +4,17 @@ import [=CommonModulePackage].Search.SearchCriteria;
 import [=CommonModulePackage].Search.SearchFields;
 import [=CommonModulePackage].Search.SearchUtils;
 import [=PackageName].application.Authorization.User.Dto.*;
-import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.IRepository.IJwtRepository;
 import [=PackageName].domain.model.JwtEntity;
-import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.Authorization.User.IUserManager;
-import [=PackageName].domain.model.RolepermissionEntity;
-import [=PackageName].domain.model.UserpermissionEntity;
 import [=PackageName].domain.model.UserEntity;
 import [=PackageName].domain.model.QUserEntity;
-import [=CommonModulePackage].logging.LoggingHelper;
+<#if Flowable!false>
+import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
+import [=PackageName].application.Flowable.ActIdUserMapper;
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
 import com.querydsl.core.BooleanBuilder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,20 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import javax.servlet.ServletContext;
 <#if Cache!false>
 import org.springframework.cache.annotation.*;
 </#if>
 import org.apache.commons.lang3.StringUtils;
 import java.util.*;
-<#if Flowable!false>
-import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
-import [=PackageName].application.Flowable.ActIdUserMapper;
-import [=PackageName].application.Flowable.FlowableIdentityService;
-</#if>
 
 @Service
 @Validated

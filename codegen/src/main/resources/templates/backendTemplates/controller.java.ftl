@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import org.springframework.security.crypto.password.PasswordEncoder;
+import [=PackageName].application.Authorization.[=AuthenticationTable]role.[=AuthenticationTable]roleAppService;
+import [=PackageName].application.Authorization.[=AuthenticationTable]role.Dto.Find[=AuthenticationTable]roleByIdOutput;
 import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
 import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
 </#if>
@@ -88,52 +90,10 @@ public class [=ClassName]Controller {
 
 	@Autowired
     private [=AuthenticationTable]permissionAppService _[=AuthenticationTable?uncap_first]permissionAppService;
-
+    
     @Autowired
- 	private I[=AuthenticationTable]Manager _userMgr;
- 	
-    //current login user info 
- 
-    @RequestMapping(value = "/me", method = RequestMethod.GET) 
-    public ResponseEntity GetMeInfo() throws Exception{ 
- 
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
-        <#if UserInput?? && AuthenticationFields??>
-        [=AuthenticationTable]Entity userEntity = _userMgr.FindBy[=AuthenticationFields.UserName.fieldName?cap_first](userName);       
-        <#else>
-        [=AuthenticationTable]Entity userEntity = _userMgr.FindByUserName(userName);
-        </#if>
-        Set<[=AuthenticationTable]permissionEntity> spe = userEntity.get[=AuthenticationTable]permissionSet();
-        
-//      Set<PermissionEntity> permissions =_userMgr.GetPermissions(userEntity); 
-//      for (PermissionEntity item: permissions) { 
-//      	pList.add(item.getName()); 
-//      } 
-        List<String> pList = new ArrayList<String>(); 
-        Iterator pIterator = spe.iterator();
-		while (pIterator.hasNext()) { 
-			[=AuthenticationTable]permissionEntity pe = ([=AuthenticationTable]permissionEntity) pIterator.next();
-			pList.add(pe.getPermission().getName());
-		}
- 
-        RoleEntity role = userEntity.getRole();
-        List<String> groups = new ArrayList<String>(); 
- 
-        groups.add(role.getName()); 
-        groups.addAll(pList); 
-        ConvertToPrivilegeAuthorities con = new ConvertToPrivilegeAuthorities(); 
-        String[] groupsArray = new String[groups.size()]; 
- 
-        List<GrantedAuthority> authorities =  con.convert(AuthorityUtils.createAuthorityList(groups.toArray(groupsArray))); 
-        //AuthorityUtils.authorityListToSet(authorities); 
-        List<String> resultingPermissions = new ArrayList<String>(); 
-        for (GrantedAuthority item: authorities) { 
-            resultingPermissions.add(item.getAuthority()); 
-        } 
- 
-        return new ResponseEntity(resultingPermissions, HttpStatus.OK); 
-    } 
-  </#if>  
+    private [=AuthenticationTable]roleAppService _[=AuthenticationTable?uncap_first]roleAppService;
+    </#if>  
 
     <#if AuthenticationType != "none">
     @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_CREATE')")
@@ -351,7 +311,6 @@ public class [=ClassName]Controller {
 	public ResponseEntity Find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
@@ -399,7 +358,6 @@ public class [=ClassName]Controller {
 	public ResponseEntity Get[=relationValue.eName](@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
@@ -430,7 +388,6 @@ public class [=ClassName]Controller {
 	public ResponseEntity Get[=AuthenticationTable]permission(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
 
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
@@ -451,14 +408,30 @@ public class [=ClassName]Controller {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}  
 	
-	@RequestMapping(value = "/{id}/role", method = RequestMethod.GET)
-	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String id) {
-    GetRoleOutput output= _[=AuthenticationTable?uncap_first]AppService.GetRole(Long.valueOf(id));
+	@PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_READ')")
+	@RequestMapping(value = "/{id}/[=AuthenticationTable?uncap_first]role", method = RequestMethod.GET)
+	public ResponseEntity Get[=AuthenticationTable]role(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+		
+		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+		Map<String,String> joinColDetails=_[=AuthenticationTable?uncap_first]AppService.parse[=AuthenticationTable]roleJoinColumn(id);
+		if(joinColDetails== null)
+		{
+			logHelper.getLogger().error("Invalid Join Column");
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		searchCriteria.setJoinColumns(joinColDetails);
+		
+    	List<Find[=AuthenticationTable]roleByIdOutput> output = _[=AuthenticationTable?uncap_first]roleAppService.Find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
+		
 		return new ResponseEntity(output, HttpStatus.OK);
-	}
+	}   
 	</#if>
 
 

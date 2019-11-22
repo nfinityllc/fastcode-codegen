@@ -109,16 +109,4 @@ public class Update[=ClassName]Input {
   }
  </#if> 
 </#list>
-<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
-  private Long roleId;
-    
-  public Long getRoleId() {
-   	return roleId;
-  }
-
-  public void setRoleId(Long roleId){
-  	this.roleId = roleId;
-  }
-</#if>
- 
 }

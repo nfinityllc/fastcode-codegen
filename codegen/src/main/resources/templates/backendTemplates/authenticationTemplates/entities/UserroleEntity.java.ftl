@@ -5,7 +5,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "[=AuthenticationTable]role", schema = "[=SchemaName]")
-@IdClass(UserroleId.class)
+@IdClass([=AuthenticationTable]roleId.class)
 public class [=AuthenticationTable]roleEntity implements Serializable {
 
   private Long roleId;
@@ -22,11 +22,6 @@ public class [=AuthenticationTable]roleEntity implements Serializable {
   </#if>
  
   public [=AuthenticationTable]roleEntity() {
-  }
-  
-  public UserroleEntity(Long userId, Long roleId) {
-	  this.roleId = roleId;
-	  this.userId = userId;
   }
 
   @ManyToOne

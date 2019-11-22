@@ -1,12 +1,9 @@
 package [=PackageName].application.Authorization.User;
 
 import [=PackageName].application.Authorization.User.Dto.*;
-import [=PackageName].domain.model.RoleEntity;
 import [=PackageName].domain.model.UserEntity;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

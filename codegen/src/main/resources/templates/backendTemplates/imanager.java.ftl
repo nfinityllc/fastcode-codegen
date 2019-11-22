@@ -12,9 +12,6 @@ import [=PackageName].domain.model.[=IdClass];
 <#if ClassName != relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
-<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-import [=PackageName].domain.model.RoleEntity;
-</#if>
 </#list>
 
 public interface I[=ClassName]Manager {
@@ -35,9 +32,6 @@ public interface I[=ClassName]Manager {
 	</#if>
     </#list>
     </#if>
-    
-    //Role
-    public RoleEntity GetRole(Long [=ClassName?uncap_first]);
 	</#if>
 	
     Page<[=EntityClassName]> FindAll(Predicate predicate, Pageable pageable);

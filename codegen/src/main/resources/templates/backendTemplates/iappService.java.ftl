@@ -22,11 +22,6 @@ public interface I[=ClassName]AppService {
     Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> id</#if>);
 
     List<Find[=ClassName]ByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception;
-	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-	
-	//Role
-    GetRoleOutput GetRole(Long [=ClassName?uncap_first]id);
-    </#if>
 
 	<#if CompositeKeyClasses?seq_contains(ClassName)>
 	public [=IdClass] parse[=ClassName]Key(String keysString);

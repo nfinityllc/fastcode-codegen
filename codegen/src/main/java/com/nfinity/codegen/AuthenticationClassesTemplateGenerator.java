@@ -129,6 +129,18 @@ public class AuthenticationClassesTemplateGenerator {
 			destFolderBackend = destPath + "/application/Authorization/"+ authenticationTable +"permission/Dto";
 			new File(destFolderBackend).mkdirs();
 			generateFiles(getUserPermissionDtoTemplates(authenticationTable), root, destFolderBackend);
+			
+			destFolderBackend = destPath + "/domain/Authorization/"+ authenticationTable +"role";
+			new File(destFolderBackend).mkdirs();
+			generateFiles(getUserRoleManagerLayerTemplates(authenticationTable), root, destFolderBackend);
+
+			destFolderBackend = destPath + "/application/Authorization/"+ authenticationTable +"role";
+			new File(destFolderBackend).mkdirs();
+			generateFiles(getUserRoleApplicationLayerTemplates(authenticationTable), root, destFolderBackend);
+
+			destFolderBackend = destPath + "/application/Authorization/"+ authenticationTable +"role/Dto";
+			new File(destFolderBackend).mkdirs();
+			generateFiles(getUserRoleDtoTemplates(authenticationTable), root, destFolderBackend);
 		}
 
 

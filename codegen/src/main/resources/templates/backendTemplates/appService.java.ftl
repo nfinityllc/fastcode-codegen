@@ -151,30 +151,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
         </#if>
 		</#list>
-		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-		if(input.getRoleId()!=null)
-		{
-		RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-		if(foundRole!=null)
-		{
-			Set<[=ClassName]permissionEntity> [=ClassName?uncap_first]Permission = [=ClassName?uncap_first].get[=ClassName]permissionSet();
-			Set<RolepermissionEntity> rolePermission = foundRole.getRolepermissionSet();
-			
-			Iterator pIterator = [=ClassName?uncap_first]Permission.iterator();
-			Iterator rIterator = rolePermission.iterator();
-				while (pIterator.hasNext()) { 
-					[=ClassName]permissionEntity up = ([=ClassName]permissionEntity) pIterator.next();
-					while(rIterator.hasNext()) {
-						RolepermissionEntity rp = (RolepermissionEntity) pIterator.next();
-					if (up.getPermission() == rp.getPermission() ) {
-                         [=ClassName?uncap_first]Permission.remove(rp.getPermission());
-					}
-					}
-				}
-		    [=ClassName?uncap_first].setRole(foundRole);
-		}
-		}
-		</#if>
+		
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
 		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		<#if Flowable!false>
@@ -241,25 +218,13 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
         </#if>
 		</#if>
 		</#list>
-		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-		if(input.getRoleId()!=null) {
-			RoleEntity foundRole = _roleManager.FindById(input.getRoleId());
-			if(foundRole!=null)
-			[=ClassName?uncap_first].setRole(foundRole);
-		}
-		</#if>
+		
 		[=EntityClassName] updated[=ClassName] = _[=ClassName?uncap_first]Manager.Update([=ClassName?uncap_first]);
 		
 		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
 		<#if Flowable!false>
-		String oldRoleName = null;
-		//TODO: how to map Role in custom User table?
-		[=EntityClassName] oldUser = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		if(oldUser.getRole() != null) {
-			oldRoleName = oldUser.getRole().getName();
-		}
 		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(updated[=ClassName]);
-		idmIdentityService.updateUser(updated[=ClassName], actIdUser, oldRoleName);
+		idmIdentityService.updateUser(updated[=ClassName], actIdUser);
 	    </#if>
 		</#if>
 		return mapper.[=EntityClassName]ToUpdate[=ClassName]Output(updated[=ClassName]);
@@ -278,7 +243,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		<#if AuthenticationFields??>
 		<#list AuthenticationFields as authKey,authValue>
 		<#if authKey == "UserName">
-			idmIdentityService.deleteUser(existing.get[=authValue.fieldName?cap_first]());
+		idmIdentityService.deleteUser(existing.get[=authValue.fieldName?cap_first]());
 		</#if>
 		</#list>
 		</#if>
@@ -326,21 +291,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		return output;
 	}
 	
-	//Role
-	// ReST API Call - GET /user/1/role
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	<#if Cache !false>
-	@Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
-	</#if>
-	public GetRoleOutput GetRole(Long [=ClassName?uncap_first]Id) {
-
-		[=EntityClassName] found[=ClassName] = _[=ClassName?uncap_first]Manager.FindById([=ClassName?uncap_first]Id);
-		if (found[=ClassName] == null) {
-			return null;
-		}
-		RoleEntity re = _[=ClassName?uncap_first]Manager.GetRole([=ClassName?uncap_first]Id);
-		return mapper.RoleEntityToGetRoleOutput(re, found[=ClassName]);
-	}
 	<#if AuthenticationFields??>
 	<#list AuthenticationFields as authKey,authValue>
 	<#if authKey== "UserName">
@@ -493,7 +443,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		for (int i = 0; i < list.size(); i++) {
 		if(!(
 		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-		list.get(i).replace("%20","").trim().equals("roleId") ||
+		list.get(i).replace("%20","").trim().equals("userrole") ||
 		</#if>
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
@@ -592,11 +542,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#list>
 		</#if>
 		</#list>
-		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-		  if(list.get(i).replace("%20","").trim().equals("roleId")) {
-			builder.or([=ClassName?uncap_first].role.id.eq(Long.parseLong(value)));
-			}
-		</#if>
 		}
 		return builder;
 	}
@@ -747,13 +692,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
         </#if> 
 		</#list>
-		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
-			if(joinCol != null && joinCol.getKey().equals("roleId")) {
-				builder.and([=ClassName?uncap_first].role.id.eq(Long.parseLong(joinCol.getValue())));
-			}
-		}
-		</#if>
 		return builder;
 	}
 	
@@ -846,6 +784,40 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
     
     <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
     public Map<String,String> parse[=AuthenticationTable]permissionJoinColumn(String keysString) {
+    	Map<String,String> joinColumnMap = new HashMap<String,String>();
+    	<#assign primaryKeyLength=PrimaryKeys?size>
+		<#if primaryKeyLength gt 1 >
+		String[] keyEntries = keysString.split(",");
+		
+		Map<String,String> keyMap = new HashMap<String,String>();
+		if(keyEntries.length > 1) {
+			for(String keyEntry: keyEntries)
+			{
+				String[] keyEntryArr = keyEntry.split(":");
+				if(keyEntryArr.length > 1) {
+					keyMap.put(keyEntryArr[0], keyEntryArr[1]);					
+				}
+				else {
+					return null;
+				}
+			}
+		}
+		else {
+			return null;
+		}
+		
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keyMap.get("[=fieldName?uncap_first]"));
+		</#list>
+		<#elseif primaryKeyLength == 1>
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", keysString);
+		</#list>
+		</#if>
+		return joinColumnMap;
+	}
+	
+	public Map<String,String> parse[=AuthenticationTable]roleJoinColumn(String keysString) {
     	Map<String,String> joinColumnMap = new HashMap<String,String>();
     	<#assign primaryKeyLength=PrimaryKeys?size>
 		<#if primaryKeyLength gt 1 >

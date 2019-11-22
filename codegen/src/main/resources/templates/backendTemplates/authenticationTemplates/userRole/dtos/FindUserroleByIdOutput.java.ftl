@@ -1,7 +1,7 @@
 package [=PackageName].application.Authorization.[=AuthenticationTable]role.Dto;
 
 import java.util.Date;
-public class FindUserroleByIdOutput {
+public class Find[=AuthenticationTable]roleByIdOutput {
 
     private Long roleId;
     <#if AuthenticationType!="none" && !UserInput??>
@@ -20,9 +20,9 @@ public class FindUserroleByIdOutput {
     private [=DescriptiveField[AuthenticationTable].fieldType?cap_first] [=DescriptiveField[AuthenticationTable].description?uncap_first];
     <#else>
     <#if AuthenticationFields??>
-    <#list AuthenticationFields as authKey,authValue>
-    <#if authKey== "UserName">
-    private [=authvalue] [=AuthenticationTable?uncap_first]DescriptiveField;
+  	<#list AuthenticationFields as authKey,authValue>
+  	<#if authKey== "UserName">
+  	private String [=AuthenticationTable?uncap_first]DescriptiveField;
     </#if>
     </#list>
     </#if>

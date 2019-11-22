@@ -33,9 +33,6 @@ import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>   
 </#list>
-<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-import [=PackageName].domain.model.RoleEntity;
-</#if>
 <#if CompositeKeyClasses?seq_contains(ClassName)>
 import [=PackageName].domain.model.[=IdClass];
 </#if>
@@ -128,19 +125,6 @@ public class [=ClassName]ManagerTest {
 	</#if>
     </#list>
     </#if>
-    
-     //Role
-	@Test
-	public void getRole_if_[=ClassName]IdIsNotNull_returnRole() {
-
-		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
-		RoleEntity role = [=ClassName?uncap_first]Entity.getRole();
-		
-		Optional<[=EntityClassName]> db[=ClassName] = Optional.of(([=EntityClassName]) [=ClassName?uncap_first]Entity);
-		Mockito.<Optional<[=EntityClassName]>>when(_[=ClassName?uncap_first]Repository.findById(anyLong())).thenReturn(db[=ClassName]);
-		Assertions.assertThat(_[=ClassName?uncap_first]Manager.GetRole(ID)).isEqualTo(role);
-
-	}
     </#if>
 	
 	@Test

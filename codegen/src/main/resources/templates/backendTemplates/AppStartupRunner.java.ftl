@@ -3,8 +3,8 @@ package [=PackageName];
 import [=PackageName].domain.model.*;
 import [=PackageName].domain.Authorization.Permission.IPermissionManager;
 import [=PackageName].domain.Authorization.Rolepermission.IRolepermissionManager;
-import [=PackageName].domain.Authorization.Userrole.IUserroleManager;
-import [=PackageName].domain.Authorization.User.IUserManager;
+import [=PackageName].domain.Authorization.[=AuthenticationTable]role.I[=AuthenticationTable]roleManager;
+import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
 import [=PackageName].domain.Authorization.Role.IRoleManager;
 import [=PackageName].CommonModule.logging.LoggingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,7 +183,6 @@ public class AppStartupRunner implements ApplicationRunner {
   	    <#list AuthenticationFields as authKey,authValue>
   	    <#list Fields as key,value>
         <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
-    
   	    <#if value.fieldName == authValue.fieldName>
   	    <#if authKey== "Password">
         admin.set[=value.fieldName?cap_first](pEncoder.encode("secret"));
@@ -210,14 +209,14 @@ public class AppStartupRunner implements ApplicationRunner {
     	admin.setIsActive(true);
         </#if> 
     	admin = userManager.Create(admin);
-    	
-    	[=AuthenticationTable]roleEntity urole = new [=AuthenticationTable]roleEntity(admin.getId(),role.getId());
+    	[=AuthenticationTable]roleEntity urole = new [=AuthenticationTable]roleEntity();
+    	urole.setRole(role);
+    	urole.set[=AuthenticationTable](admin);
 		urole=userroleManager.Create(urole);
     	<#if Flowable!false>
     	ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(admin);
 		idmIdentityService.createUser(admin, actIdUser);
 		idmIdentityService.addUserGroupMapping("admin", role.getName());
     	</#if>
-    	
     }
 }

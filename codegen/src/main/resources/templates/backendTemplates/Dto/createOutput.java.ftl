@@ -3,8 +3,8 @@ package [=PackageName].application<#if AuthenticationType != "none" && ClassName
 import java.util.Date;
 public class Create[=ClassName]Output {
 
-<#list Fields as key,value>
- <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+    <#list Fields as key,value>
+    <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
     <#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
     <#if AuthenticationFields??>
   	<#list AuthenticationFields as authKey,authValue>
@@ -20,12 +20,6 @@ public class Create[=ClassName]Output {
     </#if> 
  	</#if>
 	</#list>
-<#if Audit!false>
-	private String creatorUserId;
-  	private java.util.Date creationTime;
-  	private String lastModifierUserId;
-  	private java.util.Date lastModificationTime;
-</#if>
 <#list Relationship as relationKey,relationValue>
  <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
  <#list relationValue.joinDetails as joinDetails>
@@ -87,9 +81,9 @@ public class Create[=ClassName]Output {
 </#list>
   <#else>
   <#list relationValue.joinDetails as joinDetails>
- <#if joinDetails.joinEntityName == relationValue.eName>
- <#if joinDetails.joinColumn??>
- <#if !Fields[joinDetails.joinColumn]?? >
+  <#if joinDetails.joinEntityName == relationValue.eName>
+  <#if joinDetails.joinColumn??>
+  <#if !Fields[joinDetails.joinColumn]?? >
   <#if joinDetails.joinColumnType?lower_case == "long" || joinDetails.joinColumnType?lower_case == "integer" || joinDetails.joinColumnType?lower_case == "short" || joinDetails.joinColumnType?lower_case == "double" || joinDetails.joinColumnType?lower_case == "string">
   public [=joinDetails.joinColumnType?cap_first] get[=joinDetails.joinColumn?cap_first]() {
   	return [=joinDetails.joinColumn];
@@ -99,12 +93,12 @@ public class Create[=ClassName]Output {
     this.[=joinDetails.joinColumn] = [=joinDetails.joinColumn];
   }
   
-</#if> 
-</#if>
-</#if>
-</#if>
-</#list>
-</#if>
+  </#if> 
+  </#if>
+  </#if>
+  </#if>
+  </#list>
+  </#if>
   </#if>
   <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
   <#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
@@ -150,37 +144,4 @@ public class Create[=ClassName]Output {
   </#if> 
   </#if>
 </#list>
-<#if Audit!false>
-  public java.util.Date getCreationTime() {
-  	return creationTime;
-  }
-
-  public void setCreationTime(java.util.Date creationTime) {
-  	this.creationTime = creationTime;
-  }
-
-  public String getLastModifierUserId() {
-  	return lastModifierUserId;
-  }
-
-  public void setLastModifierUserId(String lastModifierUserId) {
-  	this.lastModifierUserId = lastModifierUserId;
-  }
-
-  public java.util.Date getLastModificationTime() {
-  	return lastModificationTime;
-  }
-
-  public void setLastModificationTime(java.util.Date lastModificationTime) {
-  	this.lastModificationTime = lastModificationTime;
-  }
-
-  public String getCreatorUserId() {
-  	return creatorUserId;
-  }
-
-  public void setCreatorUserId(String creatorUserId) {
-  	this.creatorUserId = creatorUserId;
-  }
-</#if>
 }

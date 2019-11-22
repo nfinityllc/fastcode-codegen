@@ -8,10 +8,6 @@ import org.mapstruct.Mappings;
 <#break>
 </#if>
 </#list>
-<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-</#if>
 <#list Relationship as relationKey, relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
@@ -19,9 +15,6 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#list>
 import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
-<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-import [=PackageName].domain.model.RoleEntity;
-</#if>
 
 @Mapper(componentModel = "spring")
 public interface [=ClassName]Mapper {
@@ -148,64 +141,21 @@ public interface [=ClassName]Mapper {
    </#if>
    </#if> 
    </#list> 
-   <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-   <#if AuthenticationFields??>
-   <#list AuthenticationFields as authKey,authValue>
-   <#if authKey== "UserName">
-   @Mappings({ 
-   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-   @Mapping(source = "role.id", target = "roleId"),                   
-   })
-   </#if>
-   </#list>
-   </#if>
-   </#if>
    Find[=ClassName]ByIdOutput [=ClassName]EntityToFind[=ClassName]ByIdOutput([=ClassName]Entity entity);
 
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-   @Mappings({ 
-   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-   @Mapping(source = "role.id", target = "roleId"),                   
-   }) 
    Find[=ClassName]WithAllFieldsByIdOutput [=ClassName]EntityToFind[=ClassName]WithAllFieldsByIdOutput([=ClassName]Entity entity);
+
 <#if AuthenticationFields??>
 <#list AuthenticationFields as authKey,authValue>
-<#if authKey== "UserName">
-   @Mappings({ 
-   @Mapping(source = "role.name", target = "roleDescriptiveField"),                   
-   @Mapping(source = "role.id", target = "roleId"),                   
-   }) 
+<#if authKey== "UserName"> 
    Find[=ClassName]By[=authValue.fieldName?cap_first]Output [=ClassName]EntityToFind[=ClassName]By[=authValue.fieldName?cap_first]Output([=ClassName]Entity entity);
 </#if>
 </#list>
 </#if>
-   @Mappings({
-      @Mapping(source = "role.id", target = "id"),
-      <#if Audit!false>
-      @Mapping(source = "role.creationTime", target = "creationTime"),
-      @Mapping(source = "role.creatorUserId", target = "creatorUserId"),
-      @Mapping(source = "role.lastModifierUserId", target = "lastModifierUserId"),
-      @Mapping(source = "role.lastModificationTime", target = "lastModificationTime"),
-      </#if>
-      <#if PrimaryKeys??>
-  	  <#list PrimaryKeys as key,value>
-   	  <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-      @Mapping(source = "[=ClassName?uncap_first].[=key?uncap_first]", target = "[=ClassName?uncap_first][=key?cap_first]"),
-  	  </#if> 
-  	  </#list>
-  	  </#if>
-      <#if AuthenticationFields??>
-      <#list AuthenticationFields as authKey,authValue>
-      <#if authKey== "UserName">
-      @Mapping(source = "[=ClassName?uncap_first].[=authValue.fieldName]", target = "[=ClassName?uncap_first]DescriptiveField")
-      </#if>
-      </#list>
-      </#if>
-    })
-    GetRoleOutput RoleEntityToGetRoleOutput(RoleEntity role, UserEntity user);
 </#if>
-   <#list Relationship as relationKey, relationValue>
 
+   <#list Relationship as relationKey, relationValue>
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
    @Mappings({
    <#list relationValue.fDetails as fValue>
@@ -226,7 +176,7 @@ public interface [=ClassName]Mapper {
    </#list>
    })
    Get[=relationValue.eName]Output [=relationValue.eName]EntityToGet[=relationValue.eName]Output([=relationValue.eName]Entity [=relationValue.eName?uncap_first], [=EntityClassName] [=InstanceName]);
- 
+
    </#if>
    </#list>
 }

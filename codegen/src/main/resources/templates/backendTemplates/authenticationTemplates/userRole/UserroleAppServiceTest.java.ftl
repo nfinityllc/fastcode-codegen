@@ -30,6 +30,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import [=PackageName].domain.Authorization.[=AuthenticationTable]role.*;
 import [=CommonModulePackage].Search.*;
+<#if Flowable!false>
+import [=PackageName].application.Flowable.FlowableIdentityService;
+</#if>
+<#if CompositeKeyClasses?? && CompositeKeyClasses?seq_contains(AuthenticationTable)>
+import [=PackageName].domain.model.[=AuthenticationTable]Id;
+</#if>
 import [=PackageName].application.Authorization.[=AuthenticationTable]role.Dto.*;
 import [=PackageName].domain.model.Q[=AuthenticationTable]roleEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]roleEntity;
@@ -66,6 +72,10 @@ public class [=AuthenticationTable]roleAppServiceTest {
 	@Mock
 	private LoggingHelper logHelper;
 	
+	<#if Flowable!false>
+	@Mock
+	private FlowableIdentityService idmIdentityService;
+    </#if>
 
 	@Mock
 	private [=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId;
@@ -104,14 +114,16 @@ public class [=AuthenticationTable]roleAppServiceTest {
        [=AuthenticationTable]roleEntity [=AuthenticationTable?uncap_first]roleEntity = mock([=AuthenticationTable]roleEntity.class); 
        Create[=AuthenticationTable]roleInput [=AuthenticationTable?uncap_first]role = new Create[=AuthenticationTable]roleInput();
    
-		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]= mock([=AuthenticationTable]Entity.class);
-        [=AuthenticationTable?uncap_first]role.set[=AuthenticationTable]Id(Long.valueOf(ID));
-		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(
-        any(Long.class))).thenReturn([=AuthenticationTable?uncap_first]);
-		RoleEntity role= mock(RoleEntity.class);
-        [=AuthenticationTable?uncap_first]role.setRoleId(Long.valueOf(ID));
-		Mockito.when(_roleManager.FindById(
-        any(Long.class))).thenReturn(role);
+   
+   
+	//	[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]= mock([=AuthenticationTable]Entity.class);
+    //    [=AuthenticationTable?uncap_first]role.set[=AuthenticationTable]Id(Long.valueOf(ID));
+	//	Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(
+    //    any(Long.class))).thenReturn([=AuthenticationTable?uncap_first]);
+	//	RoleEntity role= mock(RoleEntity.class);
+    //    [=AuthenticationTable?uncap_first]role.setRoleId(Long.valueOf(ID));
+	//	Mockito.when(_roleManager.FindById(
+    //    any(Long.class))).thenReturn(role);
         
        Mockito.when(_mapper.Create[=AuthenticationTable]roleInputTo[=AuthenticationTable]roleEntity(any(Create[=AuthenticationTable]roleInput.class))).thenReturn([=AuthenticationTable?uncap_first]roleEntity); 
        Mockito.when(_[=AuthenticationTable?uncap_first]roleManager.Create(any([=AuthenticationTable]roleEntity.class))).thenReturn([=AuthenticationTable?uncap_first]roleEntity);

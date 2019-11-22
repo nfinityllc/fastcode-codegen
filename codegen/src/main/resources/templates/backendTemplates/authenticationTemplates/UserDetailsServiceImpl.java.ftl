@@ -49,23 +49,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 
-	private List<String> getAllPermissions(UserEntity user) {
+	private List<String> getAllPermissions([=AuthenticationTable]Entity user) {
 
 		List<String> permissions = new ArrayList<>();
-        Set<UserroleEntity> ure = user.getUserroleSet();
+        Set<[=AuthenticationTable]roleEntity> ure = user.get[=AuthenticationTable]roleSet();
         Iterator rIterator = ure.iterator();
 		while (rIterator.hasNext()) {
-            UserroleEntity re = (UserroleEntity) rIterator.next();
+            [=AuthenticationTable]roleEntity re = ([=AuthenticationTable]roleEntity) rIterator.next();
             Set<RolepermissionEntity> srp= re.getRole().getRolepermissionSet();
             for (RolepermissionEntity item : srp) {
 				permissions.add(item.getPermission().getName());
             }
 		}
 		
-		Set<UserpermissionEntity> spe = user.getUserpermissionSet();
+		Set<[=AuthenticationTable]permissionEntity> spe = user.get[=AuthenticationTable]permissionSet();
         Iterator pIterator = spe.iterator();
 		while (pIterator.hasNext()) {
-            UserpermissionEntity pe = (UserpermissionEntity) pIterator.next();
+            [=AuthenticationTable]permissionEntity pe = ([=AuthenticationTable]permissionEntity) pIterator.next();
             
             if(permissions.contains(pe.getPermission().getName()) && (pe.getRevoked() != null && pe.getRevoked()))
             {

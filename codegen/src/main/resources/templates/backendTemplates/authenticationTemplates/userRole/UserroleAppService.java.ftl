@@ -97,7 +97,9 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="[=AuthenticationTable]role", key = "#[=AuthenticationTable?uncap_first]roleId")
+	</#if>
 	public Update[=AuthenticationTable]roleOutput Update([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId , Update[=AuthenticationTable]roleInput input) {
 
 		[=AuthenticationTable]roleEntity [=AuthenticationTable?uncap_first]role = mapper.Update[=AuthenticationTable]roleInputTo[=AuthenticationTable]roleEntity(input);
@@ -108,7 +110,7 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 		
 		    if(found[=AuthenticationTable]!=null || foundRole!=null)
 		    {			
-				if(!checkIfRoleAlreadyAssigned(found[=AuthenticationTable], foundRole))
+				if(checkIfRoleAlreadyAssigned(found[=AuthenticationTable], foundRole))
 				{
 					[=AuthenticationTable?uncap_first]role.setRole(foundRole);
 					[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable](found[=AuthenticationTable]);
@@ -130,14 +132,14 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 		return mapper.[=AuthenticationTable]roleEntityToUpdate[=AuthenticationTable]roleOutput(updated[=AuthenticationTable]role);
 	}
 	
-	public boolean checkIfRoleAlreadyAssigned(UserEntity foundUser,RoleEntity foundRole)
+	public boolean checkIfRoleAlreadyAssigned([=AuthenticationTable]Entity foundUser,RoleEntity foundRole)
 	{
 	
-		Set<UserroleEntity> userRole = foundUser.getUserroleSet();
+		Set<[=AuthenticationTable]roleEntity> userRole = foundUser.get[=AuthenticationTable]roleSet();
 		 
 		Iterator rIterator = userRole.iterator();
 			while (rIterator.hasNext()) { 
-				UserroleEntity ur = (UserroleEntity) rIterator.next();
+				[=AuthenticationTable]roleEntity ur = ([=AuthenticationTable]roleEntity) rIterator.next();
 				if (ur.getRole() == foundRole) {
 					return true;
 				}
@@ -147,7 +149,9 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
+	<#if Cache !false>
 	@CacheEvict(value="[=AuthenticationTable]role", key = "#[=AuthenticationTable?uncap_first]roleId")
+	</#if>
 	public void Delete([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
 		[=AuthenticationTable]roleEntity existing = _[=AuthenticationTable?uncap_first]roleManager.FindById([=AuthenticationTable?uncap_first]roleId) ; 
@@ -155,7 +159,9 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	<#if Cache !false>
 	@Cacheable(value = "[=AuthenticationTable]role", key = "#[=AuthenticationTable?uncap_first]roleId")
+	</#if>
 	public Find[=AuthenticationTable]roleByIdOutput FindById([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
 		[=AuthenticationTable]roleEntity found[=AuthenticationTable]role = _[=AuthenticationTable?uncap_first]roleManager.FindById([=AuthenticationTable?uncap_first]roleId);
@@ -168,7 +174,9 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
     //[=AuthenticationTable]
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]role/1/[=AuthenticationTable?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "[=AuthenticationTable]role", key="#[=AuthenticationTable?uncap_first]roleId")
+    </#if>
 	public Get[=AuthenticationTable]Output Get[=AuthenticationTable]([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
 		[=AuthenticationTable]roleEntity found[=AuthenticationTable]role = _[=AuthenticationTable?uncap_first]roleManager.FindById([=AuthenticationTable?uncap_first]roleId);
@@ -183,7 +191,9 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
     //Role
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]role/1/role
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
     @Cacheable (value = "[=AuthenticationTable]role", key="#[=AuthenticationTable?uncap_first]roleId")
+    </#if>
 	public GetRoleOutput GetRole([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
 		[=AuthenticationTable]roleEntity found[=AuthenticationTable]role = _[=AuthenticationTable?uncap_first]roleManager.FindById([=AuthenticationTable?uncap_first]roleId);
@@ -196,7 +206,9 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	}
 	
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    <#if Cache !false>
 	@Cacheable(value = "[=AuthenticationTable]role")
+	</#if>
 	public List<Find[=AuthenticationTable]roleByIdOutput> Find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<[=AuthenticationTable]roleEntity> found[=AuthenticationTable]role = _[=AuthenticationTable?uncap_first]roleManager.FindAll(Search(search), pageable);
@@ -264,12 +276,20 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 
 	public void checkProperties(List<String> list) throws Exception  {
 		for (int i = 0; i < list.size(); i++) {
-		if(!(
+		if(!(<#if (AuthenticationType!="none" && !UserInput??)>
+    	list.get(i).replace("%20","").trim().equals("userId")||
+  		<#elseif AuthenticationType!="none" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+   		<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+   	 	list.get(i).replace("%20","").trim().equals("[=key?uncap_first]")||
+  		</#if> 
+  		</#list>
+  		</#if>
+  		</#if>
 		list.get(i).replace("%20","").trim().equals("role") ||
 		list.get(i).replace("%20","").trim().equals("roleId") ||
-		list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]") ||
-		list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]Id")
-		)) 
+		list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]"))) 
 		{
 		 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
 		}
@@ -280,13 +300,40 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for (int i = 0; i < list.size(); i++) {
-		
-		  if(list.get(i).replace("%20","").trim().equals("[=AuthenticationTable?uncap_first]Id")) {
+		<#if (AuthenticationType!="none" && !UserInput??)>
+		if(list.get(i).replace("%20","").trim().equals("userId")) {
 			builder.or([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].id.eq(Long.parseLong(value)));
-			}
-		  if(list.get(i).replace("%20","").trim().equals("roleId")) {
+		}
+  		<#elseif AuthenticationType!="none" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+  		<#if value?lower_case == "string" >
+  		if(list.get(i).replace("%20","").trim().equals("[=key?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(value));
+		}
+		<#elseif value?lower_case == "long" >
+		if(list.get(i).replace("%20","").trim().equals("[=key?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Long.parseLong(value)));
+		}
+		<#elseif value?lower_case == "integer">
+		if(list.get(i).replace("%20","").trim().equals("[=key?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Integer.parseInt(value)));
+		}
+        <#elseif value?lower_case == "short">
+        if(list.get(i).replace("%20","").trim().equals("[=key?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Short.parseShort(value)));
+		}
+		<#elseif value?lower_case == "double">
+		if(list.get(i).replace("%20","").trim().equals("[=key?uncap_first]")) {
+			builder.or([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Double.parseDouble(value)));
+		}
+		</#if>
+  		</#list>
+  		</#if>
+  		</#if>
+		if(list.get(i).replace("%20","").trim().equals("roleId")) {
 			builder.or([=AuthenticationTable?uncap_first]role.role.id.eq(Long.parseLong(value)));
-			}
+		}
 		}
 		return builder;
 	}
@@ -294,12 +341,38 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	BooleanBuilder searchKeyValuePair(Q[=AuthenticationTable]roleEntity [=AuthenticationTable?uncap_first]role, Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
         
-		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
-		}
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
-        if(joinCol != null && joinCol.getKey().equals("[=AuthenticationTable?uncap_first]Id")) {
+		<#if (AuthenticationType!="none" && !UserInput??)>
+        if(joinCol != null && joinCol.getKey().equals("userId")) {
 		    builder.and([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].id.eq(Long.parseLong(joinCol.getValue())));
 		}
+  		<#elseif AuthenticationType!="none" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+  		<#if value?lower_case == "string" >
+  		if(joinCol != null && joinCol.getKey().equals("[=key?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(joinCol.getValue()));
+		}
+		<#elseif value?lower_case == "long" >
+		if(joinCol != null && joinCol.getKey().equals("[=key?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Long.parseLong(joinCol.getValue())));
+		}
+		<#elseif value?lower_case == "integer">
+		if(joinCol != null && joinCol.getKey().equals("[=key?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Integer.parseInt(joinCol.getValue())));
+		}
+        <#elseif value?lower_case == "short">
+        if(joinCol != null && joinCol.getKey().equals("[=key?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Short.parseShort(joinCol.getValue())));
+		}
+		<#elseif value?lower_case == "double">
+		if(joinCol != null && joinCol.getKey().equals("[=key?uncap_first]")) {
+		    builder.and([=AuthenticationTable?uncap_first]role.[=AuthenticationTable?uncap_first].[=key?uncap_first].eq(Double.parseDouble(joinCol.getValue())));
+		}
+		</#if>
+  		</#list>
+  		</#if>
+  		</#if>
         }
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
         if(joinCol != null && joinCol.getKey().equals("roleId")) {
@@ -332,7 +405,25 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 		}
 		
 		[=AuthenticationTable?uncap_first]roleId.setRoleId(Long.valueOf(keyMap.get("roleId")));
-		[=AuthenticationTable?uncap_first]roleId.set[=AuthenticationTable]Id(Long.valueOf(keyMap.get("[=AuthenticationTable?uncap_first]Id")));
+		<#if (AuthenticationType!="none" && !UserInput??)>
+        [=AuthenticationTable?uncap_first]roleId.set[=AuthenticationTable]Id(Long.valueOf(keyMap.get("[=AuthenticationTable?uncap_first]Id")));
+  		<#elseif AuthenticationType!="none" && UserInput??>
+  		<#if PrimaryKeys??>
+  		<#list PrimaryKeys as key,value>
+  		<#if value?lower_case == "string" >
+		[=AuthenticationTable?uncap_first]roleId.set[=AuthenticationTable?cap_first][=key?cap_first](keyMap.get("[=AuthenticationTable?uncap_first][=key?cap_first]"));
+		<#elseif value?lower_case == "long" >
+		[=AuthenticationTable?uncap_first]roleId.set[=AuthenticationTable?cap_first][=key?cap_first](Long.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=key?cap_first]")));
+		<#elseif value?lower_case == "integer">
+		[=AuthenticationTable?uncap_first]roleId.set[=AuthenticationTable?cap_first][=key?cap_first](Integer.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=key?cap_first]")));
+        <#elseif value?lower_case == "short">
+        [=AuthenticationTable?uncap_first]roleId.set[=AuthenticationTable?cap_first][=key?cap_first](Short.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=key?cap_first]")));
+		<#elseif value?lower_case == "double">
+		[=AuthenticationTable?uncap_first]roleId.set[=AuthenticationTable?cap_first][=key?cap_first](Double.valueOf(keyMap.get("[=AuthenticationTable?uncap_first][=key?cap_first]")));
+		</#if>
+  		</#list>
+  		</#if>
+  		</#if>
 		return [=AuthenticationTable?uncap_first]roleId;
 		
 	}	
