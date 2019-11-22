@@ -28,12 +28,12 @@
     "Home": "Home",
     "Admin": "Admin",
     "Entities": "Entities",
-    "AccessMgmt": "Access Management",
+    "AccessMgmt": "User Management",
     "Users": "Users",
     "EntityHistory": "Entity History",
     "EmailTemplate": "Email Templates",
     "Email": {
-      "Title":"Responsive Email",
+      "Title":"Visual Email Template Builder",
       "EmailTemplate":"Email Templates",
       "EmailVariables":"Email Merge Fields"
       
@@ -47,9 +47,14 @@
     },
     "Language": "Language",   
     "Monitoring": "Monitoring",
-    "Message" : "Welcome to Fastcode"<#if FlowableModule!false>,
+    "Message" : "Welcome to Fastcode",
+    "Tools": "Tools",
+    "Administration": "Administration",
+    "About": "About",
+    "API": "API"<#if FlowableModule!false>,
+	"BPMModeler":"BPM Modeler",
     "ProcessAdmin": {
-      "Title": "Process Admin",
+      "Title": "Business Process Management",
       "ProcessEngine": "Process Engine",
       "CmmnEngine": "CMMN Engine",
       "AppEngine": "App Engine",
