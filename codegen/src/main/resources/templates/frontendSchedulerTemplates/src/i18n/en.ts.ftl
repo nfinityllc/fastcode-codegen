@@ -56,8 +56,8 @@ export var en: any = {
             }
         },
         "FIELDS": {
-            "NAME": "Name",
-            "GROUP": "Group",
+            "NAME": "Trigger Name",
+            "GROUP": "Trigger Group",
             "JOB-NAME": "Job Name",
             "JOB-GROUP": "Job Group",
             "JOB-CLASS": "Job Class",
