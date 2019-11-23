@@ -274,7 +274,7 @@ public class CodeGenerator {
 			if(authTableDescField !=null)
 			root.put("DescriptiveField", authTableDescField.getFieldName());
 			else
-		    root.put("DescriptiveField", "userName");
+		    root.put("DescriptiveField", "UserName");
 			
 			Map<String, FieldDetails> authFieldMap = authTableDetails.getAuthenticationFieldsMap();
 			root.put("UserNameField",authFieldMap.get("UserName").getFieldName());

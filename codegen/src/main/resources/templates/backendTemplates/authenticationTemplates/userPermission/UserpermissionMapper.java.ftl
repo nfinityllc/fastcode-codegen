@@ -35,7 +35,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authKey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -66,7 +66,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authKey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
@@ -95,7 +95,7 @@ public interface [=AuthenticationTable]permissionMapper {
    <#if AuthenticationFields??>
    <#list AuthenticationFields as authKey,authValue>
    <#if authKey== "UserName">
-   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authKey?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
+   @Mapping(source = "[=AuthenticationTable?uncap_first].[=authValue.fieldName?uncap_first]", target = "[=AuthenticationTable?uncap_first]DescriptiveField"),
    </#if>
    </#list>
    </#if>
