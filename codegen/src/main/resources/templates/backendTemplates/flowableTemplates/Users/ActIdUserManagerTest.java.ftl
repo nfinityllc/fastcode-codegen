@@ -88,6 +88,13 @@ verify(_userRepository).delete(userEntity);
 }
 
 @Test
+public void deleteAllUsers_UserExists_RemoveUsers() {
+
+userManager.deleteAll();
+verify(_userRepository).deleteAll();
+}
+
+@Test
 public void updateUser_UserIsNotNullAndUserExists_UpdateAUser() {
 
 ActIdUserEntity userEntity = mock(ActIdUserEntity.class);

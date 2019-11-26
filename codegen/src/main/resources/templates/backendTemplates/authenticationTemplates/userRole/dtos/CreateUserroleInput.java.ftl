@@ -8,7 +8,7 @@ public class Create[=AuthenticationTable]roleInput {
   @NotNull(message = "roleId Should not be null")
   private Long roleId;
   
-  <#if (AuthenticationType!="none" && !UserInput??) >
+  <#if (AuthenticationType!="none" && !UserInput??)>
   @NotNull(message = "user Id Should not be null")
   private Long [=AuthenticationTable?uncap_first]Id;
   <#elseif AuthenticationType!="none" && UserInput??>

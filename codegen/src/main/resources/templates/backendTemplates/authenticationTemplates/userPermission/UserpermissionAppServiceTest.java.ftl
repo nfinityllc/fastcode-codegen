@@ -12,6 +12,8 @@ import org.mockito.Spy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.HashMap;
 
 import org.assertj.core.api.Assertions;
@@ -216,12 +218,27 @@ public class [=AuthenticationTable]permissionAppServiceTest {
     @Test 
 	public void checkIfPermissionAlreadyAssigned_[=AuthenticationTable]EntityAndPermissionEntityIsNotNullAnd[=AuthenticationTable]PermissionSetIsEmpty_ReturnFalse() {
 
-	  //[=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission= mock([=AuthenticationTable]permissionEntity.class);
-		PermissionEntity permissionEntity= mock(PermissionEntity.class);
+	    PermissionEntity permissionEntity= mock(PermissionEntity.class);
 		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]Entity = mock ([=AuthenticationTable]Entity.class);
-	  //Mockito.when([=AuthenticationTable?uncap_first]Entity.getRole()).thenReturn(null);
-		Assertions.assertThat(_appService.checkIfPermissionAlreadyAssigned([=AuthenticationTable?uncap_first]Entity, permissionEntity)).isEqualTo(false);
+	    Assertions.assertThat(_appService.checkIfPermissionAlreadyAssigned([=AuthenticationTable?uncap_first]Entity, permissionEntity)).isEqualTo(false);
 
+	}
+	
+	@Test 
+	public void checkIfPermissionAlreadyAssigned_[=AuthenticationTable]EntityAndPermissionEntityIsNotNullAnd[=AuthenticationTable]PermissionSetIsNotEmpty_ReturnTrue() {
+
+    	PermissionEntity permissionEntity= new PermissionEntity();
+		permissionEntity.setId(1L);
+		
+	    [=AuthenticationTable]permissionEntity [=AuthenticationTable?uncap_first]permission= new [=AuthenticationTable]permissionEntity();
+	    [=AuthenticationTable?uncap_first]permission.setPermissionId(1L);  
+		[=AuthenticationTable?uncap_first]permission.setPermission(permissionEntity);
+		
+		Set<[=AuthenticationTable]permissionEntity> up= new HashSet<[=AuthenticationTable]permissionEntity>();
+	    up.add([=AuthenticationTable?uncap_first]permission);
+		[=AuthenticationTable]Entity [=AuthenticationTable?uncap_first]Entity = mock ([=AuthenticationTable]Entity.class);
+	    Mockito.when([=AuthenticationTable?uncap_first]Entity.get[=AuthenticationTable]permissionSet()).thenReturn(up);
+		Assertions.assertThat(_appService.checkIfPermissionAlreadyAssigned([=AuthenticationTable?uncap_first]Entity, permissionEntity)).isEqualTo(true);
 	}
 	
 	@Test
@@ -236,7 +253,7 @@ public class [=AuthenticationTable]permissionAppServiceTest {
        
 		Mockito.when(_[=AuthenticationTable?uncap_first]Manager.FindById(<#if (AuthenticationType!="none" && !UserInput??)>any(Long.class)<#elseif AuthenticationType!="none" && UserInput??><#if CompositeKeyClasses?? && CompositeKeyClasses?seq_contains(ClassName)>any([=AuthenticationTable]Id.class)<#else><#list PrimaryKeys as key,value><#if value?lower_case == "long">anyLong()<#elseif value?lower_case == "integer">any(Integer.class)<#elseif value?lower_case == "short">any(Short.class)<#elseif value?lower_case == "double">any(Double.class)<#elseif value?lower_case == "string">anyString()</#if></#list></#if></#if>)).thenReturn([=AuthenticationTable?uncap_first]Entity);
 		Mockito.when(_permissionManager.FindById(anyLong())).thenReturn(permissionEntity); 
-		doNothing().when(idmIdentityService).updateGroupPrivilegeMapping(anyString(),anyString());
+		doNothing().when(idmIdentityService).updateUserPrivilegeMapping(anyString(),anyString());
         </#if>
 		_appService.Delete([=AuthenticationTable?uncap_first]PermissionId); 
 		verify(_[=AuthenticationTable?uncap_first]permissionManager).Delete([=AuthenticationTable?uncap_first]permission);
@@ -434,11 +451,30 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 	@Test
 	public void Parse[=AuthenticationTable]PermissionKey_KeysStringIsNotEmptyAndKeyValuePairExists_Return[=AuthenticationTable]permissionId()
 	{
-		String keyString= "[=AuthenticationTable?uncap_first]Id:15,permissionId:15";
-	
+
 		[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId = new [=AuthenticationTable]permissionId();
 		[=AuthenticationTable?uncap_first]permissionId.setPermissionId(Long.valueOf(ID));
-
+        <#if (AuthenticationType!="none" && !UserInput??) >
+        String keyString= "[=AuthenticationTable?uncap_first]Id:15,permissionId:15";
+    	[=AuthenticationTable?uncap_first]permissionId.setUserId(Long.valueOf(ID));
+  		<#elseif AuthenticationType!="none" && UserInput??>
+  		<#if PrimaryKeys??>
+  		String keyString= "<#list PrimaryKeys as key,value><#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">[=AuthenticationTable?uncap_first][=key?cap_first]:15,</#if></#list>permissionId:15";
+  		<#list PrimaryKeys as key,value>
+  		<#if value?lower_case == "string" >
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable][=key?cap_first](String.valueOf(ID));
+		<#elseif value?lower_case == "long" >
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable][=key?cap_first](Long.valueOf(ID));
+		<#elseif value?lower_case == "integer">
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable][=key?cap_first](Integer.valueOf(ID));
+        <#elseif value?lower_case == "short">
+        [=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable][=key?cap_first](Short.valueOf(ID));
+		<#elseif value?lower_case == "double">
+		[=AuthenticationTable?uncap_first]permissionId.set[=AuthenticationTable][=key?cap_first](Double.valueOf(ID));
+		</#if>
+  		</#list>
+  		</#if>
+  		</#if>
 		Assertions.assertThat(_appService.parse[=AuthenticationTable]permissionKey(keyString)).isEqualToComparingFieldByField([=AuthenticationTable?uncap_first]permissionId);
 	}
 	
@@ -453,12 +489,9 @@ public class [=AuthenticationTable]permissionAppServiceTest {
 	@Test
 	public void Parse[=AuthenticationTable]PermissionKey_KeysStringIsNotEmptyAndKeyValuePairDoesNotExist_ReturnNull()
 	{
-		
 		String keyString= "permissionId";
-
 		Assertions.assertThat(_appService.parse[=AuthenticationTable]permissionKey(keyString)).isEqualTo(null);
 	}
  
-
 }
 

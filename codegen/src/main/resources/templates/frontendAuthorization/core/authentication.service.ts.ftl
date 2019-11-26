@@ -14,7 +14,9 @@ const helper = new JwtHelperService();
 import { AuthOidcConfig } from '../oauth/auth-oidc-config';
 import { OAuthService, JwksValidationHandler, OAuthStorage, OAuthErrorEvent, OAuthSuccessEvent, OAuthInfoEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
+<#if FlowableModule!false>
 import { CookieService } from './cookie.service';
+</#if>
 
 @Injectable()
 export class AuthenticationService {
@@ -22,8 +24,10 @@ export class AuthenticationService {
     withCredentials: true,
     headers: new HttpHeaders().set('Content-Type', 'application/json').append('Access-Control-Allow-Origin', '*')
   };
+  <#if FlowableModule!false>
   private cookieName = 'FLOWABLE_REMEMBER_ME';
   private cookieValue = '';
+  </#if>
   private apiUrl = API_URL;// 'http://localhost:5555';
   public loginType = environment.loginType;
   public authUrl = environment.authUrl;
@@ -35,7 +39,9 @@ export class AuthenticationService {
     private router: Router,
     private oauthService: OAuthService,
     private authStorage: OAuthStorage,
+    <#if FlowableModule!false>
     private cookieService: CookieService,
+    </#if>
   ) {
   }
 
@@ -114,9 +120,11 @@ export class AuthenticationService {
       console.log(retval)
       localStorage.setItem("salt", retval.salt);
       localStorage.setItem("token", retval.token);
+      <#if FlowableModule!false>
       this.cookieValue = retval.FLOWABLE_REMEMBER_ME;
       this.cookieService.set(this.cookieName, this.cookieValue);
       this.cookieService.set(this.cookieName, this.cookieValue, null, null, environment.flowableUrl);
+      </#if>
       this.decodedToken = null;
       this.decodeToken();
       return retval;
@@ -155,6 +163,9 @@ export class AuthenticationService {
        this.oauthService.logOut();
      })
      localStorage.removeItem('token');
+     <#if FlowableModule!false>
+     this.cookieService.set(this.cookieName, 'UNKNOWN');
+     </#if>
    }
   
    }

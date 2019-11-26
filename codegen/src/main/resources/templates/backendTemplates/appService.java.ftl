@@ -40,7 +40,6 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 
 import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.Role.RoleManager;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=ClassName]permissionEntity;
 import org.springframework.security.core.userdetails.User;
@@ -71,9 +70,6 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	private I[=ClassName]Manager _[=ClassName?uncap_first]Manager;
 	
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-	@Autowired
-	private RoleManager _roleManager;
-	
 	@Autowired
  	private IJwtRepository _jwtRepository;
     
@@ -151,10 +147,10 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
         </#if>
 		</#list>
-		
 		[=EntityClassName] created[=ClassName] = _[=ClassName?uncap_first]Manager.Create([=ClassName?uncap_first]);
 		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 		<#if Flowable!false>
+		
 		//Map and create flowable user
 		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(created[=ClassName]);
 		idmIdentityService.createUser(created[=ClassName], actIdUser);
@@ -738,9 +734,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	<#list Relationship as relationKey,relationValue>
 	<#if relationValue.relation == "OneToMany">
-	
 	public Map<String,String> parse[=relationValue.eName]JoinColumn(String keysString) {
-		
 		<#list relationValue.joinDetails as joinDetails>
 		<#assign i=relationValue.joinDetails?size>
         <#if i!=1>
@@ -776,9 +770,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 		</#if>
 		</#list>
 		return joinColumnMap;
-		
 	}
-	
     </#if>
     </#list>
     

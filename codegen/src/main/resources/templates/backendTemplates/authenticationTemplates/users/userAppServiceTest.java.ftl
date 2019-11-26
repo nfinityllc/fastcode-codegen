@@ -398,5 +398,24 @@ public class UserAppServiceTest {
 		 Assertions.assertThat(userAppService.Search(null)).isEqualTo(null);
 	}
 
+    @Test
+    public void parseUserpermissionJoinColumn_StringIsNotNull_ReturnMap() {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("userId", "1");
+		
+		Assertions.assertThat(userAppService.parseUserpermissionJoinColumn("1")).isEqualTo(joinColumnMap);
+		
+	}
+	
+	@Test
+	public void parseUserroleJoinColumn_StringIsNotNull_ReturnMap() {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("userId", "1");
+		
+		Assertions.assertThat(userAppService.parseUserroleJoinColumn("1")).isEqualTo(joinColumnMap);
+		
+	}
 
 }
