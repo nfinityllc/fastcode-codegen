@@ -71,7 +71,7 @@ export class RoleDetailsComponent extends BaseDetailsComponent<IRole> implements
 					},
 				],
 				isParent: true,
-				table: '[=AuthenticationTable?uncap_first]',
+				table: 'userrole',
 				type: 'OneToMany',
 			},
 		];

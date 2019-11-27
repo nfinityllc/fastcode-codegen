@@ -117,12 +117,14 @@
 	        <mat-nav-list class="subnav"> 
 	 
 	          <#if !UserInput??> 
-	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('user')" routerLink="user">Users </a> 
-	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('userpermission')" routerLink="userpermission">Users Permissions </a> 
+	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('user')" routerLink="user">Users </a>
+            <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('userpermission')" routerLink="userpermission">User Permissions </a>
+            <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('userrole')" routerLink="userrole">User Roles </a>
 	          <#elseif UserInput??> 
 	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('[=AuthenticationTable?lower_case]')" routerLink="[=AuthenticationTable?lower_case]">[=AuthenticationTable] </a> 
 	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('[=AuthenticationTable?lower_case]permission')" routerLink="[=AuthenticationTable?lower_case]permission">[=AuthenticationTable] Permissions </a> 
-	          </#if>           
+	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('[=AuthenticationTable?lower_case]role')" routerLink="[=AuthenticationTable?lower_case]role">[=AuthenticationTable] Roles </a> 
+	          </#if>
 	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('role')" routerLink="role">Roles</a> 
 	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('permission')" routerLink="permission">Permissions</a> 
 	          <a mat-list-item class="mat-sub-list-item" *ngIf="isMenuVisible('rolepermission')" routerLink="rolepermission">Roles Permissions</a> 

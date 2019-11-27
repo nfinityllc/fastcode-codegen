@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute,Router} from "@angular/router";
-import { FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { FormBuilder, Validators} from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
 
 import { UserService } from './user.service';
 import { IUser } from './iuser';
-import { RoleService } from '../role/role.service';
 import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
@@ -19,7 +17,6 @@ import { GlobalPermissionService } from '../core/global-permission.service';
 export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements OnInit {
   title:string='User';
   parentUrl:string='user';
-  //roles: IRole[];  
 	constructor(
 		public formBuilder: FormBuilder,
 		public router: Router,
@@ -29,7 +26,6 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 		public dataService: UserService,
 		public pickerDialogService: PickerDialogService,
 		public errorService: ErrorService,
-		public roleService: RoleService,
 		public globalPermissionService: GlobalPermissionService,
 	) {
 		super(formBuilder, router, route, dialog, global, pickerDialogService, dataService, errorService);
@@ -58,9 +54,7 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 			phoneNumber: [''],
 			profilePictureId: [''],
 			twoFactorEnabled: [false],
-			userName: ['', Validators.required],
-			roleId: [''],
-			roleDescriptiveField : [{ value: '', disabled: true }],
+			userName: ['', Validators.required]
 	    });
 	    if (this.idParam) {
 			this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
@@ -85,18 +79,15 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 			{
 				column: [
 					{
-						key: 'roleId',
+						key: 'userId',
 						value: undefined,
 						referencedkey: 'id'
 					},
 				],
-				isParent: false,
-				table: 'role',
-				type: 'ManyToOne',
-				service: this.roleService,
-				descriptiveField: 'roleDescriptiveField',
-				referencedDescriptiveField: 'name',
-			},
+				isParent: true,
+				table: 'userrole',
+				type: 'OneToMany',
+			}
 		];
 		this.childAssociations = this.associations.filter(association => {
 			return (association.isParent);
@@ -128,9 +119,7 @@ export class UserDetailsComponent extends BaseDetailsComponent<IUser> implements
 			phoneNumber: item.phoneNumber,
 			profilePictureId: item.profilePictureId,
 			twoFactorEnabled: item.twoFactorEnabled,
-			userName: item.userName,
-			roleId: item.roleId,
-			roleDescriptiveField: item.roleDescriptiveField,
+			userName: item.userName
 		});
 	}
 }

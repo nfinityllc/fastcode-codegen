@@ -55,7 +55,7 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 				column: [
 					<#if !UserInput??>
 					{
-						key: 'userid',
+						key: 'userId',
 						value: undefined,
 						referencedkey: 'id'
 					},
@@ -78,15 +78,15 @@ export class [=AuthenticationTable]permissionListComponent extends BaseListCompo
 				<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 				descriptiveField: '[=AuthenticationTable?uncap_first + DescriptiveField[AuthenticationTable].fieldName?cap_first]',
 				referencedDescriptiveField: '[=DescriptiveField[AuthenticationTable].fieldName]',
-                <#else>
-                <#if AuthenticationFields??>
-  				<#list AuthenticationFields as authKey,authValue>
-  				<#if authKey== "UserName">
-  				descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
+        <#else>
+        <#if AuthenticationFields??>
+  			<#list AuthenticationFields as authKey,authValue>
+  			<#if authKey== "UserName">
+  			descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
 				referencedDescriptiveField: '[=authValue.fieldName]',
-    			</#if>
-    			</#list>
-    			</#if>
+    		</#if>
+    		</#list>
+    		</#if>
 				</#if>
 				<#elseif !UserInput??>
 				descriptiveField: '[=AuthenticationTable?uncap_first]DescriptiveField',
