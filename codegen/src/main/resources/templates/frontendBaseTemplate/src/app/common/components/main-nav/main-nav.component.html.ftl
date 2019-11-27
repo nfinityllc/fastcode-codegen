@@ -43,8 +43,6 @@
       <#if FlowableModule!false>
       <a mat-list-item class="sidenav-list-item" routerLink="/task-app/tasks">{{'MainNav.Task.Tasks' | translate }}</a>
       
-      <a mat-list-item class="sidenav-list-item">{{'MainNav.About' | translate }}</a>
-      
       </#if>
       </#if>
       <mat-expansion-panel class="expansion-panel">
@@ -93,13 +91,6 @@
             </mat-nav-list>
           </mat-expansion-panel>
           
-          </#if>
-          <#if AuthenticationType != "none">
-          <#if FlowableModule!false>
-          <a mat-list-item class="sidenav-list-item">{{'MainNav.BPMModeler' | translate }}</a>
-          
-          </#if>
-          </#if>
         </mat-nav-list>
       </mat-expansion-panel>
       
@@ -209,9 +200,10 @@
 	      </#if>
 	      
 	      </#if>
-        <a mat-list-item class="sidenav-list-item">{{'MainNav.API' | translate }}</a>
-      </mat-expansion-panel>       
- 
+        <a mat-list-item class="sidenav-list-item" target="_blank" routerLink="/api/swagger-ui.html">{{'MainNav.API' | translate }}</a>
+      </mat-expansion-panel>
+
+      <a mat-list-item class="sidenav-list-item">{{'MainNav.About' | translate }}</a>
     </mat-nav-list> 
   </mat-sidenav> 
   <mat-sidenav-content #navContent class="fc-sidenav-content"> 
