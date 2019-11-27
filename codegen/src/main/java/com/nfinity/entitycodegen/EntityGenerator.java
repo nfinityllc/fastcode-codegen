@@ -433,14 +433,27 @@ public class EntityGenerator {
 		for (Map.Entry<String, Object> entry : templateFiles.entrySet()) {
 			try {
 				Template template = cfg.getTemplate(entry.getKey());
-				File fileName = null;
-				fileName = new File(destPath + "/" + entry.getValue().toString());
+
+				String entryPath = entry.getValue().toString();
+				File fileName = new File(destPath + "/" + entry.getValue().toString());
+
+				String dirPath = destPath;
+				if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
+					dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
+				}
+				File dir = new File(dirPath);
+				if(!dir.exists()) {
+					dir.mkdirs();
+				};
+
 				PrintWriter writer = new PrintWriter(fileName);
 				template.process(root, writer);
 				writer.flush();
+				writer.close();
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
+
 			}
 		}
 	}
