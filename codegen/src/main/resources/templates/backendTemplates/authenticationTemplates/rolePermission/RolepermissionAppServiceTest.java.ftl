@@ -381,5 +381,31 @@ public class RolepermissionAppServiceTest {
 		Mockito.when(_rolepermissionManager.FindById(any(RolepermissionId.class))).thenReturn(null);
 		Assertions.assertThat(_appService.GetRole(rolePermissionId)).isEqualTo(null);
 	}
+	
+	@Test
+	public void ParseRolePermissionKey_KeysStringIsNotEmptyAndKeyValuePairExists_ReturnRolepermissionId()
+	{
+		String keyString= "roleId:15,permissionId:15";
+	
+		RolepermissionId rolepermissionId = new RolepermissionId();
+		rolepermissionId.setPermissionId(Long.valueOf(ID));
+		rolepermissionId.setRoleId(Long.valueOf(ID));
+		Assertions.assertThat(_appService.parseRolepermissionKey(keyString)).isEqualToComparingFieldByField(rolepermissionId);
+	}
+	
+	@Test
+	public void ParseRolePermissionKey_KeysStringIsEmpty_ReturnNull()
+	{
+		
+		String keyString= "";
+		Assertions.assertThat(_appService.parseRolepermissionKey(keyString)).isEqualTo(null);
+	}
+	
+	@Test
+	public void ParseRolePermissionKey_KeysStringIsNotEmptyAndKeyValuePairDoesNotExist_ReturnNull()
+	{
+		String keyString= "permissionId";
+		Assertions.assertThat(_appService.parseRolepermissionKey(keyString)).isEqualTo(null);
+	}
 }
 

@@ -90,7 +90,7 @@ public class AppStartupRunner implements ApplicationRunner {
         entityList.add("triggerDetails");
         </#if>
         
-        <#if !AuthenticationTable??>
+        <#if !UserInput??>
 		entityList.add("user");
 		entityList.add("userpermission");
 		entityList.add("userrole");
@@ -210,8 +210,18 @@ public class AppStartupRunner implements ApplicationRunner {
         </#if> 
     	admin = userManager.Create(admin);
     	[=AuthenticationTable]roleEntity urole = new [=AuthenticationTable]roleEntity();
-    	urole.setRole(role);
-    	urole.set[=AuthenticationTable](admin);
+    	urole.setRoleId(role.getId());
+    	<#if (AuthenticationType!="none" && !UserInput??)>
+    	urole.set[=AuthenticationTable]Id(admin.getId());
+        <#elseif AuthenticationType!="none" && UserInput??>
+        <#if PrimaryKeys??>
+        <#list PrimaryKeys as key,value>
+        <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+        urole.set[=AuthenticationTable][=key?cap_first](admin.get[=key?cap_first]());
+        </#if> 
+        </#list>
+        </#if>
+        </#if>
 		urole=userroleManager.Create(urole);
     	<#if Flowable!false>
     	ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(admin);

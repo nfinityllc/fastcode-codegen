@@ -95,6 +95,14 @@ List<ActIdMembershipEntity> membershipEntity = mock(List.class);
         membershipManager.create(membershipEntity);
         verify(_membershipRepository).save(membershipEntity);
         }
+        
+        @Test
+        public void updateMembership_MembershipIsNotNullAndMembershipExists_UpdateAMembership() {
+
+        ActIdMembershipEntity membershipEntity = mock(ActIdMembershipEntity.class);
+        membershipManager.create(membershipEntity);
+        verify(_membershipRepository).save(membershipEntity);
+        }
 
         @Test
         public void deleteMembership_MembershipExists_RemoveAMembership() {

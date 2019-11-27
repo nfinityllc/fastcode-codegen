@@ -212,8 +212,8 @@ public class [=ClassName]AppServiceTest {
 		</#list>
         
        <#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
-       RoleEntity foundRole = mock(RoleEntity.class);
-       Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
+     //  RoleEntity foundRole = mock(RoleEntity.class);
+     //  Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
        <#if Flowable!false>
        ActIdUserEntity actIdUser = mock (ActIdUserEntity.class);
 			
@@ -545,13 +545,13 @@ public class [=ClassName]AppServiceTest {
 		[=EntityClassName] [=ClassName?uncap_first]Entity = mock([=EntityClassName].class);
 		Update[=ClassName]Input [=ClassName?uncap_first]= mock(Update[=ClassName]Input.class);
 		<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
-        RoleEntity foundRole = mock(RoleEntity.class);
-        Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
+  //    RoleEntity foundRole = mock(RoleEntity.class);
+  //    Mockito.when(_roleManager.FindById(anyLong())).thenReturn(foundRole);
         <#if Flowable!false>
         ActIdUserEntity actIdUser = mock (ActIdUserEntity.class);
 		Mockito.when(actIdUserMapper.createUsersEntityToActIdUserEntity(any([=ClassName]Entity.class))).thenReturn(actIdUser);
 		doNothing().when(idmIdentityService).updateUser(any([=ClassName]Entity.class),any(ActIdUserEntity.class)); 
-		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=IdClass].class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]Entity);
+	//	Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=IdClass].class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn([=ClassName?uncap_first]Entity);
 		</#if>
 		</#if>
 		Mockito.when(_mapper.Update[=ClassName]InputTo[=EntityClassName](any(Update[=ClassName]Input.class))).thenReturn([=ClassName?uncap_first]Entity);
@@ -788,9 +788,9 @@ public class [=ClassName]AppServiceTest {
 
 		Assertions.assertThat(_appService.Search(null)).isEqualTo(null);
 	}
-	
    <#list Relationship as relationKey, relationValue>
    <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
+   
    //[=relationValue.eName]
 	@Test
 	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]Exists_Return[=relationValue.eName]() {
@@ -804,15 +804,53 @@ public class [=ClassName]AppServiceTest {
 
 	@Test 
 	public void Get[=relationValue.eName]_If[=ClassName]IdAnd[=relationValue.eName]IdIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
-		[=EntityClassName] [=ClassName?uncap_first] = mock([=EntityClassName].class);
-
 		Mockito.when(_[=ClassName?uncap_first]Manager.FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>any([=IdClass].class)<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">anyLong()<#elseif value.fieldType?lower_case == "integer">any(Integer.class)<#elseif value.fieldType?lower_case == "short">any(Short.class)<#elseif value.fieldType?lower_case == "double">any(Double.class)<#elseif value.fieldType?lower_case == "string">anyString()</#if></#if></#list></#if>)).thenReturn(null);
 		Assertions.assertThat(_appService.Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "string">ID</#if></#if></#list></#if>)).isEqualTo(null);
 	}
- 
    </#if>
   </#list>
+  <#if CompositeKeyClasses?seq_contains(ClassName)>
+  
+	@Test
+	public void Parse[=ClassName]Key_KeysStringIsNotEmptyAndKeyValuePairExists_Return[=IdClass]()
+	{
+		String keyString= "<#list PrimaryKeys as fieldName,fieldType><#if fieldName_has_next>[=fieldName]:15,<#else>[=fieldName]:15</#if></#list>";
+	
+		[=IdClass] [=IdClass?uncap_first] = new [=IdClass]();
+		<#list PrimaryKeys as fieldName,fieldType>
+		<#if fieldType?lower_case == "string" >
+		[=IdClass?uncap_first].set[=fieldName?cap_first](String.valueOf(ID));
+		<#elseif fieldType?lower_case == "long" >
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Long.valueOf(ID));
+		<#elseif fieldType?lower_case == "integer">
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Integer.valueOf(ID));
+        <#elseif fieldType?lower_case == "short">
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Short.valueOf(ID));
+        <#elseif fieldType?lower_case == "double">
+		[=IdClass?uncap_first].set[=fieldName?cap_first](Double.valueOf(ID));
+		</#if>
+		</#list>
+
+		Assertions.assertThat(_appService.parse[=ClassName]Key(keyString)).isEqualToComparingFieldByField([=IdClass?uncap_first]);
+	}
+	
+	@Test
+	public void Parse[=ClassName]Key_KeysStringIsEmpty_ReturnNull()
+	{
+		String keyString= "";
+		Assertions.assertThat(_appService.parse[=ClassName]Key(keyString)).isEqualTo(null);
+	}
+	
+	@Test
+	public void Parse[=ClassName]Key_KeysStringIsNotEmptyAndKeyValuePairDoesNotExist_ReturnNull()
+	{
+		String keyString= "<#list PrimaryKeys as fieldName,fieldType>[=fieldName]"<#break></#list>;
+
+		Assertions.assertThat(_appService.parse[=ClassName]Key(keyString)).isEqualTo(null);
+	}
+	</#if>
   <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+	
 	@Test 
 	public void find[=ClassName]ByName_NameIsNotNullAnd[=ClassName]DoesNotExist_ReturnNull() {
         <#if AuthenticationFields??>
@@ -839,7 +877,70 @@ public class [=ClassName]AppServiceTest {
         </#if>
 	}
 
+    @Test
+    public void parse[=AuthenticationTable]permissionJoinColumn_StringIsNotNull_ReturnMap() {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		<#assign primaryKeyLength=PrimaryKeys?size>
+		<#if primaryKeyLength gt 1 >
+		String keyString= "<#list PrimaryKeys as fieldName,fieldType><#if fieldName_has_next>[=fieldName]:15,<#else>[=fieldName]:15</#if></#list>";
+		<#elseif primaryKeyLength == 1>
+		String keyString= "15";
+		</#if>
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", "15");
+	    </#list>
+		Assertions.assertThat(_appService.parse[=AuthenticationTable]permissionJoinColumn(keyString)).isEqualTo(joinColumnMap);
+		
+	}
+	
+	@Test
+    public void parse[=AuthenticationTable]roleJoinColumn_StringIsNotNull_ReturnMap() {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		<#assign primaryKeyLength=PrimaryKeys?size>
+		<#if primaryKeyLength gt 1 >
+		String keyString= "<#list PrimaryKeys as fieldName,fieldType><#if fieldName_has_next>[=fieldName]:15,<#else>[=fieldName]:15</#if></#list>";
+		<#elseif primaryKeyLength == 1>
+		String keyString= "15";
+		</#if>
+		<#list PrimaryKeys as fieldName,fieldType>
+		joinColumnMap.put("[= AuthenticationTable + fieldName?cap_first]", "15");
+		</#list>
+		Assertions.assertThat(_appService.parse[=AuthenticationTable]roleJoinColumn(keyString)).isEqualTo(joinColumnMap);
+		
+	}
 	</#if>
-
+	
+	<#list Relationship as relationKey,relationValue>
+	<#if relationValue.relation == "OneToMany">
+	<#list relationValue.joinDetails as joinDetails>
+    <#assign i=relationValue.joinDetails?size>
+    <#if i!=1>
+    @Test
+	public void Parse[=relationValue.eName]JoinColumn_KeysStringIsNotEmptyAndKeyValuePairExists_ReturnNull()
+	{
+	    Map<String,String> joinColumnMap = new HashMap<String,String>();
+		String keyString= "<#list relationValue.joinDetails as joinDetails>[=joinDetails.referenceColumn]:15<#sep>,</#list>";
+		
+		<#list relationValue.joinDetails as joinDetails>
+		joinColumnMap.put("[=joinDetails.joinColumn?uncap_first]","15");
+		</#list>
+		Assertions.assertThat(_appService.parse[=relationValue.eName]JoinColumn(keyString)).isEqualTo(joinColumnMap);
+	}
+    <#elseif i==1>
+	@Test
+	public void Parse[=relationValue.eName]JoinColumn_KeysStringIsNotEmptyAndKeyValuePairDoesNotExist_ReturnNull()
+	{
+	    Map<String,String> joinColumnMap = new HashMap<String,String>();
+		String keyString= "15";
+		joinColumnMap.put("[=joinDetails.joinColumn?uncap_first]", keyString);
+		Assertions.assertThat(_appService.parse[=relationValue.eName]JoinColumn(keyString)).isEqualTo(joinColumnMap);
+	}
+	</#if>
+	<#break>
+    </#list>
+     </#if>
+    </#list>
 }
 

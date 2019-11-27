@@ -21,55 +21,61 @@ import static org.mockito.Mockito.*;
 @Component
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ActIdGroupManagerTest {
-@InjectMocks
-ActIdGroupManager groupManager;
+	@InjectMocks
+	ActIdGroupManager groupManager;
 
-@Mock
-IActIdGroupRepository _groupRepository;
+	@Mock
+	IActIdGroupRepository _groupRepository;
 
-@Mock
-private Logger loggerMock;
+	@Mock
+	private Logger loggerMock;
 
-@Mock
-private LoggingHelper logHelper;
+	@Mock
+	private LoggingHelper logHelper;
 
-private static long ID=15;
+	private static long ID=15;
 
-@Before
-public void setUp() throws Exception {
-MockitoAnnotations.initMocks(groupManager);
-when(logHelper.getLogger()).thenReturn(loggerMock);
-doNothing().when(loggerMock).error(anyString());
-}
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(groupManager);
+		when(logHelper.getLogger()).thenReturn(loggerMock);
+		doNothing().when(loggerMock).error(anyString());
+	}
 
-@After
-public void tearDown() throws Exception {
-}
-@Test
-public void findByGroupId_IdIsNotNullAndIdExists_ReturnAGroup() {
-ActIdGroupEntity groupEntity = mock(ActIdGroupEntity.class);
-Mockito.when(_groupRepository.findByGroupId(anyString())).thenReturn(groupEntity);
-Assertions.assertThat(groupManager.findByGroupId("Group1")).isEqualTo(groupEntity);
-}
+	@After
+	public void tearDown() throws Exception {
+	}
+	
+	@Test
+	public void findByGroupId_IdIsNotNullAndIdExists_ReturnAGroup() {
+		ActIdGroupEntity groupEntity = mock(ActIdGroupEntity.class);
+		Mockito.when(_groupRepository.findByGroupId(anyString())).thenReturn(groupEntity);
+		Assertions.assertThat(groupManager.findByGroupId("Group1")).isEqualTo(groupEntity);
+	}
 
-@Test
-public void findByGroupId_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
-Mockito.when(_groupRepository.findByGroupId(anyString())).thenReturn(null);
-Assertions.assertThat(groupManager.findByGroupId("InvalidGroup")).isEqualTo(null);
-}
-@Test
-public void createGroup_GroupIsNotNullAndGroupDoesNotExist_StoreAGroup() {
+	@Test
+	public void findByGroupId_IdIsNotNullAndIdDoesNotExist_ReturnNull() {
+		Mockito.when(_groupRepository.findByGroupId(anyString())).thenReturn(null);
+		Assertions.assertThat(groupManager.findByGroupId("InvalidGroup")).isEqualTo(null);
+	}
 
-ActIdGroupEntity groupEntity = mock(ActIdGroupEntity.class);
-groupManager.create(groupEntity);
-verify(_groupRepository).save(groupEntity);
-}
+	@Test
+	public void createGroup_GroupIsNotNullAndGroupDoesNotExist_StoreAGroup() {
+		ActIdGroupEntity groupEntity = mock(ActIdGroupEntity.class);
+		groupManager.create(groupEntity);
+		verify(_groupRepository).save(groupEntity);
+	}
 
-@Test
-public void deleteGroup_GroupExists_RemoveAGroup() {
+	@Test
+	public void deleteGroup_GroupExists_RemoveAGroup() {
+		ActIdGroupEntity groupEntity = mock(ActIdGroupEntity.class);
+		groupManager.delete(groupEntity);
+		verify(_groupRepository).delete(groupEntity);
+    }
 
-ActIdGroupEntity groupEntity = mock(ActIdGroupEntity.class);
-groupManager.delete(groupEntity);
-verify(_groupRepository).delete(groupEntity);
-}
+    @Test
+	public void deleteAllGroups_GroupExists_RemoveGroups() {
+		groupManager.deleteAll();
+		verify(_groupRepository).deleteAll();
+	}
 }
