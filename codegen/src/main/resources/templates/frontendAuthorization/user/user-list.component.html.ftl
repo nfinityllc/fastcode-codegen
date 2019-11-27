@@ -55,14 +55,6 @@
 					{{ item.userName }}
 				</mat-cell>
 			</ng-container>
-
-			<ng-container matColumnDef="Role">
-				<mat-header-cell mat-sort-header *matHeaderCellDef [disabled]="!isColumnSortable('Role')">Role </mat-header-cell>
-				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getFieldLabel("Role")}}:</span>
-					{{ item.roleDescriptiveField }}
-				</mat-cell>
-			</ng-container>
 			
 			<ng-container matColumnDef="actions">
 				<mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>

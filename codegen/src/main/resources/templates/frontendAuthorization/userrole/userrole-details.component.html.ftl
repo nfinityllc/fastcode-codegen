@@ -1,12 +1,12 @@
 <div *ngIf="item" class="details-container">
-  <mat-toolbar class="action-tool-bar" color="primary">
-    <button mat-button (click)="onBack()">
-      {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>
-    <span class="middle">{{title}}</span>
-  
-    <button [disabled]="!itemForm.valid || loading || !IsUpdatePermission" mat-button (click)="itemNgForm.ngSubmit.emit()">
-      {{'GENERAL.ACTIONS.SAVE' | translate}} </button>
-  </mat-toolbar>
+	<mat-toolbar class="action-tool-bar" color="primary">
+		<button mat-button (click)="onBack()">
+	    {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>
+		<span class="middle">{{title}}</span>
+	
+		<button [disabled]="!itemForm.valid || loading || !IsUpdatePermission" mat-button (click)="itemNgForm.ngSubmit.emit()">
+	    {{'GENERAL.ACTIONS.SAVE' | translate}} </button>
+	</mat-toolbar>
 	<mat-card class="card">
 		<mat-card-content>
 			<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">

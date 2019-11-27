@@ -59,30 +59,13 @@ export class UserNewComponent extends BaseNewComponent<IUser> implements OnInit 
 			phoneNumber: [''],
 			profilePictureId: [''],
 			twoFactorEnabled: [false],
-			userName: ['', Validators.required],
-			roleId: [''],
-			roleDescriptiveField : [{ value: '', disabled: true }],
+			userName: ['', Validators.required]
 		});
 		this.checkPassedData();
     }
  		
 	setAssociations(){
 		this.associations = [
-			{
-				column: [
-					{
-						key: 'roleId',
-						value: undefined,
-						referencedkey: 'id'
-					},
-				],
-				isParent: false,
-				table: 'role',
-				type: 'ManyToOne',
-				service: this.roleService,
-				descriptiveField: 'roleDescriptiveField',
-				referencedDescriptiveField: 'name',
-			},
 		];
 		this.parentAssociations = this.associations.filter(association => {
 			return (!association.isParent);

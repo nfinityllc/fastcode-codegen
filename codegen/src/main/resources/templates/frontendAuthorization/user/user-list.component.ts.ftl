@@ -1,13 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialog } from '@angular/material';
 
 import { Router, ActivatedRoute } from '@angular/router';
-import {UserNewComponent} from './user-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { UserNewComponent } from './user-new.component';
+import { BaseListComponent, Globals, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
 
 import { IUser } from './iuser';
 import { UserService } from './user.service';
-import { RoleService } from '../role/role.service';
 import { GlobalPermissionService } from '../core/global-permission.service';
 
 @Component({
@@ -28,7 +27,6 @@ export class UserListComponent extends BaseListComponent<IUser> implements OnIni
 		public pickerDialogService: PickerDialogService,
 		public dataService: UserService,
 		public errorService: ErrorService,
-		public roleService: RoleService,
 		public globalPermissionService: GlobalPermissionService,
 	) { 
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, dataService, errorService)
@@ -45,22 +43,6 @@ export class UserListComponent extends BaseListComponent<IUser> implements OnIni
 	setAssociation(){
   	
 		this.associations = [
-			{
-				column: [
-                    {
-						key: 'roleId',
-						value: undefined,
-						referencedkey: 'id'
-					},
-				],
-				isParent: false,
-				descriptiveField: 'roleDescriptiveField',
-				referencedDescriptiveField: 'name',
-				service: this.roleService,
-				associatedObj: undefined,
-				table: 'role',
-				type: 'ManyToOne'
-			},
 		];
 	}
   
@@ -94,13 +76,6 @@ export class UserListComponent extends BaseListComponent<IUser> implements OnIni
 				sort: true,
 				filter: true,
 				type: listColumnType.String
-			},
-			{
-	  			column: 'Role',
-				label: 'Role',
-				sort: false,
-				filter: false,
-				type: listColumnType.Boolean
 			},
 			{
 				column: 'isActive',

@@ -655,10 +655,13 @@ public class AuthenticationClassesTemplateGenerator {
 			authorizationEntities.add("user");
 			entityList.add("User");
 			entityList.add("Userpermission");
+			entityList.add("Userrole");
 		} else {
 			entityList.add(authenticationTable + "permission");
+			entityList.add(authenticationTable + "role");
 		}
 		authorizationEntities.add("userpermission");
+		authorizationEntities.add("userrole");
 
 		CodeGenerator.updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
 		CodeGenerator.updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType, flowable);
@@ -670,6 +673,9 @@ public class AuthenticationClassesTemplateGenerator {
 		for(String entity: authorizationEntities) {
 			if(entity == "userpermission" && authenticationTable != null) {
 				generateFrontendAuthorizationComponents(appFolderPath + convertCamelCaseToDash(authenticationTable) + "permission", authorizationPath + entity, authenticationType, authenticationTable, root);
+			}
+			else if(entity == "userrole" && authenticationTable != null) {
+				generateFrontendAuthorizationComponents(appFolderPath + convertCamelCaseToDash(authenticationTable) + "role", authorizationPath + entity, authenticationType, authenticationTable, root);
 			}
 			else {
 				generateFrontendAuthorizationComponents(appFolderPath + entity, authorizationPath + entity, authenticationType, authenticationTable, root);
