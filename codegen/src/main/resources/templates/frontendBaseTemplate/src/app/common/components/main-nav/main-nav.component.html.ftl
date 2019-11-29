@@ -91,6 +91,11 @@
             </mat-nav-list>
           </mat-expansion-panel>
           
+          </#if>
+          <#if FlowableModule!false>
+          <a mat-list-item class="sidenav-list-item" target="_blank" routerLink="/modeler/">{{'MainNav.BPMModeler' | translate }}</a>
+          
+          </#if>
         </mat-nav-list>
       </mat-expansion-panel>
       
