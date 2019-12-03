@@ -23,16 +23,20 @@ import { AuthenticationService } from './core/authentication.service';
 export class AppComponent {
   title = 'fcclient';
 
-  constructor(<#if FlowableModule!false>private upgrade: UpgradeModule,private taskAppTranslateUiService: TaskAppTranslateUiService,</#if>
+  constructor(
     private translate: TranslateService,
     private fastCodeCoreTranslateUiService: FastCodeCoreTranslateUiService,
+    <#if FlowableModule!false>
+    private upgrade: UpgradeModule,
+    private taskAppTranslateUiService: TaskAppTranslateUiService,
+    </#if>
     <#if SchedulerModule!false>
     private schedulerTranslateUiService: SchedulerTranslateUiService,
     </#if>
     <#if EmailModule!false>
     //private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
     </#if>
-	<#if AuthenticationType != 'none'>
+    <#if AuthenticationType != 'none'>
     private authService: AuthenticationService,
     </#if>
  ) {
@@ -40,14 +44,15 @@ export class AppComponent {
     translate.setDefaultLang('en');
 
     let browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/en|fr/) ? browserLang : 'en').subscribe(() => {
-      this.fastCodeCoreTranslateUiService.init();
+    let lang = browserLang.match(/en|fr/) ? browserLang : 'en';
+    translate.use(lang).subscribe(() => {
+      this.fastCodeCoreTranslateUiService.init(lang);
       <#if SchedulerModule!false>
-      this.schedulerTranslateUiService.init(browserLang);</#if>
+      this.schedulerTranslateUiService.init(lang);</#if>
       <#if EmailModule!false>
-      //this.emailBuilderTranslateUiService.init(browserLang);</#if>
+      //this.emailBuilderTranslateUiService.init(lang);</#if>
       <#if FlowableModule!false>
-      this.taskAppTranslateUiService.init();</#if>
+      this.taskAppTranslateUiService.init(lang);</#if>
     });
 	<#if AuthenticationType != 'none'>
 	if(this.authService.loginType == 'oidc') {

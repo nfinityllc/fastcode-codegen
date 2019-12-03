@@ -37,6 +37,15 @@ export class MainNavComponent {
 		public Auth: AuthenticationService,
 		public globalPermissionService: GlobalPermissionService,
 		</#if>
+		<#if FlowableModule!false>
+    private taskAppTranslateUiService: TaskAppTranslateUiService,
+    </#if>
+		<#if SchedulerModule!false>
+    private schedulerTranslateUiService: SchedulerTranslateUiService,
+    </#if>
+    <#if EmailModule!false>
+    //private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
+    </#if>
 	) {
 
 		this.isSmallDevice$ = Global.isSmallDevice$;
@@ -48,7 +57,15 @@ export class MainNavComponent {
 	}
 
 	switchLanguage(language: string) {
-		this.translate.use(language);
+		this.translate.use(language).subscribe(() => {
+      this.fastCodeCoreTranslateUiService.init(language);
+      <#if SchedulerModule!false>
+      this.schedulerTranslateUiService.init(language);</#if>
+      <#if EmailModule!false>
+      //this.emailBuilderTranslateUiService.init(language);</#if>
+      <#if FlowableModule!false>
+      this.taskAppTranslateUiService.init(language);</#if>
+    });
 		this.selectedLanguage = language;
 	}
 	onNavMenuClicked() {

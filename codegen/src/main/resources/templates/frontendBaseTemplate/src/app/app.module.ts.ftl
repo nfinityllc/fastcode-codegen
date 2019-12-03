@@ -152,7 +152,8 @@ export class CustomHandlingStrategy implements UrlHandlingStrategy {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
-      }
+      },
+      isolate: false
     }),
 
   ],

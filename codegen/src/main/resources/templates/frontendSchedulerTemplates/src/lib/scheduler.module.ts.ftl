@@ -5,9 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
 import {
   MatButtonModule, MatToolbarModule, MatSidenavModule,
   MatIconModule, MatListModule, MatRadioModule, MatTableModule,
@@ -42,10 +39,6 @@ import { IForRootConf } from './IForRootConf';
 
 import { FastCodeCoreModule } from 'fastCodeCore';
 import { environment } from './environment';
-
-export function HttpLoaderFactory(httpClient: HttpClient) {
-  return new TranslateHttpLoader(httpClient);
-}
 
 @NgModule({
   imports: [
@@ -82,13 +75,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     NgxMaterialTimepickerModule,
     FastCodeCoreModule.forRoot({
       apiUrl: environment.apiUrl
-    }),
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
     })
   ],
   declarations: [
