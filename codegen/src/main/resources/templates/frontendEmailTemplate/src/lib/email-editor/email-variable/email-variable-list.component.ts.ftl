@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 
 import { IEmailVariable } from './iemail-variable';
 import { EmailVariableService } from './email-variable.service';
@@ -23,14 +24,14 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 	columns: IListColumn[] = [
 		{
 			column: 'propertyName',
-			label: 'propertyName',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-NAME'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'propertyType',
-			label: 'propertyType',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-TYPE'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
@@ -39,14 +40,14 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 
 		{
 			column: 'lastModificationTime',
-			label: 'lastModificationTime',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFICATION-TIME'),
 			sort: false,
 			filter: false,
 			type: listColumnType.Date
 		},
 		{
 			column: 'lastModifierUserId',
-			label: 'lastModifierUserId',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFIER-USER-ID'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
@@ -54,7 +55,7 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 
 		{
 			column: 'actions',
-			label: 'Actions',
+			label: this.translate.instant('EMAIL-GENERAL.ACTIONS.ACTIONS'),
 			sort: false,
 			filter: false,
 			type: listColumnType.String
@@ -74,7 +75,8 @@ export class EmailVariableListComponent extends BaseListComponent<IEmailVariable
 		public pickerDialogService: PickerDialogService,
 		public emailvariableService: EmailVariableService,
 		public globalPermissionService: GlobalPermissionService,
-		public errorService: ErrorService
+		public errorService: ErrorService,
+		private translate: TranslateService
 	) {
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, emailvariableService, errorService)
 	}

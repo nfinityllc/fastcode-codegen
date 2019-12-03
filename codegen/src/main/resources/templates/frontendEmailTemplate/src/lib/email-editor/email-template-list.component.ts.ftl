@@ -14,6 +14,7 @@ import { BaseListComponent, IListColumn, listColumnType, Globals, PickerDialogSe
 //import { IListColumn, listColumnType } from '../common/ilistColumn';
 //import { PickerDialogService } from '../common/components/picker/picker-dialog.service';
 //import {,IFCDialogConfig} from '../picker/picker-dialog.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-emailtemplate-list',
@@ -27,70 +28,70 @@ export class EmailTemplateListComponent extends BaseListComponent<IEmailTemplate
 	columns: IListColumn[] = [
 		{
 			column: 'templatename',
-			label: 'Template Name',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.TEMPLATE-NAME'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'subject',
-			label: 'subject',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.SUBJECT'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'category',
-			label: 'category',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CATEGORY'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		/*{
 			column: 'cc',
-			label: 'cc',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CC'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'contenthtml',
-			label: 'contenthtml',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CONTENT-HTML'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'contentjson',
-			label: 'contentjson',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CONTENT-JSON'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'creationtime',
-			label: 'creationtime',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CREATION-TIME'),
 			sort: false,
 			filter: false,
 			type: listColumnType.Date
 		},
 		{
 			column: 'creatoruserid',
-			label: 'creatoruserid',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.CREATOR-USER-ID'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},*/
 		{
 			column: 'lastModifierUserId',
-			label: 'Modified By',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.LAST-MODIFIER-USER-ID'),
 			sort: true,
 			filter: true,
 			type: listColumnType.String
 		},
 		{
 			column: 'lastModificationTime',
-			label: 'Modified Time',
+			label: this.translate.instant('EMAIL-EDITOR.EMAIL-TEMPLATE.FIELDS.LAST-MODIFICATION-TIME'),
 			sort: false,
 			filter: false,
 			type: listColumnType.Date
@@ -98,7 +99,7 @@ export class EmailTemplateListComponent extends BaseListComponent<IEmailTemplate
 
 		{
 			column: 'actions',
-			label: 'Actions',
+			label: this.translate.instant('EMAIL-GENERAL.ACTIONS.ACTIONS'),
 			sort: false,
 			filter: false,
 			type: listColumnType.String
@@ -118,7 +119,8 @@ export class EmailTemplateListComponent extends BaseListComponent<IEmailTemplate
 		public pickerDialogService: PickerDialogService,
 		public emailService: EmailTemplateService,
 		public globalPermissionService: GlobalPermissionService,
-		public errorService: ErrorService
+		public errorService: ErrorService,
+		private translate: TranslateService
 	) {
 		super(router, route, dialog, global, changeDetectorRefs, pickerDialogService, emailService, errorService)
 		//this.globalPermissionService = localGlobalPermissionService;

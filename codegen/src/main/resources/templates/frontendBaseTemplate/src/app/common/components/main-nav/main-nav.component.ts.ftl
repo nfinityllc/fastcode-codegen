@@ -10,6 +10,17 @@ import { Router, Event } from '@angular/router';
 import entities from './entities.json';
 import { MatSidenav, MatSidenavContent } from '@angular/material';
 
+import { FastCodeCoreTranslateUiService } from 'fastCodeCore';
+<#if FlowableModule!false>
+import { TaskAppTranslateUiService } from '../../../../../projects/task-app/src/public_api';
+</#if>
+<#if SchedulerModule!false>
+import { SchedulerTranslateUiService } from 'scheduler';
+</#if>
+<#if EmailModule!false>
+import { EmailBuilderTranslateUiService } from '../../../../../projects/ip-email-builder/src/public_api';
+</#if>
+
 @Component({
 	selector: 'app-main-nav',
 	templateUrl: './main-nav.component.html',
@@ -33,6 +44,7 @@ export class MainNavComponent {
 		private router: Router,
 		public translate: TranslateService,
 		public Global: Globals,
+    private fastCodeCoreTranslateUiService: FastCodeCoreTranslateUiService,
 		<#if AuthenticationType != "none">
 		public Auth: AuthenticationService,
 		public globalPermissionService: GlobalPermissionService,
@@ -44,7 +56,7 @@ export class MainNavComponent {
     private schedulerTranslateUiService: SchedulerTranslateUiService,
     </#if>
     <#if EmailModule!false>
-    //private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
+    private emailBuilderTranslateUiService: EmailBuilderTranslateUiService,
     </#if>
 	) {
 
@@ -57,16 +69,20 @@ export class MainNavComponent {
 	}
 
 	switchLanguage(language: string) {
-		this.translate.use(language).subscribe(() => {
-      this.fastCodeCoreTranslateUiService.init(language);
-      <#if SchedulerModule!false>
-      this.schedulerTranslateUiService.init(language);</#if>
-      <#if EmailModule!false>
-      //this.emailBuilderTranslateUiService.init(language);</#if>
-      <#if FlowableModule!false>
-      this.taskAppTranslateUiService.init(language);</#if>
-    });
-		this.selectedLanguage = language;
+	  if(this.translate.translations[language]){
+      this.translate.use(language);
+    }else{
+      this.translate.use(language).subscribe(() => {
+        this.fastCodeCoreTranslateUiService.init(language);
+        <#if SchedulerModule!false>
+        this.schedulerTranslateUiService.init(language);</#if>
+        <#if EmailModule!false>
+        this.emailBuilderTranslateUiService.init(language);</#if>
+        <#if FlowableModule!false>
+        this.taskAppTranslateUiService.init(language);</#if>
+      });
+    }
+    this.selectedLanguage = language;
 	}
 	onNavMenuClicked() {
 		console.log('nav clicked');

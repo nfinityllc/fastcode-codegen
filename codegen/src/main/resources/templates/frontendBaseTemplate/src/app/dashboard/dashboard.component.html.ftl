@@ -24,7 +24,7 @@
             <i class="material-icons fc-icon" >
                 dashboard
             </i>
-           <h2>Welcome to FastCode Dashboard</h2>
+           <h2>{{'MainNav.Message' | translate}}</h2>
         </div>            
    
         

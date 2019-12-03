@@ -10,7 +10,7 @@ export var en: any = {
             "PAUSE": "Pause",
             "BACK": "Back",
             "ACTIONS": "Actions",
-			"DE-LINK": "De-link"
+            "DE-LINK": "De-link"
         },
         "ERRORS": {
             "REQUIRED": "Field is required.",
@@ -61,10 +61,10 @@ export var en: any = {
         "SAVE-EMAIL-BUTTON-TEXT": "Next: Email Body",
         "SEND-TEST-EMAIL-BUTTON-TEXT": "Send a test email",
         "TEMPLATE-ATTRIBUTE-TITLE": "Email Template Attributes",
-        "MESSAGES":{
+        "MESSAGES": {
             "SELECT-RECEIVER-PROMPT": "Where to send?",
             "EMAIL-SENT-SUCCESS": "Your test email has been successfully sent.",
-            "SAMPLE-TEMPLATE": "This text and Image are injected from <strong>Root Module</strong>. It's an example of dynamic Email, which allow you to create many awesome things, like Newsletter!",
+            "SAMPLE-TEMPLATE": "<p>Dear Email Editor,</p><p >  With this email template editor, you can edit your text, and add buttons,images and dividers.The above logo image and dividers are for demo purpose, you can remove or replace them. You can view the list of supported elements by clicking the Drag & Drop Content section of the page</p><p>Thanks,</p><p>John</p>",
             "SAMPLE-TEMPLATE2": "It looks like this!",
             "NO-CHANGES": "There's no changes to be saved."
         }
@@ -122,10 +122,10 @@ export var en: any = {
                 "FAMILY": "Family",
                 "STYLE": "Style"
             },
-            "STYLE-OPTIONS":{
-                "ITALIC":"italic",
-                "NORMAL":"normal",
-                "OBLIQUE":"oblique"
+            "STYLE-OPTIONS": {
+                "ITALIC": "italic",
+                "NORMAL": "normal",
+                "OBLIQUE": "oblique"
             }
         },
         "LINE-HEIGHT": {
@@ -179,10 +179,10 @@ export var en: any = {
     "EMAIL-BUILDER": {
         "PREVIEW-BUTTON-TEXT": "Preview",
         "CLOSE-PREVIEW-BUTTON-TEXT": "Close Preview",
-        "MESSAGES":{
-            "NO-CHANGES":"There's no changes to be saved.",
-            "UNSAVED-CHANGES-WARNING":"Please save unsaved changes to preview template.",
-            "DIALOG-TITLE":"Are you sure?",
+        "MESSAGES": {
+            "NO-CHANGES": "There's no changes to be saved.",
+            "UNSAVED-CHANGES-WARNING": "Please save unsaved changes to preview template.",
+            "DIALOG-TITLE": "Are you sure?",
         },
         "STRUCTURE": {
             "CHANGE-SETTING-TOOLTIP": "Change structure settings",
@@ -205,47 +205,49 @@ export var en: any = {
                 "BACKGROUND-SIZE-LABEL": "Background Size",
             },
             "VARIABLES-AND-TAGS": {
-                "LABEL":"Variables and Tags",
-                "VARIABLE-NAME-LABEL":"Variable Name",
-                "OPTIONS":{
-                    "OPTION1":"Option 1",
-                    "OPTION2":"Option 2",
-                    "OPTION3":"Option 3",
-                    "NONE":"None"
+                "LABEL": "Variables and Tags",
+                "VARIABLE-NAME-LABEL": "Variable Name",
+                "OPTIONS": {
+                    "OPTION1": "Option 1",
+                    "OPTION2": "Option 2",
+                    "OPTION3": "Option 3",
+                    "NONE": "None"
                 },
-                "DEFAULT-VALUE":"Default Value"
+                "DEFAULT-VALUE": "Default Value"
             },
-            "DRAG-AND-DROP-CONTENT":{
-                "LABEL":"Drag & Drop Content",
+            "DRAG-AND-DROP-CONTENT": {
+                "LABEL": "Drag & Drop Content",
                 "BACK-TO-CONTENT-BUTTON-TEXT": "Back to content blocks",
                 "BACK-TO-CONTENT-BUTTON-ARIA-LABEL": "Back to blocks list",
                 "TEXT": {
-                    "COLOR-LABEL":"Color"
+                    "COLOR-LABEL": "Color"
                 },
-                "IMAGE":{
-                    "LABEL":"Image",
-                    "TITLE-LABEL":"Title / Alt"
+                "IMAGE": {
+                    "LABEL": "Image",
+                    "TITLE-LABEL": "Title / Alt",
+                    "WIDTH-LABEL": "Width",
+                    "HEIGHT-LABEL": "Height",
                 },
-                "BUTTON":{
-                    "LABEL":"Button text",
-                    "COLOR-LABEL":"Color",
-                    "BACKGROUND-LABEL":"Background",
-                    "MARGIN-LABEL":"Margin",
-                    "PADDING-LABEL":"Padding",
+                "BUTTON": {
+                    "LABEL": "Button text",
+                    "COLOR-LABEL": "Color",
+                    "BACKGROUND-LABEL": "Background",
+                    "MARGIN-LABEL": "Margin",
+                    "PADDING-LABEL": "Padding",
                 },
-                "SPACER":{
-                    "HEIGHT-LABEL":"Height"
+                "SPACER": {
+                    "HEIGHT-LABEL": "Height"
                 },
-                "SOCIAL":{
-                    "MESSAGE":"Unfortunately this block is not ready yet!"
+                "SOCIAL": {
+                    "MESSAGE": "Unfortunately this block is not ready yet!"
                 }
             }
         },
-        "SETTINGS":{
-            "LABEL":"Settings",
-            "WIDTH-LABEL":"Email Width",
-            "BACKGROUND-COLOR-LABEL":"Background Color",
-            "GLOBAL-PADDING-LABEL":"Global Padding",
+        "SETTINGS": {
+            "LABEL": "Settings",
+            "WIDTH-LABEL": "Email Width",
+            "BACKGROUND-COLOR-LABEL": "Background Color",
+            "GLOBAL-PADDING-LABEL": "Global Padding",
         }
     }
 }
