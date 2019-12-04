@@ -31,7 +31,7 @@ export class MainNavComponent {
 	@ViewChild("navContent", { static: false }) navContent: MatSidenavContent;
 	
 	appName: string = '[=AppName]';
-	selectedLanguage = "en";
+	selectedLanguage: string;
 	entityList = entities;
 
 	hasTaskAppPermission: boolean = false;
@@ -66,6 +66,8 @@ export class MainNavComponent {
 		this.router.events.subscribe((event: Event) => {
 			this.isCurrentRootRoute = (this.router.url == '/') ? true : false;
 		});
+		
+		this.selectedLanguage = localStorage.getItem('selectedLanguage');
 	}
 
 	switchLanguage(language: string) {
@@ -82,6 +84,7 @@ export class MainNavComponent {
         this.taskAppTranslateUiService.init(language);</#if>
       });
     }
+    localStorage.setItem('selectedLanguage', language);
     this.selectedLanguage = language;
 	}
 	onNavMenuClicked() {
