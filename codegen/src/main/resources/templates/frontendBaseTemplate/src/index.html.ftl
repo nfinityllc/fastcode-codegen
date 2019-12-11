@@ -27,6 +27,10 @@
 	<link href="./flowable_admin/bower_components/json-formatter/json-formatter.min.css" rel="stylesheet" >
 	<link href="./flowable_admin/styles/style.css" rel="stylesheet" >
 	<link href="./flowable_admin/styles/style-modeler.css" rel="stylesheet" >
+	<link href="./flowable_admin/display/jquery.qtip.min.css" rel="stylesheet">
+  <link href="./flowable_admin/display/jquery.growl.css" rel="stylesheet">
+  <link href="./flowable_admin/display/jquery-confirm.min.css" rel="stylesheet">
+  <link href="./flowable_admin/display/displaymodel.css" rel="stylesheet">
 	
 	<!-- end admin stylesheets -->
 	
@@ -34,6 +38,14 @@
 	<!-- Admin files -->
 	<!-- build:js scripts/scripts.js -->
 	<script src="./flowable_admin/bower_components/jquery/jquery.js"></script>
+	<!-- <script src="./flowable_admin/display/jquery-1.12.4.min.js"></script> -->
+  <script src="./flowable_admin/display/jquery.qtip.min.js"></script>
+  <script src="./flowable_admin/display/jquery.growl.js"></script>
+  <script src="./flowable_admin/display/jquery-confirm.min.js"></script>
+  <script src="./flowable_admin/display/raphael.min.js"></script>
+  <script src="./flowable_admin/display/bpmn-draw.js"></script>
+  <script src="./flowable_admin/display/bpmn-icons.js"></script>
+  <script src="./flowable_admin/display/Polyline.js"></script>
 	<script src="./flowable_admin/additional_components/angular-ui-select2/select2.min.js"></script>
 	<script src="./flowable_admin/bower_components/angular/angular.min.js"></script>
 	<script src="./flowable_admin/bower_components/ng-file-upload/ng-file-upload-shim.js"></script>
@@ -119,6 +131,7 @@
 	<script src="./flowable_admin/scripts/form-instance-controllers.js"></script>
 	<script src="./flowable_admin/scripts/content-items-controllers.js"></script>
 	<script src="./flowable_admin/scripts/content-item-controllers.js"></script>
+  <script src="./flowable_admin/scripts/show-process-instance-diagram-popup-controller.js"></script>
 <!-- endbuild -->
 <!-- Admin files end -->
   

@@ -584,35 +584,6 @@ flowableAdminApp.controller('DeleteProcessModalInstanceCtrl',
             }
         };
     }]);
-
-flowableAdminApp.controller('ShowProcessInstanceDiagramPopupCtrl',
-    ['$rootScope', '$scope', '$modalInstance', '$http', 'process', '$timeout', function ($rootScope, $scope, $modalInstance, $http, process, $timeout) {
-
-        $scope.model = {
-            id: process.id,
-            name: process.name
-        };
-
-        $scope.status = {loading: false};
-
-        $scope.cancel = function () {
-            if (!$scope.status.loading) {
-                $modalInstance.dismiss('cancel');
-            }
-        };
-
-        $timeout(function () {
-            $("#bpmnModel").attr("data-instance-id", process.id);
-            $("#bpmnModel").attr("data-definition-id", process.processDefinitionId);
-            $("#bpmnModel").attr("data-server-id", $rootScope.activeServers['process'].id);
-            if (process.endTime != undefined) {
-                $("#bpmnModel").attr("data-history-id", process.id);
-            }
-            $("#bpmnModel").load("./display/displaymodel.html?instanceId=" + process.id);
-        }, 200);
-
-
-    }]);
     
 flowableAdminApp.controller('ShowProcessInstanceMigrationPopupCtrl',
     ['$rootScope', '$scope', '$modalInstance', '$http', 'process', 'processDefinition', 'migrationScope', 
