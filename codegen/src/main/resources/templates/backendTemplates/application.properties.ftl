@@ -53,8 +53,8 @@ spring.mail.properties.mail.smtp.connectiontimeout=5000
 spring.mail.properties.mail.smtp.timeout=5000
 spring.mail.properties.mail.smtp.writetimeout=5000
 
-fastcode.emailconverter.xapikey=t7HdQfZjGp6R96fOV4P8v18ggf6LLTQZ1puUI2tz
-fastcode.emailconverter.url=http://localhost:3001/
+mjmlFile.base.dir= [=MjmlTempPath]
+mjmlFile.path=${mjmlFile.base.dir}%s.mjml
 </#if>
 # Enable SSL
 
