@@ -13,6 +13,7 @@ import { createBorder, createPadding, createWidthHeight } from '../../utils';
 import { cloneDeep } from 'lodash';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent } from '../dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ip-structure',
@@ -29,7 +30,7 @@ export class StructureComponent implements OnInit {
 
   editingBlock;
 
-  constructor(private confirmDialog: MatDialog) {}
+  constructor(private confirmDialog: MatDialog, private translate: TranslateService) {}
 
   onBlockDrop(column, { removedIndex, addedIndex, payload }: DropResult) {
     if (removedIndex !== null) {
@@ -73,7 +74,7 @@ export class StructureComponent implements OnInit {
     this.confirmDialog
       .open(ConfirmDialogComponent, {
         data: {
-          message: 'Are you sure?'
+          message: this.translate.instant('COMPONENTS.STRUCTURE.REMOVE-BLOCK-MESSAGE'),
         }
       })
       .afterClosed()

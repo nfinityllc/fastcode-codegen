@@ -38,10 +38,13 @@ public class PomFileModifier {
 		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
 	    Dependency httpComponents = new Dependency("org.apache.httpcomponents","httpclient","4.5");
 
+	    Dependency gson = new Dependency("com.google.code.gson","gson","2.8.5");
+	    
 //	    if(flowable) {
 //			Dependency flowableRest = new Dependency("org.flowable","flowable-spring-boot-starter-rest","6.4.1");
 //			dependencies.add(flowableRest);
 //		}
+
 
 	    if(authenticationType !="none" || cache)
 	    {
@@ -94,6 +97,7 @@ public class PomFileModifier {
 		dependencies.add(springFoxSwaggerUI);
 		dependencies.add(springFoxDataRest);
 		dependencies.add(httpComponents);
+		dependencies.add(gson);
 		
 		PomFileModifier.addDependenciesAndPluginsToPom(path,dependencies);
 

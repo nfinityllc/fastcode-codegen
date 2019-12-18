@@ -16,4 +16,5 @@ export * from './lib/ip-email-builder.module';
 export {EmailRoutes} from './lib/email-routing.module';
 export * from './lib/email-editor/email-template-list.component';
 export *  from './lib/email-editor/template-editor.component';
-export * from "./lib/email-editor/email-variable/email-variable-list.component";
+export * from './lib/email-editor/email-variable/email-variable-list.component';
+export * from './lib/email-builder-translate-ui.service';

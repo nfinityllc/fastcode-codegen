@@ -17,6 +17,7 @@ import { createWidthHeight, createPadding } from './utils';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent } from './components/dialog.component';
 import { IBlocks } from './classes/Elements';
+import { TranslateService } from '@ngx-translate/core';
 
 // https://github.com/kutlugsahin/ngx-smooth-dnd/blob/master/apps/demo/src/pages/cards.ts
 @Component({
@@ -47,7 +48,8 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
   @Output() onEmailTemplateSave = new EventEmitter();
   constructor(
     private _ngb: IpEmailBuilderService,
-    private confirmDialog: MatDialog
+    private confirmDialog: MatDialog,
+    private translate: TranslateService,
   ) {
     this.email = _ngb.Email;
     this.cloneEmail = cloneDeep(_ngb.Email);
@@ -111,8 +113,8 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
 */
    saveEmail = ()=>{
     if (!this._hasChanges()) {
-      this._ngb.notify(`There's no changes to be saved.`);
-      return Promise.reject(`There's no changes to be saved`);
+      this._ngb.notify(this.translate.instant('EMAIL-BUILDER.MESSAGES.NO-CHANGES'));
+      return Promise.reject(this.translate.instant('EMAIL-BUILDER.MESSAGES.NO-CHANGES'));
     } else {
       // this.generatingTemplate = true;
       //await this._ngb.sendRequest();
@@ -122,7 +124,7 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
   }
   togglePreview(): void {
     if (!this.previewTemplate && this._hasChanges()) {
-      this._ngb.notify('Please save unsaved changes to preview template.');
+      this._ngb.notify(this.translate.instant('EMAIL-BUILDER.MESSAGES.UNSAVED-CHANGES-WARNING'));
     } else {
       this.previewTemplate = !this.previewTemplate;
     }
@@ -132,7 +134,7 @@ export class IpEmailBuilderComponent implements OnInit, OnDestroy {
     this.confirmDialog
       .open(ConfirmDialogComponent, {
         data: {
-          message: 'Are you sure?'
+          message: this.translate.instant('EMAIL-BUILDER.MESSAGES.DIALOG-TITLE')
         }
       })
       .afterClosed()

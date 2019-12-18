@@ -135,13 +135,16 @@ public class CodeGenerator {
 			generateAuditorController(details, appName, sourcePackageName,backEndRootFolder,destPath,authenticationType,authenticationTable,email,scheduler);
 
 		}
-
+		if(email) {
+			new File(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "/mjmlTemp").mkdirs();
+		}
 		updateAppRouting(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames, authenticationType, flowable);
 		updateAppModule(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateTestUtils(destPath,appName.substring(appName.lastIndexOf(".") + 1), entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/common/components/main-nav/entities.json",entityNames,authenticationTable);
 
-		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(appName, connectionString, schema,authenticationType,email,scheduler, flowable,cache);
+		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(destPath,appName, connectionString, schema,authenticationType,email,scheduler, flowable,cache);
+
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 		generateBeanConfig(appName, sourcePackageName,backEndRootFolder,destPath,authenticationType,details,cache,authenticationTable);
         modifyMainClass(destPath + "/" + backEndRootFolder + "/src/main/java", appName);
@@ -191,7 +194,9 @@ public class CodeGenerator {
 
 	}
 
-	private static Map<String,Object> getInfoForApplicationPropertiesFile(String appName, String connectionString, String schema,String authenticationType,Boolean email,Boolean scheduler, Boolean flowable,Boolean cache){
+
+	private static Map<String,Object> getInfoForApplicationPropertiesFile(String destPath, String appName, String connectionString, String schema,String authenticationType,Boolean email,Boolean scheduler, Boolean flowable,Boolean cache){
+
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
 		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
@@ -204,6 +209,9 @@ public class CodeGenerator {
 		propertyInfo.put("packageName",appName.replace(".", "/"));
 		propertyInfo.put("Flowable", flowable);
 		propertyInfo.put("packagePath", appName);
+		if(email) {
+			propertyInfo.put("MjmlTempPath", destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "/mjmlTemp");
+		}
 
 		return propertyInfo;
 	}

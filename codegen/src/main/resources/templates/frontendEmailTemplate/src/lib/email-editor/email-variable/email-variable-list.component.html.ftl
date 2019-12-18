@@ -16,9 +16,9 @@
 	<div class="table-container" (onScroll)="onTableScroll()" appVirtualScroll>
 		<mat-table matSort [dataSource]="items" class="mat-elevation-z8">
 			<ng-container matColumnDef="propertyName">
-				<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("PropertyName")}}</mat-header-cell>
+				<mat-header-cell mat-sort-header *matHeaderCellDef> {{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-NAME' | translate}}</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getFieldLabel("PropertyName")}}:</span>
+					<span class="mobile-label">{{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-NAME' | translate}}:</span>
 					
 					<a routerLink="./{{item.id}}">
 						{{ item.propertyName }}
@@ -26,32 +26,32 @@
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="propertyType">
-				<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("PropertyType")}}</mat-header-cell>
+				<mat-header-cell mat-sort-header *matHeaderCellDef> {{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-TYPE' | translate}}</mat-header-cell>
 				<mat-cell *matCellDef="let item">
-					<span class="mobile-label">{{getFieldLabel("PropertyType")}}:</span>
+					<span class="mobile-label">{{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.PROPERTY-TYPE' | translate}}:</span>
 					{{ item.propertyType }}
 				</mat-cell>
 			</ng-container>
 		
 		<ng-container matColumnDef="lastModificationTime">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("LastModificationTime")}}</mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> {{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFICATION-TIME' | translate}}</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-				<span class="mobile-label">{{getFieldLabel("LastModificationTime")}}:</span>
+				<span class="mobile-label">{{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFICATION-TIME' | translate}}:</span>
 				{{item.lastModificationTime | date:'short'}}
 			</mat-cell>
 		</ng-container>
 		<ng-container matColumnDef="lastModifierUserId">
-			<mat-header-cell mat-sort-header *matHeaderCellDef> {{getFieldLabel("LastModifierUserId")}}</mat-header-cell>
+			<mat-header-cell mat-sort-header *matHeaderCellDef> {{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFIER-USER-ID' | translate}}</mat-header-cell>
 			<mat-cell *matCellDef="let item">
-				<span class="mobile-label">{{getFieldLabel("LastModifierUserId")}}:</span>
+				<span class="mobile-label">{{'EMAIL-EDITOR.EMAIL-VARIABLE.FIELDS.LAST-MODIFIER-USER-ID' | translate}}:</span>
 				{{ item.lastModifierUserId }}
 			</mat-cell>
 		</ng-container>
 		
 		<ng-container matColumnDef="actions">
-			<mat-header-cell *matHeaderCellDef> {{getFieldLabel("Actions")}}</mat-header-cell>
+			<mat-header-cell *matHeaderCellDef> {{'EMAIL-GENERAL.ACTIONS.ACTIONS' | translate}}</mat-header-cell>
 			<mat-cell *matCellDef="let item"> 
-				<button mat-button color="accent" [disabled]="!IsDeletePermission" (click)="delete(item)">{{(selectedAssociation && selectedAssociation.type == "ManyToMany")?'De-link':'Delete'}}</button>
+				<button mat-button color="accent" [disabled]="!IsDeletePermission" (click)="delete(item)">{{'EMAIL-GENERAL.ACTIONS.DELETE' | translate}}</button>
 			</mat-cell>
 		</ng-container>
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

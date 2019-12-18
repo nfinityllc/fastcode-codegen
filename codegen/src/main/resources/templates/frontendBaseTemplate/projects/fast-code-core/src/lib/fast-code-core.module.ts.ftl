@@ -105,7 +105,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     BaseDetailsComponent,
     BaseListComponent,
     BaseNewComponent,
-    PickerComponent
+    PickerComponent,
+    TranslateModule
     
   ],
   entryComponents: [

@@ -14,6 +14,7 @@ import { IEmailTemplate } from './iemail-template';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { GlobalPermissionService } from 'projects/fast-code-core/src/public_api';// 'fastCodeCore';
+import { TranslateService } from '@ngx-translate/core';
 //import { DividerBlock, IBlockState } from 'ip-email-builder/public_api';
 @Component({
   selector: 'email-template-editor',
@@ -32,10 +33,18 @@ export class TemplateEditorComponent implements OnInit {
   IsCreatePermission:Boolean=false;
   IsUpdatePermission:Boolean=false;
   IsDeletePermission:Boolean=false;
-  constructor(private _ngb: IpEmailBuilderService,private route: ActivatedRoute, private router: Router,
-    private snackBar: MatSnackBar,private emailtemplateService:EmailTemplateService,
-    private mailtemplateService:MailTemplateService, private emailVariableService: EmailVariableService,
-    private formBuilder: FormBuilder,public globalPermissionService: GlobalPermissionService) {
+  constructor(
+    private _ngb: IpEmailBuilderService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private emailtemplateService:EmailTemplateService,
+    private mailtemplateService:MailTemplateService,
+    private emailVariableService: EmailVariableService,
+    private formBuilder: FormBuilder,
+    public globalPermissionService: GlobalPermissionService,
+    private translate: TranslateService
+  ) {
     this.isLoading = _ngb.isLoading;
     _ngb.MergeTags = new Set(["tag22"]) ; //new Set(['{{firstName}}', '{{lastName}}']);
   }
@@ -89,11 +98,12 @@ export class TemplateEditorComponent implements OnInit {
                 message: ''
               }),
                 new TextBlock(
-                  `<p>Dear Email Editor,</p><p >  With this email template editor, you can edit your text, and add buttons,images and dividers.
-                   The above logo image and dividers are for demo purpose, you can remove or replace them.
-                   You can view the list of supported elements by clicking the Drag & Drop Content section of the page</p>
-                  <p>Thanks,</p>
-                  <p>John</p>`,
+                  `${this.translate.instant('EMAIL-EDITOR.MESSAGES.SAMPLE-TEMPLATE')}`,
+                  // `<p>Dear Email Editor,</p><p >  With this email template editor, you can edit your text, and add buttons,images and dividers.
+                  //  The above logo image and dividers are for demo purpose, you can remove or replace them.
+                  //  You can view the list of supported elements by clicking the Drag & Drop Content section of the page</p>
+                  // <p>Thanks,</p>
+                  // <p>John</p>`,
                   {
                     lineHeight: {
                       value: 22,
@@ -103,7 +113,7 @@ export class TemplateEditorComponent implements OnInit {
                   }
                 ),
              /*   new TextBlock(
-                  `<h2 class="ql-align-center">It looks like this!</h2>`
+                  `<h2 class="ql-align-center">${this.translate.instant('EMAIL-EDITOR.MESSAGES.SAMPLE-TEMPLATE2')}</h2>`
                 )*/
                
                
@@ -135,7 +145,7 @@ export class TemplateEditorComponent implements OnInit {
       //});
   }
   sendTestMail() {
-    const to = prompt('Where to send?');
+    const to = prompt(this.translate.instant('EMAIL-EDITOR.MESSAGES.SELECT-RECEIVER-PROMPT'));
     if (!to) {
       return;
     }
@@ -150,8 +160,7 @@ export class TemplateEditorComponent implements OnInit {
         //  x = data;
         //   y = JSON.parse(x.contentJson);
            //this.emailTemplate = {...this.emailTemplate,...data};
-           var snackBarRef = this.snackBar.open("Your test email has been successfully sent.",'OK', { duration:1000, panelClass:['snackbar-background'] });
-          
+           var snackBarRef = this.snackBar.open(this.translate.instant('EMAIL-EDITOR.MESSAGES.EMAIL-SENT-SUCCESS'), this.translate.instant('EMAIL-GENERAL.ACTIONS.OK') , { duration:1000, panelClass:['snackbar-background'] });
          //  snackBarRef.dismiss();
            // this._ngb.sendRequest();
             //this.onBack();
@@ -189,7 +198,7 @@ export class TemplateEditorComponent implements OnInit {
   
   saveEmail = ()=>{
     if (!this._ngb.IsChanged ){
-      this._ngb.notify(`There's no changes to be saved.`);
+      this._ngb.notify(this.translate.instant('EMAIL-EDITOR.MESSAGES.NO-CHANGES'));
      // return Promise.reject(`There's no changes to be saved`);
     } else {
       // this.generatingTemplate = true;

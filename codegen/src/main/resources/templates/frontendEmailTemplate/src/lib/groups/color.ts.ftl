@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ip-color',
@@ -15,6 +16,6 @@ export class ColorComponent {
   @Input()
   key = 'color';
   @Input()
-  label = 'Color';
-  constructor() {}
+  label = this.translate.instant('GROUPS.COLOR.FIELDS.COLOR');
+  constructor(private translate: TranslateService){}
 }
