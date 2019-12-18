@@ -47,6 +47,14 @@ public class PermissionController {
 
 	@Autowired
 	private Environment env;
+	
+	public PermissionController(PermissionAppService appService,LoggingHelper helper,[=AuthenticationTable]permissionAppService [=AuthenticationTable?uncap_first]permissionAppService,RolepermissionAppService rolepermissionAppService) {
+		
+		this._permissionAppService= appService;
+		this.logHelper = helper;
+		this._[=AuthenticationTable?uncap_first]permissionAppService = [=AuthenticationTable?uncap_first]permissionAppService;
+		this._rolepermissionAppService = rolepermissionAppService;
+	}
 
 	// CRUD Operations
 

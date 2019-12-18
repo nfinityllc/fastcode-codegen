@@ -410,8 +410,12 @@ public class EntityDetails {
 								int index = str.lastIndexOf(".") + 1;
 								String fieldname=field.getName();
 								String fieldType=str.substring(index);
-
+								if(fieldType.equals("int"))
+								{
+									fieldType="Integer";
+								}
 								fieldType=fieldType.substring(0, 1).toUpperCase() + fieldType.substring(1);
+								
 								Annotation[] annotations = field.getAnnotations(); 
 
 								for (Annotation a : annotations) { 
@@ -444,7 +448,7 @@ public class EntityDetails {
 											String columnType =j.columnDefinition();
 											if (columnType.equals("bigserial") || columnType.equals("int8"))
 												joinDetails.setJoinColumnType("Long");
-											else if(columnType.equals("serial") || columnType.equals("int4"))
+											else if(columnType.equals("serial") || columnType.equals("int4") )
 												joinDetails.setJoinColumnType("Integer");
 											else if(columnType.equals("decimal"))
 												joinDetails.setJoinColumnType("Double");
@@ -525,11 +529,17 @@ public class EntityDetails {
 								JoinDetails joinDetails = new JoinDetails();
 
 								String mappedBy=null;
+								
 								String str = field.getType().toString();
 								int index = str.lastIndexOf(".") + 1;
 								String fieldname=field.getName();
 								String fieldType=str.substring(index);
-
+								if(fieldType.equals("int"))
+								{
+									fieldType="Integer";
+								}
+								fieldType=fieldType.substring(0, 1).toUpperCase() + fieldType.substring(1);
+								
 								for(JoinDetails jd: childJoinDetailsList)
 								{
 									if(jd.getJoinEntityName()==fieldname)

@@ -66,7 +66,7 @@ public class RoleAppService implements IRoleAppService{
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="Role", key = "#roleId")
+	@CacheEvict(value="Role", key = "#p0")
 	</#if>
 	public UpdateRoleOutput Update(Long roleId, UpdateRoleInput input) {
 
@@ -88,7 +88,7 @@ public class RoleAppService implements IRoleAppService{
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="Role", key = "#roleId")
+	@CacheEvict(value="Role", key = "#p0")
     </#if>
 	public void Delete(Long roleId) {
 
@@ -102,7 +102,7 @@ public class RoleAppService implements IRoleAppService{
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "Role", key = "#roleId")
+	@Cacheable(value = "Role", key = "#p0")
 	</#if>
 	public FindRoleByIdOutput FindById(Long roleId) {
 
@@ -116,7 +116,7 @@ public class RoleAppService implements IRoleAppService{
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-    @Cacheable(value = "Role", key = "#roleName")
+    @Cacheable(value = "Role", key = "#p0")
     </#if>
 	public FindRoleByNameOutput FindByRoleName(String roleName) {
 

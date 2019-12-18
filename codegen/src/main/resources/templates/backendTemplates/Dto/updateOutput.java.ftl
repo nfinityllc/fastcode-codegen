@@ -48,25 +48,6 @@ public class Update[=ClassName]Output {
   </#if>
   </#if>
 </#list>
-<#if AuthenticationType== "database" && ClassName == AuthenticationTable>  
-  private Long roleId;       
-  private String roleDescriptiveField;
-    
-  public Long getRoleId() {
-   	return roleId;
-  }
-
-  public void setRoleId(Long roleId){
-  	this.roleId = roleId;
-  }
-  public String getRoleDescriptiveField() {
-    return roleDescriptiveField;
-  }
-
-  public void setRoleDescriptiveField(String roleDescriptiveField){
-   	this.roleDescriptiveField = roleDescriptiveField;
-  }
-  </#if>
 
   <#list Relationship as relationKey,relationValue>
   <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>

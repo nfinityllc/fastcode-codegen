@@ -46,6 +46,14 @@ public class [=AuthenticationTable]permissionController {
 
 	@Autowired
 	private Environment env;
+	
+	public [=AuthenticationTable]permissionController([=AuthenticationTable]permissionAppService [=AuthenticationTable?uncap_first]permissionAppService, [=AuthenticationTable]AppService [=AuthenticationTable?uncap_first]AppService,
+			LoggingHelper helper) {
+		
+		this._[=AuthenticationTable?uncap_first]permissionAppService = [=AuthenticationTable?uncap_first]permissionAppService;
+		this._[=AuthenticationTable?uncap_first]AppService = [=AuthenticationTable?uncap_first]AppService;
+		this.logHelper = helper;
+	}
     
     @PreAuthorize("hasAnyAuthority('[=AuthenticationTable?upper_case]PERMISSIONENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
@@ -146,7 +154,7 @@ public class [=AuthenticationTable]permissionController {
 	}
 
     @PreAuthorize("hasAnyAuthority('[=AuthenticationTable?upper_case]PERMISSIONENTITY_READ')")
-	@RequestMapping(value = "/{[=AuthenticationTable?uncap_first]permissionid}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/[=AuthenticationTable?uncap_first]", method = RequestMethod.GET)
 	public ResponseEntity<Get[=AuthenticationTable]Output> Get[=AuthenticationTable](@PathVariable String id) {
 	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId =_[=AuthenticationTable?uncap_first]permissionAppService.parse[=AuthenticationTable]permissionKey(id);
 	if([=AuthenticationTable?uncap_first]permissionId == null)
@@ -163,7 +171,7 @@ public class [=AuthenticationTable]permissionController {
 	}
   
     @PreAuthorize("hasAnyAuthority('[=AuthenticationTable?upper_case]PERMISSIONENTITY_READ')")
-	@RequestMapping(value = "/{[=AuthenticationTable?uncap_first]permissionid}/permission", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/permission", method = RequestMethod.GET)
 	public ResponseEntity<GetPermissionOutput> GetPermission(@PathVariable String id) {
 	[=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId =_[=AuthenticationTable?uncap_first]permissionAppService.parse[=AuthenticationTable]permissionKey(id);
 	if([=AuthenticationTable?uncap_first]permissionId == null)

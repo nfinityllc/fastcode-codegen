@@ -91,7 +91,7 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="Rolepermission", key = "#rolepermissionId")
+	@CacheEvict(value="Rolepermission", key = "#p0")
 	</#if>
 	public UpdateRolepermissionOutput Update(RolepermissionId rolepermissionId , UpdateRolepermissionInput input) {
 
@@ -123,7 +123,7 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="Rolepermission", key = "#rolepermissionId")
+	@CacheEvict(value="Rolepermission", key = "#p0")
     </#if>
 	public void Delete(RolepermissionId rolepermissionId ) {
 
@@ -138,7 +138,7 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "Rolepermission", key = "#rolepermissionId")
+	@Cacheable(value = "Rolepermission", key = "#p0")
 	</#if>
 	public FindRolepermissionByIdOutput FindById(RolepermissionId rolepermissionId) {
 
@@ -153,7 +153,7 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	// ReST API Call - GET /rolepermission/1/permission
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable (value = "Rolepermission", key="#rolepermissionId")
+    @Cacheable (value = "Rolepermission", key="#p0")
     </#if>
 	public GetPermissionOutput GetPermission(RolepermissionId rolepermissionId ) {
 
@@ -170,7 +170,7 @@ public class RolepermissionAppService implements IRolepermissionAppService {
 	// ReST API Call - GET /rolepermission/1/role
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable (value = "Rolepermission", key="#rolepermissionId")
+    @Cacheable (value = "Rolepermission", key="#p0")
     </#if>
 	public GetRoleOutput GetRole(RolepermissionId rolepermissionId ) {
 

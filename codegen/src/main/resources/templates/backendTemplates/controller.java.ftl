@@ -94,6 +94,23 @@ public class [=ClassName]Controller {
     @Autowired
     private [=AuthenticationTable]roleAppService _[=AuthenticationTable?uncap_first]roleAppService;
     </#if>  
+    
+    public [=ClassName]Controller([=ClassName]AppService [=ClassName?uncap_first]AppService,<#list Relationship as relationKey,relationValue><#if ClassName != relationValue.eName && relationValue.eName !="OneToMany"> [=relationValue.eName]AppService [=relationValue.eName?uncap_first]AppService,</#if></#list>
+	<#if AuthenticationType != "none" && ClassName == AuthenticationTable> PasswordEncoder pEncoder, [=AuthenticationTable]permissionAppService [=AuthenticationTable?uncap_first]permissionAppService, [=AuthenticationTable]roleAppService [=AuthenticationTable?uncap_first]roleAppService,</#if> LoggingHelper helper) {
+		super();
+		this._[=ClassName?uncap_first]AppService = [=ClassName?uncap_first]AppService;
+		<#list Relationship as relationKey,relationValue>
+    	<#if ClassName != relationValue.eName && relationValue.eName !="OneToMany">
+    	this._[=relationValue.eName?uncap_first]AppService = [=relationValue.eName?uncap_first]AppService;
+    	</#if>
+    	</#list>
+		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
+	    this.pEncoder = pEncoder;
+ 		this._[=AuthenticationTable?uncap_first]permissionAppService = [=AuthenticationTable?uncap_first]permissionAppService;
+    	this._[=AuthenticationTable?uncap_first]roleAppService = [=AuthenticationTable?uncap_first]roleAppService;
+    	</#if>
+		this.logHelper = helper;
+	}
 
     <#if AuthenticationType != "none">
     @PreAuthorize("hasAnyAuthority('[=ClassName?upper_case]ENTITY_CREATE')")
@@ -112,14 +129,13 @@ public class [=ClassName]Controller {
 	                    String.format("There already exists a [=ClassName] with [=authValue.fieldName?cap_first] =%s", [=ClassName?uncap_first].get[=authValue.fieldName?cap_first]()));
 	        }
 	    </#if> 
-        <#if authKey== "Password">
+        <#if authKey == "Password">
 	    [=ClassName?uncap_first].set[=authValue.fieldName?cap_first](pEncoder.encode([=ClassName?uncap_first].get[=authValue.fieldName?cap_first]()));
 	    </#if>
 	    </#list>
         </#if>
 		</#if>
 		Create[=ClassName]Output output=_[=ClassName?uncap_first]AppService.Create([=ClassName?uncap_first]);
-		
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 		<#if relationValue.isParent==false>
@@ -134,8 +150,8 @@ public class [=ClassName]Controller {
 		throw new EntityNotFoundException(
 				String.format("No record found"));
 	    }
+	    
 		</#if>
-	
         </#if>
         </#if>
         </#list>
@@ -146,11 +162,11 @@ public class [=ClassName]Controller {
 		throw new EntityNotFoundException(
 				String.format("No record found"));
 	    }
+	    
 		</#if>
 		</#if>
         </#if>
 		</#list>
-		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 

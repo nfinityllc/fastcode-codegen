@@ -140,6 +140,7 @@ public class CodegenApplication implements ApplicationRunner {
 			System.out.print("Git repository could not be initialized, as Git is not installed on your system.");
 			return;
 		}
+		
 		if(input.getUpgrade()) {
 			if(GitRepositoryManager.hasUncommittedChanges()) {
 				System.out.print("\nGit has uncommitted changes. ");
@@ -319,5 +320,6 @@ public class CodegenApplication implements ApplicationRunner {
 	FastCodeProperties myBean() {
 		return new FastCodeProperties();
 	}
+
 
 }

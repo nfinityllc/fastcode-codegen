@@ -33,7 +33,7 @@ public class AuthenticationClassesTemplateGenerator {
 		cfg.setTemplateLoader(mtl);
 
 		String backendAppFolder = destination + "/" + packageName.substring(packageName.lastIndexOf(".") + 1) + "/src/main/java/" + packageName.replace(".", "/");
-
+        String backendTestFolder = destination + "/" + packageName.substring(packageName.lastIndexOf(".") + 1) + "/src/test/java/" + packageName.replace(".", "/");
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
 		root.put("History", history);
@@ -70,12 +70,12 @@ public class AuthenticationClassesTemplateGenerator {
 
 		}
 		
-		generateBackendFiles(root, backendAppFolder,authenticationTable);
+		generateBackendFiles(root, backendAppFolder,backendTestFolder,authenticationTable);
 		generateFrontendAuthorization(destination, packageName, authenticationType, authenticationTable, root, flowable);
 		generateAppStartupRunner(details, backendAppFolder, email, scheduler,root);
 	}
 
-	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
+	private static void generateBackendFiles(Map<String, Object> root, String destPath,String testDestinationPath,String authenticationTable) {
 		String authenticationType =root.get("AuthenticationType").toString();
 		String destFolderBackend;
 		if(authenticationType!="none" && authenticationTable == null)
@@ -195,6 +195,10 @@ public class AuthenticationClassesTemplateGenerator {
 		destFolderBackend = destPath + "/RestControllers";
 		new File(destFolderBackend).mkdirs();
 		generateFiles(getAuthenticationControllerTemplates(authenticationType,authenticationTable), root, destFolderBackend);
+
+		destFolderBackend = testDestinationPath + "/RestControllers";
+		new File(destFolderBackend).mkdirs();
+		generateFiles(getAuthenticationControllerIntegrationTestTemplates(authenticationType,authenticationTable), root, destFolderBackend);
 
 	}
 
@@ -532,6 +536,32 @@ public class AuthenticationClassesTemplateGenerator {
 		backEndTemplate.put("permissions/permissionsController.java.ftl", "PermissionController.java");
 		backEndTemplate.put("rolePermission/RolepermissionController.java.ftl", "RolepermissionController.java");
 		backEndTemplate.put("roles/rolesController.java.ftl", "RoleController.java");
+
+		return backEndTemplate;
+	}
+	
+	private static Map<String, Object> getAuthenticationControllerIntegrationTestTemplates(String authenticationType,String authenticationTable) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
+
+		if(authenticationType!="none") {
+			if(authenticationTable==null)
+			{
+				backEndTemplate.put("integrationTest/UserControllerTest.java.ftl", "UserControllerTest.java");
+				backEndTemplate.put("integrationTest/UserpermissionControllerTest.java.ftl", "UserpermissionControllerTest.java");
+				backEndTemplate.put("integrationTest/UserroleControllerTest.java.ftl", "UserroleControllerTest.java");
+			}
+			else
+			{
+				backEndTemplate.put("integrationTest/UserroleControllerTest.java.ftl", authenticationTable+"roleControllerTest.java");
+				backEndTemplate.put("integrationTest/UserpermissionControllerTest.java.ftl", authenticationTable+"permissionControllerTest.java");
+			}
+
+		}
+
+		backEndTemplate.put("integrationTest/PermissionControllerTest.java.ftl", "PermissionControllerTest.java");
+		backEndTemplate.put("integrationTest/RolepermissionControllerTest.java.ftl", "RolepermissionControllerTest.java");
+		backEndTemplate.put("integrationTest/RoleControllerTest.java.ftl", "RoleControllerTest.java");
 
 		return backEndTemplate;
 	}

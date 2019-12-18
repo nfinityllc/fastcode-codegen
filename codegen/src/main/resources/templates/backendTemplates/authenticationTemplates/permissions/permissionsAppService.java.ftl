@@ -57,7 +57,7 @@ public class PermissionAppService implements IPermissionAppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="Permission", key = "#permissionId")
+	@CacheEvict(value="Permission", key = "#p0")
 	</#if>
 	public UpdatePermissionOutput Update(Long permissionId, UpdatePermissionInput input) {
 	<#if Flowable!false>
@@ -77,7 +77,7 @@ public class PermissionAppService implements IPermissionAppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="Permission", key = "#permissionId")
+	@CacheEvict(value="Permission", key = "#p0")
 	</#if>
 	public void Delete(Long permissionId) {
 
@@ -90,7 +90,7 @@ public class PermissionAppService implements IPermissionAppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "Permission", key = "#permissionId")
+	@Cacheable(value = "Permission", key = "#p0")
 	</#if>
 	public FindPermissionByIdOutput FindById(Long permissionId) {
 
@@ -104,7 +104,7 @@ public class PermissionAppService implements IPermissionAppService {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable(value = "Permission", key = "#permissionName")
+    @Cacheable(value = "Permission", key = "#p0")
     </#if>
 	public FindPermissionByNameOutput FindByPermissionName(String permissionName) {
 

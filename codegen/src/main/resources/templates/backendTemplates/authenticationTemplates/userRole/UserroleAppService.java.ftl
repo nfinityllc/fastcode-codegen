@@ -98,7 +98,7 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="[=AuthenticationTable]role", key = "#[=AuthenticationTable?uncap_first]roleId")
+	@CacheEvict(value="[=AuthenticationTable]role", key = "#p0")
 	</#if>
 	public Update[=AuthenticationTable]roleOutput Update([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId , Update[=AuthenticationTable]roleInput input) {
 
@@ -150,7 +150,7 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="[=AuthenticationTable]role", key = "#[=AuthenticationTable?uncap_first]roleId")
+	@CacheEvict(value="[=AuthenticationTable]role", key = "#p0")
 	</#if>
 	public void Delete([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
@@ -160,7 +160,7 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "[=AuthenticationTable]role", key = "#[=AuthenticationTable?uncap_first]roleId")
+	@Cacheable(value = "[=AuthenticationTable]role", key = "#p0")
 	</#if>
 	public Find[=AuthenticationTable]roleByIdOutput FindById([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
@@ -175,7 +175,7 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]role/1/[=AuthenticationTable?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable (value = "[=AuthenticationTable]role", key="#[=AuthenticationTable?uncap_first]roleId")
+    @Cacheable (value = "[=AuthenticationTable]role", key="#p0")
     </#if>
 	public Get[=AuthenticationTable]Output Get[=AuthenticationTable]([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
@@ -192,7 +192,7 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]role/1/role
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable (value = "[=AuthenticationTable]role", key="#[=AuthenticationTable?uncap_first]roleId")
+    @Cacheable (value = "[=AuthenticationTable]role", key="#p0")
     </#if>
 	public GetRoleOutput GetRole([=AuthenticationTable]roleId [=AuthenticationTable?uncap_first]roleId) {
 
@@ -427,8 +427,6 @@ public class [=AuthenticationTable]roleAppService implements I[=AuthenticationTa
 		return [=AuthenticationTable?uncap_first]roleId;
 		
 	}	
-	
-    
 	
 }
 

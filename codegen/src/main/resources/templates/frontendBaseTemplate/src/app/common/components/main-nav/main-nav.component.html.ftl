@@ -93,7 +93,7 @@
           
         </mat-nav-list>
       </mat-expansion-panel>
-      
+        </#if>
       <mat-expansion-panel class="expansion-panel">
         <mat-expansion-panel-header class="subnav-header">
           {{'MainNav.Administration' | translate }}
@@ -123,7 +123,7 @@
 	        </mat-nav-list> 
 	      </mat-expansion-panel>
 	      
-	      <#if History!false>
+	    <#if History!false>
         <a mat-list-item class="sidenav-list-item" routerLink="entityHistory">{{'MainNav.EntityHistory' | translate }} 
         </a>
         
@@ -160,7 +160,7 @@
             </mat-nav-list>
 
           </mat-expansion-panel>
-
+    
           <!-- App engine -->
           <mat-expansion-panel class="expansion-panel">
 

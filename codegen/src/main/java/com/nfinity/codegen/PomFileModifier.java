@@ -31,16 +31,17 @@ public class PomFileModifier {
 		Dependency querydslapt= new Dependency("com.querydsl", "querydsl-apt", "4.2.1");
 		Dependency apache_commons = new Dependency("org.apache.commons", "commons-lang3", "3.8.1");
 		Dependency postgres = new Dependency("org.postgresql","postgresql","42.2.5");
-		
+		Dependency h2 = new Dependency("com.h2database","h2","");
+
 		Dependency springFoxSwagger = new Dependency("io.springfox","springfox-swagger2","2.7.0");
 		Dependency springFoxSwaggerUI = new Dependency("io.springfox","springfox-swagger-ui","2.7.0");
 		Dependency springFoxDataRest = new Dependency("io.springfox","springfox-data-rest","2.8.0");
 	    Dependency httpComponents = new Dependency("org.apache.httpcomponents","httpclient","4.5");
 
-	    if(flowable) {
-			Dependency flowableRest = new Dependency("org.flowable","flowable-spring-boot-starter-rest","6.4.1");
-			dependencies.add(flowableRest);
-		}
+//	    if(flowable) {
+//			Dependency flowableRest = new Dependency("org.flowable","flowable-spring-boot-starter-rest","6.4.1");
+//			dependencies.add(flowableRest);
+//		}
 
 	    if(authenticationType !="none" || cache)
 	    {
@@ -88,6 +89,7 @@ public class PomFileModifier {
 		dependencies.add(querydslapt);
 		dependencies.add(apache_commons);
 		dependencies.add(postgres);
+		dependencies.add(h2);
 		dependencies.add(springFoxSwagger);
 		dependencies.add(springFoxSwaggerUI);
 		dependencies.add(springFoxDataRest);

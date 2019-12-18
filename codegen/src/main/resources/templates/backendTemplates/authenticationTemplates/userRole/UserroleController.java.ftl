@@ -47,6 +47,14 @@ public class [=AuthenticationTable]roleController {
 
 	@Autowired
 	private Environment env;
+	
+	 public [=AuthenticationTable]roleController([=AuthenticationTable]roleAppService [=AuthenticationTable?uncap_first]roleAppService, [=AuthenticationTable]AppService [=AuthenticationTable?uncap_first]AppService,
+			LoggingHelper helper) {
+		super();
+		this._[=AuthenticationTable?uncap_first]roleAppService = [=AuthenticationTable?uncap_first]roleAppService;
+		this._[=AuthenticationTable?uncap_first]AppService = [=AuthenticationTable?uncap_first]AppService;
+		this.logHelper = helper;
+	}
 
     @PreAuthorize("hasAnyAuthority('[=AuthenticationTable?upper_case]ROLEENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)

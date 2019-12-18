@@ -161,7 +161,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="[=ClassName]", key = "#[=IdClass?uncap_first]")
+	@CacheEvict(value="[=ClassName]", key = "#p0")
 	</#if>
 	public Update[=ClassName]Output Update(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first] <#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if> </#if></#list> [=IdClass?uncap_first]</#if>, Update[=ClassName]Input input) {
 
@@ -228,7 +228,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="[=ClassName]", key = "#[=IdClass?uncap_first]")
+	@CacheEvict(value="[=ClassName]", key = "#p0")
 	</#if>
 	public void Delete(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 
@@ -249,7 +249,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "[=ClassName]", key = "#[=IdClass?uncap_first]")
+	@Cacheable(value = "[=ClassName]", key = "#p0")
 	</#if>
 	public Find[=ClassName]ByIdOutput FindById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 
@@ -275,7 +275,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "[=ClassName]", key = "#[=IdClass?uncap_first]")
+	@Cacheable(value = "[=ClassName]", key = "#p0")
 	</#if>
 	public Find[=ClassName]WithAllFieldsByIdOutput FindWithAllFieldsById(<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 
@@ -293,7 +293,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "[=ClassName?uncap_first]", key = "#[=authValue.fieldName?uncap_first]")
+	@Cacheable(value = "[=ClassName?uncap_first]", key = "#p0")
 	</#if>
 	public Find[=ClassName]By[=authValue.fieldName?cap_first]Output FindBy[=authValue.fieldName?cap_first](String [=authValue.fieldName?uncap_first]) {
 
@@ -314,7 +314,7 @@ public class [=ClassName]AppService implements I[=ClassName]AppService {
 	// ReST API Call - GET /[=ClassName?uncap_first]/1/[=relationValue.eName?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable (value = "[=ClassName]", key="#[=ClassName?uncap_first]Id")
+    @Cacheable (value = "[=ClassName]", key="#p0")
     </#if>
 	public Get[=relationValue.eName]Output Get[=relationValue.eName](<#if CompositeKeyClasses?seq_contains(ClassName)>[=IdClass] [=IdClass?uncap_first]<#else><#list Fields as key,value><#if value.isPrimaryKey!false><#if value.fieldType?lower_case == "long">Long<#elseif value.fieldType?lower_case == "integer">Integer<#elseif value.fieldType?lower_case == "short">Short<#elseif value.fieldType?lower_case == "double">Double<#elseif value.fieldType?lower_case == "string">String</#if></#if></#list> [=IdClass?uncap_first]</#if>) {
 

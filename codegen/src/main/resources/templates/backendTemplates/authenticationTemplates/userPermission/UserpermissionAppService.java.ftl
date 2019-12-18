@@ -107,7 +107,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="[=AuthenticationTable]permission", key = "#[=AuthenticationTable?uncap_first]permissionId")
+	@CacheEvict(value="[=AuthenticationTable]permission", key = "#p0")
 	</#if>
 	public Update[=AuthenticationTable]permissionOutput Update([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId , Update[=AuthenticationTable]permissionInput input) {
 
@@ -161,7 +161,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache !false>
-	@CacheEvict(value="[=AuthenticationTable]permission", key = "#[=AuthenticationTable?uncap_first]permissionId")
+	@CacheEvict(value="[=AuthenticationTable]permission", key = "#p0")
 	</#if>
 	public void Delete([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId) {
 
@@ -180,7 +180,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache !false>
-	@Cacheable(value = "[=AuthenticationTable]permission", key = "#[=AuthenticationTable?uncap_first]permissionId")
+	@Cacheable(value = "[=AuthenticationTable]permission", key = "#p0")
 	</#if>
 	public Find[=AuthenticationTable]permissionByIdOutput FindById([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
@@ -195,7 +195,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]permission/1/[=AuthenticationTable?uncap_first]
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable (value = "[=AuthenticationTable]permission", key="#[=AuthenticationTable?uncap_first]permissionId")
+    @Cacheable (value = "[=AuthenticationTable]permission", key="#p0")
     </#if>
 	public Get[=AuthenticationTable]Output Get[=AuthenticationTable]([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 
@@ -212,7 +212,7 @@ public class [=AuthenticationTable]permissionAppService implements I[=Authentica
 	// ReST API Call - GET /[=AuthenticationTable?uncap_first]permission/1/permission
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     <#if Cache !false>
-    @Cacheable (value = "[=AuthenticationTable]permission", key="#[=AuthenticationTable?uncap_first]permissionId")
+    @Cacheable (value = "[=AuthenticationTable]permission", key="#p0")
 	</#if>
 	public GetPermissionOutput GetPermission([=AuthenticationTable]permissionId [=AuthenticationTable?uncap_first]permissionId ) {
 

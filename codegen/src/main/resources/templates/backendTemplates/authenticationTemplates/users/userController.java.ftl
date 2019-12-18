@@ -49,6 +49,16 @@ public class UserController {
 
 	@Autowired
 	private Environment env;
+	
+	public UserController(UserAppService userAppService, UserpermissionAppService userpermissionAppService,
+			UserroleAppService userroleAppService,PasswordEncoder pEncoder, LoggingHelper logHelper) {
+		super();
+		this._userAppService = userAppService;
+		this._userpermissionAppService = userpermissionAppService;
+		this._userroleAppService = userroleAppService;
+		this.pEncoder = pEncoder;
+		this.logHelper = logHelper;
+	}
 
 	// CRUD Operations
 	// ------------ Create a user ------------
@@ -60,7 +70,7 @@ public class UserController {
 	     if (foundUser != null) {
 	     	logHelper.getLogger().error("There already exists a user with a name=%s", user.getUserName());
 	        throw new EntityExistsException(
-	        	String.format("There already exists a user with email address=%s", user.getUserName()));
+	        	String.format("There already exists a user with a name=%s", user.getUserName()));
 	    }
 	        
 	    user.setPassword(pEncoder.encode(user.getPassword()));

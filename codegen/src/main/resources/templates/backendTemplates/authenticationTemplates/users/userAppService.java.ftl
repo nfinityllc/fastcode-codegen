@@ -69,7 +69,7 @@ public class UserAppService implements IUserAppService {
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache!false>
-	@CacheEvict(value="User", key = "#userId")
+	@CacheEvict(value="User", key = "#p0")
 	</#if>
 	public UpdateUserOutput Update(Long userId, UpdateUserInput input) {
 
@@ -84,7 +84,7 @@ public class UserAppService implements IUserAppService {
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	<#if Cache!false>
-	@CacheEvict(value="User", key = "#userId")
+	@CacheEvict(value="User", key = "#p0")
     </#if>
 	public void Delete(Long userId) {
 
@@ -98,7 +98,7 @@ public class UserAppService implements IUserAppService {
 </#if>
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache!false>
-	@Cacheable(value = "User", key = "#userId")
+	@Cacheable(value = "User", key = "#p0")
 	</#if>
 	public FindUserByIdOutput FindById(Long userId) {
 
@@ -112,7 +112,7 @@ public class UserAppService implements IUserAppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache!false>
-	@Cacheable(value = "User", key = "#userName")
+	@Cacheable(value = "User", key = "#p0")
 	</#if>
 	public FindUserByNameOutput FindByUserName(String userName) {
 
@@ -125,7 +125,7 @@ public class UserAppService implements IUserAppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	<#if Cache!false>
-	@Cacheable(value = "User", key = "#userId")
+	@Cacheable(value = "User", key = "#p0")
 	</#if>
 	public FindUserWithAllFieldsByIdOutput FindWithAllFieldsById(Long userId) {
 

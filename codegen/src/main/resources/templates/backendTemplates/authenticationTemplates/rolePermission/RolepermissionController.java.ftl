@@ -38,6 +38,12 @@ public class RolepermissionController {
 
 	@Autowired
 	private Environment env;
+	
+	public RolepermissionController(RolepermissionAppService rolepermissionAppService, LoggingHelper helper) {
+		super();
+		this._rolepermissionAppService = rolepermissionAppService;
+		this.logHelper = helper;
+	}
     
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
@@ -127,7 +133,7 @@ public class RolepermissionController {
 	}
 
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
-	@RequestMapping(value = "/{rolepermissionid}/permission", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/permission", method = RequestMethod.GET)
 	public ResponseEntity<GetPermissionOutput> GetPermission(@PathVariable String id) {
 	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
 	if(rolepermissionId == null)
@@ -144,7 +150,7 @@ public class RolepermissionController {
 	}
   
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
-	@RequestMapping(value = "/{rolepermissionid}/role", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/role", method = RequestMethod.GET)
 	public ResponseEntity<GetRoleOutput> GetRole(@PathVariable String id) {
 	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
 	if(rolepermissionId == null)

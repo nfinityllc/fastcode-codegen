@@ -47,6 +47,14 @@ public class RoleController {
 
 	@Autowired
 	private Environment env;
+	
+	public RoleController(RoleAppService appService,LoggingHelper helper,[=AuthenticationTable]roleAppService [=AuthenticationTable?uncap_first]roleAppService,RolepermissionAppService rolepermissionAppService) {
+		
+		this._roleAppService= appService;
+		this.logHelper = helper;
+		this._[=AuthenticationTable?uncap_first]roleAppService = [=AuthenticationTable?uncap_first]roleAppService;
+		this._rolepermissionAppService = rolepermissionAppService;
+	}
 
     // CRUD Operations
     // ------------ Create a role ------------
@@ -153,8 +161,7 @@ public class RoleController {
 	public ResponseEntity GetRolepermission(@PathVariable String roleid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
    		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-	//	if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
-
+	
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);

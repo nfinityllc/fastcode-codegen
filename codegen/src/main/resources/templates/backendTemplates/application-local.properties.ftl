@@ -1,0 +1,11 @@
+spring.datasource.url=[=connectionStringInfo.url]?currentSchema=[=Schema]
+spring.datasource.username=[=connectionStringInfo.username]
+spring.datasource.password=[=connectionStringInfo.password]
+spring.datasource.driverClassName=org.postgresql.Driver
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+spring.jpa.properties.hibernate.default_schema=[=Schema]
+spring.jpa.show-sql=true
+spring.jpa.generate-ddl=true
+spring.jpa.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true

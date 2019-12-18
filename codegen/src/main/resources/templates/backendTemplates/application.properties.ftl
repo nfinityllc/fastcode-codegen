@@ -1,19 +1,5 @@
 spring.profiles.active=local
 
-spring.datasource.url=[=connectionStringInfo.url]?currentSchema=[=Schema]
-spring.datasource.username=[=connectionStringInfo.username]
-spring.datasource.password=[=connectionStringInfo.password]
-spring.datasource.driverClassName=org.postgresql.Driver
-spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
-spring.jpa.properties.hibernate.default_schema=[=Schema]
-spring.jpa.show-sql=true
-spring.jpa.generate-ddl=true
-spring.jpa.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
-<#if Flowable!false>
-spring.jpa.properties.hibernate.hbm2ddl.schema_filter_provider=[=packagePath].domain.CustomSchemaFilterProvider
-</#if>
 spring.application.name=[=appName]
 server.port=5555
 spring.main.banner-mode=off
@@ -88,6 +74,9 @@ spring.security.oauth2.client.provider.oidc.issuer-uri=https://nfinityllc-usman.
 
 spring.main.allow-bean-definition-overriding=true
 
+<#if Scheduler !false>
+fastCode.jobs.default=[=packagePath].Scheduler.jobs
+</#if>
 fastCode.offset.default=0
 fastCode.limit.default=10
 fastCode.sort.direction.default=ASC
