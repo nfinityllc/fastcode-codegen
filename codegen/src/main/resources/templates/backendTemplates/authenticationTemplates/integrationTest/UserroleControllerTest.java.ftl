@@ -171,9 +171,9 @@ public class [=AuthenticationTable]roleControllerTest {
 		}
 		
 		[=AuthenticationTable]roleEntity [=AuthenticationTable?uncap_first]role = new [=AuthenticationTable]roleEntity();
-		[=AuthenticationTable?uncap_first]role.setRoleId(DEFAULT_ROLE_ID );
+		[=AuthenticationTable?uncap_first]role.setRoleId(role.getId());
 		<#if (AuthenticationType!="none" && !UserInput??)>
-		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable]Id(role.getId());
+		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable]Id(user.getId());
 		<#else>
 		<#if PrimaryKeys??>
   		<#list PrimaryKeys as key,value>
@@ -366,12 +366,13 @@ public class [=AuthenticationTable]roleControllerTest {
 		[=AuthenticationTable?uncap_first]=[=AuthenticationTable?uncap_first]Repository.save([=AuthenticationTable?uncap_first]);
 		
 		RoleEntity role = createRoleEntity();
-		role.setName("P4");
+		role.setName("P2");
 		role.setId(2L);
+		role.setDisplayName("D2");
 		role=roleRepository.save(role);
 		
 		[=AuthenticationTable]roleEntity [=AuthenticationTable?uncap_first]role = new [=AuthenticationTable]roleEntity();
-		[=AuthenticationTable?uncap_first]role.setRoleId(2L);
+		[=AuthenticationTable?uncap_first]role.setRoleId(role.getId());
 		<#if (AuthenticationType!="none" && !UserInput??)>
 		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable]Id(user.getId());
 		<#else>
@@ -438,9 +439,10 @@ public class [=AuthenticationTable]roleControllerTest {
 		RoleEntity role = createRoleEntity();
 		role.setName("P5");
 		role.setId(5L);
+		role.setDisplayName("D5");
 		role=roleRepository.save(role);
 		[=AuthenticationTable]roleEntity [=AuthenticationTable?uncap_first]role = new [=AuthenticationTable]roleEntity();
-		[=AuthenticationTable?uncap_first]role.setRoleId(5L);
+		[=AuthenticationTable?uncap_first]role.setRoleId(role.getId());
 		<#if (AuthenticationType!="none" && !UserInput??)>
 		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable]Id(user.getId());
 		<#else>
@@ -497,7 +499,7 @@ public class [=AuthenticationTable]roleControllerTest {
 	@Test
 	public void FindById_IdIsValid_ReturnStatusOk() throws Exception {
 
-		mvc.perform(get("/[=AuthenticationTable?uncap_first]role/roleId:1,<#if (AuthenticationType!="none" && !UserInput??)>[=AuthenticationTable?uncap_first]Id:32<#else><#if PrimaryKeys??><#list PrimaryKeys as key,value>[=AuthenticationTable?uncap_first][=key?cap_first]:1<#sep>,</#list></#if></#if>")
+		mvc.perform(get("/[=AuthenticationTable?uncap_first]role/roleId:1,<#if (AuthenticationType!="none" && !UserInput??)>[=AuthenticationTable?uncap_first]Id:1<#else><#if PrimaryKeys??><#list PrimaryKeys as key,value>[=AuthenticationTable?uncap_first][=key?cap_first]:1<#sep>,</#list></#if></#if>")
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk());
 	}  
@@ -807,18 +809,18 @@ public class [=AuthenticationTable]roleControllerTest {
 	@Test
 	public void FindAll_SearchIsNotNullAndPropertyIsNotValid_ThrowException() throws Exception {
 
-		org.assertj.core.api.Assertions.assertThatThrownBy(() ->  mvc.perform(get("/[=AuthenticationTable?uncap_first]role?search=id[equals]=1&limit=10&offset=1")
+		org.assertj.core.api.Assertions.assertThatThrownBy(() ->  mvc.perform(get("/[=AuthenticationTable?uncap_first]role?search=abcc[equals]=1&limit=10&offset=1")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())).hasCause(new Exception("Wrong URL Format: Property id not found!"));
+				.andExpect(status().isOk())).hasCause(new Exception("Wrong URL Format: Property abcc not found!"));
 
 	} 
 
 	@Test
 	public void Get[=AuthenticationTable]_IdIsNotEmptyAndIdIsNotValid_ThrowException() throws Exception {
 
-		org.assertj.core.api.Assertions.assertThatThrownBy(() ->  mvc.perform(get("/[=AuthenticationTable?uncap_first]role/roleId:3/[=AuthenticationTable?uncap_first]")
+		org.assertj.core.api.Assertions.assertThatThrownBy(() ->  mvc.perform(get("/[=AuthenticationTable?uncap_first]role/roleId:33/[=AuthenticationTable?uncap_first]")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())).hasCause(new EntityNotFoundException("Invalid id=roleId:3"));
+				.andExpect(status().isOk())).hasCause(new EntityNotFoundException("Invalid id=roleId:33"));
 
 	}    
 
@@ -842,9 +844,9 @@ public class [=AuthenticationTable]roleControllerTest {
 	@Test
 	public void GetRole_IdIsNotEmptyAndIdIsNotValid_ThrowException() throws Exception {
 
-		org.assertj.core.api.Assertions.assertThatThrownBy(() ->  mvc.perform(get("/[=AuthenticationTable?uncap_first]role/roleId:3/role")
+		org.assertj.core.api.Assertions.assertThatThrownBy(() ->  mvc.perform(get("/[=AuthenticationTable?uncap_first]role/roleId:33/role")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())).hasCause(new EntityNotFoundException("Invalid id=roleId:3"));
+				.andExpect(status().isOk())).hasCause(new EntityNotFoundException("Invalid id=roleId:33"));
 
 	}    
 

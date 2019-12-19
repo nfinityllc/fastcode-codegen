@@ -98,7 +98,7 @@
           </#if>
         </mat-nav-list>
       </mat-expansion-panel>
-        </#if>
+      
       <mat-expansion-panel class="expansion-panel">
         <mat-expansion-panel-header class="subnav-header">
           {{'MainNav.Administration' | translate }}

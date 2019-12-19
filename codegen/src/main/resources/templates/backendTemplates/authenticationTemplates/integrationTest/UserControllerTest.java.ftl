@@ -147,9 +147,9 @@ public class UserControllerTest {
 		user.setId(2L);
 		user.setPassword("secret");
 		user.setUserName("U25");
-		user.setFirstName("U22");
-		user.setLastName("122");
-		user.setEmailAddress("u122@g.com");
+		user.setFirstName("U25");
+		user.setLastName("125");
+		user.setEmailAddress("u125@g.com");
 		user.setIsActive(true);
 
 		return user;
@@ -261,10 +261,10 @@ public class UserControllerTest {
 		
 		FindUserByIdOutput output= new FindUserByIdOutput();
 	    output.setId(id.longValue());
-	    output.setUserName("U3");
-	    output.setFirstName("U3");
-	    output.setLastName("13");
-	    output.setEmailAddress("u13@g.com");
+	    output.setUserName("U33");
+	    output.setFirstName("U33");
+	    output.setLastName("133");
+	    output.setEmailAddress("u133@g.com");
 	    output.setIsActive(true);
 	    
 	    Mockito.when(userAppService.FindById(anyLong())).thenReturn(output);
@@ -286,9 +286,9 @@ public class UserControllerTest {
         UpdateUserInput user = new UpdateUserInput();
         user.setId(1L);
         user.setUserName("U116");
-		user.setFirstName("U1");
-		user.setLastName("16");
-		user.setEmailAddress("u16@g.com");
+		user.setFirstName("U116");
+		user.setLastName("116");
+		user.setEmailAddress("u116@g.com");
 		user.setIsActive(true);
 		
  		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -314,14 +314,14 @@ public class UserControllerTest {
 	    
 		Mockito.doReturn(output).when(userAppService).FindWithAllFieldsById(anyLong());
 		<#if Flowable!false>
-		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(createNewEntity());
-		idmIdentityService.createUser(createNewEntity(), actIdUser);
+		ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(ue);
+		idmIdentityService.createUser(ue, actIdUser);
 		</#if>
 	    doNothing().when(userAppService).deleteAllUserTokens(anyString());  
 	    
         UpdateUserInput user = new UpdateUserInput();
         user.setId(id.longValue());
-		user.setUserName("U116");
+		user.setUserName(ue.getUserName());
 		user.setFirstName("U1");
 		user.setLastName("16");
 		user.setEmailAddress("u16@g.com");
@@ -329,7 +329,7 @@ public class UserControllerTest {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = ow.writeValueAsString(user);
       
-        mvc.perform(put("/role/"+id).contentType(MediaType.APPLICATION_JSON).content(json))
+        mvc.perform(put("/user/"+id).contentType(MediaType.APPLICATION_JSON).content(json))
 	    .andExpect(status().isOk());
 
         UserEntity e= createEntity();
