@@ -46,7 +46,7 @@ public class PomFileModifier {
 //		}
 
 
-	    if(authenticationType !="none" || cache)
+	    if(cache)
 	    {
 	    	Dependency springDataRedis = new Dependency("org.springframework.data","spring-data-redis","2.1.9.RELEASE");
 			Dependency redisClient = new Dependency("redis.clients","jedis","2.9.0","jar","compile");

@@ -9,8 +9,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.cache.transaction.TransactionAwareCacheManagerProxy;
-</#if>
-<#if AuthenticationType != "none" || Cache !false>
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -49,7 +47,7 @@ public class BeanConfig {
     }
 </#if>
 
-<#if AuthenticationType != "none" || Cache !false>
+<#if Cache !false>
      @Bean
      JedisConnectionFactory jedisConnectionFactory() {
          RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(environment.getProperty("redis.server.address"), Integer.parseInt(environment.getProperty("redis.server.port")));
@@ -65,9 +63,7 @@ public class BeanConfig {
          template.setConnectionFactory(jc);
 	         return template;
      }
-</#if>
-     
-<#if Cache !false>
+
      @Bean
      public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();

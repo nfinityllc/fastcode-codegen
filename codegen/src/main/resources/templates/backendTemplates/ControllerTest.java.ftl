@@ -328,8 +328,9 @@ public class [=ClassName]ControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-
+        <#if Cache!false>
 		evictAllCaches();
+		</#if>
 		final [=ClassName]Controller [=ClassName?uncap_first]Controller = new [=ClassName]Controller([=ClassName?uncap_first]AppService,<#list Relationship as relationKey,relationValue><#if ClassName != relationValue.eName && relationValue.eName !="OneToMany">[=relationValue.eName?uncap_first]AppService,</#if></#list>
 	<#if AuthenticationType != "none" && ClassName == AuthenticationTable>pEncoder, [=AuthenticationTable?uncap_first]permissionAppService,[=AuthenticationTable?uncap_first]roleAppService,</#if>logHelper);
 		when(logHelper.getLogger()).thenReturn(loggerMock);

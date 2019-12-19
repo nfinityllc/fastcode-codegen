@@ -5,11 +5,14 @@ server.port=5555
 spring.main.banner-mode=off
 javers.mapping-style=BEAN
 spring.jackson.serialization.fail-on-empty-beans=false
+spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+spring.jpa.properties.hibernate.default_schema=[=Schema]
 
 #applciation context path
 server.servlet.contextPath=/
 
-<#if  AuthenticationType != "none" || Cache!false>
+<#if Cache!false>
 # Redis setup
 redis.server.port=6379
 redis.server.address=localhost
