@@ -544,6 +544,8 @@ public class [=ClassName]ControllerTest {
 
 	@Test
 	public void Delete_IdIsValid_ReturnStatusNoContent() throws Exception {
+	
+	 [=ClassName]Entity entity =  createNewEntity();
 	    <#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 		<#if relationValue.isParent==false>
@@ -565,25 +567,17 @@ public class [=ClassName]ControllerTest {
 		</#list>
 		[=relationValue.eName?uncap_first]=[=relationValue.eName?uncap_first]Repository.save([=relationValue.eName?uncap_first]);
 		</#if> 
-		</#if> 
-		
+		<#list relationValue.joinDetails as joinDetails>
+		<#list relationValue.fDetails as value>
+		<#if value.fieldName==joinDetails.joinColumn>
+		entity.set[=joinDetails.joinColumn?cap_first]([=relationValue.eName?uncap_first].get[=joinDetails.joinColumn?cap_first]());
+		</#if>
 		</#list>
-		
-		[=ClassName]Entity entity =  createNewEntity();
-		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-		<#if relationValue.isParent==false>
-		<#list Fields as key,value>
-		<#if value.isNullable==false>
-		<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string" >
-		entity.set[=value.fieldName?cap_first]([=relationValue.eName?uncap_first].get[=value.fieldName?cap_first]);
-		</#if> 
-		</#if> 
 		</#list>
 		entity.set[=relationValue.eName?cap_first]([=relationValue.eName?uncap_first]);
 		</#if> 
-		</#if> 
 		</#list>
+		
 		entity = [=ClassName?uncap_first]_repository.save(entity);
 
 		Find[=ClassName]ByIdOutput output= new Find[=ClassName]ByIdOutput();
@@ -654,7 +648,8 @@ public class [=ClassName]ControllerTest {
 
 	@Test
 	public void Update[=ClassName]_[=ClassName]Exists_ReturnStatusOk() throws Exception {
-		<#list Relationship as relationKey,relationValue>
+		[=ClassName]Entity entity =  createNewEntity();
+	    <#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 		<#if relationValue.isParent==false>
 		[=relationValue.eName?cap_first]Entity [=relationValue.eName?uncap_first] = new [=relationValue.eName?cap_first]Entity();
@@ -675,21 +670,14 @@ public class [=ClassName]ControllerTest {
 		</#list>
 		[=relationValue.eName?uncap_first]=[=relationValue.eName?uncap_first]Repository.save([=relationValue.eName?uncap_first]);
 		</#if> 
-		</#if> 
+		<#list relationValue.joinDetails as joinDetails>
+		<#list relationValue.fDetails as value>
+		<#if value.fieldName==joinDetails.joinColumn>
+		entity.set[=joinDetails.joinColumn?cap_first]([=relationValue.eName?uncap_first].get[=joinDetails.joinColumn?cap_first]());
+		</#if>
 		</#list>
-		[=ClassName]Entity entity =  createNewEntity();
-		<#list Relationship as relationKey,relationValue>
-		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
-		<#if relationValue.isParent==false>
-		<#list Fields as key,value>
-		<#if value.isNullable==false>
-		<#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string" >
-		entity.set[=value.fieldName?cap_first]([=relationValue.eName?uncap_first].get[=value.fieldName?cap_first]);
-		</#if> 
-		</#if> 
 		</#list>
 		entity.set[=relationValue.eName?cap_first]([=relationValue.eName?uncap_first]);
-		</#if> 
 		</#if> 
 		</#list>
 		entity = [=ClassName?uncap_first]_repository.save(entity);

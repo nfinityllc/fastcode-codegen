@@ -1,5 +1,8 @@
 package com.nfinity.codegen;
 
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 
 public class FreeMarkerConfiguration {
@@ -10,9 +13,17 @@ public class FreeMarkerConfiguration {
 	public static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	public static String CLIENT_ROOT_FOLDER = "/client";
 	
-	public static void configure()
+	public static Configuration configure()
 	{
 		
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/"); 
+		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
+
+		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 
+		cfg.setDefaultEncoding("UTF-8"); 
+		cfg.setTemplateLoader(mtl); 
+		
+		return cfg;
 	}
 
 }

@@ -121,7 +121,6 @@ public class CodegenApplication implements ApplicationRunner {
 
 		UserInput input = composeInput(configProperties);
 
-
 		File dir = new File(input.getDestinationPath());
 		if(!dir.exists()) {
 			dir.mkdirs();
@@ -200,9 +199,8 @@ public class CodegenApplication implements ApplicationRunner {
 					input.getHistory(),input.getCache(),input.getFlowable(),input.getScheduler(),input.getEmail(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema(),details);
 		}
 
-		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, groupArtifactId,input.getHistory(),input.getCache(),
-				input.getDestinationPath() + "/" + artifactId + "/target/classes/"
-						+ (groupArtifactId + ".model").replace(".", "/"),
+		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, input.getHistory(), input.getCache(),
+				input.getDestinationPath() + "/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
 						input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
 						input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail(),input.getFlowable(),input.getAuthenticationSchema());
 
