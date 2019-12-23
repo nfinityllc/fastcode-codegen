@@ -568,9 +568,9 @@ public class [=ClassName]ControllerTest {
 		[=relationValue.eName?uncap_first]=[=relationValue.eName?uncap_first]Repository.save([=relationValue.eName?uncap_first]);
 		</#if> 
 		<#list relationValue.joinDetails as joinDetails>
-		<#list relationValue.fDetails as value>
-		<#if value.fieldName==joinDetails.joinColumn>
-		entity.set[=joinDetails.joinColumn?cap_first]([=relationValue.eName?uncap_first].get[=joinDetails.joinColumn?cap_first]());
+		<#list Fields as key,value>
+		<#if value.isPrimaryKey==true && value.fieldName==joinDetails.referenceColumn>
+		entity.set[=joinDetails.joinColumn?cap_first]([=relationValue.eName?uncap_first].get[=joinDetails.referenceColumn?cap_first]());
 		</#if>
 		</#list>
 		</#list>
@@ -671,9 +671,9 @@ public class [=ClassName]ControllerTest {
 		[=relationValue.eName?uncap_first]=[=relationValue.eName?uncap_first]Repository.save([=relationValue.eName?uncap_first]);
 		</#if> 
 		<#list relationValue.joinDetails as joinDetails>
-		<#list relationValue.fDetails as value>
-		<#if value.fieldName==joinDetails.joinColumn>
-		entity.set[=joinDetails.joinColumn?cap_first]([=relationValue.eName?uncap_first].get[=joinDetails.joinColumn?cap_first]());
+		<#list Fields as key,value>
+		<#if value.isPrimaryKey==true && value.fieldName==joinDetails.referenceColumn>
+		entity.set[=joinDetails.joinColumn?cap_first]([=relationValue.eName?uncap_first].get[=joinDetails.referenceColumn?cap_first]());
 		</#if>
 		</#list>
 		</#list>
