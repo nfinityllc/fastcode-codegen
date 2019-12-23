@@ -13,17 +13,18 @@ import {Component, Directive, ChangeDetectorRef} from '@angular/core';
 
 import {Router, ActivatedRoute,} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import { Globals, PickerDialogService, PickerComponent, ListFiltersComponent, AddFilterFieldComponent } from 'fastCodeCore';
+import { Globals, PickerDialogService, PickerComponent, ListFiltersComponent, AddFilterFieldComponent } from 'projects/fast-code-core/src/public_api';
 
 import {MatDialog, MatDialogRef,MatButtonModule, MatToolbarModule, MatSidenavModule,
   MatIconModule, MatListModule, MatRadioModule, MatTableModule,
   MatCardModule, MatTabsModule, MatInputModule, MatDialogModule,
   MatSelectModule, MatCheckboxModule, MatAutocompleteModule,
   MatDatepickerModule, MatNativeDateModule, MatMenuModule, MatTable,
-  MatChipsModule, MatSortModule
+  MatChipsModule, MatSortModule, MatSnackBarModule
 } from '@angular/material';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { TranslateTestingModule } from './translate-testing.module';
 
   @Injectable()
   class MockRouter { navigate = (commands:any)=> {}; }
@@ -66,24 +67,27 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
   imports: [
     RouterTestingModule.withRoutes(
       [{path: 'users', component: BlankComponent}]
-    ),HttpClientTestingModule,NoopAnimationsModule,
-    FormsModule,ReactiveFormsModule,
-     MatButtonModule, MatToolbarModule, MatSidenavModule,
-    MatIconModule, MatListModule, MatRadioModule, MatTableModule,
+    ),
+    HttpClientTestingModule,NoopAnimationsModule,
+    FormsModule,ReactiveFormsModule, MatButtonModule,
+    MatToolbarModule, MatSidenavModule, MatIconModule,
+    MatListModule, MatRadioModule, MatTableModule,
     MatCardModule, MatTabsModule, MatInputModule, MatDialogModule,
     MatSelectModule, MatCheckboxModule, MatAutocompleteModule,
-    MatDatepickerModule, MatNativeDateModule, MatMenuModule, MatChipsModule,
-    MatSortModule, NgxMaterialTimepickerModule
+    MatDatepickerModule, MatNativeDateModule, MatMenuModule,
+    MatChipsModule, MatSortModule, MatSnackBarModule,
+    NgxMaterialTimepickerModule, TranslateTestingModule
   ],
-  exports: [RouterTestingModule,HttpClientTestingModule,NoopAnimationsModule,
-    FormsModule,ReactiveFormsModule,
-     MatButtonModule, MatToolbarModule, MatSidenavModule,
-    MatIconModule, MatListModule, MatRadioModule, MatTableModule,
+  exports: [
+    RouterTestingModule, HttpClientTestingModule, NoopAnimationsModule,
+    FormsModule, ReactiveFormsModule, MatButtonModule,
+    MatToolbarModule, MatSidenavModule, MatIconModule,
+    MatListModule, MatRadioModule, MatTableModule,
     MatCardModule, MatTabsModule, MatInputModule, MatDialogModule,
     MatSelectModule, MatCheckboxModule, MatAutocompleteModule,
     MatDatepickerModule, MatNativeDateModule, MatMenuModule, MatTable,
-    MatChipsModule, MatSortModule, NgxMaterialTimepickerModule
-  // , PickerComponent,UserNewComponent,JobNewComponent,TriggerNewComponent
+    MatChipsModule, MatSortModule, MatSnackBarModule,
+    NgxMaterialTimepickerModule, TranslateTestingModule
   ],
   providers: [
    // {provide: Router, useClass: MockRouter},

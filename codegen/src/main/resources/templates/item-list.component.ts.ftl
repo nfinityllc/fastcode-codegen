@@ -4,8 +4,8 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { [=IEntity] } from './[=IEntityFile]';
 import { [=ClassName]Service } from './[=ModuleName].service';
 import { Router, ActivatedRoute } from '@angular/router';
-import {[=ClassName]NewComponent} from './[=ModuleName]-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { [=ClassName]NewComponent } from './[=ModuleName]-new.component';
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 
 <#if Relationship?has_content>
 <#list Relationship as relationKey, relationValue>

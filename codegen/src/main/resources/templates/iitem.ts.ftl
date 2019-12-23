@@ -15,9 +15,9 @@ export interface [=IEntity] {
       </#if> 
  <#elseif value.fieldType?lower_case == "date">
       <#if value.isNullable == true>
-	[=value.fieldName]?: string;
+	[=value.fieldName]?: Date;
      <#else>
-	[=value.fieldName]: string;
+	[=value.fieldName]: Date;
       </#if> 
 <#elseif value.fieldType?lower_case == "string">
        <#if value.isNullable == true>

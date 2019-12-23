@@ -1,28 +1,23 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { By } from "@angular/platform-browser";
 import { TestingModule,EntryComponents } from '../../testing/utils';
-import {[=IEntity],[=ClassName]Service, [=ClassName]NewComponent} from './index';
+import { [=IEntity],[=ClassName]Service, [=ClassName]NewComponent } from './index';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { HttpTestingController } from '@angular/common/http/testing';
-import { environment } from '../../environments/environment';
-import { Validators, FormBuilder } from '@angular/forms';
 
 
 describe('[=ClassName]NewComponent', () => {
   let component: [=ClassName]NewComponent;
   let fixture: ComponentFixture<[=ClassName]NewComponent>;
   
-  let httpTestingController: HttpTestingController;
-  let url:string = environment.apiUrl + '/[=InstanceName]';
-  let formBuilder:any = new FormBuilder(); 
-    
+  let el: HTMLElement;
   let data:[=IEntity] = {
 		<#assign counter = 1>
 		<#list Fields as key, value>           
 			<#if value.fieldName == "id">    
 		[=key]:[=counter],
 			<#elseif value.fieldType == "Date">           
-		[=key]: new Date().toLocaleDateString("en-US") ,
+		[=key]: new Date(),
 			<#elseif value.fieldType?lower_case == "boolean">
 		[=key]: true,
 			<#elseif value.fieldType?lower_case == "string">              
@@ -49,22 +44,45 @@ describe('[=ClassName]NewComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent([=ClassName]NewComponent);
-    httpTestingController = TestBed.get(HttpTestingController);
     component = fixture.componentInstance;
-    spyOn(component, 'manageScreenResizing').and.returnValue(false);
+    spyOn(component, 'manageScreenResizing').and.returnValue();
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  
+  it('should run #ngOnInit()', async (() => {
+    
+    component.ngOnInit();
+    
+    expect(component.title.length).toBeGreaterThan(0);
+    expect(component.associations).toBeDefined();
+    expect(component.parentAssociations).toBeDefined();
+    expect(component.itemForm).toBeDefined();
+    
+  }));
+
+
   it('should run #onSubmit()', async () => {
    
-    component.itemForm=formBuilder.group(data);    
+    component.itemForm.patchValue(data);
+    component.itemForm.enable();    
     fixture.detectChanges();
-    const result = component.onSubmit(); 
-    const req = httpTestingController.expectOne(req => req.method === 'POST' && req.url === url ).flush(data); 
-    httpTestingController.verify();
+    spyOn(component, "onSubmit").and.returnValue();
+    el = fixture.debugElement.query(By.css('button[name=save]')).nativeElement;
+    el.click();
+    expect(component.onSubmit).toHaveBeenCalled();
  
+  });
+
+  it('should call the cancel', async () => {
+
+    spyOn(component, "onCancel").and.callThrough();
+    el = fixture.debugElement.query(By.css('button[name=cancel]')).nativeElement;
+    el.click();
+    expect(component.onCancel).toHaveBeenCalled();
+
   });
 });

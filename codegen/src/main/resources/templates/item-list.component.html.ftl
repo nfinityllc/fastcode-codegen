@@ -8,7 +8,7 @@
 		</span>
 	</span>
 	<span class="middle">{{title}}</span>
-	<button mat-button<#if AuthenticationType!="none"> [disabled]="!IsCreatePermission"</#if> (click)="addNew()">
+	<button name="add" mat-button<#if AuthenticationType!="none"> [disabled]="!IsCreatePermission"</#if> (click)="addNew()">
  		{{'GENERAL.ACTIONS.ADD' | translate}} </button>
 </mat-toolbar>
 <div class="list-container">

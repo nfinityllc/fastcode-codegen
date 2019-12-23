@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FastCodeCoreTranslateUiService } from 'fastCodeCore';
+import { FastCodeCoreTranslateUiService } from 'projects/fast-code-core/src/public_api';
 <#if SchedulerModule!false>
 import { SchedulerTranslateUiService } from 'scheduler';
 </#if>
 <#if EmailModule!false>
-//import { EmailBuilderTranslateUiService } from '../../projects/ip-email-builder/src/public_api';
+//import { EmailBuilderTranslateUiService } from 'projects/ip-email-builder/src/public_api';
 </#if>
 <#if FlowableModule!false>
 import { UpgradeModule } from "@angular/upgrade/static";
-import { TaskAppTranslateUiService } from '../../projects/task-app/src/public_api';
+import { TaskAppTranslateUiService } from 'projects/task-app/src/public_api';
 </#if>
 <#if AuthenticationType != 'none'>
 import { AuthenticationService } from './core/authentication.service';

@@ -112,8 +112,16 @@ export class BaseDetailsComponent<E> implements OnInit, CanDeactivateGuard {
     });
   }
 
-  getItem(id: any): Observable<E> {
-    return this.dataService.getById(id);
+  getItem(): Observable<E> {
+    if(this.idParam){
+      this.dataService.getById(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
+    }
+    return null;
+  }
+
+  onItemFetched(item:E) {
+    this.item = item;
+    this.itemForm.patchValue(item);
   }
 
   onSubmit() {

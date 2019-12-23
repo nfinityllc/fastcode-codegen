@@ -28,7 +28,7 @@ import { CallbackComponent } from './oauth/callback.component';
 </#if>
 
 <#if EmailModule!false>
-import { IpEmailBuilderModule } from '../../projects/ip-email-builder/src/public_api';
+import { IpEmailBuilderModule } from 'projects/ip-email-builder/src/public_api';
 </#if>
 <#if SchedulerModule!false>
 import { SchedulerModule } from 'scheduler';
@@ -36,7 +36,7 @@ import { SchedulerModule } from 'scheduler';
 <#if FlowableModule!false>
 import { UpgradeModule } from "@angular/upgrade/static"; 
 import { UrlHandlingStrategy } from '@angular/router';
-import { TaskAppModule } from '../../projects/task-app/src/public_api';
+import { TaskAppModule } from 'projects/task-app/src/public_api';
 </#if>
 
 import {
@@ -45,7 +45,7 @@ import {
   MatCardModule, MatTabsModule, MatInputModule, MatDialogModule,
   MatSelectModule, MatCheckboxModule, MatAutocompleteModule,
   MatDatepickerModule, MatNativeDateModule, MatMenuModule, MatSortModule,
-  MatPaginatorModule, MatProgressSpinnerModule,MatSnackBarModule
+  MatPaginatorModule, MatProgressSpinnerModule, MatSnackBarModule
 } from '@angular/material';
 import {MatChipsModule} from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -53,7 +53,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 import { routingModule } from './app.routing';
-import { FastCodeCoreModule } from 'fastCodeCore';
+import { FastCodeCoreModule } from 'projects/fast-code-core/src/public_api';
 
 /** common components and filters **/
 

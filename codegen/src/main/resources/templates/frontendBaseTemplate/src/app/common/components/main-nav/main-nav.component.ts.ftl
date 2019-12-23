@@ -10,15 +10,15 @@ import { Router, Event } from '@angular/router';
 import entities from './entities.json';
 import { MatSidenav, MatSidenavContent } from '@angular/material';
 
-import { FastCodeCoreTranslateUiService } from 'fastCodeCore';
+import { FastCodeCoreTranslateUiService } from 'projects/fast-code-core/src/public_api';
 <#if FlowableModule!false>
-import { TaskAppTranslateUiService } from '../../../../../projects/task-app/src/public_api';
+import { TaskAppTranslateUiService } from 'projects/task-app/src/public_api';
 </#if>
 <#if SchedulerModule!false>
 import { SchedulerTranslateUiService } from 'scheduler';
 </#if>
 <#if EmailModule!false>
-import { EmailBuilderTranslateUiService } from '../../../../../projects/ip-email-builder/src/public_api';
+import { EmailBuilderTranslateUiService } from 'projects/ip-email-builder/src/public_api';
 </#if>
 
 @Component({

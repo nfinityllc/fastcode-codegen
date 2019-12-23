@@ -1,7 +1,7 @@
 
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from "@angular/core";
-import { CanDeactivateGuard } from 'fastCodeCore';
+import { CanDeactivateGuard } from 'projects/fast-code-core/src/public_api';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 <#if AuthenticationType != "none">
@@ -10,13 +10,13 @@ import { AuthGuard } from './core/auth-guard';
 import { CallbackComponent } from './oauth/callback.component';
 </#if>
 <#if FlowableModule!false>
-import { TaskAppRoutes } from '../../projects/task-app/src/public_api';
+import { TaskAppRoutes } from 'projects/task-app/src/public_api';
 </#if>
 <#if SchedulerModule!false>
 import { SchedulerRoutes } from 'scheduler';
 </#if>
 <#if EmailModule!false>
-import { EmailRoutes } from '../../projects/ip-email-builder/src/public_api';
+import { EmailRoutes } from 'projects/ip-email-builder/src/public_api';
 </#if>
 
 const routes: Routes = [

@@ -1,10 +1,10 @@
 <div *ngIf="item" class="details-container">
 	<mat-toolbar class="action-tool-bar" color="primary">
-		<button mat-button (click)="onBack()">
+		<button name="back" mat-button (click)="onBack()">
 	    {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>
 		<span class="middle">{{title}}</span>
 	
-		<button [disabled]="!itemForm.valid || loading <#if AuthenticationType!="none">|| !IsUpdatePermission</#if>" mat-button (click)="itemNgForm.ngSubmit.emit()">
+		<button name="save" [disabled]="!itemForm.valid || loading <#if AuthenticationType!="none">|| !IsUpdatePermission</#if>" mat-button (click)="itemNgForm.ngSubmit.emit()">
 	    {{'GENERAL.ACTIONS.SAVE' | translate}} </button>
 	</mat-toolbar>
 	<mat-card class="card">
