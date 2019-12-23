@@ -70,7 +70,11 @@ public class EntityDetails {
 	public void setEntitiesDescriptiveFieldMap(Map<String, FieldDetails> entitiesDescriptiveFieldMap) {
 		this.entitiesDescriptiveFieldMap = entitiesDescriptiveFieldMap;
 	}
-
+    
+	public EntityDetails()
+	{
+		
+	}
 	public EntityDetails(Map<String, FieldDetails> fieldsMap, Map<String, RelationDetails> relationsMap,String tableName,String idClass) {
 		super();
 		this.fieldsMap = fieldsMap;
