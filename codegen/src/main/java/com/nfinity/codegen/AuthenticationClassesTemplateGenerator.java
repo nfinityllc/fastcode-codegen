@@ -653,7 +653,7 @@ public class AuthenticationClassesTemplateGenerator {
 	}
 	
 	private static void generateFlowableFiles(String destPath, String appName) {
-		String authorizationPath = CodeGenerator.TEMPLATE_FOLDER + "/frontendAuthorization/";
+		String authorizationPath = "/templates/frontendAuthorization/";
 		Map<String, Object> templates = new HashMap<>();
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, authorizationPath);
 		TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl };
@@ -670,7 +670,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 		List<String> authorizationEntities = new ArrayList<String>();
-		String authorizationPath = CodeGenerator.TEMPLATE_FOLDER + "/frontendAuthorization/";
+		String authorizationPath = "/templates/frontendAuthorization/";
 
 		authorizationEntities.add("role");
 		authorizationEntities.add("permission");

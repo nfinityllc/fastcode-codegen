@@ -1,20 +1,27 @@
 package [=PackageName].domain.model; 
  
 import org.hibernate.validator.constraints.Length; 
+<#if Cache!false>
 import org.springframework.data.redis.core.RedisHash; 
 import org.springframework.data.redis.core.index.Indexed; 
- 
+</#if>
 import javax.persistence.*; 
 import javax.validation.constraints.Email; 
 import javax.validation.constraints.NotNull; 
 import java.io.Serializable; 
  
+<#if Cache!false>
 @RedisHash("JwtEntity") 
+<#else>
+@Entity
+@Table(indexes =  @Index(name = "idx",columnList = "token",unique = false),
+		name = "JwtEntity", schema = "[=SchemaName]")
+</#if>
 public class JwtEntity implements Serializable { 
  
     private Long id; 
     private String userName; 
-    private @Indexed String token; 
+    private <#if Cache!false>@Indexed</#if>String token; 
     private Boolean isActive; 
  
     @Id 
