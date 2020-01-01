@@ -24,14 +24,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.io.FileUtils;
 
 public class CodeGenerator {
-
-	//static Configuration cfg = FreeMarkerConfiguration.configure();
-	//static String TEMPLATE_FOLDER = "/templates";
-
-	public static Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean history, String sourcePath,
+	public static String TEMPLATE_FOLDER = "/templates";
+	//Build root map with all information required for templates
+	public Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean history,
 			String type,EntityDetails details,String authenticationType,Boolean email, String schema,String authenticationTable, Boolean flowable,Boolean cache) {
 
 		Map<String, Object> root = new HashMap<>();
@@ -77,7 +76,8 @@ public class CodeGenerator {
 		return root;
 	}
 	
-	public static String camelCaseToKebabCase(String name)
+	//Convert String from camelCase to kebab-case
+	public String camelCaseToKebabCase(String name)
 	{
 		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(name);
 		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
@@ -88,7 +88,8 @@ public class CodeGenerator {
 		return StringUtils.join(splittedNames, "-");
 	}
 	
-	public static List<String> generateAllModulesForEntities(Map<String,EntityDetails> details, String backEndRootFolder, String clientRootFolder,String sourcePackageName,Boolean history,Boolean cache, String sourcePath,
+	//Method to generate all required modules for list of entities
+	public List<String> generateAllModulesForEntities(Map<String,EntityDetails> details, String backEndRootFolder, String clientRootFolder,String sourcePackageName,Boolean history,Boolean cache,
 			String destPath, String type, String schema, String authenticationType, Boolean scheduler, Boolean email,Boolean flowable,String authenticationTable)
 	{
 		// generate all modules for each entity
@@ -97,42 +98,45 @@ public class CodeGenerator {
 		{
 			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
 			entityNames.add(className);
-			Generate(entry.getKey(), sourcePackageName, backEndRootFolder, clientRootFolder, sourcePackageName, history, sourcePath, 
+			generate(entry.getKey(), sourcePackageName, backEndRootFolder, clientRootFolder, sourcePackageName, history, 
 							destPath, type, entry.getValue(), authenticationType, scheduler, email,cache, schema,authenticationTable, flowable);
 		}
 		
 		return entityNames;
 	}
 
-	// appname= groupid + artifactid
-	public static void GenerateAll(String backEndRootFolder, String clientRootFolder, String sourcePackageName,
-			Boolean history,Boolean cache, String sourcePath, String destPath, String type,Map<String,EntityDetails> details, String connectionString,
+	// Generate all components of the desired application
+	public void generateAll(String backEndRootFolder, String clientRootFolder, String sourcePackageName,
+			Boolean history,Boolean cache, String destPath, String type,Map<String,EntityDetails> details, String connectionString,
 			String schema,String authenticationType,Boolean scheduler, Boolean email,Boolean flowable,String authenticationTable) throws IOException {
 
 		String appName = sourcePackageName.substring(sourcePackageName.lastIndexOf(".") + 1);
-		List<String> entityNames = generateAllModulesForEntities(details, backEndRootFolder, clientRootFolder, sourcePackageName, history, cache, sourcePath, destPath, type, schema, authenticationType, scheduler, email, flowable, authenticationTable);
+		//to generate all modules for list of entities
+		List<String> entityNames = generateAllModulesForEntities(details, backEndRootFolder, clientRootFolder, sourcePackageName, history, cache, destPath, type, schema, authenticationType, scheduler, email, flowable, authenticationTable);
 		FileUtils.copyFile(new File("src/main/resources/keystore.p12"), new File(destPath + "/" + backEndRootFolder + "/src/main/resources/keystore.p12"));
 
+		// additional code needs to be added if history option is true
 		if(history) {
 			String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
-			generateEntityHistoryComponent(appFolderPath, authenticationTable, details);
-			addhistoryComponentsToAppModule(appFolderPath);
-			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType, flowable);
-			generateAuditorController(details, sourcePackageName,backEndRootFolder,destPath,authenticationType,authenticationTable,email,scheduler);
-
+			generateEntityHistoryComponent(appFolderPath, authenticationTable, details); //to generate entity History Component
+			addhistoryComponentsToAppModule(appFolderPath); // edit app module to add history components
+			addhistoryComponentsToAppRoutingModule(appFolderPath, authenticationType, flowable); // edit routing module to add history components
+			generateAuditorController(details, sourcePackageName,backEndRootFolder,destPath,authenticationType,authenticationTable,email,scheduler); // generate audit controller to maintain history of entities
 		}
 		
 		if(email) {
 			new File(destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "/mjmlTemp").mkdirs();
 		}
 		
+		//update front end modules
 		updateAppRouting(destPath,appName, entityNames, authenticationType, flowable);
 		updateAppModule(destPath,appName, entityNames);
 		updateTestUtils(destPath,appName, entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName + "Client/src/app/common/components/main-nav/entities.json",entityNames,authenticationTable);
 
 		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(destPath,sourcePackageName, connectionString, schema,authenticationType,email,scheduler, flowable,cache);
-
+        
+		//generate configuration files for backend
 		generateApplicationProperties(propertyInfo, destPath + "/" + backEndRootFolder + "/src/main/resources");
 		generateBeanConfig(sourcePackageName,backEndRootFolder,destPath,authenticationType,details,cache,authenticationTable);
 		if(cache) {
@@ -140,24 +144,26 @@ public class CodeGenerator {
 		}
 	}
 
-	private static void generateBeanConfig(String packageName,String backEndRootFolder, String destPath,String authenticationType,Map<String,EntityDetails> details,Boolean cache,String authenticationTable){
+	//generate bean configuration file
+	public void generateBeanConfig(String packageName,String backEndRootFolder, String destPath,String authenticationType,Map<String,EntityDetails> details,Boolean cache,String authenticationTable){
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		
 		Map<String, Object> root = getInfoForAuditControllerAndBeanConfig(details, packageName, authenticationType, authenticationTable, false, false);
 		Map<String, Object> template = new HashMap<>();
 		template.put("backendTemplates/authenticationTemplates/BeanConfig.java.ftl", "BeanConfig.java");
-		String destFolder = destPath + "/" + backendAppFolder + "/" + packageName.replace(".", "/") ;
+		String destFolder = destPath + "/" + backendAppFolder + "/" + packageName.replace(".", "/");
 		new File(destFolder).mkdirs();
-		CodeGeneratorUtils.generateFiles(template, root, destFolder);
+		new CodeGeneratorUtils().generateFiles(template, root, destFolder,TEMPLATE_FOLDER);
 
 	}
 
-	private static Map<String,Object> getInfoForApplicationPropertiesFile(String destPath, String appName, String connectionString, String schema,String authenticationType,Boolean email,Boolean scheduler, Boolean flowable,Boolean cache){
+	// build root map for application properties
+	public Map<String,Object> getInfoForApplicationPropertiesFile(String destPath, String appName, String connectionString, String schema,String authenticationType,Boolean email,Boolean scheduler, Boolean flowable,Boolean cache){
 
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
-		propertyInfo.put("connectionStringInfo", EntityGenerator.parseConnectionString(connectionString));
+		propertyInfo.put("connectionStringInfo", new EntityGenerator().parseConnectionString(connectionString));
 		propertyInfo.put("appName", appName.substring(appName.lastIndexOf(".") + 1));
 		propertyInfo.put("Schema", schema);
 		propertyInfo.put("EmailModule",email);
@@ -174,10 +180,12 @@ public class CodeGenerator {
 		return propertyInfo;
 	}
 
-	private static Map<String,Object> getInfoForAuditControllerAndBeanConfig(Map<String, EntityDetails> details,String packageName,String authenticationType,String authenticationTable,
+	// build root map for bean configuration and audit controller
+	public Map<String,Object> getInfoForAuditControllerAndBeanConfig(Map<String, EntityDetails> details,String packageName,String authenticationType,String authenticationTable,
             Boolean email, Boolean scheduler) {
 		
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
+		//set details for each entity in root map
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())
 		{
 			Map<String, String> entityMap = new HashMap<String,String>();
@@ -191,7 +199,6 @@ public class CodeGenerator {
 			entityMap.put("method" , "get" + name + "Changes");
 
 			entitiesMap.put(name, entityMap);
-
 		}
 		
 		Map<String, Object> root = new HashMap<>();
@@ -202,7 +209,7 @@ public class CodeGenerator {
 		root.put("email", email);
 		root.put("scheduler", scheduler);
 		if(authenticationTable!=null) {
-			root.put("UserInput","true");
+			root.put("UserInput",true);
 			root.put("AuthenticationTable", authenticationTable);
 		}
 		else
@@ -214,7 +221,8 @@ public class CodeGenerator {
 		return root;
 	}
 	
-	private static void generateAuditorController(Map<String, EntityDetails> details,String packageName,String backEndRootFolder, String destPath,String authenticationType,String authenticationTable,
+	// generate audit controller required to maintain history 
+	public void generateAuditorController(Map<String, EntityDetails> details,String packageName,String backEndRootFolder, String destPath,String authenticationType,String authenticationTable,
 			                 Boolean email, Boolean scheduler) {
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
@@ -225,11 +233,12 @@ public class CodeGenerator {
 
 		String destFolder = destPath + "/" + backendAppFolder + "/" + packageName.replace(".", "/") + "/RestControllers";
 		new File(destFolder).mkdirs();
-		CodeGeneratorUtils.generateFiles(template, root, destFolder);
+		new CodeGeneratorUtils().generateFiles(template, root, destFolder,TEMPLATE_FOLDER);
 
 	}
 
-	private static void generateEntityHistoryComponent(String destFolder, String authenticationTable, Map<String,EntityDetails> details){
+	// generate frontend entity history component 
+	public void generateEntityHistoryComponent(String destFolder, String authenticationTable, Map<String,EntityDetails> details){
 		
 		Map<String, Object> root = new HashMap<>();
 		
@@ -247,12 +256,7 @@ public class CodeGenerator {
 			Map<String, FieldDetails> authFieldMap = authTableDetails.getAuthenticationFieldsMap();
 			root.put("UserNameField",authFieldMap.get("UserName").getFieldName());
 			
-			String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(authenticationTable);
-			splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
-			for (int i = 0; i < splittedNames.length; i++) {
-				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
-			}
-			String moduleName = StringUtils.join(splittedNames, "-");
+			String moduleName = camelCaseToKebabCase(authenticationTable);
 			
 			root.put("ModuleName", moduleName);
 			
@@ -265,14 +269,15 @@ public class CodeGenerator {
 		}	
 		
 		new File(destFolder + "/entity-history").mkdirs();
-		CodeGeneratorUtils.generateFiles(getEntityHistoryTemplates(), root, destFolder + "/entity-history");
+		new CodeGeneratorUtils().generateFiles(getEntityHistoryTemplates(), root, destFolder + "/entity-history",TEMPLATE_FOLDER);
 
 		new File(destFolder + "/manage-entity-history").mkdirs();
-		CodeGeneratorUtils.generateFiles(getManageEntityHistoryTemplates(), root, destFolder + "/manage-entity-history");
+		new CodeGeneratorUtils().generateFiles(getManageEntityHistoryTemplates(), root, destFolder + "/manage-entity-history",TEMPLATE_FOLDER);
 
 	}
 	
-	private static Map<String, Object> getEntityHistoryTemplates() {
+	// templates for front-end entity history component
+	public Map<String, Object> getEntityHistoryTemplates() {
 
 		Map<String, Object> template = new HashMap<>();
 		template.put("entityHistory/entity-history/entity-history.component.html.ftl", "entity-history.component.html");
@@ -286,7 +291,8 @@ public class CodeGenerator {
 		return template;
 	}
 	
-	private static Map<String, Object> getManageEntityHistoryTemplates() {
+	// templates for front-end entity history manager 
+	public Map<String, Object> getManageEntityHistoryTemplates() {
 
 		Map<String, Object> template = new HashMap<>();
 
@@ -298,7 +304,8 @@ public class CodeGenerator {
 		return template;
 	}
 
-	public static void addhistoryComponentsToAppModule(String destPath)
+	// update app module file to add history components
+	public void addhistoryComponentsToAppModule(String destPath)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
@@ -307,6 +314,7 @@ public class CodeGenerator {
 
 		String data = " ";
 		try {
+			System.out.println(" AA  " + destPath + "/app.module.ts");
 			data = FileUtils.readFileToString(new File(destPath + "/app.module.ts"),"UTF8");
 
 			StringBuilder builder = new StringBuilder();
@@ -331,7 +339,8 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void addhistoryComponentsToAppRoutingModule(String destPath, String authenticationType, Boolean flowable)
+	// update app routing module to add history components
+	public void addhistoryComponentsToAppRoutingModule(String destPath, String authenticationType, Boolean flowable)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
@@ -374,34 +383,34 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void Generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,
-            Boolean history, String sourcePath, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email, Boolean cache,String schema,String authenticationTable, Boolean flowable) {
+	// generate all required code and layers against single entity
+	public void generate(String entityName, String appName, String backEndRootFolder,String clientRootFolder,String packageName,
+            Boolean history, String destPath, String type,EntityDetails details,String authenticationType, Boolean scheduler, Boolean email, Boolean cache,String schema,String authenticationTable, Boolean flowable) {
 
 		String backendAppFolder = backEndRootFolder + "/src/main/java";
 		String clientAppFolder = clientRootFolder + "/src/app";
-		Map<String, Object> root = buildEntityInfo(entityName,packageName,history, sourcePath, type,details,authenticationType,email,schema,authenticationTable, flowable,cache);
+		Map<String, Object> root = buildEntityInfo(entityName,packageName,history, type,details,authenticationType,email,schema,authenticationTable, flowable,cache);
 
 		Map<String, Object> uiTemplate2DestMapping = getUITemplates(root.get("ModuleName").toString());
 
 		try {
-			
 			String destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString(); // "/fcclient/src/app/"
 			String testDest = destPath + "/" + backEndRootFolder + "/src/test/java" + "/" + appName.replace(".", "/");
 			new File(destFolder).mkdirs();
 			
 			if (type.equalsIgnoreCase("ui"))
-				CodeGeneratorUtils.generateFiles(uiTemplate2DestMapping, root, destFolder);
+				new CodeGeneratorUtils().generateFiles(uiTemplate2DestMapping, root, destFolder,TEMPLATE_FOLDER);
 			else if (type == "backend") {
 				destFolder = destPath + "/" + backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder,authenticationTable);
-				generateBackendIntegrationTestFiles(root, testDest);
+				generateBackendUnitAndIntegrationTestFiles(root, testDest,authenticationTable);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString(),authenticationTable);
 			} else if (type.equalsIgnoreCase("all")) {
 				destFolder = destPath +"/"+ clientAppFolder + "/" + root.get("ModuleName").toString();
-				CodeGeneratorUtils.generateFiles(uiTemplate2DestMapping, root, destFolder);
+				new CodeGeneratorUtils().generateFiles(uiTemplate2DestMapping, root, destFolder,TEMPLATE_FOLDER);
 				destFolder = destPath +"/"+ backendAppFolder + "/" + appName.replace(".", "/");
 				generateBackendFiles(root, destFolder,authenticationTable);
-				generateBackendIntegrationTestFiles(root, testDest);
+				generateBackendUnitAndIntegrationTestFiles(root, testDest, authenticationTable);
 				generateRelationDto(details, root, destFolder,root.get("ClassName").toString(),authenticationTable);
 				
 			}
@@ -412,7 +421,7 @@ public class CodeGenerator {
 		}
 	}
 
-	private static void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
+	public void generateBackendFiles(Map<String, Object> root, String destPath,String authenticationTable) {
 		String className = root.get("ClassName").toString();
 
 		String destFolderBackend = destPath + "/application/" + className;
@@ -421,7 +430,7 @@ public class CodeGenerator {
 			destFolderBackend = destPath + "/application/Authorization/" + className;
 		}
 		new File(destFolderBackend).mkdirs();
-		CodeGeneratorUtils.generateFiles(getApplicationTemplates(className), root, destFolderBackend);
+		new CodeGeneratorUtils().generateFiles(getApplicationTemplates(className), root, destFolderBackend,TEMPLATE_FOLDER);
 
 		destFolderBackend = destPath + "/application/" + className + "/Dto";
 		if(authenticationTable !=null && className.equalsIgnoreCase(authenticationTable))
@@ -430,7 +439,7 @@ public class CodeGenerator {
 		}
 		new File(destFolderBackend).mkdirs();
 		Map<String,FieldDetails> authFields = (Map<String,FieldDetails>)root.get("AuthenticationFields");
-		CodeGeneratorUtils.generateFiles(getDtos(className,authenticationTable,authFields), root, destFolderBackend);
+		new CodeGeneratorUtils().generateFiles(getDtos(className,authenticationTable,authFields), root, destFolderBackend,TEMPLATE_FOLDER);
 
 		destFolderBackend = destPath + "/domain/" + className;
 		if(authenticationTable !=null && className.equalsIgnoreCase(authenticationTable))
@@ -438,27 +447,43 @@ public class CodeGenerator {
 			destFolderBackend = destPath + "/domain/Authorization/" + className;
 		}
 		new File(destFolderBackend).mkdirs();
-		CodeGeneratorUtils.generateFiles(getDomainTemplates(className), root, destFolderBackend);
+		new CodeGeneratorUtils().generateFiles(getDomainTemplates(className), root, destFolderBackend,TEMPLATE_FOLDER);
 
 		destFolderBackend = destPath + "/domain/IRepository";
 		new File(destFolderBackend).mkdirs();
-		CodeGeneratorUtils.generateFiles(getRepositoryTemplates(className), root, destFolderBackend);
+		new CodeGeneratorUtils().generateFiles(getRepositoryTemplates(className), root, destFolderBackend,TEMPLATE_FOLDER);
 
 		destFolderBackend = destPath + "/RestControllers";
 		new File(destFolderBackend).mkdirs();
-		CodeGeneratorUtils.generateFiles(getControllerTemplates(className), root, destFolderBackend);
+		new CodeGeneratorUtils().generateFiles(getControllerTemplates(className), root, destFolderBackend,TEMPLATE_FOLDER);
 	}
 	
-	private static void generateBackendIntegrationTestFiles(Map<String, Object> root, String destPath) {
+	public void generateBackendUnitAndIntegrationTestFiles(Map<String, Object> root, String destPath, String authenticationTable) {
 		String className = root.get("ClassName").toString();
-
 		String destFolderBackend = destPath + "/RestControllers";
 	
 		new File(destFolderBackend).mkdirs();
-		CodeGeneratorUtils.generateFiles(getControllerTestTemplates(className), root, destFolderBackend);
+		new CodeGeneratorUtils().generateFiles(getControllerTestTemplates(className), root, destFolderBackend,TEMPLATE_FOLDER);
+		
+		destFolderBackend = destPath + "/application/" + className;
+		if(authenticationTable !=null && className.equalsIgnoreCase(authenticationTable))
+		{
+			destFolderBackend = destPath + "/application/Authorization/" + className;
+		}
+		new File(destFolderBackend).mkdirs();
+		new CodeGeneratorUtils().generateFiles(getApplicationTestTemplates(className), root, destFolderBackend,TEMPLATE_FOLDER);
+
+		destFolderBackend = destPath + "/domain/" + className;
+		if(authenticationTable !=null && className.equalsIgnoreCase(authenticationTable))
+		{
+			destFolderBackend = destPath + "/domain/Authorization/" + className;
+		}
+		new File(destFolderBackend).mkdirs();
+		new CodeGeneratorUtils().generateFiles(getDomainTestTemplates(className), root, destFolderBackend,TEMPLATE_FOLDER);
+
 	}
 
-	private static Map<String, Object> getUITemplates(String moduleName) {
+	public Map<String, Object> getUITemplates(String moduleName) {
 		Map<String, Object> uiTemplate = new HashMap<>();
 		uiTemplate.put("iitem.ts.ftl", "i" + moduleName + ".ts");
 		uiTemplate.put("index.ts.ftl", "index.ts");
@@ -482,19 +507,26 @@ public class CodeGenerator {
 		return uiTemplate;
 	}
 
-	private static Map<String, Object> getApplicationTemplates(String className) {
+	public Map<String, Object> getApplicationTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
 		backEndTemplate.put("backendTemplates/iappService.java.ftl", "I" + className + "AppService.java");
 		backEndTemplate.put("backendTemplates/appService.java.ftl", className + "AppService.java");
 		backEndTemplate.put("backendTemplates/mapper.java.ftl", className + "Mapper.java");
+	//	backEndTemplate.put("backendTemplates/appServiceTest.java.ftl", className + "AppServiceTest.java");
+
+		return backEndTemplate;
+	}
+	public Map<String, Object> getApplicationTestTemplates(String className) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("backendTemplates/appServiceTest.java.ftl", className + "AppServiceTest.java");
 
 		return backEndTemplate;
 	}
 
-	private static Map<String, Object> getRepositoryTemplates(String className) {
+	public Map<String, Object> getRepositoryTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("backendTemplates/irepository.java.ftl", "I" + className + "Repository.java");
@@ -502,7 +534,7 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
-	private static Map<String, Object> getControllerTemplates(String className) {
+	public Map<String, Object> getControllerTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("backendTemplates/controller.java.ftl", className + "Controller.java");
@@ -510,7 +542,7 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 	
-	private static Map<String, Object> getControllerTestTemplates(String className) {
+	public Map<String, Object> getControllerTestTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("backendTemplates/ControllerTest.java.ftl", className + "ControllerTest.java");
@@ -518,18 +550,26 @@ public class CodeGenerator {
 	}
 	
 
-	private static Map<String, Object> getDomainTemplates(String className) {
+	public Map<String, Object> getDomainTemplates(String className) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
 		backEndTemplate.put("backendTemplates/manager.java.ftl", className + "Manager.java");
 		backEndTemplate.put("backendTemplates/imanager.java.ftl", "I" + className + "Manager.java");
+	//	backEndTemplate.put("backendTemplates/managerTest.java.ftl", className + "ManagerTest.java");
+
+		return backEndTemplate;
+	}
+	
+	public Map<String, Object> getDomainTestTemplates(String className) {
+
+		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("backendTemplates/managerTest.java.ftl", className + "ManagerTest.java");
 
 		return backEndTemplate;
 	}
 
-	private static Map<String, Object> getDtos(String className,String authenticationTable,Map<String,FieldDetails> authFields) {
+	public Map<String, Object> getDtos(String className,String authenticationTable,Map<String,FieldDetails> authFields) {
 
 		Map<String, Object> backEndTemplate = new HashMap<>();
 
@@ -553,7 +593,7 @@ public class CodeGenerator {
 		return backEndTemplate;
 	}
 
-	private static void generateRelationDto(EntityDetails details,Map<String,Object> root, String destPath,String entityName,String authenticationTable)
+	public void generateRelationDto(EntityDetails details,Map<String,Object> root, String destPath,String entityName,String authenticationTable)
 	{
 		String destFolder = destPath + "/application/" + root.get("ClassName").toString() + "/Dto";
 		if(authenticationTable !=null && root.get("ClassName").toString().equalsIgnoreCase(authenticationTable))
@@ -574,12 +614,12 @@ public class CodeGenerator {
 				
 				Map<String, Object> template = new HashMap<>();
 				template.put("backendTemplates/Dto/getOutput.java.ftl", "Get"+ entry.getValue().geteName() + "Output.java");
-				CodeGeneratorUtils.generateFiles(template, root, destFolder);
+				new CodeGeneratorUtils().generateFiles(template, root, destFolder,TEMPLATE_FOLDER);
 			}
 		}
 	}
 
-	private static void generateApplicationProperties(Map<String, Object> root, String destPath)
+	public void generateApplicationProperties(Map<String, Object> root, String destPath)
 	{
 		Map<String, Object> backEndTemplate = new HashMap<>();
 		backEndTemplate.put("backendTemplates/application.properties.ftl", "application.properties");
@@ -587,10 +627,10 @@ public class CodeGenerator {
 		backEndTemplate.put("backendTemplates/application-local.properties.ftl", "application-local.properties");
 		backEndTemplate.put("backendTemplates/application-test.properties.ftl", "application-test.properties");
 		new File(destPath).mkdirs();
-		CodeGeneratorUtils.generateFiles(backEndTemplate, root, destPath);
+		new CodeGeneratorUtils().generateFiles(backEndTemplate, root, destPath,TEMPLATE_FOLDER);
 	}
 	
-	public static void updateAppModule(String destPath,String appName,List<String> entityName)
+	public void updateAppModule(String destPath,String appName,List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
@@ -624,7 +664,7 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void updateAppRouting(String destPath,String appName, List<String> entityName, String authenticationType, Boolean flowable)
+	public void updateAppRouting(String destPath,String appName, List<String> entityName, String authenticationType, Boolean flowable)
 	{
 		StringBuilder sourceBuilder = new StringBuilder();
 
@@ -674,23 +714,19 @@ public class CodeGenerator {
 		}
 	}
 
-	public static StringBuilder addImports(List<String> entityName)
+	public StringBuilder addImports(List<String> entityName)
 	{
 		StringBuilder builder=new StringBuilder();
 		for(String str: entityName)
 		{
-			String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
-			for (int i = 0; i < splittedNames.length; i++) {
-				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
-			}
-			String moduleName=StringUtils.join(splittedNames, "-");
+			String moduleName = camelCaseToKebabCase(str);
 			builder.append("import { " + str + "ListComponent , " + str + "DetailsComponent, " + str + "NewComponent } from './" + moduleName + "/index';" + "\n");
 		}
 
 		return builder;
 	}
 
-	public static void modifyMainClass(String destPath,String appName)
+	public void modifyMainClass(String destPath,String appName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
@@ -725,7 +761,7 @@ public class CodeGenerator {
 		}
 	}
 
-	public static void updateTestUtils(String destPath,String appName,List<String> entityName)
+	public void updateTestUtils(String destPath,String appName,List<String> entityName)
 	{
 		StringBuilder sourceBuilder=new StringBuilder();
 		sourceBuilder.setLength(0);
@@ -761,16 +797,12 @@ public class CodeGenerator {
 		}
 	}
 
-	public static StringBuilder addImportForTestUtils(List<String> entityName)
+	public StringBuilder addImportForTestUtils(List<String> entityName)
 	{
 		StringBuilder builder=new StringBuilder();
 		for(String str: entityName)
 		{
-			String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(str);
-			for (int i = 0; i < splittedNames.length; i++) {
-				splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
-			}
-			String moduleName=StringUtils.join(splittedNames, "-");
+			String moduleName = camelCaseToKebabCase(str);
 			builder.append("import {" + str + "NewComponent } from 'src/app/" + moduleName + "/index';" + "\n");
 		}
 
@@ -778,10 +810,8 @@ public class CodeGenerator {
 	}
 
 
-	public static void updateEntitiesJsonFile(String path,List<String> entityNames, String authenticationTable) {
-
+	public void updateEntitiesJsonFile(String path, List<String> entityNames, String authenticationTable) {
 		try {
-
 			JSONArray entityArray = (JSONArray) readJsonFile(path);
 			for(String entityName: entityNames)
 			{
@@ -789,8 +819,8 @@ public class CodeGenerator {
 					entityArray.add(entityName.toLowerCase());
 				}
 			}
-
-			String prettyJsonString = beautifyJson(entityArray, "Array"); 
+        
+			String prettyJsonString = beautifyJson(entityArray, "Array");
 			writeJsonToFile(path,prettyJsonString);
 
 		} catch (FileNotFoundException e) {
@@ -803,8 +833,7 @@ public class CodeGenerator {
 
 	}
 
-	public static Object readJsonFile(String path) throws IOException, ParseException {
-
+	public Object readJsonFile(String path) throws IOException, ParseException {
 		JSONParser parser = new JSONParser();
 		FileReader fr = new FileReader(path);
 		Object obj = parser.parse(fr);
@@ -813,7 +842,7 @@ public class CodeGenerator {
 	}
 
 	// type: "Object" , "Array"
-	public static String beautifyJson(Object jsonObject, String type)  {
+	public String beautifyJson(Object jsonObject, String type)  {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		JsonParser jp = new JsonParser();
 		JsonElement je;
@@ -826,7 +855,7 @@ public class CodeGenerator {
 		return gson.toJson(je);
 	}
 
-	public static void writeJsonToFile(String path, String jsonString) throws IOException {
+	public void writeJsonToFile(String path, String jsonString) throws IOException {
 		FileWriter file = new FileWriter(path);
 		file.write(jsonString);
 		file.close();

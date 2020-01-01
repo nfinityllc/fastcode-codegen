@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -180,7 +182,7 @@ public class CodegenApplication implements ApplicationRunner {
 
 		BaseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");
-		Map<String, EntityDetails> details = EntityGenerator.generateEntities(input.getConnectionStr(),
+		Map<String, EntityDetails> details = new EntityGenerator().generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,input.getHistory(),input.getFlowable(),input.getAuthenticationSchema(),input.getAuthenticationType());
 
 		PomFileModifier.update(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getScheduler(),input.getHistory(),input.getFlowable(),input.getCache());
@@ -195,22 +197,21 @@ public class CodegenApplication implements ApplicationRunner {
 
 		if(!input.getAuthenticationType().equals("none"))
 		{
-			AuthenticationClassesTemplateGenerator.generateAutheticationClasses(input.getDestinationPath(), groupArtifactId,
+			new AuthenticationClassesTemplateGenerator().generateAutheticationClasses(input.getDestinationPath(), groupArtifactId,
 					input.getHistory(),input.getCache(),input.getFlowable(),input.getScheduler(),input.getEmail(),input.getAuthenticationType(),input.getSchemaName(),input.getAuthenticationSchema(),details);
 		}
 
-		CodeGenerator.GenerateAll(artifactId, artifactId + "Client", groupArtifactId, input.getHistory(), input.getCache(),
-				input.getDestinationPath() + "/" + artifactId + "/target/classes/" + (groupArtifactId + ".model").replace(".", "/"),
+		new CodeGenerator().generateAll(artifactId, artifactId + "Client", groupArtifactId, input.getHistory(), input.getCache(),
 						input.getDestinationPath(), input.getGenerationType(), details, input.getConnectionStr(),
 						input.getSchemaName(),input.getAuthenticationType(),input.getScheduler(),input.getEmail(),input.getFlowable(),input.getAuthenticationSchema());
 
 		if(input.getEmail())
 		{
-			EmailModuleTemplateGenerator.generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
+			new EmailModuleTemplateGenerator().generateEmailModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getHistory(),input.getAuthenticationType(), input.getSchemaName());
 		}
 		if(input.getScheduler())
 		{
-			SchedulerModuleTemplateGenerator.generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getHistory(), input.getSchemaName(),
+			new SchedulerModuleTemplateGenerator().generateSchedulerModuleClasses(input.getDestinationPath() + "/" + artifactId,input.getDestinationPath(), artifactId + "Client", groupArtifactId, input.getHistory(), input.getSchemaName(),
 					input.getConnectionStr(),input.getAuthenticationType());
 		}
 		if(input.getFlowable())

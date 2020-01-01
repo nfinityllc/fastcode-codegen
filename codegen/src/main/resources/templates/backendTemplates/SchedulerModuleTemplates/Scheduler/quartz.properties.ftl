@@ -19,7 +19,7 @@ org.quartz.job-store-type=jdbc
 
 #Database
 org.quartz.dataSource.quartzDataSource.driver=org.postgresql.Driver
-org.quartz.dataSource.quartzDataSource.URL=[=connectionStringInfo.url]?currentSchema=[=Schema]
+org.quartz.dataSource.quartzDataSource.URL=<#if connectionStringInfo??>[=connectionStringInfo.url]</#if>?currentSchema=[=Schema]
 org.quartz.dataSource.quartzDataSource.user=[=connectionStringInfo.username]
 org.quartz.dataSource.quartzDataSource.password=[=connectionStringInfo.password]
 org.quartz.dataSource.quartzDataSource.maxConnections=15

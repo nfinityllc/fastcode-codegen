@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.nfinity.entitycodegen.EntityDetails;
 import freemarker.cache.ClassTemplateLoader;
@@ -18,11 +19,15 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 public class AuthenticationClassesTemplateGenerator {
+	
+	@Autowired 
+	CodeGenerator codeGenerator;
+	
 	static Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 	static final String SECURITY_CLASSES_TEMPLATE_FOLDER = "/templates/backendTemplates/authenticationTemplates";
 	static final String BACKEND_TEMPLATE_FOLDER = "/templates/backendTemplates";
 
-	public static void generateAutheticationClasses(String destination, String packageName, Boolean history, Boolean cache,Boolean flowable, Boolean scheduler, Boolean email,String authenticationType
+	public void generateAutheticationClasses(String destination, String packageName, Boolean history, Boolean cache,Boolean flowable, Boolean scheduler, Boolean email,String authenticationType
 			,String schemaName,String authenticationTable,Map<String,EntityDetails> details) {
 
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, SECURITY_CLASSES_TEMPLATE_FOLDER + "/");
@@ -75,7 +80,7 @@ public class AuthenticationClassesTemplateGenerator {
 		generateAppStartupRunner(details, backendAppFolder, email, scheduler,root);
 	}
 
-	private static void generateBackendFiles(Map<String, Object> root, String destPath,String testDestinationPath,String authenticationTable) {
+	private void generateBackendFiles(Map<String, Object> root, String destPath,String testDestinationPath,String authenticationTable) {
 		String authenticationType =root.get("AuthenticationType").toString();
 		String destFolderBackend;
 		if(authenticationType!="none" && authenticationTable == null)
@@ -202,7 +207,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 	}
 
-	private static void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
+	private void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
 		for (Map.Entry<String, Object> entry : templateFiles.entrySet()) {
 			try {
 				Template template = cfg.getTemplate(entry.getKey());
@@ -652,7 +657,7 @@ public class AuthenticationClassesTemplateGenerator {
 		return backEndTemplate;
 	}
 	
-	private static void generateFlowableFiles(String destPath, String appName) {
+	private void generateFlowableFiles(String destPath, String appName) {
 		String authorizationPath = "/templates/frontendAuthorization/";
 		Map<String, Object> templates = new HashMap<>();
 		ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, authorizationPath);
@@ -666,7 +671,7 @@ public class AuthenticationClassesTemplateGenerator {
 		generateFiles(templates, null, destPath + "/core/");
 	}
 	
-	private static void generateFrontendAuthorization(String destPath, String appName, String authenticationType, String authenticationTable, Map<String, Object> root, Boolean flowable) {
+	private void generateFrontendAuthorization(String destPath, String appName, String authenticationType, String authenticationTable, Map<String, Object> root, Boolean flowable) {
 
 		String appFolderPath = destPath + "/" + appName.substring(appName.lastIndexOf(".") + 1) + "Client/src/app/";
 		List<String> authorizationEntities = new ArrayList<String>();
@@ -693,8 +698,8 @@ public class AuthenticationClassesTemplateGenerator {
 		authorizationEntities.add("userpermission");
 		authorizationEntities.add("userrole");
 
-		CodeGenerator.updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
-		CodeGenerator.updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType, flowable);
+		new CodeGenerator().updateAppModule(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList);
+		new CodeGenerator().updateAppRouting(destPath, appName.substring(appName.lastIndexOf(".") + 1), entityList, authenticationType, flowable);
 
 		authorizationEntities.add("login");
 		authorizationEntities.add("core");
@@ -719,7 +724,7 @@ public class AuthenticationClassesTemplateGenerator {
 
 	}
 	
-	private static void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType, String authenticationTable, Map<String,Object> root) {
+	private void generateFrontendAuthorizationComponents(String destination, String templatePath, String authenticationType, String authenticationTable, Map<String,Object> root) {
 		List<String> fl = FolderContentReader.getFilesFromFolder(templatePath);
 		Map<String, Object> templates = new HashMap<>();
 
@@ -735,7 +740,7 @@ public class AuthenticationClassesTemplateGenerator {
 			p = p.replace("\\", "/");
 			p = p.replace(System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources" + templatePath,"");
 			String outputFileName = p.substring(0, p.lastIndexOf('.'));
-			if(outputFileName.contains("userpermission") && authenticationTable != null) {
+			if((outputFileName.contains("userpermission") || outputFileName.contains("userrole") )&& authenticationTable != null) {
 				outputFileName = outputFileName.replace("user", convertCamelCaseToDash(authenticationTable));
 			}
 			templates.put(p, outputFileName);
@@ -751,7 +756,7 @@ public class AuthenticationClassesTemplateGenerator {
 		generateFiles(templates, root, destination);
 	}
 	
-	private static void generateAppStartupRunner(Map<String, EntityDetails> details, String backEndRootFolder,Boolean email, Boolean scheduler,Map<String, Object> root){
+	private void generateAppStartupRunner(Map<String, EntityDetails> details, String backEndRootFolder,Boolean email, Boolean scheduler,Map<String, Object> root){
 		
 		Map<String, Object> entitiesMap = new HashMap<String,Object>();
 		for(Map.Entry<String,EntityDetails> entry : details.entrySet())

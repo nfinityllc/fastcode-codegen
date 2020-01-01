@@ -13,10 +13,10 @@ public class FreeMarkerConfiguration {
 	public static String DTO_TEMPLATE_FOLDER = "/templates/backendTemplates/Dto";
 	public static String CLIENT_ROOT_FOLDER = "/client";
 	
-	public static Configuration configure()
+	public static Configuration configure(String folderPath)
 	{
 		
-		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, TEMPLATE_FOLDER + "/");// "/templates/backendTemplates/"); 
+		ClassTemplateLoader ctl1 = new ClassTemplateLoader(CodegenApplication.class, folderPath + "/");// "/templates/backendTemplates/"); 
 		MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[] { ctl1 }); 
 
 		cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX); 

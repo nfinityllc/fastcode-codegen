@@ -32,7 +32,7 @@ public class EntityGenerator {
 		cfg.setTemplateLoader(mtl);
 	}
 
-	public static Map<String, EntityDetails> generateEntities(String connectionString, String schema,
+	public Map<String, EntityDetails> generateEntities(String connectionString, String schema,
 			List<String> tableList, String packageName, String destination, Boolean history, Boolean flowable, String authenticationTable, String authenticationType) { 
 		Map<String, String> connectionProps = parseConnectionString(connectionString);
 		String entityPackage = packageName + ".domain.model";
@@ -519,7 +519,7 @@ public class EntityGenerator {
 		return compositeKeyEntities; 
 	}
 
-	public static Map<String, String> parseConnectionString(String connectionString) {
+	public Map<String, String> parseConnectionString(String connectionString) {
 		Map<String, String> connectionStringMap = new HashMap<String, String>();
 
 		String[] urlArr = connectionString.split("\\?");

@@ -20,8 +20,8 @@ public class CodeGeneratorUtils {
     }
     
     
-    public static void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
-    	Configuration cfg = FreeMarkerConfiguration.configure();
+    public void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath, String templateFolderPath) {
+    	Configuration cfg = FreeMarkerConfiguration.configure(templateFolderPath);
     	
 		for (Map.Entry<String, Object> entry : templateFiles.entrySet()) {
 			try {
@@ -38,11 +38,13 @@ public class CodeGeneratorUtils {
 				if(!dir.exists()) {
 					dir.mkdirs();
 				};
-
+                System.out.println("file name " +fileName);
 				PrintWriter writer = new PrintWriter(fileName);
 				template.process(root, writer);
 				writer.flush();
 				writer.close();
+				
+			
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
