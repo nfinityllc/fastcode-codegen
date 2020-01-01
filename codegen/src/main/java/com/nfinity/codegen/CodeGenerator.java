@@ -58,6 +58,7 @@ public class CodeGenerator {
 		root.put("EmailModule", email);
 		root.put("Flowable", flowable);
 		root.put("ApiPath", className.substring(0, 1).toLowerCase() + className.substring(1));
+		root.put("FrontendUrlPath", className.toLowerCase());
 		
 		if(authenticationTable!=null) {
 			root.put("UserInput","true");
@@ -131,7 +132,6 @@ public class CodeGenerator {
 		//update front end modules
 		updateAppRouting(destPath,appName, entityNames, authenticationType, flowable);
 		updateAppModule(destPath,appName, entityNames);
-		updateTestUtils(destPath,appName, entityNames);
 		updateEntitiesJsonFile(destPath + "/" + appName + "Client/src/app/common/components/main-nav/entities.json",entityNames,authenticationTable);
 
 		Map<String,Object> propertyInfo = getInfoForApplicationPropertiesFile(destPath,sourcePackageName, connectionString, schema,authenticationType,email,scheduler, flowable,cache);
@@ -760,55 +760,6 @@ public class CodeGenerator {
 			e.printStackTrace();
 		}
 	}
-
-	public void updateTestUtils(String destPath,String appName,List<String> entityName)
-	{
-		StringBuilder sourceBuilder=new StringBuilder();
-		sourceBuilder.setLength(0);
-
-		for(String str: entityName)
-		{
-			sourceBuilder.append("\n    " + str + "NewComponent,");
-		}
-		String data = " ";
-		try {
-			data = FileUtils.readFileToString(new File(destPath + "/" + appName + "Client/src/testing/utils.ts"),"UTF8");
-
-			StringBuilder builder = addImportForTestUtils(entityName);
-
-			builder.append(data);
-			int index = builder.lastIndexOf("entryComponents");
-			index = builder.indexOf("[", index);
-			builder.insert(index + 1 , sourceBuilder.toString());
-
-			index = builder.lastIndexOf("[");
-			builder.insert(index + 1 , sourceBuilder.toString());
-
-			File fileName = new File(destPath + "/" + appName + "Client/src/testing/utils.ts");
-
-			try (PrintWriter writer = new PrintWriter(fileName)) {
-				writer.println(builder.toString());
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public StringBuilder addImportForTestUtils(List<String> entityName)
-	{
-		StringBuilder builder=new StringBuilder();
-		for(String str: entityName)
-		{
-			String moduleName = camelCaseToKebabCase(str);
-			builder.append("import {" + str + "NewComponent } from 'src/app/" + moduleName + "/index';" + "\n");
-		}
-
-		return builder;
-	}
-
 
 	public void updateEntitiesJsonFile(String path, List<String> entityNames, String authenticationTable) {
 		try {
