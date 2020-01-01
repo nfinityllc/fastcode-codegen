@@ -109,10 +109,8 @@ export class BaseListComponent<E> implements OnInit {
   ngOnInit() {
     this.setPermissions();
     this.manageScreenResizing();
-    this.route.queryParams.subscribe(params => {
-      this.checkForAssociations(params);
-      this.setSort();
-    });
+    this.checkForAssociations(this.route.snapshot.queryParams);
+    this.setSort();
   }
 
   setSort() {

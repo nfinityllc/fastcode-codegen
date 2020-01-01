@@ -130,7 +130,7 @@ export class BaseNewComponent<E> implements OnInit, CanDeactivateGuard {
 				});
 	}
 	onCancel(): void {
-		this.dialogRef.close();
+		this.dialogRef.close(null);
 	}
 
 	selectAssociation(association) {

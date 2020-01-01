@@ -84,7 +84,8 @@
 			</#if>
 			<ng-container matColumnDef="actions">
 				<mat-header-cell *matHeaderCellDef> {{getFieldLabel("Actions")}}</mat-header-cell>
-				<mat-cell *matCellDef="let item" (click)="$event.stopPropagation()"> 
+				<mat-cell *matCellDef="let item" (click)="$event.stopPropagation()">
+          <button mat-button color="accent" (click)="openDetails(item)">{{'GENERAL.ACTIONS.EDIT' | translate }}</button>
 					<button mat-button<#if AuthenticationType!="none"> [disabled]="!IsDeletePermission"</#if> color="accent" (click)="delete(item)">{{'GENERAL.ACTIONS.DELETE' | translate }}</button>
 				</mat-cell>
 			</ng-container>
