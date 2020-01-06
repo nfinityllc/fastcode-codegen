@@ -1,88 +1,216 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { By } from "@angular/platform-browser";
-import { TestingModule,EntryComponents } from '../../testing/utils';
-import { [=IEntity],[=ClassName]Service, [=ClassName]NewComponent } from './index';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { of } from 'rxjs';
 
+import { TestingModule, EntryComponents } from '../../testing/utils';
+import { [=IEntity],[=ClassName]Service, [=ClassName]NewComponent } from './index';
 
 describe('[=ClassName]NewComponent', () => {
   let component: [=ClassName]NewComponent;
   let fixture: ComponentFixture<[=ClassName]NewComponent>;
   
   let el: HTMLElement;
+  
+  let relationData: any = {
+    <#if Relationship?has_content>
+    <#list Relationship as relationKey, relationValue>
+    <#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
+    <#list relationValue.joinDetails as joinDetails>
+    <#if joinDetails.joinEntityName == relationValue.eName>
+    <#if joinDetails.joinColumn??>
+    <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))>
+      <#assign jcType = joinDetails.joinColumnType?lower_case>
+      <#if jcType == "date">           
+    [=joinDetails.joinColumn]: new Date(),
+      <#elseif jcType == "boolean">
+    [=joinDetails.joinColumn]: true,
+      <#elseif jcType == "string">
+    [=joinDetails.joinColumn]: '[=joinDetails.joinColumn]1',
+      <#elseif jcType == "long" || jcType == "integer" || jcType == "double" || jcType == "short">              
+    [=joinDetails.joinColumn]: 1,
+      </#if>
+    </#if>
+    </#if>
+    </#if>
+    </#list>
+    <#assign dField=DescriptiveField[relationValue.eName]>
+    <#if dField?? && dField.description??>
+    <#assign dfType = dField.fieldType?lower_case>
+      <#if dfType == "date">
+    [=dField.description?uncap_first]: new Date(),
+      <#elseif dfType == "boolean">
+    [=dField.description?uncap_first]: true,
+      <#elseif dfType == "string">
+    [=dField.description?uncap_first]: '[=dField.fieldName]1',
+      <#elseif dfType == "long" || dfType == "integer" || dfType == "double" || dfType == "short">              
+    [=dField.description?uncap_first]: 1,
+      </#if>
+    </#if>
+    </#if>
+    </#list>
+    </#if>
+  }
   let data:[=IEntity] = {
-		<#assign counter = 1>
 		<#list Fields as key, value>           
-			<#if value.fieldName == "id">    
-		[=key]:[=counter],
-			<#elseif value.fieldType == "Date">           
+			<#if value.fieldType == "Date">
 		[=key]: new Date(),
 			<#elseif value.fieldType?lower_case == "boolean">
 		[=key]: true,
 			<#elseif value.fieldType?lower_case == "string">              
-		[=key]: '[=key][=counter]',
+		[=key]: '[=key]1',
 			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "double" ||  value.fieldType?lower_case == "short">              
-		[=key]: [=counter],
+		[=key]: 1,
 			</#if> 
-		</#list>    };
-  beforeEach(async(() => {
+		</#list>
+		... relationData
+
+	};
   
-    TestBed.configureTestingModule({
-      declarations: [
-        [=ClassName]NewComponent       
-      ].concat(EntryComponents),
-      imports: [TestingModule],
-      providers: [
-				[=ClassName]Service,
-				{ provide: MAT_DIALOG_DATA, useValue: {} },
-				{provide: MatDialogRef, useValue: {close: (dialogResult: any) => { }} },
-      ]      
-   
-    }).compileComponents();
-  }));
+  describe('Unit tests', () => {
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          [=ClassName]NewComponent
+        ],
+        imports: [TestingModule],
+        providers: [
+          [=ClassName]Service,
+          { provide: MAT_DIALOG_DATA, useValue: {} },
+          { provide: MatDialogRef, useValue: { close: (dialogResult: any) => { }, updateSize: () => { } } },
+        ]
+      }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent([=ClassName]NewComponent);
-    component = fixture.componentInstance;
-    spyOn(component, 'manageScreenResizing').and.returnValue();
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+      fixture = TestBed.createComponent([=ClassName]NewComponent);
+      component = fixture.componentInstance;
+      spyOn(component, 'manageScreenResizing').and.returnValue();
+      fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should run #ngOnInit()', async(() => {
+      component.ngOnInit();
+
+      expect(component.title.length).toBeGreaterThan(0);
+      expect(component.associations).toBeDefined();
+      expect(component.parentAssociations).toBeDefined();
+      expect(component.itemForm).toBeDefined();
+    }));
+
+    it('should run #onSubmit()', async () => {
+      component.itemForm.patchValue(data);
+      component.itemForm.enable();
+      fixture.detectChanges();
+      spyOn(component, "onSubmit").and.returnValue();
+      el = fixture.debugElement.query(By.css('button[name=save]')).nativeElement;
+      el.click();
+      expect(component.onSubmit).toHaveBeenCalled();
+    });
+
+    it('should call the cancel', async () => {
+      spyOn(component, "onCancel").and.callThrough();
+      el = fixture.debugElement.query(By.css('button[name=cancel]')).nativeElement;
+      el.click();
+      expect(component.onCancel).toHaveBeenCalled();
+    });
+  })
+
+  describe('Integration tests', () => {
+
+    // had to create a different suite because couldn't override MAT_DIALOG_DATA provider
+    describe('', () => {
+      it('should set the passed data to form', async () => {
+
+        TestBed.configureTestingModule({
+          declarations: [
+            [=ClassName]NewComponent
+          ].concat(EntryComponents),
+          imports: [TestingModule],
+          providers: [
+            [=ClassName]Service,
+            { provide: MAT_DIALOG_DATA, useValue: relationData },
+            { provide: MatDialogRef, useValue: { close: (dialogResult: any) => {}, updateSize: () => {} }}
+          ]
+        });
+        TestBed.overrideProvider(MAT_DIALOG_DATA, {useValue : relationData})
+        fixture = TestBed.createComponent([=ClassName]NewComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
   
-  it('should run #ngOnInit()', async (() => {
-    
-    component.ngOnInit();
-    
-    expect(component.title.length).toBeGreaterThan(0);
-    expect(component.associations).toBeDefined();
-    expect(component.parentAssociations).toBeDefined();
-    expect(component.itemForm).toBeDefined();
-    
-  }));
+        component.checkPassedData();
+        fixture.detectChanges();
+        expect(checkValues(component.itemForm.getRawValue(), relationData)).toBe(true);
+      });
+    })
 
+    describe('', () => {
+      beforeEach(async(() => {
+        TestBed.configureTestingModule({
+          declarations: [
+            [=ClassName]NewComponent
+          ].concat(EntryComponents),
+          imports: [TestingModule],
+          providers: [
+            [=ClassName]Service,
+            { provide: MAT_DIALOG_DATA, useValue: {} },
+            { provide: MatDialogRef, useValue: { close: (dialogResult: any) => {}, updateSize: () => {} }}
+          ]
+        });
+      }));
+  
+      beforeEach(() => {
+        fixture = TestBed.createComponent([=ClassName]NewComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+  
+      it('should create', () => {
+        expect(component).toBeTruthy();
+      });
+  
+      it('should run #ngOnInit()', async(() => {
+        component.ngOnInit();
+  
+        expect(component.title.length).toBeGreaterThan(0);
+        expect(component.associations).toBeDefined();
+        expect(component.parentAssociations).toBeDefined();
+        expect(component.itemForm).toBeDefined();
+        expect(component.data).toEqual({});
+      }));
+  
+      it('should create the record and close the dialog with created object response', async () => {
+        component.itemForm.patchValue(data);
+        component.itemForm.enable();
+        fixture.detectChanges();
+        spyOn(component.dialogRef, "close").and.returnValue();
+        spyOn(component.dataService, "create").and.returnValue(of(data));
+  
+        el = fixture.debugElement.query(By.css('button[name=save]')).nativeElement;
+        el.click();
+        expect(component.dialogRef.close).toHaveBeenCalledWith(data);
+      });
+  
+      it('should close the dialog with null data when cancel button is pressed', async () => {
+        spyOn(component.dialogRef, "close").and.returnValue();
+        el = fixture.debugElement.query(By.css('button[name=cancel]')).nativeElement;
+        el.click();
+        expect(component.dialogRef.close).toHaveBeenCalledWith(null);
+      });
 
-  it('should run #onSubmit()', async () => {
-   
-    component.itemForm.patchValue(data);
-    component.itemForm.enable();    
-    fixture.detectChanges();
-    spyOn(component, "onSubmit").and.returnValue();
-    el = fixture.debugElement.query(By.css('button[name=save]')).nativeElement;
-    el.click();
-    expect(component.onSubmit).toHaveBeenCalled();
- 
-  });
+    })
 
-  it('should call the cancel', async () => {
-
-    spyOn(component, "onCancel").and.callThrough();
-    el = fixture.debugElement.query(By.css('button[name=cancel]')).nativeElement;
-    el.click();
-    expect(component.onCancel).toHaveBeenCalled();
-
-  });
+  })
+  
 });
+
+function checkValues( mainObject, objToBeChecked): boolean{
+  const doesValueMatch = (currentKey) => {
+    return mainObject[currentKey] == objToBeChecked[currentKey]
+  };
+  return Object.keys(objToBeChecked).every(doesValueMatch);
+}
