@@ -1,4 +1,4 @@
-package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case];
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +11,13 @@ import [=PackageName].domain.model.[=IdClass];
 </#if>
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
+import [=PackageName].domain.irepository.I[=relationValue.eName]Repository;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
-import [=PackageName].domain.IRepository.I[=ClassName]Repository;
+import [=PackageName].domain.irepository.I[=ClassName]Repository;
 import com.querydsl.core.types.Predicate;
 
 @Repository

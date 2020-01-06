@@ -1,4 +1,4 @@
-package [=PackageName].domain.IRepository;
+package [=PackageName].domain.irepository;
 
 <#if History!false>
 import org.javers.spring.annotation.JaversSpringDataAuditable;

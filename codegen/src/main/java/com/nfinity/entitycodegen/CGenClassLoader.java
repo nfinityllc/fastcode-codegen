@@ -11,7 +11,7 @@ import java.util.jar.*;
 
 
 public class CGenClassLoader extends ClassLoader {
-	public static Map<String,String> retrieveClasses(Path rootDir, String packageName) throws IOException {
+	public  Map<String,String> retrieveClasses(Path rootDir, String packageName) throws IOException {
 		Map<String,String>classFiles = new HashMap<String,String>();
 		String packagePath =packageName==null? "" : packageName.replace('.', '/');
 		Files.walkFileTree(rootDir, new SimpleFileVisitor<Path>() {
@@ -71,7 +71,7 @@ public class CGenClassLoader extends ClassLoader {
 				classFiles= this.findClassesFromJar(packageName);
 			}
 			else {
-					classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
+					classFiles= retrieveClasses(Paths.get(this.path), packageName);
 			}
 		
 			ArrayList<Class<?>> classes = new ArrayList<Class<?>>();

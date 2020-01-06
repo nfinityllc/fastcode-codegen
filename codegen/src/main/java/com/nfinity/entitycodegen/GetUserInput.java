@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class GetUserInput {
 
 	public static String getInput(Scanner inputReader, String inputType) {

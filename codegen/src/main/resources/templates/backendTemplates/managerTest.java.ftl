@@ -1,4 +1,4 @@
-package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case];
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import [=PackageName].domain.model.[=EntityClassName];
 <#list Relationship as relationKey, relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].domain.IRepository.I[=relationValue.eName]Repository;
+import [=PackageName].domain.irepository.I[=relationValue.eName]Repository;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
@@ -36,7 +36,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Entity;
 <#if CompositeKeyClasses?seq_contains(ClassName)>
 import [=PackageName].domain.model.[=IdClass];
 </#if>
-import [=PackageName].domain.IRepository.I[=ClassName]Repository;
+import [=PackageName].domain.irepository.I[=ClassName]Repository;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.types.Predicate;
 

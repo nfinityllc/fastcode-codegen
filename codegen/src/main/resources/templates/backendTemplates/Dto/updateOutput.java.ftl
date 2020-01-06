@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto;
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].dto;
 
 import java.util.Date;
 public class Update[=ClassName]Output {

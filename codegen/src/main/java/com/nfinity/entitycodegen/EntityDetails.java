@@ -13,11 +13,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import com.google.common.base.CaseFormat;
 
+@Component
 public class EntityDetails {
 
 	Map<String, FieldDetails> fieldsMap = new HashMap<>();
@@ -311,7 +313,6 @@ public class EntityDetails {
 	private static String geteModuleName(String className) {
 		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(className);
 		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
-//		String instanceName = StringUtils.join(splittedNames);
 		for (int i = 0; i < splittedNames.length; i++) {
 			splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
 		}

@@ -1,4 +1,4 @@
-package [=PackageName].RestControllers;
+package [=PackageName].restcontrollers;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -52,29 +52,29 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import [=CommonModulePackage].logging.LoggingHelper;
-import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].[=ClassName]AppService;
-import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
-import [=PackageName].domain.IRepository.I[=ClassName]Repository;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].[=ClassName]AppService;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].dto.*;
+import [=PackageName].domain.irepository.I[=ClassName]Repository;
 import [=PackageName].domain.model.[=ClassName]Entity;
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 <#if relationValue.isParent==false>
-import [=PackageName].domain.IRepository.I[=relationValue.eName?cap_first]Repository;
+import [=PackageName].domain.irepository.I[=relationValue.eName?cap_first]Repository;
 import [=PackageName].domain.model.[=relationValue.eName?cap_first]Entity;
 </#if> 
 </#if> 
 </#list>
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName && relationValue.eName !="OneToMany">
-import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]AppService;    
+import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.authorization</#if>.[=relationValue.eName?lower_case].[=relationValue.eName]AppService;    
 </#if>
 </#list>
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import org.springframework.security.crypto.password.PasswordEncoder;
-import [=PackageName].application.Authorization.[=AuthenticationTable]role.[=AuthenticationTable]roleAppService;
-import [=PackageName].application.Authorization.[=AuthenticationTable]role.Dto.Find[=AuthenticationTable]roleByIdOutput;
-import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
-import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]role.[=AuthenticationTable]roleAppService;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]role.dto.Find[=AuthenticationTable]roleByIdOutput;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]permission.[=AuthenticationTable]permissionAppService;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]permission.dto.Find[=AuthenticationTable]permissionByIdOutput;
 </#if>
 <#if CompositeKeyClasses?seq_contains(ClassName)>
 import [=PackageName].domain.model.[=IdClass];

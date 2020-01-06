@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case];
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -28,9 +28,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import [=PackageName].domain<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].*;
-import [=CommonModulePackage].Search.*;
-import [=PackageName].application<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].domain<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].*;
+import [=CommonModulePackage].search.*;
+import [=PackageName].application<#if AuthenticationType!= "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].dto.*;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
 <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -39,7 +39,7 @@ import [=PackageName].domain.model.[=IdClass];
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
-import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
+import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.authorization</#if>.[=relationValue.eName?lower_case].[=relationValue.eName]Manager;
 <#if relationValue.relation == "ManyToOne">
 <#assign i= relationValue.joinDetails?size>
 <#if i!=0 && i!=1>
@@ -49,7 +49,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#list>
 <#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
-import [=PackageName].domain.Authorization.Role.RoleManager;
+import [=PackageName].domain.authorization.role.RoleManager;
 import [=PackageName].domain.model.RoleEntity;
 <#if Flowable!false>
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;

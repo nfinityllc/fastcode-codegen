@@ -1,12 +1,12 @@
 package [=PackageName];
 
 import [=PackageName].domain.model.*;
-import [=PackageName].domain.Authorization.Permission.IPermissionManager;
-import [=PackageName].domain.Authorization.Rolepermission.IRolepermissionManager;
-import [=PackageName].domain.Authorization.[=AuthenticationTable]role.I[=AuthenticationTable]roleManager;
-import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
-import [=PackageName].domain.Authorization.Role.IRoleManager;
-import [=PackageName].CommonModule.logging.LoggingHelper;
+import [=PackageName].domain.authorization.permission.IPermissionManager;
+import [=PackageName].domain.authorization.rolepermission.IRolepermissionManager;
+import [=PackageName].domain.authorization.[=AuthenticationTable?lower_case]role.I[=AuthenticationTable]roleManager;
+import [=PackageName].domain.authorization.[=AuthenticationTable?lower_case].I[=AuthenticationTable]Manager;
+import [=PackageName].domain.authorization.role.IRoleManager;
+import [=PackageName].commonmodule.logging.LoggingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -17,22 +17,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-<#if Flowable!false>
-import [=PackageName].application.Flowable.ActIdUserMapper;
-import [=PackageName].application.Flowable.FlowableIdentityService;
-import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
-</#if>
 
 @Component
 @Profile("bootstrap")
 public class AppStartupRunner implements ApplicationRunner {
-<#if Flowable!false>
-    @Autowired
-    private FlowableIdentityService idmIdentityService;
 
-    @Autowired
-    private ActIdUserMapper actIdUserMapper;
-</#if>
     @Autowired
     private IPermissionManager permissionManager;
 
@@ -57,9 +46,6 @@ public class AppStartupRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-<#if Flowable!false>
-    idmIdentityService.deleteAllUsersGroupsPrivileges();
-</#if>
      System.out.println("*****************Creating Default Users/Roles/Permissions *************************");
 
         // Create permissions for default entities
@@ -71,25 +57,13 @@ public class AppStartupRunner implements ApplicationRunner {
         RoleEntity role = new RoleEntity();
         role.setName("ROLE_Admin");
         role = roleManager.Create(role);
-        <#if Flowable!false>
-        idmIdentityService.createGroup("ROLE_Admin");
-        </#if>
         addDefaultUser(role);
         
 		List<String> entityList = new ArrayList<String>();
         entityList.add("role");
         entityList.add("permission");
         entityList.add("rolepermission");
-        <#if email!false>
-        entityList.add("email");
-        entityList.add("emailVariable");
-        </#if>
-        
-        <#if scheduler!false>
-        entityList.add("jobDetails");
-        entityList.add("triggerDetails");
-        </#if>
-        
+
         <#if !UserInput??>
 		entityList.add("user");
 		entityList.add("userpermission");
@@ -106,53 +80,10 @@ public class AppStartupRunner implements ApplicationRunner {
 		for(String entity: entityList) {
         	addEntityPermissions(entity, role.getId());
         }
-        <#if Flowable!false>
-		addFlowablePrivileges(role.getId());
-        </#if>
+      
         loggingHelper.getLogger().info("Completed creating the data in the database");
 
     }
-    <#if Flowable!false>
-    
-    private void addFlowablePrivileges(long roleId) {
-    	PermissionEntity pe5 = new PermissionEntity("access-idm","");
-        PermissionEntity pe6 = new PermissionEntity("access-admin","");
-        PermissionEntity pe7 = new PermissionEntity("access-modeler","");
-        PermissionEntity pe8 = new PermissionEntity("access-task","");
-        PermissionEntity pe9 = new PermissionEntity("access-rest-api","");
-        
-        pe5 = permissionManager.Create(pe5);
-        pe6 = permissionManager.Create(pe6);
-        pe7 = permissionManager.Create(pe7);
-        pe8 = permissionManager.Create(pe8);
-        pe9 = permissionManager.Create(pe9);
-        
-        RolepermissionEntity pe5RP = new RolepermissionEntity(pe5.getId(), roleId);
-        RolepermissionEntity pe6RP = new RolepermissionEntity(pe6.getId(), roleId);
-        RolepermissionEntity pe7RP = new RolepermissionEntity(pe7.getId(), roleId);
-        RolepermissionEntity pe8RP = new RolepermissionEntity(pe8.getId(), roleId);
-        RolepermissionEntity pe9RP = new RolepermissionEntity(pe9.getId(), roleId);
-        
-        rolepermissionManager.Create(pe5RP);
-        rolepermissionManager.Create(pe6RP);
-        rolepermissionManager.Create(pe7RP);
-        rolepermissionManager.Create(pe8RP);
-        rolepermissionManager.Create(pe9RP);
-
-        idmIdentityService.createPrivilege("access-idm");
-        idmIdentityService.createPrivilege("access-admin");
-        idmIdentityService.createPrivilege("access-modeler");
-        idmIdentityService.createPrivilege("access-task");
-        idmIdentityService.createPrivilege("access-rest-api");
-
-        idmIdentityService.addGroupPrivilegeMapping("ROLE_Admin", pe5.getName());
-        idmIdentityService.addGroupPrivilegeMapping("ROLE_Admin", pe6.getName());
-        idmIdentityService.addGroupPrivilegeMapping("ROLE_Admin", pe7.getName());
-        idmIdentityService.addGroupPrivilegeMapping("ROLE_Admin", pe8.getName());
-        idmIdentityService.addGroupPrivilegeMapping("ROLE_Admin", pe9.getName());
-        
-    }
-    </#if>
     
     private void addEntityPermissions(String entity, long roleId) {
 		PermissionEntity pe1 = new PermissionEntity(entity.toUpperCase() + "ENTITY_CREATE", "create " + entity);
@@ -223,10 +154,5 @@ public class AppStartupRunner implements ApplicationRunner {
         </#if>
         </#if>
 		urole=userroleManager.Create(urole);
-    	<#if Flowable!false>
-    	ActIdUserEntity actIdUser = actIdUserMapper.createUsersEntityToActIdUserEntity(admin);
-		idmIdentityService.createUser(admin, actIdUser);
-		idmIdentityService.addUserGroupMapping("admin", role.getName());
-    	</#if>
     }
 }

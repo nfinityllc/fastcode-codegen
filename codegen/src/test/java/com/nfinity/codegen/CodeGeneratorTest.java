@@ -1,16 +1,10 @@
 package com.nfinity.codegen;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,11 +14,9 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
-import org.junit.AfterClass;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,13 +26,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.omg.CORBA.AnyHolder;
+import org.mockito.Spy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
 import com.nfinity.entitycodegen.FieldDetails;
@@ -54,6 +42,7 @@ public class CodeGeneratorTest {
     public TemporaryFolder folder= new TemporaryFolder(new File(System.getProperty("user.dir").toString()));
 
 	@InjectMocks
+	@Spy
 	CodeGenerator codeGenerator;
 	
 	@Mock
@@ -61,6 +50,9 @@ public class CodeGeneratorTest {
 	
 	@Mock
 	CodeGeneratorUtils mockedUtils;
+	
+	@Mock
+	JSONUtils jsonUtils;
 	
 	File destPath;
 	String testValue = "abc";
@@ -99,26 +91,21 @@ public class CodeGeneratorTest {
 		root.put("History", true);
 		root.put("IEntity", "I" + entityName);
 		root.put("IEntityFile", "i" + moduleName);
-		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
+		root.put("CommonModulePackage" , packageName.concat(".commonmodule"));
 		root.put("AuthenticationType", testValue);
 		root.put("EmailModule", true);
 		root.put("Flowable", true);
 		root.put("ApiPath", entityName);
+		root.put("FrontendUrlPath", entityName.toLowerCase());
 	    root.put("UserInput","true");
 	    root.put("AuthenticationTable", testValue);
 		root.put("PrimaryKeys", details.getPrimaryKeys());
 		root.put("Fields", details.getFieldsMap());
 		root.put("Relationship", details.getRelationsMap());
 		
+		Mockito.doReturn(moduleName).when(mockedUtils).camelCaseToKebabCase(anyString());
 		Assertions.assertThat(codeGenerator.buildEntityInfo(entityName,packageName,true,testValue, details
 				,testValue,true,testValue,testValue,true,true)).isEqualTo(root);
-	}
-	
-	@Test
-	public void convertCamelCaseToKebaCase_StringIsValid_ReturnString()
-	{
-		String str = "testString";
-		Assertions.assertThat(codeGenerator.camelCaseToKebabCase(str)).isEqualTo("test-string");
 	}
 	
 	@Test
@@ -128,7 +115,7 @@ public class CodeGeneratorTest {
 		details.put("com.fastcode.Entity1",new EntityDetails());
 		details.put("com.fastcode.Entity2",new EntityDetails());
 		
-		Mockito.doNothing().when(mockedCodeGenerator).generate(anyString(), anyString(), anyString(), anyString(), anyString(), any(Boolean.class), anyString(),anyString(), any(EntityDetails.class), anyString(), any(Boolean.class), any(Boolean.class), any(Boolean.class), anyString(), anyString(), any(Boolean.class));
+		Mockito.doNothing().when(codeGenerator).generate(anyString(), anyString(), anyString(), anyString(), anyString(), any(Boolean.class), anyString(),anyString(), any(EntityDetails.class), anyString(), any(Boolean.class), any(Boolean.class), any(Boolean.class), anyString(), anyString(), any(Boolean.class));
 		
 		Assertions.assertThat(codeGenerator.generateAllModulesForEntities(details, testValue, testValue, packageName, true, true, destPath.getAbsolutePath(), testValue, testValue, testValue, true, true, true, testValue).size()).isEqualTo(2);
 	}
@@ -161,9 +148,9 @@ public class CodeGeneratorTest {
 		Mockito.doNothing().when(mockedCodeGenerator).addhistoryComponentsToAppRoutingModule(anyString(), anyString(),any(Boolean.class));
 		Mockito.doNothing().when(mockedCodeGenerator).generateAuditorController(any(HashMap.class), anyString(),anyString(),anyString(),anyString(),anyString(),any(Boolean.class),any(Boolean.class));
 
-		Mockito.doNothing().when(mockedCodeGenerator).updateAppRouting(anyString(),anyString(), any(List.class), anyString(), any(Boolean.class));
+		Mockito.doNothing().when(mockedCodeGenerator).updateAppRouting(anyString(),anyString(), any(List.class), anyString());
 		Mockito.doNothing().when(mockedCodeGenerator).updateAppModule(anyString(),anyString(), any(List.class));
-		Mockito.doNothing().when(mockedCodeGenerator).updateTestUtils(anyString(),anyString(), any(List.class));
+	//	Mockito.doNothing().when(mockedCodeGenerator).updateTestUtils(anyString(),anyString(), any(List.class));
 		Mockito.doNothing().when(mockedCodeGenerator).updateEntitiesJsonFile(anyString(),any(List.class),anyString());
 
 		Mockito.when(mockedCodeGenerator.getInfoForApplicationPropertiesFile(anyString(),anyString(), anyString(), anyString(),anyString(), any(Boolean.class),any(Boolean.class), any(Boolean.class),any(Boolean.class))).thenReturn(new HashMap<String, Object>());
@@ -182,9 +169,9 @@ public class CodeGeneratorTest {
 	{ 
 		
 	   Mockito.doNothing().when(mockedUtils).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
-		
+	
 	   codeGenerator.generateBeanConfig(packageName, testValue,destPath.getAbsolutePath(), testValue, new HashMap<String, EntityDetails>(), true, testValue);
-	   Mockito.verify(mockedUtils,Mockito.times(0)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
+	   Mockito.verify(mockedUtils,Mockito.times(1)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 	
 	}
 	
@@ -242,11 +229,11 @@ public class CodeGeneratorTest {
 		root.put("entitiesMap", entitiesMap);
 		root.put("PackageName", packageName);
 		root.put("AuthenticationType", testValue);
-		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
+		root.put("CommonModulePackage" , packageName.concat(".commonmodule"));
 		root.put("email", true);
 		root.put("scheduler", true);
 		
-		root.put("UserInput",true);
+		root.put("UserInput","true");
 		root.put("AuthenticationTable", testValue);
 		
 		Assertions.assertThat(codeGenerator.getInfoForAuditControllerAndBeanConfig(details,packageName,testValue,testValue,true,true)
@@ -259,7 +246,7 @@ public class CodeGeneratorTest {
 	   Mockito.doNothing().when(mockedUtils).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 		
 	   codeGenerator.generateAuditorController(new HashMap<String, EntityDetails>(),packageName, testValue,destPath.getAbsolutePath(), testValue, testValue,true,true );
-	   Mockito.verify(mockedUtils,Mockito.times(0)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
+	   Mockito.verify(mockedUtils,Mockito.times(1)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 	}
 	
 	@Test
@@ -275,11 +262,11 @@ public class CodeGeneratorTest {
 		details.put("Entity1",entityDetails);
 		details.put("Entity2",new EntityDetails());
 		
-		Mockito.doReturn(moduleName).when(mockedCodeGenerator).camelCaseToKebabCase(anyString());
+		Mockito.doReturn(moduleName).when(mockedUtils).camelCaseToKebabCase(anyString());
 		Mockito.doNothing().when(mockedUtils).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 		
 		codeGenerator.generateEntityHistoryComponent(destPath.getAbsolutePath(), "Entity1",details);
-		Mockito.verify(mockedUtils,never()).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
+		Mockito.verify(mockedUtils, Mockito.times(2)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 	
 	}
 	
@@ -397,13 +384,16 @@ public class CodeGeneratorTest {
 
 		backEndTemplate.put("backendTemplates/Dto/createInput.java.ftl", "Create" + entityName + "Input.java");
 		backEndTemplate.put("backendTemplates/Dto/createOutput.java.ftl", "Create" + entityName + "Output.java");
+		backEndTemplate.put("backendTemplates/Dto/customUserDto/userDto/FindCustomUserByNameOutput.java.ftl", "Find" + entityName + "ByUserNameOutput.java");
+		backEndTemplate.put("backendTemplates/Dto/customUserDto/userDto/FindCustomUserWithAllFieldsByIdOutput.java.ftl", "Find"+entityName+"WithAllFieldsByIdOutput.java");
+		backEndTemplate.put("backendTemplates/Dto/findByIdOutput.java.ftl", "Find" + entityName + "ByIdOutput.java");
+		
 		backEndTemplate.put("backendTemplates/Dto/updateInput.java.ftl", "Update" + entityName + "Input.java");
 		backEndTemplate.put("backendTemplates/Dto/updateOutput.java.ftl", "Update" + entityName + "Output.java");
-		backEndTemplate.put("backendTemplates/Dto/findByIdOutput.java.ftl", "Find" + entityName + "ByIdOutput.java");
-	    backEndTemplate.put("backendTemplates/authenticationTemplates/users/dtos/FindCustomUserByNameOutput.java.ftl", "Find"+entityName+"ByUserNameOutput.java");
-	    backEndTemplate.put("backendTemplates/authenticationTemplates/users/dtos/GetRoleOutput.java.ftl", "GetRoleOutput.java");
-		backEndTemplate.put("backendTemplates/authenticationTemplates/users/dtos/LoginUserInput.java.ftl", "LoginUserInput.java");
-		backEndTemplate.put("backendTemplates/authenticationTemplates/users/dtos/FindCustomUserWithAllFieldsByIdOutput.java.ftl", "Find"+entityName+"WithAllFieldsByIdOutput.java");
+		
+	    backEndTemplate.put("backendTemplates/authenticationTemplates/application/authorization/user/dto/GetRoleOutput.java.ftl", "GetRoleOutput.java");
+		backEndTemplate.put("backendTemplates/authenticationTemplates/application/authorization/user/dto/LoginUserInput.java.ftl", "LoginUserInput.java");
+		
 		
 		Assertions.assertThat(codeGenerator.getDtos(entityName,entityName,authMap)).isEqualTo(backEndTemplate);
 	}
@@ -432,7 +422,7 @@ public class CodeGeneratorTest {
 		
 		Mockito.doNothing().when(mockedUtils).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 		codeGenerator.generateRelationDto(entityDetails,root,destPath.getAbsolutePath(), entityName,testValue);
-		Mockito.verify(mockedUtils,never()).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
+		Mockito.verify(mockedUtils,Mockito.times(1)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 	}
 	
 	@Test 
@@ -471,8 +461,8 @@ public class CodeGeneratorTest {
 		Mockito.doNothing().when(mockedUtils).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 
 		codeGenerator.generateBackendFiles(root,destPath.getAbsolutePath(), entityName);
-		System.out.println(" PAth " + destPath.getAbsolutePath());
-		Mockito.verify(mockedUtils,never()).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
+	//	System.out.println(" PAth " + destPath.getAbsolutePath());
+		Mockito.verify(mockedUtils,Mockito.times(5)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 	}
 	
 	@Test 
@@ -487,7 +477,7 @@ public class CodeGeneratorTest {
 		
 		Mockito.doNothing().when(mockedUtils).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 		codeGenerator.generateBackendUnitAndIntegrationTestFiles(root,destPath.getAbsolutePath(),entityName);
-		Mockito.verify(mockedUtils,never()).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
+		Mockito.verify(mockedUtils,Mockito.times(3)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 	}
 	
 	@Test 
@@ -498,7 +488,7 @@ public class CodeGeneratorTest {
 		
 		Mockito.doNothing().when(mockedUtils).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 		codeGenerator.generateApplicationProperties(root,destPath.getAbsolutePath());
-		Mockito.verify(mockedUtils,never()).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
+		Mockito.verify(mockedUtils,Mockito.times(1)).generateFiles(any(HashMap.class),any(HashMap.class),anyString(),anyString());
 	}
 	
 	@Test 
@@ -510,8 +500,7 @@ public class CodeGeneratorTest {
 		List<String> entities = new ArrayList<>();
 		entities.add(entityName);
 		
-		Mockito.doReturn(moduleName).when(mockedCodeGenerator).camelCaseToKebabCase(anyString());
-	
+		Mockito.doReturn(moduleName).when(mockedUtils).camelCaseToKebabCase(anyString());
 		Assertions.assertThat(codeGenerator.addImports(entities)).isEqualToIgnoringNewLines(builder);
 	}
 
@@ -552,35 +541,7 @@ public class CodeGeneratorTest {
 		List<String> entities = new ArrayList<>();
 		entities.add(entityName);
 		
-		codeGenerator.updateAppRouting(destPath.getAbsolutePath(),"fApp",entities,entityName,true);
-	}
-	
-	@Test 
-	public void updateTestUtils_parameterListIsValid_ReturnNothing() throws IOException
-	{
-		String className = "utils.ts";
-		File newTempFolder = folder.newFolder("tempFolder","fAppClient","src","testing");
-		File tempFile = File.createTempFile("utils", ".ts", newTempFolder);
-		File newFile = new File(newTempFolder.getAbsolutePath()+ "/" + className);
-		tempFile.renameTo(newFile);
-		List<String> entities = new ArrayList<>();
-		entities.add(entityName);
-		
-		codeGenerator.updateTestUtils(destPath.getAbsolutePath(),"fApp",entities);
-	}
-	
-	@Test 
-	public void addImportForTestUtils_parameterListIsValid_ReturnStringBuilder()
-	{
-		
-		StringBuilder builder=new StringBuilder();
-		builder.append("import {" + entityName + "NewComponent } from 'src/app/" + moduleName + "/index';" + "\n");
-		List<String> entities = new ArrayList<>();
-		entities.add(entityName);
-		
-		Mockito.doReturn(moduleName).when(mockedCodeGenerator).camelCaseToKebabCase(anyString());
-	
-		Assertions.assertThat(codeGenerator.addImportForTestUtils(entities)).isEqualToIgnoringNewLines(builder);
+		codeGenerator.updateAppRouting(destPath.getAbsolutePath(),"fApp",entities,entityName);
 	}
 	
 	@Test 
@@ -597,9 +558,9 @@ public class CodeGeneratorTest {
 		String path = destPath.getAbsolutePath()+"\\fAppClient\\src\\app\\common\\components\\main-nav\\entities.json";
 		JSONArray entityArray = mock(JSONArray.class);
 		String jsonString = "[entity2]";
-		Mockito.doReturn(entityArray).when(mockedCodeGenerator).readJsonFile(path);
-		Mockito.doReturn(jsonString).when(mockedCodeGenerator).beautifyJson(entityArray, "Array");
-		Mockito.doNothing().when(mockedCodeGenerator).writeJsonToFile(path, jsonString);
+		Mockito.doReturn(entityArray).when(jsonUtils).readJsonFile(path);
+		Mockito.doReturn(jsonString).when(jsonUtils).beautifyJson(entityArray, "Array");
+		Mockito.doNothing().when(jsonUtils).writeJsonToFile(path, jsonString);
 		List<String> entities = new ArrayList<>();
 		entities.add(entityName);
 		entities.add("entity2");
@@ -607,34 +568,5 @@ public class CodeGeneratorTest {
 		codeGenerator.updateEntitiesJsonFile(path,entities,entityName);
 	}
 	
-	@Test 
-	public void readJsonFile_PathIsValid_ReturnObject() throws IOException, ParseException
-	{
-		JSONParser parser = new JSONParser();
-		File newFile = folder.newFile("appTest.json");
-		FileUtils.writeStringToFile(newFile, "[]");
-		Object obj =parser.parse("[]");
-		Assertions.assertThat(codeGenerator.readJsonFile(newFile.getAbsolutePath())).isEqualTo(obj);
-
-	}
 	
-	@Test
-	public void beautifyJson_PathIsValid_ReturnString() throws IOException, ParseException
-	{
-		JSONParser parser = new JSONParser();
-		Object obj =parser.parse("[]");
-		JSONArray entityArray = (JSONArray) obj;
-		
-		Assertions.assertThat(codeGenerator.beautifyJson(entityArray, "Array")).isEqualTo("[]");
-	}
-	
-	@Test
-	public void writeJsonToFile_PathIsValid_ReturnNothing() throws IOException, ParseException
-	{
-	   File newFile = folder.newFile("appTest.json");
-	   codeGenerator.writeJsonToFile(newFile.getAbsolutePath(), "[]");
-	  
-	   String str = FileUtils.readFileToString(newFile);
-	   Assertions.assertThat(str).isEqualTo("[]");
-	}
 }

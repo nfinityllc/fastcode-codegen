@@ -1,4 +1,4 @@
-package [=PackageName].RestControllers;
+package [=PackageName].restcontrollers;
 
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import javax.persistence.EntityExistsException;
@@ -24,32 +24,32 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import org.springframework.security.crypto.password.PasswordEncoder;
-import [=PackageName].application.Authorization.[=AuthenticationTable]role.[=AuthenticationTable]roleAppService;
-import [=PackageName].application.Authorization.[=AuthenticationTable]role.Dto.Find[=AuthenticationTable]roleByIdOutput;
-import [=PackageName].application.Authorization.[=AuthenticationTable]permission.[=AuthenticationTable]permissionAppService;
-import [=PackageName].application.Authorization.[=AuthenticationTable]permission.Dto.Find[=AuthenticationTable]permissionByIdOutput;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]role.[=AuthenticationTable]roleAppService;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]role.dto.Find[=AuthenticationTable]roleByIdOutput;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]permission.[=AuthenticationTable]permissionAppService;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case]permission.dto.Find[=AuthenticationTable]permissionByIdOutput;
 </#if>
 <#if CompositeKeyClasses?seq_contains(ClassName)>
 import [=PackageName].domain.model.[=IdClass];
 </#if>
-import [=CommonModulePackage].Search.SearchCriteria;
-import [=CommonModulePackage].Search.SearchUtils;
+import [=CommonModulePackage].search.SearchCriteria;
+import [=CommonModulePackage].search.SearchUtils;
 import [=CommonModulePackage].application.OffsetBasedPageRequest;
 import [=CommonModulePackage].domain.EmptyJsonResponse;
-import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].[=ClassName]AppService;
-import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].[=ClassName]AppService;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].dto.*;
 <#list Relationship as relationKey,relationValue>
 <#if ClassName != relationValue.eName>
-import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]AppService;
+import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.authorization</#if>.[=relationValue.eName?lower_case].[=relationValue.eName]AppService;
 </#if>
 <#if relationValue.relation == "OneToMany">
-import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].Dto.Find[=relationValue.eName]ByIdOutput;
+import [=PackageName].application<#if AuthenticationType != "none" && relationValue.eName == AuthenticationTable>.authorization</#if>.[=relationValue.eName?lower_case].dto.Find[=relationValue.eName]ByIdOutput;
 </#if>
 </#list>
 <#if AuthenticationType != "none" && ClassName == AuthenticationTable>
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.[=AuthenticationTable].I[=AuthenticationTable]Manager;
+import [=PackageName].domain.authorization.[=AuthenticationTable?lower_case].I[=AuthenticationTable]Manager;
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
 import [=PackageName].security.ConvertToPrivilegeAuthorities;
 import org.springframework.security.core.GrantedAuthority;

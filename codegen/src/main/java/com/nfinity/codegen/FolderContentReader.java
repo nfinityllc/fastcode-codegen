@@ -11,15 +11,21 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.springframework.stereotype.Component;
 
+import com.google.common.io.Resources;
+
+@Component
 public class FolderContentReader {
 	
-	public static List<String> getFilesFromFolder(String folderPath) {
+	public List<String> getFilesFromFolder(String folderPath) {
 
 		try {
-			URI uri = FronendBaseTemplateGenerator.class.getResource(folderPath).toURI();
+		//	URI uri = Resources.getResource(folderPath).toURI();
+			URI uri = FolderContentReader.class.getResource(folderPath).toURI();
 			List<String> list = new ArrayList<String>();
 			if (uri.getScheme().equals("jar")) {
 				list = getFilesFromJar(folderPath);
@@ -44,17 +50,22 @@ public class FolderContentReader {
 		return null;
 	}
 
-	private static Collection<File> getFilesFromFileSystem(File path){
-		Collection<File> files = org.apache.commons.io.FileUtils.listFilesAndDirs(
+	public Collection<File> getFilesFromFileSystem(File path){
+		Collection<File> files = FileUtils.listFilesAndDirs(
 				path,
 				new RegexFileFilter("^(.*?)"), 
 				DirectoryFileFilter.DIRECTORY
 				);
+		
+		for(File f: files)
+		{
+			System.out.println("AASS FILE " + f.getName());
+		}
 		return files;
 	}
 
-	private static List<String> getFilesFromJar(String path) throws IOException{
-		CodeSource src = FronendBaseTemplateGenerator.class.getProtectionDomain().getCodeSource();
+	public List<String> getFilesFromJar(String path) throws IOException{
+		CodeSource src = this.getClass().getProtectionDomain().getCodeSource();
 		List<String> list = new ArrayList<String>();
 		if( src != null ) {
 			java.net.URL jar = src.getLocation();
