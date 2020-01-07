@@ -79,9 +79,8 @@ public class GenerateAllModules {
 		String groupArtifactId = input.getGroupArtifactId().isEmpty() ? "com.group.demo" : input.getGroupArtifactId();
 		groupArtifactId = groupArtifactId.toLowerCase();
 		String artifactId = groupArtifactId.substring(groupArtifactId.lastIndexOf(".") + 1);
-	//	artifactId=artifactId.toLowerCase();
 		String groupId = groupArtifactId.substring(0, groupArtifactId.lastIndexOf("."));
-     //   groupId= groupId.toLowerCase();
+    
 		// c=jdbc:postgresql://localhost:5432/FCV2Db?username=postgres;password=fastcode
 		// String connectionString = root.get("c");
 		String dependencies ="web,data-jpa,data-rest";

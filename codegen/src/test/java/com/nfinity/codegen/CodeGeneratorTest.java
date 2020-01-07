@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
+import com.nfinity.entitycodegen.EntityGeneratorUtils;
 import com.nfinity.entitycodegen.FieldDetails;
 import com.nfinity.entitycodegen.RelationDetails;
 
@@ -138,7 +139,7 @@ public class CodeGeneratorTest {
 		list.add("Entity2");
 		
 		String connStr="jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode";
-		EntityGenerator eGenerator = mock(EntityGenerator.class);
+		EntityGeneratorUtils eGenerator = mock(EntityGeneratorUtils.class);
 		
 		Mockito.when(eGenerator.parseConnectionString(anyString())).thenReturn(new HashMap<String, String>());
 		
@@ -179,11 +180,11 @@ public class CodeGeneratorTest {
 	public void getInfoForApplicationPropertiesFile_parameterListIsValid_ReturnMap()
 	{
 		String connStr="jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode";
-		EntityGenerator eGenerator = mock(EntityGenerator.class);
+		EntityGeneratorUtils eGenerator = mock(EntityGeneratorUtils.class);
 		
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
-		propertyInfo.put("connectionStringInfo", new EntityGenerator().parseConnectionString(connStr));
+		propertyInfo.put("connectionStringInfo", eGenerator.parseConnectionString(connStr));
 		propertyInfo.put("appName", testValue);
 		propertyInfo.put("Schema", testValue);
 		propertyInfo.put("EmailModule",true);

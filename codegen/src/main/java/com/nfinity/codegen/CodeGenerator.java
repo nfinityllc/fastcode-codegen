@@ -2,6 +2,7 @@ package com.nfinity.codegen;
 
 import com.nfinity.entitycodegen.EntityDetails;
 import com.nfinity.entitycodegen.EntityGenerator;
+import com.nfinity.entitycodegen.EntityGeneratorUtils;
 import com.nfinity.entitycodegen.FieldDetails;
 import com.nfinity.entitycodegen.RelationDetails;
 
@@ -30,6 +31,9 @@ public class CodeGenerator {
 	
 	@Autowired 
 	JSONUtils jsonUtils;
+	
+	@Autowired
+	EntityGeneratorUtils entityGeneratorUtils;
 	
 	//Build root map with all information required for templates
 	public Map<String, Object> buildEntityInfo(String entityName,String packageName,Boolean history,
@@ -153,7 +157,7 @@ public class CodeGenerator {
 
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
-		propertyInfo.put("connectionStringInfo", new EntityGenerator().parseConnectionString(connectionString));
+		propertyInfo.put("connectionStringInfo", entityGeneratorUtils.parseConnectionString(connectionString));
 		propertyInfo.put("appName", appName.substring(appName.lastIndexOf(".") + 1));
 		propertyInfo.put("Schema", schema);
 		propertyInfo.put("EmailModule",email);

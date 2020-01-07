@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 public class CodegenApplication implements ApplicationRunner {
 	static Map<String, String> root = new HashMap<>();
 
-	public static UserInput composeInput() {
+	public static UserInput composeInput(GetUserInput getUserInput) {
 		UserInput input = new UserInput();
 		Scanner scanner = new Scanner(System.in);
 		//System.out.println(" v " + root.get("c") + "\n ss " + root.get("s"));
@@ -40,31 +40,28 @@ public class CodegenApplication implements ApplicationRunner {
 				? false
 						: (root.get("upgrade").toLowerCase().equals("true") ? true : false));
 		input.setConnectionStr(root.get("conn") != null ? root.get("conn")
-				: (GetUserInput.getInput(scanner, "DB Connection String")));
-	//	input.setConnectionStr("jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode");
+				: (getUserInput.getInput(scanner, "DB Connection String")));
+		//input.setConnectionStr("jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode");
 		
-		input.setSchemaName(root.get("s") == null ? GetUserInput.getInput(scanner, "Db schema") : root.get("s"));
+		input.setSchemaName(root.get("s") == null ? getUserInput.getInput(scanner, "Db schema") : root.get("s"));
 		input.setDestinationPath(
-				root.get("d") == null ? GetUserInput.getInput(scanner, "destination folder") : root.get("d"));
+				root.get("d") == null ? getUserInput.getInput(scanner, "destination folder") : root.get("d"));
 		input.setGroupArtifactId(
-				root.get("a") == null ? GetUserInput.getInput(scanner, "application name") : root.get("a"));
+				root.get("a") == null ? getUserInput.getInput(scanner, "application name") : root.get("a"));
 		input.setGenerationType(
-				root.get("t") == null ? GetUserInput.getInput(scanner, "generation type") : root.get("t"));
-		input.setCache(root.get("c") == null ? (GetUserInput.getInput(scanner, "cache").toLowerCase().equals("true") ? true : false)
+				root.get("t") == null ? getUserInput.getInput(scanner, "generation type") : root.get("t"));
+		input.setCache(root.get("c") == null ? (getUserInput.getInput(scanner, "cache").toLowerCase().equals("true") ? true : false)
 		       : (root.get("c").toLowerCase().equals("true") ? true : false));
 
 		input.setEmail(root.get("email") == null 
-                ? (GetUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false) 
+                ? (getUserInput.getInput(scanner, "email-module").toLowerCase().equals("true") ? true : false) 
                         : (root.get("email").toLowerCase().equals("true") ? true : false)); 
         input.setScheduler(root.get("scheduler") == null 
-                ? (GetUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false) 
+                ? (getUserInput.getInput(scanner, "scheduler-module").toLowerCase().equals("true") ? true : false) 
                         : (root.get("scheduler").toLowerCase().equals("true") ? true : false)); 
         input.setFlowable(root.get("flowable") == null 
-                ? (GetUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false) 
+                ? (getUserInput.getInput(scanner, "flowable-module").toLowerCase().equals("true") ? true : false) 
                         : (root.get("flowable").toLowerCase().equals("true") ? true : false)); 
-//		input.setHistory(root.get("h") == null
-//				? (GetUserInput.getInput(scanner, "history").toLowerCase().equals("true") ? true : false)
-//						: (root.get("h").toLowerCase().equals("true") ? true : false));
 
 		System.out.print("\nSelect Authentication and Authorization method :");
 		System.out.print("\n1. none");
@@ -122,7 +119,7 @@ public class CodegenApplication implements ApplicationRunner {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 
-		UserInput input = composeInput();
+		UserInput input = composeInput(context.getBean(GetUserInput.class));
 		GenerateAllModules generate = context.getBean(GenerateAllModules.class);
 		generate.generateCode(input);
 

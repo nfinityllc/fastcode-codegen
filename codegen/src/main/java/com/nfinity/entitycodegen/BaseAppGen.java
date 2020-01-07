@@ -16,37 +16,6 @@ public class BaseAppGen {
     @Autowired
     CommandUtils commandUtils;
 
-//    private static void RunProcess(String[] builderCommand, String dir) throws Exception {
-//        if (builder == null)
-//            builder = new ProcessBuilder();
-//
-//        File cmdDirectory = new File(dir);
-//
-//        Process process;
-//        builder.command(builderCommand);
-//        builder.directory(cmdDirectory);
-//
-//        System.out.println("" + builder.directory());
-//        System.out.println("" + builder.command());
-//
-//        process = builder.start();
-//        StreamGobbler streamGobbler = null;
-//        if (process != null) {
-//            streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
-//        }
-//        if (streamGobbler != null) {
-//            Executors.newSingleThreadExecutor().submit(streamGobbler);
-//        }
-//        int exitCode = 0;
-//        if (process != null) {
-//            exitCode = process.waitFor();
-//
-//            process.destroy();
-//        }
-//
-//        assert exitCode == 0;
-//    }
-
     public void CompileApplication(String destDirectory)  {
 
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");

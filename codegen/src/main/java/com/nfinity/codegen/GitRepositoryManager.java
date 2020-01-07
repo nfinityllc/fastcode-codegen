@@ -15,7 +15,6 @@ class GitRepositoryManager {
     private static String UPGRADE_BRANCH = "upgrade_application";
     static final String GIT_TEMPLATE_FOLDER = "/templates";
 
-    
     @Autowired
     CodeGeneratorUtils codeGeneratorUtils;
     
@@ -25,7 +24,7 @@ class GitRepositoryManager {
     public void setDestinationPath(String path) {
         destinationPath = path;
     }
-
+    
     public boolean isGitInstalled() {
 
         command = "--version";
@@ -65,7 +64,7 @@ class GitRepositoryManager {
         String cmdOutput = comamndUtils.runGitProcess(command, destinationPath);
         //Unable to check for local changes:
         //local changes found. Please commit/stash them before upgrading
-        //return !cmdOutput.toLowerCase().contains("working tree clean");
+       
         return !cmdOutput.isEmpty();
     }
 
@@ -81,7 +80,7 @@ class GitRepositoryManager {
         String commandResult = comamndUtils.runGitProcess(command, destinationPath);
         if(commandResult.isEmpty()) {
             command = "checkout --orphan " + UPGRADE_BRANCH;
-            String cmdOutput = comamndUtils.runGitProcess(command, destinationPath);
+            comamndUtils.runGitProcess(command, destinationPath);
             //Unable to create ${UPGRADE_BRANCH} branch:
             //Created branch ${UPGRADE_BRANCH}
         }
@@ -97,8 +96,6 @@ class GitRepositoryManager {
             command = "checkout -q " + sourceBranch;
             comamndUtils.runGitProcess(command, destinationPath);
             //Merging changes back to source branch...
-            /*command = "merge -q " + UPGRADE_BRANCH;
-            CommandUtils.runGitProcess(command, destinationPath);*/
             if(versionCompare(getGitVersion(),  GIT_VERSION_NOT_ALLOW_MERGE_UNRELATED_HISTORIES) == -1) {
                 command = "merge --strategy=ours -q --no-edit " + UPGRADE_BRANCH;
             }
@@ -108,11 +105,11 @@ class GitRepositoryManager {
             comamndUtils.runGitProcess(command, destinationPath);
             //Check conflicts in package.json
             command = "diff --name-only --diff-filter=U package.json";
-            String cmdOutput = comamndUtils.runGitProcess(command, destinationPath);
+            comamndUtils.runGitProcess(command, destinationPath);
             //There are conflicts in package.json, please fix them and then run npm install command ('npm install')
             //Check conflicts during merge
             command = "diff --name-only --diff-filter=U";
-             cmdOutput = comamndUtils.runGitProcess(command, destinationPath);
+            comamndUtils.runGitProcess(command, destinationPath);
             //Please fix conflicts listed below and commit!
         }
     }
@@ -133,7 +130,7 @@ class GitRepositoryManager {
         }
     }
 
-    private void commitUpgradeBranch() {
+    public void commitUpgradeBranch() {
         command = "add -A";
         comamndUtils.runGitProcess(command, destinationPath);
         //Unable to add resources in git:
@@ -145,16 +142,17 @@ class GitRepositoryManager {
         System.out.print("Application successfully committed to Git.");
     }
 
-    private String getGitVersion() {
+    public String getGitVersion() {
         //String(msg.match(/([0-9]+\.[0-9]+\.[0-9]+)/g))
         command = "--version";
         String cmdOutput = comamndUtils.runGitProcess(command, destinationPath);
         cmdOutput = cmdOutput.replaceAll(".*?((?<!\\w)\\d+([.-]\\d+)*).*", "$1");
         return cmdOutput;
     }
-    private static int versionCompare(String str1, String str2) {
+    
+    public int versionCompare(String str1, String str2) {
         try (Scanner s1 = new Scanner(str1);
-             Scanner s2 = new Scanner(str2);) {
+            Scanner s2 = new Scanner(str2);) {
             s1.useDelimiter("\\.");
             s2.useDelimiter("\\.");
 
@@ -176,91 +174,17 @@ class GitRepositoryManager {
             return 0;
         } // end of try-with-resources
     }
-//    private void createMasterBranch() {
-//        command = "add *";
-//        comamndUtils.runGitProcess(command, destinationPath);
-//
-//        command = "commit -m \"Initial code commit\"";
-//        comamndUtils.runGitProcess(command, destinationPath);
-//    }
-//
-//    private void mergeToMasterBranch() {
-//        // Create an orphan branch to stage the new changes
-//        command = "checkout --orphan upgrade_application";
-//        comamndUtils.runGitProcess(command, destinationPath);
-//        // Add all files to the upgrade branch
-//        command = "add *";
-//        comamndUtils.runGitProcess(command, destinationPath);
-//        // Commit the changes to the upgrade branch
-//        command = "commit -m \"Upgrade at \""
-//                + new java.text.SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
-//        comamndUtils.runGitProcess(command, destinationPath);
-//        // Switch to master branch for merging
-//        command = "checkout master";
-//        comamndUtils.runGitProcess(command, destinationPath);
-//        // Merge changes from Upgrade branch to master branch
-//        command = "merge --allow-unrelated-histories upgrade_application";
-//        comamndUtils.runGitProcess(command, destinationPath);
-//    }
-//
-//    private void deleteUpgradeBranchIfExists() {
-//        // Check if orphan branch exists
-//        command = "rev-parse --verify upgrade_application";
-//        String output = comamndUtils.runGitProcess(command, destinationPath);
-//        if (output.toLowerCase().contains("fatal")) {
-//            // Delete the branch since all the changes are merged and committed in the
-//            // master branch
-//            command = "branch -D upgrade_application";
-//            comamndUtils.runGitProcess(command, destinationPath);
-//        }
-//    }
 
     public void CopyGitFiles() {
-//        ClassTemplateLoader ctl = new ClassTemplateLoader(CodegenApplication.class, GIT_TEMPLATE_FOLDER + "/");
-//        TemplateLoader[] templateLoadersArray = new TemplateLoader[] { ctl};
-//        MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoadersArray);
-//        cfg.setDefaultEncoding("UTF-8");
-//        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
-//        cfg.setTemplateLoader(mtl);
-
         Map<String, Object> root = new HashMap<>();
-
        codeGeneratorUtils.generateFiles(getGitTemplates(), root, destinationPath,GIT_TEMPLATE_FOLDER);
-
     }
-    private Map<String, Object> getGitTemplates() {
+    
+    public Map<String, Object> getGitTemplates() {
+    	
         Map<String, Object> gitTemplate = new HashMap<>();
-
         gitTemplate.put("gitignore.ftl", ".gitignore");
-
         return gitTemplate;
     }
-//    private static void generateFiles(Map<String, Object> templateFiles, Map<String, Object> root, String destPath) {
-//        for (Map.Entry<String, Object> entry : templateFiles.entrySet()) {
-//            try {
-//                Template template = cfg.getTemplate(entry.getKey());
-//
-//                String entryPath = entry.getValue().toString();
-//                File fileName = new File(destPath + "/" + entry.getValue().toString());
-//
-//                String dirPath = destPath;
-//                if(destPath.split("/").length > 1 && entryPath.split("/").length > 1) {
-//                    dirPath = dirPath + entryPath.substring(0, entryPath.lastIndexOf('/'));
-//                }
-//                File dir = new File(dirPath);
-//                if(!dir.exists()) {
-//                    dir.mkdirs();
-//                };
-//
-//                PrintWriter writer = new PrintWriter(fileName);
-//                template.process(root, writer);
-//                writer.flush();
-//                writer.close();
-//
-//            } catch (Exception e1) {
-//                e1.printStackTrace();
-//
-//            }
-//        }
-//    }
+
 }

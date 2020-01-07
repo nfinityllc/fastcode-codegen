@@ -63,7 +63,7 @@ public class CGenClassLoader extends ClassLoader {
 			return loadedClass;
 	}
 
-	public  ArrayList<Class<?>> findClasses(String packageName) throws ClassNotFoundException {
+	public ArrayList<Class<?>> findClasses(String packageName) throws ClassNotFoundException {
 
 		try {        
 			Map<String,String>  classFiles;
@@ -90,7 +90,7 @@ public class CGenClassLoader extends ClassLoader {
 		}
 
 	}  
-	private   Map<String,String> findClassesFromJar(String packageName) {
+	private Map<String,String> findClassesFromJar(String packageName) {
 		try {          
 			String packagePath =packageName==null? "" : packageName.replace('.', '/');
 			JarFile jarFile = new JarFile(this.path);

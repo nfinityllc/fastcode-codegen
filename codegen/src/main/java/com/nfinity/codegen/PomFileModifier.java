@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 @Component
@@ -138,8 +137,8 @@ public class PomFileModifier {
 				pluginsNode.appendChild(plugin);
 			}
 
-			removeScopeTagFromTestDependency(dependenciesNode);
-			//removeSpringBootMavenPlugin(pluginsNode);
+	//		removeScopeTagFromTestDependency(dependenciesNode);
+			
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -162,7 +161,7 @@ public class PomFileModifier {
 		}
 	}
 
-	private List<Element> getPlugins(Document doc){
+	public List<Element> getPlugins(Document doc){
 		List<Element> elemList = new ArrayList<Element>();
 
 		Element mysema = doc.createElement("plugin");
@@ -207,7 +206,7 @@ public class PomFileModifier {
 		return elemList;
 	}
 
-	private static Element getMapStructPlugIn(Document doc)
+	public Element getMapStructPlugIn(Document doc)
 	{
 
 		Element mapStruct = doc.createElement("plugin");
@@ -249,35 +248,35 @@ public class PomFileModifier {
 		configuration.appendChild(annotationProcessorPaths);
 
 		mapStruct.appendChild(configuration);
-
+        
 		return mapStruct;
 	}
 
-	private static void removeScopeTagFromTestDependency(Node dependenciesNode) {
-		NodeList dependencies = dependenciesNode.getChildNodes();
-
-		for (int i = 0; i < dependencies.getLength(); i++) {
-
-			Node dependency = dependencies.item(i);
-			NodeList dependencyChilds = dependency.getChildNodes();
-
-			Map<String,Object> nodeMap = new HashMap<String,Object>();
-			for (int j = 0; j < dependencyChilds.getLength(); j++) {
-				Node dependencyChild = dependencyChilds.item(j);
-				Map<Integer,String> nm = new HashMap<Integer,String>();
-				nm.put(j,dependencyChild.getTextContent());
-				nodeMap.put(dependencyChild.getNodeName(), nm);
-			}
-			if(nodeMap.containsKey("scope")) {
-				Map<Integer,String> nm = (Map<Integer, String>) nodeMap.get("artifactId");
-				if(nm.containsValue("spring-boot-starter-test")) {
-					nm = (Map<Integer, String>) nodeMap.get("scope");
-					int nodeIndex = nm.keySet().iterator().next();
-					Node scope = dependencyChilds.item(nodeIndex);
-					dependency.removeChild(scope);
-				}
-			}
-		}
-	}
+//	private static void removeScopeTagFromTestDependency(Node dependenciesNode) {
+//		NodeList dependencies = dependenciesNode.getChildNodes();
+//
+//		for (int i = 0; i < dependencies.getLength(); i++) {
+//
+//			Node dependency = dependencies.item(i);
+//			NodeList dependencyChilds = dependency.getChildNodes();
+//
+//			Map<String,Object> nodeMap = new HashMap<String,Object>();
+//			for (int j = 0; j < dependencyChilds.getLength(); j++) {
+//				Node dependencyChild = dependencyChilds.item(j);
+//				Map<Integer,String> nm = new HashMap<Integer,String>();
+//				nm.put(j,dependencyChild.getTextContent());
+//				nodeMap.put(dependencyChild.getNodeName(), nm);
+//			}
+//			if(nodeMap.containsKey("scope")) {
+//				Map<Integer,String> nm = (Map<Integer, String>) nodeMap.get("artifactId");
+//				if(nm.containsValue("spring-boot-starter-test")) {
+//					nm = (Map<Integer, String>) nodeMap.get("scope");
+//					int nodeIndex = nm.keySet().iterator().next();
+//					Node scope = dependencyChilds.item(nodeIndex);
+//					dependency.removeChild(scope);
+//				}
+//			}
+//		}
+//	}
 
 }

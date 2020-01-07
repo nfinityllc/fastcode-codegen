@@ -74,7 +74,6 @@ public class FrontendBaseTemplateGenerator {
 	}
 
 	public File[] getNestedFolders(String folderPath) {
-		System.out.println(" ss" + folderPath);
 		File dir = new File(folderPath);
 		File[] files = dir.listFiles();
 

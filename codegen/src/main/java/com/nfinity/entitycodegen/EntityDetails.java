@@ -108,28 +108,36 @@ public class EntityDetails {
 	public void setCompositeKeyClasses(List<String> compositeKeyClasses) {
 		this.compositeKeyClasses = compositeKeyClasses;
 	}
-
-	public static EntityDetails retreiveEntityFieldsAndRships(Class<?> entityClass, String entityName,
+	
+	public String getTableName(Annotation[] classAnnotations)
+	{
+		String tableName = null;
+		for (Annotation ann : classAnnotations) {
+			if(ann.annotationType().toString().equals("interface javax.persistence.Table"))
+			{
+				javax.persistence.Table tableAnn =(javax.persistence.Table)ann;
+				tableName= tableAnn.name();
+			}
+		}
+		
+		return tableName;
+	}
+	public EntityDetails retreiveEntityFieldsAndRships(Class<?> entityClass, String entityName,
 			List<Class<?>> classList) {
 
 		Map<String, FieldDetails> fieldsMap = new HashMap<>();
 		Map<String, RelationDetails> relationsMap = new HashMap<>();
 
 		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-        String tableName=null;
+		String tableName=null;
         String idClass=className+"Id";
 		try {
 
 			Class<?> myClass = entityClass;
 			Object classObj = (Object) myClass.newInstance();
 			Annotation[] classAnnotations=classObj.getClass().getAnnotations();
-			for (Annotation ann : classAnnotations) {
-				if(ann.annotationType().toString().equals("interface javax.persistence.Table"))
-				{
-					javax.persistence.Table tableAnn =(javax.persistence.Table)ann;
-					tableName= tableAnn.name();
-				}
-			}
+			tableName=getTableName(classAnnotations);
+			
 			Field[] fields = classObj.getClass().getDeclaredFields();
 
 			for (Field field : fields) {
@@ -430,13 +438,13 @@ public class EntityDetails {
 										JoinColumns joinColumnsAnnotation = (javax.persistence.JoinColumns) a;
 										JoinColumn[] joinColumnArray = joinColumnsAnnotation.value();
 
-										for (JoinColumn j : joinColumnArray) {
+										for (JoinColumn jCol : joinColumnArray) {
 											joinDetails=new JoinDetails();
 
 											joinDetails.setJoinEntityName(entry.getValue().geteName());
 
-											String referenceCol=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, j.referencedColumnName()); 
-											String name=CaseFormat.LOWER_UNDERSCORE .to(CaseFormat.LOWER_CAMEL, j.name());
+											String referenceCol=CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, jCol.referencedColumnName()); 
+											String name=CaseFormat.LOWER_UNDERSCORE .to(CaseFormat.LOWER_CAMEL, jCol.name());
 
 											if(referenceCol.isEmpty())
 											{
@@ -446,15 +454,17 @@ public class EntityDetails {
 												joinDetails.setReferenceColumn(referenceCol);
 											
 											joinDetails.setJoinColumn(CaseFormat.LOWER_UNDERSCORE 
-													.to(CaseFormat.LOWER_CAMEL, j.name())); 
+													.to(CaseFormat.LOWER_CAMEL, jCol.name())); 
 
-											joinDetails.setIsJoinColumnOptional(j.nullable());
+											joinDetails.setIsJoinColumnOptional(jCol.nullable());
 
-											String columnType =j.columnDefinition();
+											String columnType =jCol.columnDefinition();
 											if (columnType.equals("bigserial") || columnType.equals("int8"))
 												joinDetails.setJoinColumnType("Long");
 											else if(columnType.equals("serial") || columnType.equals("int4") )
 												joinDetails.setJoinColumnType("Integer");
+											else if(columnType.equals("int2"))
+												joinDetails.setJoinColumnType("Short");
 											else if(columnType.equals("decimal"))
 												joinDetails.setJoinColumnType("Double");
 											else
@@ -584,6 +594,8 @@ public class EntityDetails {
 												joinDetails.setJoinColumnType("Long");
 											else if(columnType.equals("serial") || columnType.equals("int4"))
 												joinDetails.setJoinColumnType("Integer");
+											else if(columnType.equals("int2"))
+												joinDetails.setJoinColumnType("Short");
 											else if(columnType.equals("decimal"))
 												joinDetails.setJoinColumnType("Double");
 											else
@@ -611,6 +623,8 @@ public class EntityDetails {
 											joinDetails.setJoinColumnType("Long");
 										else if(columnType.equals("serial") || columnType.equals("int4"))
 											joinDetails.setJoinColumnType("Integer");
+										else if(columnType.equals("int2"))
+											joinDetails.setJoinColumnType("Short");
 										else if(columnType.equals("decimal"))
 											joinDetails.setJoinColumnType("Double");
 										else 
