@@ -1,8 +1,19 @@
 package com.nfinity.entitycodegen;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserInput {
+	
+	@Autowired
+	EntityDetails entityDetails;
+	
 	String packageName;
 	String groupArtifactId;
 	String generationType;
@@ -19,7 +30,6 @@ public class UserInput {
 	String authenticationSchema=null;
 	Boolean doUpgrade;
 
-	
 	public Boolean getCache() {
 		return cache;
 	}
@@ -109,5 +119,54 @@ public class UserInput {
 	}
 	public Boolean getUpgrade() { return doUpgrade; }
 	public void setUpgrade(Boolean doUpgrade) { this.doUpgrade = doUpgrade; }
+	
+	public String getInput(Scanner inputReader, String inputType) {
+
+		System.out.print("Please enter value for " + inputType + ":");
+		String value = inputReader.nextLine();
+		return value;
+	}
+	
+	public List<FieldDetails> getFilteredFieldsList(List<FieldDetails> fields)
+	{
+		List<FieldDetails> fieldsList = new ArrayList<>();
+		for (FieldDetails f : fields) {
+			if (f.fieldType.equalsIgnoreCase("long") || f.fieldType.equalsIgnoreCase("integer") || f.fieldType.equalsIgnoreCase("double")
+					|| f.fieldType.equalsIgnoreCase("short") || f.fieldType.equalsIgnoreCase("string") || f.fieldType.equalsIgnoreCase("boolean")
+					|| f.fieldType.equalsIgnoreCase("timestamp") || f.fieldType.equalsIgnoreCase("date"))
+				fieldsList.add(f);
+		}
+		return fieldsList;
+	}
+	
+	public int getFieldsInput(int size)
+	{
+		System.out.print("\nPlease enter value between (1-" +size+ ") :");
+		Scanner scanner = new Scanner(System.in);
+		int index = scanner.nextInt();
+		while (index < 1 || index > size) {
+			System.out.println("\nInvalid Input \nEnter again :");
+			index = scanner.nextInt();
+		}
+		return index;
+	}
+	
+	public FieldDetails getEntityDescriptionField(String entityName, List<FieldDetails> fields) {
+		int index = 1;
+		StringBuilder builder = new StringBuilder(MessageFormat.format(
+				"\nSelect a descriptive field of {0} entity by typing their corresponding number: ", entityName));
+
+		List<FieldDetails> fieldsList = getFilteredFieldsList(fields);
+		
+		for (FieldDetails f : fieldsList) {
+			builder.append(MessageFormat.format("{0}.{1} ", index, f.getFieldName()));
+			index++;
+		}
+		System.out.println(builder.toString());
+		index= getFieldsInput(fieldsList.size());
+
+		FieldDetails selected = fieldsList.get(index - 1);
+		return selected;
+	}
 }
 

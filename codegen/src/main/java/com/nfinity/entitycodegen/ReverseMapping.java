@@ -15,7 +15,7 @@ public class ReverseMapping {
 
 	static JDBCConfiguration jdbc = new JDBCConfigurationImpl();
 
-	public static void run(String packageName, String directory, String schemaName, Map<String,String> connectionProps)
+	public void run(String packageName, String directory, String schemaName, Map<String,String> connectionProps)
 	{
 		//packageName : "com.nfinity.fastcode.model"
 		//directory : "src/main/java"

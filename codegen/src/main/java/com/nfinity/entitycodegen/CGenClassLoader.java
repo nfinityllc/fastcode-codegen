@@ -9,7 +9,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.jar.*;
 
-
 public class CGenClassLoader extends ClassLoader {
 	public  Map<String,String> retrieveClasses(Path rootDir, String packageName) throws IOException {
 		Map<String,String>classFiles = new HashMap<String,String>();
@@ -44,10 +43,12 @@ public class CGenClassLoader extends ClassLoader {
 		return classFiles;
 	}
 	
-	URLClassLoader classLoader;
-	String path =".";
-	String packageName="";
-	public CGenClassLoader(String path) {
+	private static URLClassLoader classLoader;
+	private static String path =".";
+//	private static String packageName="";
+	
+	//@Autowired
+	public void setPath(String path) {
 		this.path = path;
 		
 		try {
@@ -56,6 +57,7 @@ public class CGenClassLoader extends ClassLoader {
 			e.printStackTrace();
 		}
 	}
+	
 	@Override
 	public Class<?> findClass(String qualifiedClassName) throws ClassNotFoundException {
 

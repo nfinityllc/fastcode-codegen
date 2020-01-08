@@ -7,6 +7,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.nfinity.BeanConfig;
 import com.nfinity.codegen.CodeGeneratorUtils;
 
 @Component
@@ -19,6 +20,9 @@ public class EntityGenerator {
 	BaseAppGen baseAppGen;
 	
 	@Autowired
+	ReverseMapping reverseMapping;
+	
+	@Autowired
 	CodeGeneratorUtils codeGeneratorUtils;
 	
 	@Autowired
@@ -28,7 +32,10 @@ public class EntityGenerator {
 	EntityGeneratorUtils entityGeneratorUtils;
 	
 	@Autowired
-	GetUserInput getUserInput;
+	UserInput userInput;
+	
+	@Autowired
+	CGenClassLoader loader= BeanConfig.getCGenClassLoaderBean();
 
 	public String buildTablesStringFromList(List<String> tableList, String schema)
 	{
@@ -58,16 +65,15 @@ public class EntityGenerator {
 		String tables = buildTablesStringFromList(tableList,schema);
 		
 		if (!tables.isEmpty()) {
-			ReverseMapping.run(tempPackageName, destinationPath, tables, connectionProps);
+			reverseMapping.run(tempPackageName, destinationPath, tables, connectionProps);
 		} else
-			ReverseMapping.run(tempPackageName, destinationPath, schema, connectionProps);
+			reverseMapping.run(tempPackageName, destinationPath, schema, connectionProps);
 		try {
-			Thread.sleep(28000);
+			Thread.sleep(280);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		//processAndGenerateRelevantEntities()
 		try {
 			baseAppGen.CompileApplication(destination);
 			entityGeneratorUtils.deleteFile(destinationPath + "/orm.xml");
@@ -83,9 +89,10 @@ public class EntityGenerator {
 		return entityDetailsMap;
 	}
 	
+	
 	public Map<String, EntityDetails> processAndGenerateRelevantEntities(String targetPath, String tempPackageName,String schema,String packageName, String destinationPath, String authenticationType, String authenticationTable)
 	{
-		CGenClassLoader loader = new CGenClassLoader(targetPath);
+		loader.setPath(targetPath);
 
 		ArrayList<Class<?>> entityClasses;
 		Map<String, EntityDetails> entityDetailsMap = new HashMap<>();
@@ -147,7 +154,7 @@ public class EntityGenerator {
 	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities, RelationDetails relationDetails) {
 		FieldDetails descriptiveField = null;
 
-		descriptiveField = getUserInput.getEntityDescriptionField(relationDetails.geteName(), relationDetails.getfDetails());
+		descriptiveField = userInput.getEntityDescriptionField(relationDetails.geteName(), relationDetails.getfDetails());
 		descriptiveField.setDescription(relationDetails.geteName().concat("DescriptiveField"));
 		descriptiveFieldEntities.put(relationDetails.geteName(),descriptiveField);
 
@@ -175,17 +182,12 @@ public class EntityGenerator {
 				
 				//if child id class not exists update join columns
 				if(className.concat("Id") != details.getIdClass()) {
-					details=updateJoinColumnName(details,entry.getValue(), entry.getKey());
+					details=updateJoinColumnName(details,entry.getValue());
 				}
 
 			}
 			else if(entry.getValue().getRelation().equals("ManyToOne"))
 			{
-				
-				for(Object obj : descriptiveFieldEntities.keySet())
-				{
-					System.out.println(" keys " + obj.toString());
-				}
 				if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
 				{
 					descriptiveFieldEntities = FindAndSetDescriptiveField(descriptiveFieldEntities,entry.getValue());
@@ -215,7 +217,7 @@ public class EntityGenerator {
 		return false;
 	}
 	
-	public static EntityDetails updateFieldsListInRelationMap(EntityDetails entityDetails)
+	public EntityDetails updateFieldsListInRelationMap(EntityDetails entityDetails)
 	{
 		Map<String, RelationDetails> relationMap= entityDetails.getRelationsMap();
 		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) {
@@ -241,7 +243,7 @@ public class EntityGenerator {
 		return entityDetails;
 	}
 
-	public static EntityDetails updateJoinColumnName(EntityDetails entityDetails, RelationDetails relationdetails ,String relationDetailsKey)
+	public EntityDetails updateJoinColumnName(EntityDetails entityDetails, RelationDetails relationdetails)
 	{
 		Map<String, FieldDetails> fieldsMap= entityDetails.getFieldsMap();
 
@@ -268,7 +270,7 @@ public class EntityGenerator {
 			if(entityDetailsMap.containsKey(authenticationTable)) {
 				isTableExits=true;
 			}
-			while(!isTableExits)
+			if(!isTableExits)
 			{
 				System.out.println(" INVALID AUTHORIZATION SCHEMA ");
 				System.exit(0);
@@ -292,22 +294,13 @@ public class EntityGenerator {
 			}
 			System.out.println("\n Select field you want to map on "+ authFieldsEntry.getKey()+" by typing its corresponding number : ");
 			System.out.println(b.toString());
-			index= getUserInput.getFieldsInput(fieldsList.size());
-//			i = scanner.nextInt();
-//			while (i < 1 || i > fieldsList.size()) {
-//				System.out.println("\nInvalid Input \nEnter again :");
-//				i = scanner.nextInt();
-//			}
+			index= userInput.getFieldsInput(fieldsList.size());
+	
 			FieldDetails selected=fieldsList.get(index - 1);
 			while(!selected.getFieldType().equalsIgnoreCase("String"))
 			{
 				System.out.println("Please choose valid string field : ");
-				index= getUserInput.getFieldsInput(fieldsList.size());
-//				i = scanner.nextInt();
-//				while (i < 1 || i > fieldsList.size()) {
-//					System.out.println("\nInvalid Input \nEnter again : ");
-//					i = scanner.nextInt();
-//				}
+				index= userInput.getFieldsInput(fieldsList.size());
 				selected=fieldsList.get(index - 1);
 			}
 			fieldsList.remove(index-1);
