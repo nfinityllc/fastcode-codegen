@@ -6,7 +6,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { RolepermissionService } from './rolepermission.service';
 import { IRolepermission } from './irolepermission';
-import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'projects/fast-code-core/src/public_api';
 
 import { PermissionService } from '../permission/permission.service';
 import { RoleService } from '../role/role.service';
@@ -41,15 +41,17 @@ export class RolepermissionDetailsComponent extends BaseDetailsComponent<IRolepe
 		this.entityName = "Rolepermission";
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			permissionId: ['', Validators.required],
-			roleId: ['', Validators.required],
-			permissionDescriptiveField : [{ value: '', disabled: true }],
-			roleDescriptiveField : [{ value: '', disabled: true }],
-	    });
-	    if (this.idParam) {
-			this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
-	    }
+    this.setForm();
+    this.getItem();
+  }
+  
+  setForm(){
+    this.itemForm = this.formBuilder.group({
+      permissionId: ['', Validators.required],
+      roleId: ['', Validators.required],
+      permissionDescriptiveField : [{ value: '', disabled: true }],
+      roleDescriptiveField : [{ value: '', disabled: true }],
+    });
   }
   
 	setAssociations(){
@@ -92,16 +94,6 @@ export class RolepermissionDetailsComponent extends BaseDetailsComponent<IRolepe
 
 		this.parentAssociations = this.associations.filter(association => {
 			return (!association.isParent);
-		});
-	}
-
-	onItemFetched(item:IRolepermission) {
-		this.item = item;
-		this.itemForm.patchValue({
-			permissionId: item.permissionId,
-			roleId: item.roleId,
-			permissionDescriptiveField: item.permissionDescriptiveField,
-			roleDescriptiveField: item.roleDescriptiveField,
 		});
 	}
 }

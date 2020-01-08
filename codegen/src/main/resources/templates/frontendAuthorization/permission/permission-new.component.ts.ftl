@@ -3,7 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { PermissionService } from './permission.service';
@@ -38,12 +38,16 @@ export class PermissionNewComponent extends BaseNewComponent<IPermission> implem
 		this.entityName = 'Permission';
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			displayName: [''],
-			name: ['', Validators.required],
-		});
+		this.setForm();
 		this.checkPassedData();
-    }
+  }
+  
+  setForm(){
+    this.itemForm = this.formBuilder.group({
+      displayName: [''],
+      name: ['', Validators.required],
+    });
+  }
  		
 	setAssociations(){
 		this.associations = [

@@ -5,7 +5,7 @@ import { IRolepermission } from './irolepermission';
 import { RolepermissionService } from './rolepermission.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import {RolepermissionNewComponent} from './rolepermission-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 
 import { GlobalPermissionService } from '../core/global-permission.service';
 import { PermissionService } from '../permission/permission.service';

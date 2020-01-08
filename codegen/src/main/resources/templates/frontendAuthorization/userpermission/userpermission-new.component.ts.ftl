@@ -5,7 +5,7 @@ import { I[=AuthenticationTable]permission } from './i[=moduleName]permission';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { GlobalPermissionService } from '../core/global-permission.service';
@@ -42,41 +42,46 @@ export class [=AuthenticationTable]permissionNewComponent extends BaseNewCompone
 		this.entityName = "Userpermission";
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			permissionId: ['', Validators.required],
-			permissionDescriptiveField : [{ value: '', disabled: true }],
-			<#if !UserInput??>
-			[=AuthenticationTable?uncap_first]Id: ['', Validators.required],
-			[=AuthenticationTable?uncap_first]DescriptiveField : [{ value: '', disabled: true }],
-			<#elseif UserInput??>
-			<#if PrimaryKeys??>
-			<#list PrimaryKeys as key,value>
-			<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-			[=AuthenticationTable?uncap_first + key?cap_first] : ['', Validators.required],
-			</#if> 
-			</#list>
-			</#if>
-			
-			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
-			[=DescriptiveField[AuthenticationTable].description?uncap_first] : [{ value: '', disabled: true }],
-            <#else>
-			<#if AuthenticationFields??>
-  			<#list AuthenticationFields as authKey,authValue>
-  			<#if authKey== "UserName">
-  			<#if !PrimaryKeys[authValue.fieldName]??>
-  			[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
-  			</#if>
-    		</#if>
-    		</#list>
-    		</#if>
-			</#if>
-			
-			</#if>
-		});
+    this.setForm();
 		this.checkPassedData();
-    }
- 		
-	setAssociations(){
+  }
+  
+  setForm() {
+    this.itemForm = this.formBuilder.group({
+      revoked : [{ value: false }],
+      permissionId: ['', Validators.required],
+      permissionDescriptiveField : [{ value: '', disabled: true }],
+      <#if !UserInput??>
+      [=AuthenticationTable?uncap_first]Id: ['', Validators.required],
+      [=AuthenticationTable?uncap_first]DescriptiveField : [{ value: '', disabled: true }],
+      <#elseif UserInput??>
+      <#if PrimaryKeys??>
+      <#list PrimaryKeys as key,value>
+      <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+      [=AuthenticationTable?uncap_first + key?cap_first] : ['', Validators.required],
+      </#if> 
+      </#list>
+      </#if>
+      
+      <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+      [=DescriptiveField[AuthenticationTable].description?uncap_first] : [{ value: '', disabled: true }],
+            <#else>
+      <#if AuthenticationFields??>
+        <#list AuthenticationFields as authKey,authValue>
+        <#if authKey== "UserName">
+        <#if !PrimaryKeys[authValue.fieldName]??>
+        [=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
+        </#if>
+        </#if>
+        </#list>
+        </#if>
+      </#if>
+      
+      </#if>
+    });
+  }
+  
+  setAssociations() {
   	
 		this.associations = [
 			{

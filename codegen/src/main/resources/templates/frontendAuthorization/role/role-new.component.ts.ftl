@@ -4,7 +4,7 @@ import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 
 import { RoleService } from './role.service';
 import { IRole } from './irole';
@@ -38,21 +38,25 @@ export class RoleNewComponent extends BaseNewComponent<IRole> implements OnInit 
 		this.entityName = 'Role';
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			displayName: [''],
-			name: ['', Validators.required],
-		});
+		this.setForm();
 		this.checkPassedData();
-    }
- 		
-		setAssociations(){
-	  	
-			this.associations = [
-			];
-			this.parentAssociations = this.associations.filter(association => {
-				return (!association.isParent);
-			});
+  }
+    
+  setForm(){
+    this.itemForm = this.formBuilder.group({
+      displayName: [''],
+      name: ['', Validators.required],
+    });
+  }
 	
-		}
+	setAssociations(){
+  	
+		this.associations = [
+		];
+		this.parentAssociations = this.associations.filter(association => {
+			return (!association.isParent);
+		});
+
+	}
     
 }

@@ -21,13 +21,13 @@ describe('[=ClassName]NewComponent', () => {
     <#if joinDetails.joinColumn??>
     <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))>
       <#assign jcType = joinDetails.joinColumnType?lower_case>
-      <#if jcType == "date">           
+      <#if jcType == "date">
     [=joinDetails.joinColumn]: new Date(),
       <#elseif jcType == "boolean">
     [=joinDetails.joinColumn]: true,
       <#elseif jcType == "string">
     [=joinDetails.joinColumn]: '[=joinDetails.joinColumn]1',
-      <#elseif jcType == "long" || jcType == "integer" || jcType == "double" || jcType == "short">              
+      <#elseif jcType == "long" || jcType == "integer" || jcType == "double" || jcType == "short">
     [=joinDetails.joinColumn]: 1,
       </#if>
     </#if>
@@ -43,7 +43,7 @@ describe('[=ClassName]NewComponent', () => {
     [=dField.description?uncap_first]: true,
       <#elseif dfType == "string">
     [=dField.description?uncap_first]: '[=dField.fieldName]1',
-      <#elseif dfType == "long" || dfType == "integer" || dfType == "double" || dfType == "short">              
+      <#elseif dfType == "long" || dfType == "integer" || dfType == "double" || dfType == "short">
     [=dField.description?uncap_first]: 1,
       </#if>
     </#if>
@@ -52,14 +52,15 @@ describe('[=ClassName]NewComponent', () => {
     </#if>
   }
   let data:[=IEntity] = {
-		<#list Fields as key, value>           
-			<#if value.fieldType == "Date">
+		<#list Fields as key, value>
+		  <#assign fType = value.fieldType?lower_case>
+			<#if fType == "date">
 		[=key]: new Date(),
-			<#elseif value.fieldType?lower_case == "boolean">
+			<#elseif fType == "boolean">
 		[=key]: true,
-			<#elseif value.fieldType?lower_case == "string">              
+			<#elseif fType == "string">
 		[=key]: '[=key]1',
-			<#elseif value.fieldType?lower_case == "long" ||  value.fieldType?lower_case == "integer" ||  value.fieldType?lower_case == "double" ||  value.fieldType?lower_case == "short">              
+			<#elseif fType || fType == "integer" || fType == "double" || fType == "short">
 		[=key]: 1,
 			</#if> 
 		</#list>

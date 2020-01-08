@@ -5,7 +5,7 @@ import { IRolepermission } from './irolepermission';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { PermissionService } from '../permission/permission.service';
@@ -42,16 +42,20 @@ export class RolepermissionNewComponent extends BaseNewComponent<IRolepermission
 		this.entityName = "Rolepermission";
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			permissionId: ['', Validators.required],
-			roleId: ['', Validators.required],
-			permissionDescriptiveField : [{ value: '', disabled: true }],
-			roleDescriptiveField : [{ value: '', disabled: true }],
-		});
+		this.setForm();
 		this.checkPassedData();
-    }
- 		
-	setAssociations(){
+  }
+  
+  setForm(){
+    this.itemForm = this.formBuilder.group({
+      permissionId: ['', Validators.required],
+      roleId: ['', Validators.required],
+      permissionDescriptiveField : [{ value: '', disabled: true }],
+      roleDescriptiveField : [{ value: '', disabled: true }],
+    });
+  }
+  
+  setAssociations(){
   	
 		this.associations = [
 			{

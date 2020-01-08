@@ -6,7 +6,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { [=AuthenticationTable]roleService } from './[=moduleName]role.service';
 import { I[=AuthenticationTable]role } from './i[=moduleName]role';
-import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'projects/fast-code-core/src/public_api';
 
 import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { RoleService } from '../role/role.service';
@@ -41,6 +41,11 @@ export class [=AuthenticationTable]roleDetailsComponent extends BaseDetailsCompo
     this.entityName = "Userrole";
     this.setAssociations();
     super.ngOnInit();
+    this.setForm();
+    this.getItem();
+  }
+  
+  setForm(){
     this.itemForm = this.formBuilder.group({
       roleId: ['', Validators.required],
       roleDescriptiveField : [{ value: '', disabled: true }],
@@ -69,10 +74,7 @@ export class [=AuthenticationTable]roleDetailsComponent extends BaseDetailsCompo
         </#if>
       </#if>
       </#if>
-      });
-      if (this.idParam) {
-      this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
-      }
+    });
   }
   
   setAssociations(){
@@ -148,39 +150,6 @@ export class [=AuthenticationTable]roleDetailsComponent extends BaseDetailsCompo
 
     this.parentAssociations = this.associations.filter(association => {
       return (!association.isParent);
-    });
-  }
-
-  onItemFetched(item:I[=AuthenticationTable]role) {
-    this.item = item;
-    this.itemForm.patchValue({
-      roleId: item.roleId,
-      roleDescriptiveField: item.roleDescriptiveField,
-      <#if !UserInput??>
-      [=AuthenticationTable?uncap_first]Id: item.[=AuthenticationTable?uncap_first]Id,
-      [=AuthenticationTable?uncap_first]DescriptiveField: item.[=AuthenticationTable?uncap_first]DescriptiveField,
-      <#elseif UserInput??>
-      <#if PrimaryKeys??>
-      <#list PrimaryKeys as key,value>
-      <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-      [=AuthenticationTable?uncap_first + key?cap_first] : item.[=AuthenticationTable?uncap_first + key?cap_first],
-      </#if> 
-      </#list>
-      </#if>
-      <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-      [=DescriptiveField[AuthenticationTable].description?uncap_first] : item.[=DescriptiveField[AuthenticationTable].description?uncap_first],
-      <#else>
-      <#if AuthenticationFields??>
-        <#list AuthenticationFields as authKey,authValue>
-        <#if authKey== "UserName">
-        <#if !PrimaryKeys[authValue.fieldName]??>
-        [=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: item.[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first],
-      </#if>
-        </#if>
-        </#list>
-        </#if>
-      </#if>
-      </#if>
     });
   }
 }

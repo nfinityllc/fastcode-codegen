@@ -5,7 +5,7 @@ import { I[=AuthenticationTable]role } from './i[=moduleName]role';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { GlobalPermissionService } from '../core/global-permission.service';
@@ -42,6 +42,11 @@ export class [=AuthenticationTable]roleNewComponent extends BaseNewComponent<I[=
     this.entityName = "Userrole";
     this.setAssociations();
     super.ngOnInit();
+    this.setForm();
+    this.checkPassedData();
+  }
+  
+  setForm() {
     this.itemForm = this.formBuilder.group({
       roleId: ['', Validators.required],
       roleDescriptiveField : [{ value: '', disabled: true }],
@@ -56,7 +61,6 @@ export class [=AuthenticationTable]roleNewComponent extends BaseNewComponent<I[=
       </#if> 
       </#list>
       </#if>
-      
       <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
       [=DescriptiveField[AuthenticationTable].description?uncap_first] : [{ value: '', disabled: true }],
             <#else>
@@ -70,12 +74,10 @@ export class [=AuthenticationTable]roleNewComponent extends BaseNewComponent<I[=
         </#list>
         </#if>
       </#if>
-      
       </#if>
     });
-    this.checkPassedData();
-    }
-    
+  }
+  
   setAssociations(){
     
     this.associations = [

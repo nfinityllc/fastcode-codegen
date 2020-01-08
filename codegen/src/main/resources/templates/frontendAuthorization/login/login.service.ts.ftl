@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ILogin } from './ilogin';
-import {GenericApiService} from 'fastCodeCore';
+import {GenericApiService} from 'projects/fast-code-core/src/public_api';
 @Injectable({
   providedIn: 'root'
 })

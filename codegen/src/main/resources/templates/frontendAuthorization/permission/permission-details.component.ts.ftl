@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
-import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'projects/fast-code-core/src/public_api';
 
 import { PermissionService } from './permission.service';
 import { IPermission } from './ipermission';
@@ -37,15 +37,17 @@ export class PermissionDetailsComponent extends BaseDetailsComponent<IPermission
 		this.entityName = 'Permission';
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			displayName: [''],
-			id: [{value: '', disabled: true}, Validators.required],
-			name: ['', Validators.required],
-	    });
-	    if (this.idParam) {
-			this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
-	    }
-  }
+		this.setForm();
+		this.getItem();
+	}
+	
+	setForm(){
+    this.itemForm = this.formBuilder.group({
+      displayName: [''],
+      id: [{value: '', disabled: true}, Validators.required],
+      name: ['', Validators.required],
+    });
+	}
   
 	setAssociations(){
   	
@@ -84,12 +86,4 @@ export class PermissionDetailsComponent extends BaseDetailsComponent<IPermission
 		});
 	}
 
-	onItemFetched(item:IPermission) {
-		this.item = item;
-		this.itemForm.patchValue({
-			displayName: item.displayName,
-			id: item.id,
-			name: item.name,
-		});
-	}
 }

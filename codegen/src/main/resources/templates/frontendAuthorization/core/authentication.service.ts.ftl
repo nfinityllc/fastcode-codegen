@@ -7,7 +7,7 @@ import { IPermission } from '../permission';
 //import { IUser } from '../users/iuser';
 import { JwtHelperService } from "@auth0/angular-jwt";
 //import {ITokenDetail} from "./itoken-detail";
-import { IGlobalPermissionService, ITokenDetail } from 'fastCodeCore';
+import { IGlobalPermissionService, ITokenDetail } from 'projects/fast-code-core/src/public_api';
 //import {AuthOidcConfig} from './oauth/auth-oidc-config'
 const API_URL = environment.apiUrl;
 const helper = new JwtHelperService();

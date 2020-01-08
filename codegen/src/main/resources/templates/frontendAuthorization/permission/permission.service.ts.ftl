@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IPermission } from './ipermission';
-import {GenericApiService} from 'fastCodeCore';
+import {GenericApiService} from 'projects/fast-code-core/src/public_api';
 import { environment } from '../../environments/environment';
 
 @Injectable({
