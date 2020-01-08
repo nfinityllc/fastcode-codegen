@@ -15,6 +15,7 @@
 					<input matInput disabled placeholder="{{association.table}}" formControlName="{{association.descriptiveField}}">
 					<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
 				</mat-form-field>
+				<mat-checkbox formControlName="revoked">Revoked</mat-checkbox>
 				
 			</form>
 			<div *ngFor="let association of childAssociations" class="association-div">

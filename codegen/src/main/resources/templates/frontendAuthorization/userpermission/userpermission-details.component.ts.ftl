@@ -6,7 +6,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { [=AuthenticationTable]permissionService } from './[=moduleName]permission.service';
 import { I[=AuthenticationTable]permission } from './i[=moduleName]permission';
-import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'fastCodeCore';
+import { PickerDialogService, ErrorService, BaseDetailsComponent, Globals } from 'projects/fast-code-core/src/public_api';
 
 import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';
 import { PermissionService } from '../permission/permission.service';
@@ -41,38 +41,41 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 		this.entityName = "Userpermission";
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			permissionId: ['', Validators.required],
-			permissionDescriptiveField : [{ value: '', disabled: true }],
-			<#if !UserInput??>
-			[=AuthenticationTable?uncap_first]Id: ['', Validators.required],
-			[=AuthenticationTable?uncap_first]DescriptiveField : [{ value: '', disabled: true }],
-			<#elseif UserInput??>
-			<#if PrimaryKeys??>
-			<#list PrimaryKeys as key,value>
-			<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-			[=AuthenticationTable?uncap_first + key?cap_first] : ['', Validators.required],
-			</#if> 
-			</#list>
-			</#if>
-			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
-			[=DescriptiveField[AuthenticationTable].description?uncap_first] : [{ value: '', disabled: true }],
-			<#else>
-			<#if AuthenticationFields??>
-  			<#list AuthenticationFields as authKey,authValue>
-  			<#if authKey== "UserName">
-  			<#if !PrimaryKeys[authValue.fieldName]??>
-  			[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
-  			</#if>
-    		</#if>
-    		</#list>
-    		</#if>
-			</#if>
-			</#if>
-	    });
-	    if (this.idParam) {
-			this.getItem(this.idParam).subscribe(x=>this.onItemFetched(x),error => this.errorMessage = <any>error);
-	    }
+		this.setForm();
+		this.getItem();
+  }
+  
+  setForm(){
+    this.itemForm = this.formBuilder.group({
+      revoked : [{ value: false }],
+      permissionId: ['', Validators.required],
+      permissionDescriptiveField : [{ value: '', disabled: true }],
+      <#if !UserInput??>
+      [=AuthenticationTable?uncap_first]Id: ['', Validators.required],
+      [=AuthenticationTable?uncap_first]DescriptiveField : [{ value: '', disabled: true }],
+      <#elseif UserInput??>
+      <#if PrimaryKeys??>
+      <#list PrimaryKeys as key,value>
+      <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
+      [=AuthenticationTable?uncap_first + key?cap_first] : ['', Validators.required],
+      </#if> 
+      </#list>
+      </#if>
+      <#if DescriptiveField?? && DescriptiveField[AuthenticationTable]?? && DescriptiveField[AuthenticationTable].description??>
+      [=DescriptiveField[AuthenticationTable].description?uncap_first] : [{ value: '', disabled: true }],
+      <#else>
+      <#if AuthenticationFields??>
+        <#list AuthenticationFields as authKey,authValue>
+        <#if authKey== "UserName">
+        <#if !PrimaryKeys[authValue.fieldName]??>
+        [=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: [{ value: '', disabled: true }],
+        </#if>
+        </#if>
+        </#list>
+        </#if>
+      </#if>
+      </#if>
+    });  
   }
   
 	setAssociations(){
@@ -148,39 +151,6 @@ export class [=AuthenticationTable]permissionDetailsComponent extends BaseDetail
 
 		this.parentAssociations = this.associations.filter(association => {
 			return (!association.isParent);
-		});
-	}
-
-	onItemFetched(item:I[=AuthenticationTable]permission) {
-		this.item = item;
-		this.itemForm.patchValue({
-			permissionId: item.permissionId,
-			permissionDescriptiveField: item.permissionDescriptiveField,
-			<#if !UserInput??>
-			[=AuthenticationTable?uncap_first]Id: item.[=AuthenticationTable?uncap_first]Id,
-			[=AuthenticationTable?uncap_first]DescriptiveField: item.[=AuthenticationTable?uncap_first]DescriptiveField,
-			<#elseif UserInput??>
-			<#if PrimaryKeys??>
-			<#list PrimaryKeys as key,value>
-			<#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-			[=AuthenticationTable?uncap_first + key?cap_first] : item.[=AuthenticationTable?uncap_first + key?cap_first],
-			</#if> 
-			</#list>
-			</#if>
-			<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
-			[=DescriptiveField[AuthenticationTable].description?uncap_first] : item.[=DescriptiveField[AuthenticationTable].description?uncap_first],
-			<#else>
-			<#if AuthenticationFields??>
-  			<#list AuthenticationFields as authKey,authValue>
-  			<#if authKey== "UserName">
-  			<#if !PrimaryKeys[authValue.fieldName]??>
-  			[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first]: item.[=AuthenticationTable?uncap_first + authValue.fieldName?cap_first],
-			</#if>
-    		</#if>
-    		</#list>
-    		</#if>
-			</#if>
-			</#if>
 		});
 	}
 }

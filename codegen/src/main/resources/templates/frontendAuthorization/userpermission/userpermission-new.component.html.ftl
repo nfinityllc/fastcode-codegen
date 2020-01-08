@@ -1,6 +1,6 @@
 <div>
   <mat-toolbar class="action-tool-bar" color="primary">
-    <button mat-button (click)="onBack()">
+    <button mat-button (click)="onCancel()">
       {{'GENERAL.ACTIONS.CANCEL' | translate}} </button>
     <span class="middle">{{title}}</span>
   
@@ -13,7 +13,8 @@
 			<mat-form-field *ngFor="let association of parentAssociations">
 				<input formControlName="{{association.descriptiveField}}" matInput placeholder="{{association.table}}">
 				<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>
-			</mat-form-field>       
+			</mat-form-field>
+			<mat-checkbox formControlName="revoked">Revoked</mat-checkbox>
 		</form>
 	</mat-card>
 </div>

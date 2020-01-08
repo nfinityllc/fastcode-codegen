@@ -1,5 +1,6 @@
 export interface I[=AuthenticationTable]permission {  
 
+  revoked?: boolean,
 	permissionId: number;
 	permissionDescriptiveField?: string;
 	<#if !UserInput??>
@@ -19,16 +20,16 @@ export interface I[=AuthenticationTable]permission {
 	</#if>
 	<#if DescriptiveField?? && DescriptiveField[AuthenticationTable]??>
 	[=DescriptiveField[AuthenticationTable].description?uncap_first]: string;
-    <#else>
+  <#else>
 	<#if AuthenticationFields??>
-  	<#list AuthenticationFields as authKey,authValue>
-  	<#if authKey== "UserName">
-  	<#if !PrimaryKeys[authValue.fieldName]??>
-  	[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]: string;
-  	</#if>
-    </#if>
-    </#list>
-    </#if>
+	<#list AuthenticationFields as authKey,authValue>
+	<#if authKey== "UserName">
+	<#if !PrimaryKeys[authValue.fieldName]??>
+	[=AuthenticationTable?uncap_first][=authValue.fieldName?cap_first]: string;
+	</#if>
+  </#if>
+  </#list>
+  </#if>
 	</#if>
 	</#if>
   }

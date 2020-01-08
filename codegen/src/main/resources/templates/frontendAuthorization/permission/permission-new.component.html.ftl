@@ -7,13 +7,15 @@
 	<mat-card>
 		<h2>{{title}}</h2>
 		<form [formGroup]="itemForm" #itemNgForm="ngForm" (ngSubmit)="onSubmit()" class="item-form">
-					<mat-form-field>
+			<mat-form-field>
 				<input formControlName="displayName" matInput placeholder="Enter displayName">
 			</mat-form-field>
+			
 			<mat-form-field>
 				<input formControlName="name" matInput placeholder="Enter name">
 				<mat-error *ngIf="!itemForm.get('name').valid && itemForm.get('name').touched">{{'GENERAL.ERRORS.REQUIRED' | translate}}</mat-error>
 			</mat-form-field>
+			
 			<mat-form-field *ngFor="let association of parentAssociations">
 				<input formControlName="{{association.descriptiveField}}" matInput placeholder="{{association.table}}">
 				<mat-icon matSuffix (click)="$event.preventDefault();selectAssociation(association)">list</mat-icon>

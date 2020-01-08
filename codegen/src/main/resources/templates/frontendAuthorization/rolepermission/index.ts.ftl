@@ -1,5 +1,5 @@
-export { ListFiltersComponent } from 'fastCodeCore';
-export { AddFilterFieldComponent } from 'fastCodeCore';
+export { ListFiltersComponent } from 'projects/fast-code-core/src/public_api';
+export { AddFilterFieldComponent } from 'projects/fast-code-core/src/public_api';
 
 export { RolepermissionListComponent } from './rolepermission-list.component';
 export { RolepermissionDetailsComponent } from './rolepermission-details.component';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { IPermission } from '../permission';
-import { IGlobalPermissionService,ITokenDetail } from 'fastCodeCore';
+import { IGlobalPermissionService,ITokenDetail } from 'projects/fast-code-core/src/public_api';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable()

@@ -5,7 +5,7 @@ import { I[=AuthenticationTable]role } from './i[=moduleName]role';
 import { [=AuthenticationTable]roleService } from './[=moduleName]role.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { [=AuthenticationTable]roleNewComponent} from './[=moduleName]role-new.component';
-import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { BaseListComponent, Globals, IListColumn, listColumnType, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 import { GlobalPermissionService } from '../core/global-permission.service';
 
 import { [=AuthenticationTable]Service } from '../[=moduleName]/[=moduleName].service';

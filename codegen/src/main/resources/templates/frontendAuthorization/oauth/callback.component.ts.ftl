@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators, ValidationErrors, AbstractControl, ValidatorFn } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals } from 'fastCodeCore';
+import { Globals } from 'projects/fast-code-core/src/public_api';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../core/authentication.service';
 

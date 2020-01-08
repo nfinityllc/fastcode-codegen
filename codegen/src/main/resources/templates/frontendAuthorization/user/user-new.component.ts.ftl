@@ -3,7 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute,Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { Globals, BaseNewComponent, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { RoleService } from '../role/role.service';
@@ -40,29 +40,33 @@ export class UserNewComponent extends BaseNewComponent<IUser> implements OnInit 
 		this.entityName = "User";
 		this.setAssociations();
 		super.ngOnInit();
-		this.itemForm = this.formBuilder.group({
-			accessFailedCount: [''],
-			authenticationSource: [''],
-			emailAddress: ['', Validators.required],
-			emailConfirmationCode: [''],
-			firstName: ['', Validators.required],
-			isActive: [false],
-			isEmailConfirmed: [false],
-			isLockoutEnabled: [false],
-			isPhoneNumberConfirmed: [''],
-			lastLoginTime: [''],
-			lastName: ['', Validators.required],
-			lockoutEndDateUtc: [''],
-			password: [''],
-			confirmPassword: ['', Validators.required],
-			passwordResetCode: [''],
-			phoneNumber: [''],
-			profilePictureId: [''],
-			twoFactorEnabled: [false],
-			userName: ['', Validators.required]
-		});
+		this.setForm();
 		this.checkPassedData();
-    }
+  }
+    
+  setForm(){
+    this.itemForm = this.formBuilder.group({
+      accessFailedCount: [''],
+      authenticationSource: [''],
+      emailAddress: ['', Validators.required],
+      emailConfirmationCode: [''],
+      firstName: ['', Validators.required],
+      isActive: [false],
+      isEmailConfirmed: [false],
+      isLockoutEnabled: [false],
+      isPhoneNumberConfirmed: [''],
+      lastLoginTime: [''],
+      lastName: ['', Validators.required],
+      lockoutEndDateUtc: [''],
+      password: [''],
+      confirmPassword: ['', Validators.required],
+      passwordResetCode: [''],
+      phoneNumber: [''],
+      profilePictureId: [''],
+      twoFactorEnabled: [false],
+      userName: ['', Validators.required]
+    });
+  }
  		
 	setAssociations(){
 		this.associations = [

@@ -10,15 +10,13 @@ export interface IUser {
       isEmailConfirmed?: boolean;
       isLockoutEnabled?: boolean;
       isPhoneNumberConfirmed?: string;
-      lastLoginTime?: string;
+      lastLoginTime?: Date;
       lastName: string;
-      lockoutEndDateUtc?: string;
+      lockoutEndDateUtc?: Date;
       password?: string;
       passwordResetCode?: string;
       phoneNumber?: string;
       profilePictureId?: number;
       twoFactorEnabled?: boolean;
       userName: string;
-      roleDescriptiveField?: string;
-      roleId?: number;
   }

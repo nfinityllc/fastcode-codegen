@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserNewComponent } from './user-new.component';
-import { BaseListComponent, Globals, listColumnType, PickerDialogService, ErrorService } from 'fastCodeCore';
+import { BaseListComponent, Globals, listColumnType, PickerDialogService, ErrorService } from 'projects/fast-code-core/src/public_api';
 
 import { IUser } from './iuser';
 import { UserService } from './user.service';
