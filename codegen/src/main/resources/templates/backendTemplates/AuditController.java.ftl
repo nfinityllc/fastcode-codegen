@@ -1,4 +1,4 @@
-package [=PackageName].RestControllers;
+package [=PackageName].restcontrollers;
 
 <#list entitiesMap as entityKey, entityMap>
 import [=entityMap.importPkg];
@@ -13,7 +13,7 @@ import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]roleEntity;
 </#if>
-import [=CommonModulePackage].Search.SearchUtils;
+import [=CommonModulePackage].search.SearchUtils;
 
 import org.javers.core.Javers;
 import org.javers.core.diff.Change;

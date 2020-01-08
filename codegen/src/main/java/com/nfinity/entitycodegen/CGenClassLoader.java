@@ -11,7 +11,7 @@ import java.util.jar.*;
 
 
 public class CGenClassLoader extends ClassLoader {
-	public static Map<String,String> retrieveClasses(Path rootDir, String packageName) throws IOException {
+	public  Map<String,String> retrieveClasses(Path rootDir, String packageName) throws IOException {
 		Map<String,String>classFiles = new HashMap<String,String>();
 		String packagePath =packageName==null? "" : packageName.replace('.', '/');
 		Files.walkFileTree(rootDir, new SimpleFileVisitor<Path>() {
@@ -63,7 +63,7 @@ public class CGenClassLoader extends ClassLoader {
 			return loadedClass;
 	}
 
-	public  ArrayList<Class<?>> findClasses(String packageName) throws ClassNotFoundException {
+	public ArrayList<Class<?>> findClasses(String packageName) throws ClassNotFoundException {
 
 		try {        
 			Map<String,String>  classFiles;
@@ -71,7 +71,7 @@ public class CGenClassLoader extends ClassLoader {
 				classFiles= this.findClassesFromJar(packageName);
 			}
 			else {
-					classFiles= CGenClassLoader.retrieveClasses(Paths.get(this.path), packageName);
+					classFiles= retrieveClasses(Paths.get(this.path), packageName);
 			}
 		
 			ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
@@ -90,7 +90,7 @@ public class CGenClassLoader extends ClassLoader {
 		}
 
 	}  
-	private   Map<String,String> findClassesFromJar(String packageName) {
+	private Map<String,String> findClassesFromJar(String packageName) {
 		try {          
 			String packagePath =packageName==null? "" : packageName.replace('.', '/');
 			JarFile jarFile = new JarFile(this.path);

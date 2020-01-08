@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case];
 
 import org.mapstruct.Mapper;
 <#list Relationship as relationKey, relationValue>
@@ -13,7 +13,7 @@ import org.mapstruct.Mappings;
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
 </#if>
 </#list>
-import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].dto.*;
 import [=PackageName].domain.model.[=ClassName]Entity;
 
 @Mapper(componentModel = "spring")

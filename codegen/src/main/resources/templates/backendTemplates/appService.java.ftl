@@ -1,7 +1,7 @@
-package [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case];
 
-import [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
-import [=PackageName].domain<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].I[=ClassName]Manager;
+import [=PackageName].application<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].dto.*;
+import [=PackageName].domain<#if AuthenticationType != "none"  && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].I[=ClassName]Manager;
 import [=PackageName].domain.model.Q[=EntityClassName];
 import [=PackageName].domain.model.[=EntityClassName];
 <#if CompositeKeyClasses?seq_contains(ClassName)>
@@ -9,7 +9,7 @@ import [=PackageName].domain.model.[=IdClass];
 </#if>
 <#list Relationship as relationKey,relationValue>
 <#if relationValue.relation == "OneToOne" || relationValue.relation == "ManyToOne">
-import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.Authorization</#if>.[=relationValue.eName].[=relationValue.eName]Manager;
+import [=PackageName].domain<#if AuthenticationType!= "none" && relationValue.eName == AuthenticationTable>.authorization</#if>.[=relationValue.eName?lower_case].[=relationValue.eName]Manager;
 </#if>
 <#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 import [=PackageName].domain.model.[=relationValue.eName]Entity;
@@ -22,7 +22,7 @@ import [=PackageName].domain.model.[=relationValue.eName]Id;
 </#if>
 </#list>
 <#if AuthenticationType != "none"  && ClassName == AuthenticationTable>
-import [=PackageName].domain.IRepository.IJwtRepository;
+import [=PackageName].domain.irepository.IJwtRepository;
 import [=PackageName].domain.model.JwtEntity;
 <#if Flowable!false>
 import [=PackageName].domain.Flowable.Users.ActIdUserEntity;
@@ -30,7 +30,7 @@ import [=PackageName].application.Flowable.ActIdUserMapper;
 import [=PackageName].application.Flowable.FlowableIdentityService;
 </#if>
 </#if>
-import [=CommonModulePackage].Search.*;
+import [=CommonModulePackage].search.*;
 import [=CommonModulePackage].logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 

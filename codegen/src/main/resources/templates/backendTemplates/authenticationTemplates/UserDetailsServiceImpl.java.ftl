@@ -1,11 +1,11 @@
 package [=PackageName];
 
-import [=PackageName].application.Authorization.[=AuthenticationTable].I[=AuthenticationTable]AppService;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case].I[=AuthenticationTable]AppService;
 import [=PackageName].domain.model.RolepermissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]permissionEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]roleEntity;
 import [=PackageName].domain.model.[=AuthenticationTable]Entity;
-import [=PackageName].domain.IRepository.I[=AuthenticationTable]Repository;
+import [=PackageName].domain.irepository.I[=AuthenticationTable]Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

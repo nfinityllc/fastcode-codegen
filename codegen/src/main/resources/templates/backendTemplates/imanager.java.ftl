@@ -1,4 +1,4 @@
-package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].domain<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case];
 
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;

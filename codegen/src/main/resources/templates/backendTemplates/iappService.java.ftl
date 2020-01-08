@@ -1,4 +1,4 @@
-package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName];
+package [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case];
 
 import java.util.List;
 import javax.validation.constraints.Positive;
@@ -7,8 +7,8 @@ import [=PackageName].domain.model.[=IdClass];
 </#if>
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import [=CommonModulePackage].Search.SearchCriteria;
-import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.Authorization</#if>.[=ClassName].Dto.*;
+import [=CommonModulePackage].search.SearchCriteria;
+import [=PackageName].application<#if AuthenticationType != "none" && ClassName == AuthenticationTable>.authorization</#if>.[=ClassName?lower_case].dto.*;
 
 @Service
 public interface I[=ClassName]AppService {

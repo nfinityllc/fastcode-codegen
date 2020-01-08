@@ -1,7 +1,7 @@
 package [=PackageName].security;
 
 import [=PackageName].domain.model.RolepermissionEntity;
-import [=PackageName].domain.Authorization.Role.IRoleManager;
+import [=PackageName].domain.authorization.role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

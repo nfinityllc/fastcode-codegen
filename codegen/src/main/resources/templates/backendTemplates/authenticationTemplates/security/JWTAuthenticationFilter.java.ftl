@@ -1,17 +1,14 @@
 package [=PackageName].security;
 
 <#if AuthenticationType != "none">
-import [=PackageName].application.Authorization.[=AuthenticationTable].Dto.LoginUserInput;
+import [=PackageName].application.authorization.[=AuthenticationTable?lower_case].dto.LoginUserInput;
 </#if>
-<#if Flowable!false>
-import [=PackageName].application.Flowable.FlowableIdentityService;
-</#if>
-import [=PackageName].domain.IRepository.IJwtRepository;
+import [=PackageName].domain.irepository.IJwtRepository;
 import [=PackageName].domain.model.JwtEntity;
 import [=PackageName].domain.model.RolepermissionEntity;
-import [=PackageName].domain.Authorization.Role.IRoleManager;
+import [=PackageName].domain.authorization.role.IRoleManager;
 import [=PackageName].domain.model.RoleEntity;
-import [=PackageName].domain.Authorization.Role.RoleManager;
+import [=PackageName].domain.authorization.role.RoleManager;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -46,10 +43,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     IRoleManager _roleManager;
     IJwtRepository jwtRepo;
-<#if Flowable!false>
-    FlowableIdentityService idmIdentityService;
-    private static final String COOKIE_NAME = "FLOWABLE_REMEMBER_ME";
-</#if>
+
     private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -81,9 +75,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
 
-        <#if Flowable!false>
-        String cookieValue = null;
-        </#if>
         // We cannot autowire RolesManager, but need to use the code below to set it
         if(_roleManager==null){
             ServletContext servletContext = req.getServletContext();
@@ -94,14 +85,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Claims claims = Jwts.claims();
        // claims.put("scopes", (convertToPrivilegeAuthorities(auth.getAuthorities())).stream().map(s -> s.toString()).collect(Collectors.toList()));
         claims.put("scopes", (auth.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList())));
-        <#if Flowable!false>
-        //Flowable IDM Support
-        if(idmIdentityService==null){
-            ServletContext servletContext = req.getServletContext();
-            WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-            idmIdentityService = webApplicationContext.getBean(FlowableIdentityService.class);
-        }
-        </#if>
+        
         if (auth != null) {
             String userId = "";
             if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
@@ -112,12 +96,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 userId = ((LdapUserDetailsImpl) auth.getPrincipal()).getUsername();
                 claims.setSubject(userId);
             }
-            <#if Flowable!false>
-            //Flowable IDM Support
-            if(userId != "") {
-                cookieValue = idmIdentityService.createTokenAndCookie(userId, req, res);
-            }
-            </#if>
+            
         }
 
         claims.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME));
@@ -150,11 +129,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrintWriter out = res.getWriter();
         out.println("{");
         out.println("\"token\":" + "\"" + SecurityConstants.TOKEN_PREFIX + token + "\"");
-        <#if Flowable!false>
-        if(cookieValue != null) {
-            out.println(",\"" + COOKIE_NAME + "\":" + "\"" + cookieValue + "\"");
-        }
-        </#if>
+        
         out.println("}");
         out.close();
 

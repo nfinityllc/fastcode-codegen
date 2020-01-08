@@ -6,56 +6,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class GetUserInput {
 
-	public static String getInput(Scanner inputReader, String inputType) {
+	@Autowired
+	EntityDetails entityDetails;
+	
+	public String getInput(Scanner inputReader, String inputType) {
 
 		System.out.print("Please enter value for " + inputType + ":");
 		String value = inputReader.nextLine();
 		return value;
 	}
-
-//	public static UserInput getInput(Scanner inputReader) {
-//		UserInput input = new UserInput();
-//		System.out.print("\nFor which schema do you want to generate entities ? "); // sample
-//		input.setSchemaName(inputReader.nextLine());
-//
-//		System.out.print("\nFor which tables do you want to generate entities ? "); // sample
-//		List<String> tableList = new ArrayList<>();
-//		String tables = inputReader.nextLine();
-//		String[] words = tables.split(",");
-//		for (String str : words) {
-//			tableList.add(str);
-//			System.out.println(" TABLES " + str);
-//		}
-//		input.setTablesList(tableList);
-//
-//		System.out.print("\nWhat is the package name for entities ? "); // com.nfinity.microsoft.model
-//		// Getting input in String format
-//		input.setPackageName(inputReader.nextLine());
-//
-//		System.out.print("\nWhat is the destination path for entities? "); // root path of the backend
-//		String destination = inputReader.nextLine();
-//		destination = destination.replace('\\', '/');
-//		input.setDestinationPath(destination);
-//
-//		System.out.print("\nDo you want to generate Audit Entity (yes/no)? ");// no
-//		String value = inputReader.nextLine();
-//
-//		if (value.equals("yes") || value.equals("Y") || value.equals("y"))
-//			input.setAudit(true);
-//		else
-//			input.setAudit(false);
-//		
-//
-//		return input;
-//	}
-
-	public static FieldDetails getEntityDescriptionField(String entityName, List<FieldDetails> fields) {
-		int i = 1;
-		StringBuilder b = new StringBuilder(MessageFormat.format(
-				"\nSelect a descriptive field of {0} entity by typing their corresponding number: ", entityName));
-
+	
+	public List<FieldDetails> getFilteredFieldsList(List<FieldDetails> fields)
+	{
 		List<FieldDetails> fieldsList = new ArrayList<>();
 		for (FieldDetails f : fields) {
 			if (f.fieldType.equalsIgnoreCase("long") || f.fieldType.equalsIgnoreCase("integer") || f.fieldType.equalsIgnoreCase("double")
@@ -63,101 +31,119 @@ public class GetUserInput {
 					|| f.fieldType.equalsIgnoreCase("timestamp") || f.fieldType.equalsIgnoreCase("date"))
 				fieldsList.add(f);
 		}
-
-		for (FieldDetails f : fieldsList) {
-			b.append(MessageFormat.format("{0}.{1} ", i, f.getFieldName()));
-			i++;
-		}
-		System.out.println(b.toString());
+		return fieldsList;
+	}
+	
+	public int getFieldsInput(int size)
+	{
+		System.out.print("\nPlease enter value between (1-" +size+ ") :");
 		Scanner scanner = new Scanner(System.in);
-		i = scanner.nextInt();
-		while (i < 1 || i > fieldsList.size()) {
+		int index = scanner.nextInt();
+		while (index < 1 || index > size) {
 			System.out.println("\nInvalid Input \nEnter again :");
-			i = scanner.nextInt();
+			index = scanner.nextInt();
 		}
-		FieldDetails r = new FieldDetails();
-		FieldDetails selected = fieldsList.get(i - 1);
-		r.setFieldName(selected.getFieldName());
-		if (selected.getFieldType().contains("int")) {
-			r.setFieldType("Long");
-		} else if (selected.getFieldType().contains("timestamp"))
-			r.setFieldType("Date");
-		else
-			r.setFieldType(selected.getFieldType());
+		return index;
+	}
+	
+	public FieldDetails getEntityDescriptionField(String entityName, List<FieldDetails> fields) {
+		int index = 1;
+		StringBuilder builder = new StringBuilder(MessageFormat.format(
+				"\nSelect a descriptive field of {0} entity by typing their corresponding number: ", entityName));
 
-		r.setIsNullable(selected.getIsNullable());
-		r.setIsPrimaryKey(selected.getIsPrimaryKey());
-		r.setLength(selected.getLength());
-		return r;
+		List<FieldDetails> fieldsList = getFilteredFieldsList(fields);
+		
+		for (FieldDetails f : fieldsList) {
+			builder.append(MessageFormat.format("{0}.{1} ", index, f.getFieldName()));
+			index++;
+		}
+		System.out.println(builder.toString());
+		index= getFieldsInput(fieldsList.size());
+		
+//		FieldDetails updatedFieldDetails = new FieldDetails();
+		FieldDetails selected = fieldsList.get(index - 1);
+//		updatedFieldDetails.setFieldName(selected.getFieldName());
+//		System.out.println(" Sleected field type " + selected.getFieldType());
+////		if (selected.getFieldType().contains("int")) {
+////			updatedFieldDetails.setFieldType("Long");
+////		} else if (selected.getFieldType().contains("timestamp"))
+////			updatedFieldDetails.setFieldType("Date");
+////		else
+////			updatedFieldDetails.setFieldType(selected.getFieldType());
+//        updatedFieldDetails.setFieldType(selected.getFieldType());
+//		updatedFieldDetails.setIsNullable(selected.getIsNullable());
+//		updatedFieldDetails.setIsPrimaryKey(selected.getIsPrimaryKey());
+//		updatedFieldDetails.setLength(selected.getLength());
+		return selected;
 	}
 
-	public static List<String> getRelationInput(List<Class<?>> classList, List<String> relationClassList, String source,
-			String packageName) {
-		List<RelationDetails> relationList = getRelationList(classList, relationClassList);
-		List<String> relationInput = new ArrayList<>();
-		for (Class<?> currentClass : classList) {
-			String entityName = currentClass.getName();
-			if (!relationClassList.contains(entityName)) {
-				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-				EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName,
-						classList);
-				Map<String, RelationDetails> relationDetails = details.getRelationsMap();
+//	public List<String> getRelationInput(List<Class<?>> classList, List<String> relationClassList, String source,
+//			String packageName) {
+//		List<RelationDetails> relationList = getRelationList(classList, relationClassList);
+//		List<String> relationInput = new ArrayList<>();
+//		for (Class<?> currentClass : classList) {
+//			String entityName = currentClass.getName();
+//			if (!relationClassList.contains(entityName)) {
+//				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
+//				EntityDetails details = entityDetails.retreiveEntityFieldsAndRships(currentClass, entityName,
+//						classList);
+//				Map<String, RelationDetails> relationDetails = details.getRelationsMap();
+//
+//				for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
+//					for (RelationDetails e : relationList) {
+//						if (e.geteName().equals(className) && e.getcName().equals(entry.getValue().geteName())&& e.getRelation().equals(entry.getValue().getRelation())) {
+//							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
+//									+ " having " + entry.getValue().getRelation()
+//									+ " relationship , which one is the parent entity ? \n1. " + className
+//									+ "\n2. " + entry.getValue().geteName() + "");
+//
+//						//	Scanner scanner = new Scanner(System.in);
+//
+//							int index = getFieldsInput(2);
+////							while (i < 1 || i > 2) {
+////								System.out.println("\nInvalid Input \nEnter again :");
+////								i = scanner.nextInt();
+////							}
+//							if (index == 1) {
+//								relationInput.add(className + "-" + entry.getValue().geteName());
+//							} else if (index == 2) {
+//								relationInput.add(entry.getValue().geteName() + "-" + className);
+//							}
+//
+//						}
+//					}
+//
+//				}
+//			}
+//		}
+//
+//		return relationInput;
+//	}
 
-				for (Map.Entry<String, RelationDetails> entry : relationDetails.entrySet()) {
-					for (RelationDetails e : relationList) {
-						if (e.geteName().equals(className) && e.getcName().equals(entry.getValue().geteName())&& e.getRelation().equals(entry.getValue().getRelation())) {
-							System.out.println("\nFor entities " + className + "-" + entry.getValue().geteName()
-									+ " having " + entry.getValue().getRelation()
-									+ " relationship , which one is the parent entity ? Enter 1 (" + className
-									+ ") or 2 (" + entry.getValue().geteName() + ") : ");
-
-							Scanner scanner = new Scanner(System.in);
-
-							int i = scanner.nextInt();
-							while (i < 1 || i > 2) {
-								System.out.println("\nInvalid Input \nEnter again :");
-								i = scanner.nextInt();
-							}
-							if (i == 1) {
-								relationInput.add(className + "-" + entry.getValue().geteName());
-							} else if (i == 2) {
-								relationInput.add(entry.getValue().geteName() + "-" + className);
-							}
-
-						}
-					}
-
-				}
-			}
-		}
-
-		return relationInput;
-	}
-
-	public static List<RelationDetails> getRelationList(List<Class<?>> classList, List<String> relationClassList) {
-		List<RelationDetails> relationList = new ArrayList<>();
-		for (Class<?> currentClass : classList) {
-			String entityName = currentClass.getName();
-			if (!relationClassList.contains(entityName)) {
-				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-				EntityDetails details = EntityDetails.retreiveEntityFieldsAndRships(currentClass, entityName,
-						classList);
-				Map<String, RelationDetails> relationInput = details.getRelationsMap();
-				for (Map.Entry<String, RelationDetails> entry : relationInput.entrySet()) {
-					if (entry.getValue().getRelation().equals("ManyToMany")) {
-						relationList.add(entry.getValue());
-						for (int i = 0; i < relationList.size(); i++) {
-							if (relationList.get(i).geteName().contains(className)
-									&& relationList.get(i).getRelation().equals(entry.getValue().getRelation())) {
-								relationList.remove(i);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return relationList;
-	}
+//	public List<RelationDetails> getRelationList(List<Class<?>> classList, List<String> relationClassList) {
+//		List<RelationDetails> relationList = new ArrayList<>();
+//		for (Class<?> currentClass : classList) {
+//			String entityName = currentClass.getName();
+//			if (!relationClassList.contains(entityName)) {
+//				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
+//				EntityDetails details = entityDetails.retreiveEntityFieldsAndRships(currentClass, entityName,
+//						classList);
+//				Map<String, RelationDetails> relationInput = details.getRelationsMap();
+//				for (Map.Entry<String, RelationDetails> entry : relationInput.entrySet()) {
+//					if (entry.getValue().getRelation().equals("ManyToMany")) {
+//						relationList.add(entry.getValue());
+//						for (int i = 0; i < relationList.size(); i++) {
+//							if (relationList.get(i).geteName().contains(className)
+//									&& relationList.get(i).getRelation().equals(entry.getValue().getRelation())) {
+//								relationList.remove(i);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		return relationList;
+//	}
 
 }

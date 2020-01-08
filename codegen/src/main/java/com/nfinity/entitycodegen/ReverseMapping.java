@@ -7,9 +7,10 @@ import org.apache.openjpa.jdbc.conf.JDBCConfiguration;
 import org.apache.openjpa.jdbc.conf.JDBCConfigurationImpl;
 import org.apache.openjpa.jdbc.meta.ReverseMappingTool;
 import org.apache.openjpa.lib.util.Options;
+import org.springframework.stereotype.Component;
 
 
-
+@Component
 public class ReverseMapping {
 
 	static JDBCConfiguration jdbc = new JDBCConfigurationImpl();

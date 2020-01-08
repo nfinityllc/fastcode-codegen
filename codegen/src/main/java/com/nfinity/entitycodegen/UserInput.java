@@ -11,7 +11,6 @@ public class UserInput {
 	String connectionStr;
 	List<String> tablesList;
 	Boolean cache=false;
-//	Boolean audit=false;
 	Boolean email;
 	Boolean scheduler;
 	Boolean history=false;
@@ -70,12 +69,7 @@ public class UserInput {
 	public void setConnectionStr(String connectionStr) {
 		this.connectionStr = connectionStr;
 	}
-//	public Boolean getAudit() {
-//		return audit;
-//	}
-//	public void setAudit(Boolean audit) {
-//		this.audit = audit;
-//	}
+
 	public List<String> getTablesList() {
 		return tablesList;
 	}

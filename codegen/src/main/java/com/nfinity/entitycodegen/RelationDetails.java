@@ -2,8 +2,10 @@ package com.nfinity.entitycodegen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class RelationDetails {
 
 	String cName;
@@ -15,7 +17,6 @@ public class RelationDetails {
 	Boolean isParent=false;
 	List<JoinDetails> joinDetails = new ArrayList<JoinDetails>();
 	List<FieldDetails> fDetails = new ArrayList<>();
-	
 
 	public List<JoinDetails> getJoinDetails() {
 		return joinDetails;
@@ -79,24 +80,13 @@ public class RelationDetails {
 	public void setfDetails(List<FieldDetails> fDetails) {
 		this.fDetails = fDetails;
 	}
-	
+
 	public String geteModuleName() {
 		return eModuleName;
 	}
 
 	public void seteModuleName(String eModuleName) {
 		this.eModuleName = eModuleName;
-	}
-
-	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities) {
-		FieldDetails descriptiveField = null;
-		
-		//if (this.getRelation() == "ManyToOne" || this.getRelation() == "OneToOne") {
-				descriptiveField = GetUserInput.getEntityDescriptionField(this.geteName(), this.getfDetails());
-				descriptiveField.setDescription(this.geteName().concat("DescriptiveField"));
-				descriptiveFieldEntities.put(this.geteName(),descriptiveField);
-	//	}
-		return descriptiveFieldEntities;
 	}
 
 }

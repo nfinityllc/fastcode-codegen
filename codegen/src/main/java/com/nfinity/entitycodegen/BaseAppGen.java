@@ -1,46 +1,22 @@
 package com.nfinity.entitycodegen;
 
 import java.io.*;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 
+import com.nfinity.codegen.CommandUtils;
 
+@Component
 public class BaseAppGen {
+	
     public static ProcessBuilder builder = null;
+    
+    @Autowired
+    CommandUtils commandUtils;
 
-    private static void RunProcess(String[] builderCommand, String dir) throws Exception {
-        if (builder == null)
-            builder = new ProcessBuilder();
-
-        File cmdDirectory = new File(dir);
-
-        Process process;
-        builder.command(builderCommand);
-        builder.directory(cmdDirectory);
-
-        System.out.println("" + builder.directory());
-        System.out.println("" + builder.command());
-
-        process = builder.start();
-        StreamGobbler streamGobbler = null;
-        if (process != null) {
-            streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
-        }
-        if (streamGobbler != null) {
-            Executors.newSingleThreadExecutor().submit(streamGobbler);
-        }
-        int exitCode = 0;
-        if (process != null) {
-            exitCode = process.waitFor();
-
-            process.destroy();
-        }
-
-        assert exitCode == 0;
-    }
-
-    public static void CompileApplication(String destDirectory)  {
+    public void CompileApplication(String destDirectory)  {
 
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
@@ -50,17 +26,14 @@ public class BaseAppGen {
         } else {
             builderCommand = new String[] { "sh", "-c", "mvn" + " clean" };
         }
-
-        // String[] builderCommand = new String[] { "cmd.exe", "/c", "mvn" + " clean" };
+        
         try {
-        RunProcess(builderCommand, destDirectory);
+        	commandUtils.runProcess(builderCommand, destDirectory,true);
 
         builderCommand = isWindows ? new String[] { "cmd.exe", "/c", "mvn" + " compile" }
                 : new String[] { "sh", "-c", "mvn" + " compile" };
 
-        // builderCommand = new String[] { "cmd.exe", "/c", "mvn" + " compile" };
-
-        RunProcess(builderCommand, destDirectory);
+        commandUtils.runProcess(builderCommand, destDirectory,true);
 
          }
          catch(Exception ex){
@@ -71,10 +44,10 @@ public class BaseAppGen {
     /*
      * dir="/Users/getachew/fc/exer" a="sdemo" g="com.nfinity" d="web,data-jpa"
      */
-    public static void CreateBaseApplication(String directory, String appName, String groupId, String dependency,
+    public void CreateBaseApplication(String directory, String appName, String groupId, String dependency,
             boolean overRide, String otherOptions) {
-        // String appName = a.substring(a.lastIndexOf(".") + 1);
-        boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+       
+    	boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         String cliCommand = " -b=2.1.9.RELEASE " + "-a=" + appName + " -g=" + groupId + " -d=" + dependency + " " + otherOptions + " "
                 + appName;
         String[] builderCommand;
@@ -92,16 +65,14 @@ public class BaseAppGen {
 
         try {
             File destDir = new File(cmdDirectory + "/" + appName);
-          // if(!destDir.exists())
-          //  destDir.mkdirs();
-            
+         
             if (destDir.exists() && overRide)
+            {
                 FileSystemUtils.deleteRecursively(destDir);
+            }
 
-            RunProcess(builderCommand, cmdDirectory);
+            commandUtils.runProcess(builderCommand, cmdDirectory,true);
 
-            // if (!destDir.exists())
-            // destDir.mkdir();
             CompileApplication(destDir.getPath());
 
         } catch (Exception e) {
@@ -111,18 +82,4 @@ public class BaseAppGen {
 
     }
 
-    private static class StreamGobbler implements Runnable {
-        private InputStream inputStream;
-        private Consumer<String> consumer;
-
-        StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
-            this.inputStream = inputStream;
-            this.consumer = consumer;
-        }
-
-        @Override
-        public void run() {
-            new BufferedReader(new InputStreamReader(inputStream)).lines().forEach(consumer);
-        }
-    }
 }

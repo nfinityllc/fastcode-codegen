@@ -15,15 +15,17 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+@Component
 public class PomFileModifier {
 
-	public static void update(String path,String authenticationType,Boolean scheduler,Boolean history,Boolean flowable,Boolean cache) {
+	public void updatePomFile(String path,String authenticationType,Boolean cache) {
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 
 		Dependency mapstruct = new Dependency("org.mapstruct", "mapstruct", "1.2.0.Final");
@@ -40,12 +42,6 @@ public class PomFileModifier {
 
 	    Dependency gson = new Dependency("com.google.code.gson","gson","2.8.5");
 	    
-//	    if(flowable) {
-//			Dependency flowableRest = new Dependency("org.flowable","flowable-spring-boot-starter-rest","6.4.1");
-//			dependencies.add(flowableRest);
-//		}
-
-
 	    if(cache)
 	    {
 	    	Dependency springDataRedis = new Dependency("org.springframework.data","spring-data-redis","2.1.9.RELEASE");
@@ -54,21 +50,6 @@ public class PomFileModifier {
 			dependencies.add(redisClient);
 	    }
 	    
-		if(scheduler)
-		{
-			if(!history)
-			{
-				Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
-				dependencies.add(javersSql);
-			}
-			Dependency hibernate_cp = new Dependency("org.hibernate","hibernate-c3p0","4.3.6.Final");
-			dependencies.add(hibernate_cp);
-			Dependency apache_directory_server = new Dependency("org.apache.directory.server","apacheds-server-jndi","1.5.5");
-			dependencies.add(apache_directory_server);
-			Dependency quartz_scheduler = new Dependency("org.quartz-scheduler","quartz","2.3.0");
-			dependencies.add(quartz_scheduler);
-		}
-
 		if(authenticationType !="none")
 		{
 			Dependency json_web_token =new Dependency("io.jsonwebtoken","jjwt","0.9.0");
@@ -77,14 +58,6 @@ public class PomFileModifier {
 			dependencies.add(ldap_security);
 			Dependency nimbus= new Dependency("com.nimbusds","nimbus-jose-jwt","7.7");
 			dependencies.add(nimbus);
-		}
-		
-		if(history)
-		{
-			Dependency javersSql = new Dependency("org.javers", "javers-spring-boot-starter-sql", "3.10.1");
-			Dependency javersCore = new Dependency("org.javers","javers-core","3.10.2");
-			dependencies.add(javersSql);
-			dependencies.add(javersCore);
 		}
 
 		dependencies.add(mapstruct);
@@ -99,11 +72,11 @@ public class PomFileModifier {
 		dependencies.add(httpComponents);
 		dependencies.add(gson);
 		
-		PomFileModifier.addDependenciesAndPluginsToPom(path,dependencies);
+		addDependenciesAndPluginsToPom(path,dependencies);
 
 	}
 	
-	public static void addDependenciesAndPluginsToPom(String path, List<Dependency> dependencies) {
+	public void addDependenciesAndPluginsToPom(String path, List<Dependency> dependencies) {
 
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -164,8 +137,8 @@ public class PomFileModifier {
 				pluginsNode.appendChild(plugin);
 			}
 
-			removeScopeTagFromTestDependency(dependenciesNode);
-			//removeSpringBootMavenPlugin(pluginsNode);
+	//		removeScopeTagFromTestDependency(dependenciesNode);
+			
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -188,7 +161,7 @@ public class PomFileModifier {
 		}
 	}
 
-	private static List<Element> getPlugins(Document doc){
+	public List<Element> getPlugins(Document doc){
 		List<Element> elemList = new ArrayList<Element>();
 
 		Element mysema = doc.createElement("plugin");
@@ -233,7 +206,7 @@ public class PomFileModifier {
 		return elemList;
 	}
 
-	private static Element getMapStructPlugIn(Document doc)
+	public Element getMapStructPlugIn(Document doc)
 	{
 
 		Element mapStruct = doc.createElement("plugin");
@@ -275,58 +248,35 @@ public class PomFileModifier {
 		configuration.appendChild(annotationProcessorPaths);
 
 		mapStruct.appendChild(configuration);
-
+        
 		return mapStruct;
 	}
 
-	private static void removeScopeTagFromTestDependency(Node dependenciesNode) {
-		NodeList dependencies = dependenciesNode.getChildNodes();
-
-		for (int i = 0; i < dependencies.getLength(); i++) {
-
-			Node dependency = dependencies.item(i);
-			NodeList dependencyChilds = dependency.getChildNodes();
-
-			Map<String,Object> nodeMap = new HashMap<String,Object>();
-			for (int j = 0; j < dependencyChilds.getLength(); j++) {
-				Node dependencyChild = dependencyChilds.item(j);
-				Map<Integer,String> nm = new HashMap<Integer,String>();
-				nm.put(j,dependencyChild.getTextContent());
-				nodeMap.put(dependencyChild.getNodeName(), nm);
-			}
-			if(nodeMap.containsKey("scope")) {
-				Map<Integer,String> nm = (Map<Integer, String>) nodeMap.get("artifactId");
-				if(nm.containsValue("spring-boot-starter-test")) {
-					nm = (Map<Integer, String>) nodeMap.get("scope");
-					int nodeIndex = nm.keySet().iterator().next();
-					Node scope = dependencyChilds.item(nodeIndex);
-					dependency.removeChild(scope);
-				}
-			}
-		}
-	}
-
-//	private static void removeSpringBootMavenPlugin(Node pluginsNode)
-//	{
-//		NodeList plugins = pluginsNode.getChildNodes();
-//		for (int i = 0; i < plugins.getLength(); i++) {
+//	private static void removeScopeTagFromTestDependency(Node dependenciesNode) {
+//		NodeList dependencies = dependenciesNode.getChildNodes();
 //
-//			Node plugin = plugins.item(i);
-//			NodeList pluginChilds = plugin.getChildNodes();
+//		for (int i = 0; i < dependencies.getLength(); i++) {
 //
-//			Map<String,Object> pluginMap = new HashMap<String,Object>();
-//			for (int j = 0; j < pluginChilds.getLength(); j++) {
-//				Node dependencyChild = pluginChilds.item(j);
+//			Node dependency = dependencies.item(i);
+//			NodeList dependencyChilds = dependency.getChildNodes();
+//
+//			Map<String,Object> nodeMap = new HashMap<String,Object>();
+//			for (int j = 0; j < dependencyChilds.getLength(); j++) {
+//				Node dependencyChild = dependencyChilds.item(j);
 //				Map<Integer,String> nm = new HashMap<Integer,String>();
 //				nm.put(j,dependencyChild.getTextContent());
-//				pluginMap.put(dependencyChild.getNodeName(), nm);
+//				nodeMap.put(dependencyChild.getNodeName(), nm);
 //			}
-//			if(pluginMap.containsKey("artifactId")) {
-//				Map<Integer,String> nm = (Map<Integer, String>) pluginMap.get("artifactId");
-//				if(nm.containsValue("spring-boot-maven-plugin")) {
-//					pluginsNode.removeChild(plugins.item(i));
+//			if(nodeMap.containsKey("scope")) {
+//				Map<Integer,String> nm = (Map<Integer, String>) nodeMap.get("artifactId");
+//				if(nm.containsValue("spring-boot-starter-test")) {
+//					nm = (Map<Integer, String>) nodeMap.get("scope");
+//					int nodeIndex = nm.keySet().iterator().next();
+//					Node scope = dependencyChilds.item(nodeIndex);
+//					dependency.removeChild(scope);
 //				}
 //			}
 //		}
 //	}
+
 }
