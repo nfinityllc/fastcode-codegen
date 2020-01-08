@@ -211,49 +211,4 @@ export class [=ClassName]DetailsComponent extends BaseDetailsComponent<[=IEntity
 			return (!association.isParent);
 		});
 	}
-
-	onItemFetched(item:[=IEntity]) {
-		this.item = item;
-		this.itemForm.patchValue({
-		<#list Fields as key,value>
-		 	<#assign fieldType = value.fieldType?lower_case fieldName = value.fieldName?lower_case>
-		 	<#-- to exclude the password field in case of user provided "User" table -->
-		 	<#assign isPasswordField = false>
-			<#if AuthenticationType != "none" && ClassName == AuthenticationTable>  
-    		<#if AuthenticationFields?? && AuthenticationFields.Password.fieldName == value.fieldName>
-			<#assign isPasswordField = true>
-			</#if>
-			</#if>
-			<#if isPasswordField == false>
-    		<#if fieldType == "string" || fieldType == "boolean" || fieldType == "integer" || fieldType == "long" || fieldType == "double" || fieldType == "short">              
-			[=value.fieldName]: item.[=value.fieldName],
-			<#elseif fieldType == "date">
-			[=value.fieldName]: item.[=value.fieldName]? new Date(item.[=value.fieldName]): null,
-		    </#if>
-   			</#if> 
-		</#list>
-		<#if Relationship?has_content>
-			<#list Relationship as relationKey, relationValue>
-			<#if relationValue.relation == "ManyToOne" || (relationValue.relation == "OneToOne" && relationValue.isParent == false)>
-			<#list relationValue.joinDetails as joinDetails>
-            <#if joinDetails.joinEntityName == relationValue.eName>
-            <#if joinDetails.joinColumn??>
-            <#if !Fields[joinDetails.joinColumn]?? && !(DescriptiveField[relationValue.eName]?? && (joinDetails.joinColumn == relationValue.eName?uncap_first + DescriptiveField[relationValue.eName].fieldName?cap_first ))>
-			[=joinDetails.joinColumn]: item.[=joinDetails.joinColumn],
-            </#if>
-            </#if>
-			</#if>
-			</#list>
-			<#if DescriptiveField[relationValue.eName]?? && DescriptiveField[relationValue.eName].description??>
-			[=DescriptiveField[relationValue.eName].description?uncap_first]: item.[=DescriptiveField[relationValue.eName].description?uncap_first],
-			</#if>
-			</#if>
-			</#list>
-		</#if>
-		<#if AuthenticationType != "none" && ClassName == AuthenticationTable>
-			roleId: item.roleId,
-			roleDescriptiveField : item.roleDescriptiveField
-		</#if>
-		});
-	}
 }
