@@ -18,7 +18,10 @@ import java.util.Properties;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityManager;
+import javax.annotation.PostConstruct;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,10 +93,7 @@ public class PermissionControllerTest {
 	@Autowired 
 	private CacheManager cacheManager; 
 	</#if>
-	
-	@Autowired
-	EntityManagerFactory emf;
-	
+
 	<#if Cache !false>
 	public void evictAllCaches(){ 
 	    for(String name : cacheManager.getCacheNames()){
@@ -101,6 +101,25 @@ public class PermissionControllerTest {
 	    } 
 	}
     </#if>
+    
+    @Autowired
+	EntityManagerFactory emf;
+	
+    static EntityManagerFactory emfs;
+	
+	@PostConstruct
+	public void init() {
+	this.emfs = emf;
+	}
+
+	@AfterClass
+	public static void cleanup() {
+		EntityManager em = emfs.createEntityManager();
+		em.getTransaction().begin();
+		em.createNativeQuery("drop table [=SchemaName?lower_case].permission CASCADE").executeUpdate();
+		em.getTransaction().commit();
+	}
+	
 	public static PermissionEntity createEntity() {
 		PermissionEntity permission = new PermissionEntity();
 		permission.setName(DEFAULT_PERMISSION_NAME);

@@ -129,7 +129,7 @@ public class EntityGenerator {
 					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
 					Map<String, Object> root =buildRootMap(details,entityName, packageName, schema, authenticationTable, authenticationType);
 					// Generate Entity based on template
-					Generate(root, details, packageName, destinationPath,compositePrimaryKeyEntities);
+					generateEntityAndIdClass(root, details, packageName, destinationPath,compositePrimaryKeyEntities);
 
 				}
 			}
@@ -141,7 +141,7 @@ public class EntityGenerator {
 			
 			if(authenticationType !="none")
 			{
-				GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath,authenticationTable,authenticationType);
+				generateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath,authenticationTable,authenticationType);
 			}
 
 		} catch (ClassNotFoundException ex) {
@@ -151,7 +151,7 @@ public class EntityGenerator {
 		return entityDetailsMap;
 	}
 	
-	public Map<String,FieldDetails> FindAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities, RelationDetails relationDetails) {
+	public Map<String,FieldDetails> findAndSetDescriptiveField(Map<String,FieldDetails> descriptiveFieldEntities, RelationDetails relationDetails) {
 		FieldDetails descriptiveField = null;
 
 		descriptiveField = userInput.getEntityDescriptionField(relationDetails.geteName(), relationDetails.getfDetails());
@@ -177,7 +177,7 @@ public class EntityGenerator {
 				
 				//get and set descriptive field
 				if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()))){
-					descriptiveFieldEntities = FindAndSetDescriptiveField(descriptiveFieldEntities,entry.getValue());
+					descriptiveFieldEntities = findAndSetDescriptiveField(descriptiveFieldEntities,entry.getValue());
 				}
 				
 				//if child id class not exists update join columns
@@ -190,7 +190,7 @@ public class EntityGenerator {
 			{
 				if(!(descriptiveFieldEntities.containsKey(entry.getValue().geteName()) || descriptiveFieldEntities.containsKey(entry.getValue().getcName())))
 				{
-					descriptiveFieldEntities = FindAndSetDescriptiveField(descriptiveFieldEntities,entry.getValue());
+					descriptiveFieldEntities = findAndSetDescriptiveField(descriptiveFieldEntities,entry.getValue());
 				}
 			}
 		}
@@ -342,11 +342,11 @@ public class EntityGenerator {
 		return entityDetails;
 	}
 
-	public void GenerateAutheticationEntities(Map<String,EntityDetails> entityDetails, String schemaName, String packageName,
+	public void generateAutheticationEntities(Map<String,EntityDetails> entityDetails, String schemaName, String packageName,
 			String destPath, String authenticationTable,String authenticationType) {
 		Map<String, Object> root = new HashMap<>();
 		root.put("PackageName", packageName);
-		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
+		root.put("CommonModulePackage" , packageName.concat(".commonmodule"));
 		root.put("AuthenticationType",authenticationType);
 		root.put("SchemaName",schemaName);
 		if(authenticationTable!=null) {
@@ -376,13 +376,12 @@ public class EntityGenerator {
 
 		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
 
-		getAuthenticationEntitiesTemplates(destinationFolder,ENTITIES_TEMPLATE_FOLDER,authenticationType,authenticationTable,root);
-		//generateFiles(AuthenticationClassesTemplateGenerator.getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destinationFolder);
+		codeGeneratorUtils.generateFiles(getAuthenticationEntitiesTemplates(ENTITIES_TEMPLATE_FOLDER,authenticationType,authenticationTable), root, destinationFolder,ENTITIES_TEMPLATE_FOLDER);
 	}
 	
-	public void getAuthenticationEntitiesTemplates(String destination, String templatePath, String authenticationType, String authenticationTable, Map<String,Object> root) {
-		List<String> filesList = new CodeGeneratorUtils().readFilesFromDirectory(templatePath);
-		filesList = new CodeGeneratorUtils().replaceFileNames(filesList, templatePath);
+	public Map<String, Object> getAuthenticationEntitiesTemplates(String templatePath, String authenticationType, String authenticationTable) {
+		List<String> filesList = codeGeneratorUtils.readFilesFromDirectory(templatePath);
+		filesList = codeGeneratorUtils.replaceFileNames(filesList, templatePath);
 		
 		Map<String, Object> templates = new HashMap<>();
 
@@ -409,7 +408,7 @@ public class EntityGenerator {
 
 		}
 
-		codeGeneratorUtils.generateFiles(templates, root, destination,templatePath);
+		return templates;
 	}
 	
 	public Map<String, Object> buildRootMap(EntityDetails details,String entityName, String packageName, String schemaName, String authenticationTable,String authenticationType)
@@ -433,17 +432,17 @@ public class EntityGenerator {
 			root.put("AuthenticationTable", "User");
 		root.put("AuthenticationFields", details.getAuthenticationFieldsMap());
 
-		Map<String, FieldDetails> actualFieldNames = details.getFieldsMap();
-		Map<String, RelationDetails> relationMap = details.getRelationsMap();
+	//	Map<String, FieldDetails> actualFieldNames = details.getFieldsMap();
+	//	Map<String, RelationDetails> relationMap = details.getRelationsMap();
 
-		root.put("Fields", actualFieldNames);
-		root.put("Relationship", relationMap);
+		root.put("Fields", details.getFieldsMap());
+		root.put("Relationship", details.getRelationsMap());
 		root.put("PrimaryKeys", details.getPrimaryKeys());
 		
 		return root;
 	}
 	
-	public void Generate(Map<String, Object> root, EntityDetails details, String packageName,
+	public void generateEntityAndIdClass(Map<String, Object> root, EntityDetails details, String packageName,
 			String destPath, List<String> compositePrimaryKeyEntities) {
 
 		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";

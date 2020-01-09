@@ -151,11 +151,11 @@ public class [=ClassName]ControllerTest {
 	public static void cleanup() {
 		EntityManager em = emfs.createEntityManager();
 		em.getTransaction().begin();
-		em.createNativeQuery("drop table [=Schema].[=ClassName?uncap_first] CASCADE").executeUpdate();
+		em.createNativeQuery("drop table [=Schema].[=ClassName?replace("[A-Z]", "_$0", 'r')?lower_case?substring(1)] CASCADE").executeUpdate();
 		<#list Relationship as relationKey,relationValue>
 		<#if relationValue.relation == "ManyToOne" || relationValue.relation == "OneToOne">
 		<#if relationValue.isParent==false>
-		em.createNativeQuery("drop table [=Schema].[=relationValue.eName?uncap_first] CASCADE").executeUpdate();
+		em.createNativeQuery("drop table [=Schema].[=relationValue.eName?replace("[A-Z]", "_$0", 'r')?lower_case?substring(1)] CASCADE").executeUpdate();
 		</#if> 
 		</#if> 
 		</#list>

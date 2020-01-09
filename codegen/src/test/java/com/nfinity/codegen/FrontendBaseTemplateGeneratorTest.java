@@ -130,18 +130,18 @@ public class FrontendBaseTemplateGeneratorTest {
 
    }
    
-   @Test
-   public void getNestedFolders_pathIsValid_returnFile() throws IOException
-   {
-	   File newTempFolder = folder.newFolder("tempFolder","testTemplates");
-
-	   File[] folderArray = new File[1];
-	   List<File> list = new ArrayList<File>();
-	   list.add(newTempFolder);
-	   folderArray =list.toArray(folderArray);
-
-	   Assertions.assertThat(frontendBaseTemplateGenerator.getNestedFolders(destPath.getAbsolutePath())).isEqualTo(folderArray);
-    }
+//   @Test
+//   public void getNestedFolders_pathIsValid_returnFile() throws IOException
+//   {
+//	   File newTempFolder = folder.newFolder("tempFolder","testTemplates");
+//
+//	   File[] folderArray = new File[1];
+//	   List<File> list = new ArrayList<File>();
+//	   list.add(newTempFolder);
+//	   folderArray =list.toArray(folderArray);
+//
+//	   Assertions.assertThat(frontendBaseTemplateGenerator.getNestedFolders(destPath.getAbsolutePath())).isEqualTo(folderArray);
+//    }
    
    @Test
    public void getFastCodeCoreProjectNode_noParameterRequired_returnJsonObject() throws IOException, ParseException

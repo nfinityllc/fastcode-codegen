@@ -10,9 +10,12 @@ import static org.mockito.Mockito.doReturn;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
+import javax.annotation.PostConstruct;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,16 +88,33 @@ public class RolepermissionControllerTest {
 	private CacheManager cacheManager; 
 	
 	</#if>
-	@Autowired
-	EntityManagerFactory emf;
 	<#if Cache !false>
-	
 	public void evictAllCaches(){ 
 	    for(String name : cacheManager.getCacheNames()){
 	        cacheManager.getCache(name).clear(); 
 	    } 
 	}
+	
 	</#if>
+	@Autowired
+	EntityManagerFactory emf;
+	
+    static EntityManagerFactory emfs;
+	
+	@PostConstruct
+	public void init() {
+	this.emfs = emf;
+	}
+
+	@AfterClass
+	public static void cleanup() {
+		EntityManager em = emfs.createEntityManager();
+		em.getTransaction().begin();
+		em.createNativeQuery("drop table [=SchemaName?lower_case].rolepermission CASCADE").executeUpdate();
+		em.createNativeQuery("drop table [=SchemaName?lower_case].permission CASCADE").executeUpdate();
+		em.createNativeQuery("drop table [=SchemaName?lower_case].role CASCADE").executeUpdate();
+		em.getTransaction().commit();
+	}
    
 	public RolepermissionEntity createEntity() {
 		RolepermissionEntity rolepermission = new RolepermissionEntity();
@@ -147,15 +167,16 @@ public class RolepermissionControllerTest {
 	
 	public RolepermissionEntity createNewEntity() {
 		RolepermissionEntity rolepermission = new RolepermissionEntity();
-		rolepermission.setPermissionId(2L);
-		rolepermission.setRoleId(2L);
+		
 		RoleEntity role =createRoleEntity();
 		role.setId(2L);
-		roleRepository.save(role);
+		role=roleRepository.save(role);
 		rolepermission.setRole(role);
 		PermissionEntity permission = createPermissionEntity();
 		permission.setId(2L);
-		permissionRepository.save(permission);
+		permission=permissionRepository.save(permission);
+		rolepermission.setPermissionId(permission.getId());
+		rolepermission.setRoleId(role.getId());
 		rolepermission.setPermission(permission);
 
 		return rolepermission;
@@ -340,9 +361,10 @@ public class RolepermissionControllerTest {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = ow.writeValueAsString(rolepermission);
 		doReturn(null).when(rolepermissionAppService).FindById(new RolepermissionId(99L, 99L));
-     	org.assertj.core.api.Assertions.assertThatThrownBy(() ->  mvc.perform(put("/rolepermission/permissionId:99,roleId:99")
-     			 .contentType(MediaType.APPLICATION_JSON).content(json))
-		  .andExpect(status().isNotFound()));
+		
+		mvc.perform(put("/rolepermission/permissionId:99,roleId:99")
+    			 .contentType(MediaType.APPLICATION_JSON).content(json))
+		  .andExpect(status().isNotFound());
 
 	}
 	
@@ -411,7 +433,7 @@ public class RolepermissionControllerTest {
 	@Test
 	public void GetRole_searchIsNotEmptyAndPropertyIsValid_ReturnList() throws Exception {
 	
-	   mvc.perform(get("/rolepermission/permissionId:3,roleId:3/role")
+	   mvc.perform(get("/rolepermission/permissionId:1,roleId:1/role")
 				.contentType(MediaType.APPLICATION_JSON))
 	    		  .andExpect(status().isOk());
 	}  
@@ -437,7 +459,7 @@ public class RolepermissionControllerTest {
 	@Test
 	public void GetPermission_searchIsNotEmptyAndPropertyIsValid_ReturnList() throws Exception {
 	
-	   mvc.perform(get("/rolepermission/permissionId:3,roleId:3/permission")
+	   mvc.perform(get("/rolepermission/permissionId:1,roleId:1/permission")
 				.contentType(MediaType.APPLICATION_JSON))
 	    		  .andExpect(status().isOk());
 	}  

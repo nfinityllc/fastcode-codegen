@@ -60,7 +60,7 @@ describe('[=ClassName]NewComponent', () => {
 		[=key]: true,
 			<#elseif fType == "string">
 		[=key]: '[=key]1',
-			<#elseif fType || fType == "integer" || fType == "double" || fType == "short">
+			<#elseif fType == "long" || fType == "integer" || fType == "double" || fType == "short">
 		[=key]: 1,
 			</#if> 
 		</#list>

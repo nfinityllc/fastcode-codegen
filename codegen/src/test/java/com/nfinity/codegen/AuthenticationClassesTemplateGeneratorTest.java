@@ -113,7 +113,6 @@ public class AuthenticationClassesTemplateGeneratorTest {
 		root.put("UserInput",null);
 		root.put("AuthenticationTable","User");
 
-
 		Assertions.assertThat(authenticationClassesTemplateGenerator.buildBackendRootMap(packageName, testValue,
 				testValue, null, details, true)).isEqualTo(root);
 	}

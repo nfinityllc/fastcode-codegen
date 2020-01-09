@@ -73,22 +73,22 @@ public class FrontendBaseTemplateGenerator {
 		return templates;
 	}
 
-	public File[] getNestedFolders(String folderPath) {
-		File dir = new File(folderPath);
-		File[] files = dir.listFiles();
-
-		ArrayList<File> folderList = new ArrayList<File>();
-
-		for (File file : files) {
-			if (file.isDirectory()) {
-				folderList.add(file);
-			}
-		}
-
-		File[] folderArray = new File[folderList.size()];
-		folderArray = folderList.toArray(folderArray);
-		return folderArray;
-	}
+//	public File[] getNestedFolders(String folderPath) {
+//		File dir = new File(folderPath);
+//		File[] files = dir.listFiles();
+//
+//		ArrayList<File> folderList = new ArrayList<File>();
+//
+//		for (File file : files) {
+//			if (file.isDirectory()) {
+//				folderList.add(file);
+//			}
+//		}
+//
+//		File[] folderArray = new File[folderList.size()];
+//		folderArray = folderList.toArray(folderArray);
+//		return folderArray;
+//	}
 
 	public void editAngularJsonFile(String path, String clientSubfolder) {
 

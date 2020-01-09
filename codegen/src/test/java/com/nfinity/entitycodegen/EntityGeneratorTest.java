@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +55,6 @@ public class EntityGeneratorTest {
 	
     File destPath;
     List<String> tableList= new ArrayList<String>();
-	
     
     final static String SCHEMA_NAME = "demo";
 	final static String CONNECTION_STRING = "jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode";
@@ -88,7 +86,6 @@ public class EntityGeneratorTest {
 	@Test
 	public void generateEntities_parametersAreValid_returnMap()
 	{
-	
 		Mockito.doReturn(new HashMap<String, String>()).when(mockedEntityGeneratorUtils).parseConnectionString(anyString());
 		Mockito.doReturn("").when(entityGenerator).buildTablesStringFromList(any(List.class), any(String.class));
 		Mockito.doNothing().when(reverseMapping).run(anyString(), anyString(), anyString(), any(HashMap.class));
@@ -178,7 +175,7 @@ public class EntityGeneratorTest {
 		Map<String,FieldDetails> descriptiveFieldEntities= new HashMap<String, FieldDetails>();
 		details.setDescription("blogDescriptiveField");
 		descriptiveFieldEntities.put("blog",details);
-		Assertions.assertThat(entityGenerator.FindAndSetDescriptiveField(new HashMap<String, FieldDetails>(), relationDetails)).isEqualTo(descriptiveFieldEntities);
+		Assertions.assertThat(entityGenerator.findAndSetDescriptiveField(new HashMap<String, FieldDetails>(), relationDetails)).isEqualTo(descriptiveFieldEntities);
 	}
 	
 	@Test
@@ -213,7 +210,7 @@ public class EntityGeneratorTest {
 		
 		Mockito.doReturn(true).when(entityGenerator).identifyOneToOneRelationContainsPrimaryKeys(any(List.class),any(HashMap.class), any(List.class));
 		Mockito.doReturn(entityDetails).when(entityGenerator).updateJoinColumnName(any(EntityDetails.class), any(RelationDetails.class));
-		Mockito.doReturn(descriptiveFieldEntities).when(entityGenerator).FindAndSetDescriptiveField(any(HashMap.class), any(RelationDetails.class));
+		Mockito.doReturn(descriptiveFieldEntities).when(entityGenerator).findAndSetDescriptiveField(any(HashMap.class), any(RelationDetails.class));
 	
 		Assertions.assertThat(entityGenerator.setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(descriptiveFieldEntities, relationMap, new EntityDetails(), "blog")).isEqualTo(entityDetails);
 	
@@ -250,7 +247,7 @@ public class EntityGeneratorTest {
 		
 		Mockito.doReturn(true).when(entityGenerator).identifyOneToOneRelationContainsPrimaryKeys(any(List.class),any(HashMap.class), any(List.class));
 		Mockito.doReturn(entityDetails).when(entityGenerator).updateJoinColumnName(any(EntityDetails.class), any(RelationDetails.class));
-		Mockito.doReturn(descriptiveFieldEntities).when(entityGenerator).FindAndSetDescriptiveField(any(HashMap.class), any(RelationDetails.class));
+		Mockito.doReturn(descriptiveFieldEntities).when(entityGenerator).findAndSetDescriptiveField(any(HashMap.class), any(RelationDetails.class));
 	
 		Assertions.assertThat(entityGenerator.setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(descriptiveFieldEntities, relationMap, new EntityDetails(), "blog")).isEqualToIgnoringNullFields(entityDetails);
 	
@@ -282,7 +279,7 @@ public class EntityGeneratorTest {
 		
 		Mockito.doReturn(true).when(entityGenerator).identifyOneToOneRelationContainsPrimaryKeys(any(List.class),any(HashMap.class), any(List.class));
 		Mockito.doReturn(entityDetails).when(entityGenerator).updateJoinColumnName(any(EntityDetails.class), any(RelationDetails.class));
-		Mockito.doReturn(descriptiveFieldEntities).when(entityGenerator).FindAndSetDescriptiveField(any(HashMap.class), any(RelationDetails.class));
+		Mockito.doReturn(descriptiveFieldEntities).when(entityGenerator).findAndSetDescriptiveField(any(HashMap.class), any(RelationDetails.class));
 	
 		Assertions.assertThat(entityGenerator.setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(descriptiveFieldEntities, relationMap, new EntityDetails(), "blog")).isEqualToIgnoringNullFields(entityDetails);
 	
@@ -528,8 +525,6 @@ public class EntityGeneratorTest {
 	@Test
 	public void getAuthenticationTableFieldsMapping_fieldsListIsNotEmpty_returnList()
 	{
-		
-		
 		FieldDetails details = new FieldDetails();
 		details.setFieldName("blogName");
 		details.setFieldType("String");
@@ -557,120 +552,159 @@ public class EntityGeneratorTest {
 		Assertions.assertThat(entityGenerator.getAuthenticationTableFieldsMapping(entityDetailsMap, AUTHENTICATION_TABLE)).isEqualTo(entityDetailsMap);
 	}
 	
-//	public void GenerateAutheticationEntities(Map<String,EntityDetails> entityDetails, String schemaName, String packageName,
-//			String destPath, String authenticationTable,String authenticationType) {
-//		Map<String, Object> root = new HashMap<>();
-//		root.put("PackageName", packageName);
-//		root.put("CommonModulePackage" , packageName.concat(".CommonModule"));
-//		root.put("AuthenticationType",authenticationType);
-//		root.put("SchemaName",schemaName);
-//		if(authenticationTable!=null) {
-//			root.put("UserInput","true");
-//			root.put("AuthenticationTable", authenticationTable);
-//		}
-//		else
-//		{
-//			root.put("UserInput",null);
-//			root.put("AuthenticationTable", "User");	
-//		}
-//
-//		for(Map.Entry<String,EntityDetails> entry : entityDetails.entrySet())
-//		{
-//			String className=entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1);
-//			if(className.equalsIgnoreCase(authenticationTable))
-//			{
-//				root.put("ClassName", className);
-//				root.put("IdClass", entry.getValue().getIdClass());
-//				root.put("TableName", entry.getValue().getEntityTableName());
-//				root.put("CompositeKeyClasses",entry.getValue().getCompositeKeyClasses());
-//				root.put("Fields", entry.getValue().getFieldsMap());
-//				root.put("AuthenticationFields", entry.getValue().getAuthenticationFieldsMap());
-//				root.put("PrimaryKeys", entry.getValue().getPrimaryKeys());
-//			}
-//		}
-//
-//		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
-//
-//		getAuthenticationEntitiesTemplates(destinationFolder,ENTITIES_TEMPLATE_FOLDER,authenticationType,authenticationTable,root);
-//		//generateFiles(AuthenticationClassesTemplateGenerator.getAuthenticationEntitiesTemplates(authenticationType,authenticationTable), root, destinationFolder);
-//	}
-//	
-//	public void getAuthenticationEntitiesTemplates(String destination, String templatePath, String authenticationType, String authenticationTable, Map<String,Object> root) {
-//		List<String> filesList = new CodeGeneratorUtils().readFilesFromDirectory(templatePath);
-//		filesList = new CodeGeneratorUtils().replaceFileNames(filesList, templatePath);
-//		
-//		Map<String, Object> templates = new HashMap<>();
-//
-//		for (String filePath : filesList) {
-//			String outputFileName = filePath.substring(0, filePath.lastIndexOf('.'));
-//
-//			if(authenticationTable==null)
-//			{
-//				templates.put(filePath, outputFileName);
-//			}
-//			else
-//			{
-//				if((outputFileName.toLowerCase().contains("userpermission") || outputFileName.toLowerCase().contains("userrole")))
-//				{
-//					outputFileName = outputFileName.replace("User", authenticationTable);
-//					outputFileName = outputFileName.replace("user", authenticationTable.toLowerCase());
-//				}
-//
-//				if(!(outputFileName.toLowerCase().contains("user") && !(outputFileName.toLowerCase().contains(authenticationTable.toLowerCase()+"permission") || outputFileName.toLowerCase().contains(authenticationTable.toLowerCase()+"role"))))
-//				{ 		
-//					templates.put(filePath, outputFileName);
-//				}
-//			}
-//
-//		}
-//
-//		codeGeneratorUtils.generateFiles(templates, root, destination,templatePath);
-//	}
-//	
-//	public Map<String, Object> buildRootMap(EntityDetails details,String entityName, String packageName, String schemaName, String authenticationTable,String authenticationType)
-//	{
-//		String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-//		String entityClassName = className.concat("Entity");
-//		Map<String, Object> root = new HashMap<>();
-//
-//		root.put("EntityClassName", entityClassName);
-//		root.put("ClassName", className);
-//		root.put("PackageName", packageName);
-//		root.put("CommonModulePackage", packageName.concat(".commonmodule"));
-//		root.put("CompositeKeyClasses", details.getCompositeKeyClasses());
-//		root.put("TableName", details.getEntityTableName());
-//		root.put("SchemaName", schemaName);
-//		root.put("IdClass", details.getIdClass());
-//		root.put("AuthenticationType",authenticationType);
-//		if(authenticationTable !=null)
-//			root.put("AuthenticationTable", authenticationTable);
-//		else
-//			root.put("AuthenticationTable", "User");
-//		root.put("AuthenticationFields", details.getAuthenticationFieldsMap());
-//
-//		Map<String, FieldDetails> actualFieldNames = details.getFieldsMap();
-//		Map<String, RelationDetails> relationMap = details.getRelationsMap();
-//
-//		root.put("Fields", actualFieldNames);
-//		root.put("Relationship", relationMap);
-//		root.put("PrimaryKeys", details.getPrimaryKeys());
-//		
-//		return root;
-//	}
-//	
-//	public void Generate(Map<String, Object> root, EntityDetails details, String packageName,
-//			String destPath, List<String> compositePrimaryKeyEntities) {
-//
-//		String destinationFolder = destPath + "/" + packageName.replaceAll("\\.", "/") + "/domain/model";
-//
-//		generateEntity(root, destinationFolder);
-//
-//		String idClassName = details.getIdClass().substring(0,details.getIdClass().indexOf("Id"));
-//		if (compositePrimaryKeyEntities.contains(idClassName) && root.get("ClassName").toString().equals(idClassName)) {
-//			generateIdClass(root, destinationFolder);
-//		}
-//
-//	}
+	@Test
+	public void generateAutheticationEntities_parametersAreValid_returnNothing()
+	{
+		String entityName = "entity";
+		Map<String, EntityDetails> details = new HashMap<String,EntityDetails>();
+		EntityDetails entityDetails = new EntityDetails(new HashMap<String, FieldDetails>(), new HashMap<String, RelationDetails>(),SCHEMA_NAME, entityName+"id");
+		entityDetails.setEntitiesDescriptiveFieldMap(new HashMap<String, FieldDetails>());
+		entityDetails.setEntityTableName(entityName+2);
+
+		details.put(entityName, entityDetails);
+		Map<String, Object> root = new HashMap<>();
+
+		root.put("PackageName", PACKAGE_NAME);
+		root.put("Cache", true);
+		root.put("CommonModulePackage" , PACKAGE_NAME.concat(".commonmodule"));
+		root.put("AuthenticationType",AUTHENTICATION_TYPE);
+		root.put("SchemaName",SCHEMA_NAME);
+
+		root.put("UserInput","true");
+		root.put("AuthenticationTable", entityName);
+
+		root.put("ClassName", entityName);
+		root.put("CompositeKeyClasses", entityDetails.getCompositeKeyClasses());
+		root.put("Fields", entityDetails.getFieldsMap());
+		root.put("AuthenticationFields", entityDetails.getAuthenticationFieldsMap());
+		root.put("DescriptiveField", entityDetails.getEntitiesDescriptiveFieldMap());
+		root.put("PrimaryKeys", entityDetails.getPrimaryKeys());
+		
+		Mockito.doReturn(new HashMap<String, Object>()).when(entityGenerator).getAuthenticationEntitiesTemplates(anyString(), anyString(), anyString());
+		Mockito.doNothing().when(mockedCodeGeneratorUtils).generateFiles(any(HashMap.class), any(HashMap.class),  anyString(),  anyString());
+		entityGenerator.generateAutheticationEntities(details,SCHEMA_NAME, PACKAGE_NAME, destPath.getAbsolutePath(), AUTHENTICATION_TABLE, AUTHENTICATION_TYPE);
+	    Mockito.verify(mockedCodeGeneratorUtils,Mockito.times(1)).generateFiles(any(HashMap.class), any(HashMap.class),  anyString(),  anyString());
+	}
+	
+	@Test
+	public void getAuthenticationEntitiesTemplates_autenticationTableIsNotNull_returnTemplatesMap()
+	{
+		List<String> filesList = new ArrayList<String>();
+		filesList.add("/UserpermissionAppService.java.ftl");
+		filesList.add("/UserAppService.java.ftl");
+		filesList.add("/UserroleAppService.java.ftl");
+		filesList.add("/PermissionAppService.java.ftl");
+		
+		Map<String,Object> expectedList = new HashMap<String,Object>();
+		expectedList.put("/PermissionAppService.java.ftl","/PermissionAppService.java");
+		expectedList.put("/UserpermissionAppService.java.ftl","/NewUserpermissionAppService.java");
+		expectedList.put("/UserroleAppService.java.ftl","/NewUserroleAppService.java");
+		
+		Mockito.doReturn(filesList).when(mockedCodeGeneratorUtils).readFilesFromDirectory(anyString());
+		Mockito.doReturn(filesList).when(mockedCodeGeneratorUtils).replaceFileNames(any(List.class),anyString());
+		
+		Assertions.assertThat(entityGenerator.getAuthenticationEntitiesTemplates(destPath.getAbsolutePath(), AUTHENTICATION_TYPE, "NewUser")).isEqualTo(expectedList);
+	}
+	
+	@Test
+	public void getAuthenticationEntitiesTemplates_autenticationTableIsNull_returnTemplatesMap()
+	{
+		List<String> filesList = new ArrayList<String>();
+		filesList.add("/UserpermissionAppService.java.ftl");
+		filesList.add("/UserAppService.java.ftl");
+		filesList.add("/UserroleAppService.java.ftl");
+		filesList.add("/PermissionAppService.java.ftl");
+		
+		Map<String,Object> expectedList = new HashMap<String,Object>();
+		expectedList.put("/PermissionAppService.java.ftl","/PermissionAppService.java");
+		expectedList.put("/UserpermissionAppService.java.ftl","/UserpermissionAppService.java");
+		expectedList.put("/UserAppService.java.ftl","/UserAppService.java");
+		expectedList.put("/UserroleAppService.java.ftl","/UserroleAppService.java");
+		
+		Mockito.doReturn(filesList).when(mockedCodeGeneratorUtils).readFilesFromDirectory(anyString());
+		Mockito.doReturn(filesList).when(mockedCodeGeneratorUtils).replaceFileNames(any(List.class),anyString());
+		
+		Assertions.assertThat(entityGenerator.getAuthenticationEntitiesTemplates(destPath.getAbsolutePath(), AUTHENTICATION_TYPE, null)).isEqualTo(expectedList);
+	}
+	
+	@Test
+	public void buildRootMap_autenticationTableIsNull_returnMap()
+	{
+		String entityName = "entity1";
+
+		EntityDetails entityDetails = new EntityDetails(new HashMap<String, FieldDetails>(), new HashMap<String, RelationDetails>(),SCHEMA_NAME, entityName+"id");
+		entityDetails.setEntitiesDescriptiveFieldMap(new HashMap<String, FieldDetails>());
+		entityDetails.setEntityTableName(entityName);
+		
+		Map<String, Object> root = new HashMap<>();
+
+		root.put("EntityClassName", entityName.concat("Entity"));
+		root.put("ClassName", entityName);
+		root.put("PackageName", PACKAGE_NAME);
+		root.put("CommonModulePackage", PACKAGE_NAME.concat(".commonmodule"));
+		root.put("CompositeKeyClasses", entityDetails.getCompositeKeyClasses());
+		root.put("TableName", entityDetails.getEntityTableName());
+		root.put("SchemaName", SCHEMA_NAME);
+		root.put("IdClass", entityDetails.getIdClass());
+		root.put("AuthenticationType", AUTHENTICATION_TYPE);
+		root.put("AuthenticationTable", "User");
+		root.put("AuthenticationFields", entityDetails.getAuthenticationFieldsMap());
+		
+		root.put("Fields", entityDetails.getFieldsMap());
+		root.put("Relationship", entityDetails.getRelationsMap());
+		root.put("PrimaryKeys", entityDetails.getPrimaryKeys());
+		
+		Assertions.assertThat(entityGenerator.buildRootMap(entityDetails, entityName, PACKAGE_NAME, SCHEMA_NAME, null, AUTHENTICATION_TYPE)).isEqualTo(root);
+	}
+	
+	@Test
+	public void buildRootMap_autenticationTableIsNotNull_returnMap()
+	{
+		String entityName = "entity1";
+
+		EntityDetails entityDetails = new EntityDetails(new HashMap<String, FieldDetails>(), new HashMap<String, RelationDetails>(),SCHEMA_NAME, entityName+"id");
+		entityDetails.setEntitiesDescriptiveFieldMap(new HashMap<String, FieldDetails>());
+		entityDetails.setEntityTableName(entityName);
+		
+		Map<String, Object> root = new HashMap<>();
+
+		root.put("EntityClassName", entityName.concat("Entity"));
+		root.put("ClassName", entityName);
+		root.put("PackageName", PACKAGE_NAME);
+		root.put("CommonModulePackage", PACKAGE_NAME.concat(".commonmodule"));
+		root.put("CompositeKeyClasses", entityDetails.getCompositeKeyClasses());
+		root.put("TableName", entityDetails.getEntityTableName());
+		root.put("SchemaName", SCHEMA_NAME);
+		root.put("IdClass", entityDetails.getIdClass());
+		root.put("AuthenticationType", AUTHENTICATION_TYPE);
+		root.put("AuthenticationTable", AUTHENTICATION_TABLE);
+		root.put("AuthenticationFields", entityDetails.getAuthenticationFieldsMap());
+		
+		root.put("Fields", entityDetails.getFieldsMap());
+		root.put("Relationship", entityDetails.getRelationsMap());
+		root.put("PrimaryKeys", entityDetails.getPrimaryKeys());
+		
+		Assertions.assertThat(entityGenerator.buildRootMap(entityDetails, entityName, PACKAGE_NAME, SCHEMA_NAME, AUTHENTICATION_TABLE, AUTHENTICATION_TYPE)).isEqualTo(root);
+	}
+	
+	@Test
+	public void generateEntityAndIdClass_autenticationTableIsNotNull_returnMap()
+	{
+		List<String> compositePrimaryKeyEntities= new ArrayList<String>();
+		compositePrimaryKeyEntities.add("user");
+		
+		EntityDetails entityDetails = new EntityDetails(new HashMap<String, FieldDetails>(), new HashMap<String, RelationDetails>(),SCHEMA_NAME, "userId");
+		entityDetails.setEntitiesDescriptiveFieldMap(new HashMap<String, FieldDetails>());
+		entityDetails.setIdClass("userId");
+		entityDetails.setCompositeKeyClasses(compositePrimaryKeyEntities);
+		
+		Map<String, Object> root = new HashMap<>();
+		root.put("ClassName", "user");
+		Mockito.doNothing().when(entityGenerator).generateEntity(any(HashMap.class), any(String.class));
+		Mockito.doNothing().when(entityGenerator).generateIdClass(any(HashMap.class), any(String.class));
+	
+	    entityGenerator.generateEntityAndIdClass(root, entityDetails, PACKAGE_NAME, destPath.getAbsolutePath(), compositePrimaryKeyEntities);
+	}
 
 	@Test
 	public void generateEntity_parametersAreValid_returnNothing()

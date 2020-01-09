@@ -110,8 +110,6 @@ public class [=AuthenticationTable]permissionControllerTest {
 	private ActIdUserMapper actIdUserMapper;
     </#if>
 	
-	@Autowired
-	EntityManagerFactory emf;
 	<#if Cache !false>
 	
 	@Autowired 
@@ -124,6 +122,9 @@ public class [=AuthenticationTable]permissionControllerTest {
 	}
     </#if>
     
+    @Autowired
+	EntityManagerFactory emf;
+	
     static EntityManagerFactory emfs;
 	
 	@PostConstruct

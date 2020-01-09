@@ -32,8 +32,10 @@ public class GenerateAllModules {
 	
 	@Autowired
 	FrontendBaseTemplateGenerator frontendGenerator;
+	
 	@Autowired
 	GitRepositoryManager gitRepositoryManager;
+	
 	@Autowired
 	PomFileModifier pomFileModifier;
 	
@@ -95,12 +97,13 @@ public class GenerateAllModules {
 
 		baseAppGen.CreateBaseApplication(input.getDestinationPath(), artifactId, groupId, dependencies,
 				true, "-n=" + artifactId + "  -j=1.8 ");
+		
 		Map<String, EntityDetails> details = entityGenerator.generateEntities(input.getConnectionStr(),
 				input.getSchemaName(), null, groupArtifactId, input.getDestinationPath() + "/" + artifactId,input.getAuthenticationSchema(),input.getAuthenticationType());
 
 		pomFileModifier.updatePomFile(input.getDestinationPath() + "/" + artifactId + "/pom.xml",input.getAuthenticationType(),input.getCache());
 		commonModule.generateCommonModuleClasses(input.getDestinationPath()+ "/" + artifactId, groupArtifactId);
-		baseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
+	//	baseAppGen.CompileApplication(input.getDestinationPath() + "/" + artifactId);
 
 		frontendGenerator.generate(input.getDestinationPath(), artifactId, input.getAuthenticationType(), input.getAuthenticationSchema());
 

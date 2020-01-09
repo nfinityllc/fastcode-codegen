@@ -18,7 +18,10 @@ import java.util.Properties;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityManager;
+import javax.annotation.PostConstruct;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,6 +96,21 @@ public class RoleControllerTest {
 	
 	@Autowired
 	EntityManagerFactory emf;
+	
+    static EntityManagerFactory emfs;
+	
+	@PostConstruct
+	public void init() {
+	this.emfs = emf;
+	}
+
+	@AfterClass
+	public static void cleanup() {
+		EntityManager em = emfs.createEntityManager();
+		em.getTransaction().begin();
+		em.createNativeQuery("drop table [=SchemaName?lower_case].role CASCADE").executeUpdate();
+		em.getTransaction().commit();
+	}
 	
 	<#if Cache !false>
 	public void evictAllCaches(){ 

@@ -18,8 +18,9 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
+import javax.annotation.PostConstruct;
 
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,9 +99,7 @@ public class UserControllerTest {
     @Autowired
     private ActIdUserMapper actIdUserMapper;
     </#if>
-	
-	@Autowired
-	EntityManagerFactory emf;
+
 	<#if Cache !false>
 	
 	@Autowired 
@@ -112,6 +111,24 @@ public class UserControllerTest {
 	    } 
 	}
 	</#if>
+	
+	@Autowired
+	EntityManagerFactory emf;
+	
+    static EntityManagerFactory emfs;
+	
+	@PostConstruct
+	public void init() {
+	this.emfs = emf;
+	}
+
+	@AfterClass
+	public static void cleanup() {
+		EntityManager em = emfs.createEntityManager();
+		em.getTransaction().begin();
+		em.createNativeQuery("drop table [=SchemaName?lower_case].user CASCADE").executeUpdate();
+		em.getTransaction().commit();
+	}
 	
 	public static UserEntity createEntity() {
 		UserEntity user = new UserEntity();
@@ -236,7 +253,7 @@ public class UserControllerTest {
        
         org.assertj.core.api.Assertions.assertThatThrownBy(() -> mvc.perform(post("/user")
         		.contentType(MediaType.APPLICATION_JSON).content(json))
-         .andExpect(status().isOk())).hasCause(new EntityExistsException("There already exists a user with name=" + user.getUserName()));
+         .andExpect(status().isOk())).hasCause(new EntityExistsException("There already exists a user with a name=" + user.getUserName()));
       
 	}    
 	
