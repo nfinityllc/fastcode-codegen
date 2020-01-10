@@ -4,6 +4,7 @@ dist: trusty
 addons:
   sonarcloud:
     organization: "nfinityllc"
+    token:
     secure: ${SONAR_TOKEN}
 
 jdk:
