@@ -1,13 +1,21 @@
 language: java
 dist: trusty
 
+branches:
+  except:
+    - /^v[0-9]/
+
 addons:
   sonarcloud:
     organization: "nfinityllc"
+    # the token below was generated using command travis encrypt token_from_sonarcloud - environment variables were not used.
     token:
       secure: "kqnoYxVk7CVEqx5XH4YNmuwItqDC3+wWDDO/sExLKUQr0bYk3+n4c9tqJsamUknlLjl9Y6IkeapJAaS7GI2TYmITTqq46OzgtpIUHYjm53J288XOjHKvWcrIjDlxHHm0e9EURci6WNT3tGiqRPOHw1iwusR6Rc1PilATcnQlGLDXKrsj2OlOPorc3SvtEEKcyWM1nU4MgR0EyRH0hSpllL2mRLb67uTNdA3MHwPUuD7jX1UYjvVXAllUHnJK2njJADgN+EsKH/rfIaPa8B+Te/Kv2YK52xC8brNoxRpOyEY2b6kbfpj/WwdJ/WoHuY02GZsCC4Ta69Nx4bPEZThthi9TOSqXIN9f8DqKJOQ0zo3LKPn8/DWsCufpUTRKORq8quxJL6xADvuLgYOSuRQwDGIgSJd6kNsHWOqHla4tBCRFohz0SJEs542+6N811e5CMh6sjWnhZ/5l27Y97gZk3qLf+njkAHFL/jHvqBGbQKY2C1sUS3E+0aJLb5GiBxCS8ubWGFxMfRZjn6v7yi5qVPMAOM+ZebGIE2VjwrDtvVaLU0k1oIQc7iwReMHIxAswXsYZTu27gprfx1qtUe/knGLDFf4PiwO36iD49ooQ722OaNtEfm5Zcci7tbtka8Pl2NxhUInYiLlbgSJt/DDBGs/r9R5EYdc6WeMCYKA6r0w="
 jdk:
   - oraclejdk8
+
+# Only build tags
+if: tag IS present
   
 before_install:
 - chmod +x mvnw
@@ -22,3 +30,15 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
+    
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: $GH_TOKEN
+  file_glob: true
+  file:
+    - "dist/Cromberg-*-x86_64.AppImage"
+    - "dist/Cromberg_*_amd64.deb"
+    - "dist/Cromberg-*.dmg"
+  on:
+    tags: true
