@@ -1,48 +1,29 @@
 language: java
 dist: trusty
-
 branches:
   except:
-    - /^v[0-9]/
-
+  - "/^v[0-9]/"
 addons:
   sonarcloud:
-    organization: "nfinityllc"
-    # the token below was generated using command travis encrypt token_from_sonarcloud - environment variables were not used.
+    organization: nfinityllc
     token:
-      secure: "kqnoYxVk7CVEqx5XH4YNmuwItqDC3+wWDDO/sExLKUQr0bYk3+n4c9tqJsamUknlLjl9Y6IkeapJAaS7GI2TYmITTqq46OzgtpIUHYjm53J288XOjHKvWcrIjDlxHHm0e9EURci6WNT3tGiqRPOHw1iwusR6Rc1PilATcnQlGLDXKrsj2OlOPorc3SvtEEKcyWM1nU4MgR0EyRH0hSpllL2mRLb67uTNdA3MHwPUuD7jX1UYjvVXAllUHnJK2njJADgN+EsKH/rfIaPa8B+Te/Kv2YK52xC8brNoxRpOyEY2b6kbfpj/WwdJ/WoHuY02GZsCC4Ta69Nx4bPEZThthi9TOSqXIN9f8DqKJOQ0zo3LKPn8/DWsCufpUTRKORq8quxJL6xADvuLgYOSuRQwDGIgSJd6kNsHWOqHla4tBCRFohz0SJEs542+6N811e5CMh6sjWnhZ/5l27Y97gZk3qLf+njkAHFL/jHvqBGbQKY2C1sUS3E+0aJLb5GiBxCS8ubWGFxMfRZjn6v7yi5qVPMAOM+ZebGIE2VjwrDtvVaLU0k1oIQc7iwReMHIxAswXsYZTu27gprfx1qtUe/knGLDFf4PiwO36iD49ooQ722OaNtEfm5Zcci7tbtka8Pl2NxhUInYiLlbgSJt/DDBGs/r9R5EYdc6WeMCYKA6r0w="
+      secure: kqnoYxVk7CVEqx5XH4YNmuwItqDC3+wWDDO/sExLKUQr0bYk3+n4c9tqJsamUknlLjl9Y6IkeapJAaS7GI2TYmITTqq46OzgtpIUHYjm53J288XOjHKvWcrIjDlxHHm0e9EURci6WNT3tGiqRPOHw1iwusR6Rc1PilATcnQlGLDXKrsj2OlOPorc3SvtEEKcyWM1nU4MgR0EyRH0hSpllL2mRLb67uTNdA3MHwPUuD7jX1UYjvVXAllUHnJK2njJADgN+EsKH/rfIaPa8B+Te/Kv2YK52xC8brNoxRpOyEY2b6kbfpj/WwdJ/WoHuY02GZsCC4Ta69Nx4bPEZThthi9TOSqXIN9f8DqKJOQ0zo3LKPn8/DWsCufpUTRKORq8quxJL6xADvuLgYOSuRQwDGIgSJd6kNsHWOqHla4tBCRFohz0SJEs542+6N811e5CMh6sjWnhZ/5l27Y97gZk3qLf+njkAHFL/jHvqBGbQKY2C1sUS3E+0aJLb5GiBxCS8ubWGFxMfRZjn6v7yi5qVPMAOM+ZebGIE2VjwrDtvVaLU0k1oIQc7iwReMHIxAswXsYZTu27gprfx1qtUe/knGLDFf4PiwO36iD49ooQ722OaNtEfm5Zcci7tbtka8Pl2NxhUInYiLlbgSJt/DDBGs/r9R5EYdc6WeMCYKA6r0w=
 jdk:
-  - oraclejdk8
-
-# Only build tags
-stages:
-  - name: test
-  - name: build
-  - name: release
-    if: tag IS present
-  
+- oraclejdk8
 before_install:
 - chmod +x mvnw
-
 script:
-  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
-  # - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
-
-  - mvn clean -DskipTests verify sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
-
+- mvn clean -DskipTests verify sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
-    
-#deploy:
-#  provider: releases
-#  skip_cleanup: true
-#  api_key: $GH_TOKEN
-#  file_glob: true
-#  file:
-#    - "dist/Cromberg-*-x86_64.AppImage"
-#    - "dist/Cromberg_*_amd64.deb"
-#    - "dist/Cromberg-*.dmg"
-#  on:
-#    tags: true
+  - "$HOME/.m2/repository"
+  - "$HOME/.sonar/cache"
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: W1P07l0T4aQ7LEKOGcYhFQU4bdgh1IHv5Cgs3b2CNFWpe8X607/bbUc0PJ3z8MSivq7Qg8xd/zKmTPXDEslQwW05CfptYZs5K4EXSdn6Q/jpFFKbh9mboYaxi7x+xEEE2Q9LyvB3UDM7uWojCs34GOI3vFodwnUEKYL1uFowP2CjKItb+go3rgSNUH71mztb6PZnJVP7qsHg69nm2YbyCTvjyGaaT/3k1qpfMl3V3Pcbi/aMsDg5uCi5aOgQm4YgnxehQWlf2ZBWULyjOVgANsreJDOde6uWtXDneQe+dgI9AUreU1X8aGJlZnvD9+ygUsznOemMKyshEdhw2SH3/ONkrjwjNHKxG2llc8seQib7ejSX1OJnGwQdEnVBtnNPGgNCWID8t5foj7b0/s5knsGvFkP7gJXgN5xubMeh9IhuIsUqlkQ6Ef672NXfXX1Vlw6j/zmGGEeiKTQvR6Bem0mgzWeqbREUEFUlL2a8D+FamBU1wTZK+wChTtXJvDO6zooT8sDguETtJoHJcBXACgQmRjD+/hjR4lIHSqURhtaR5qDwtvD9K1G1uapa+NzH+C95Zq+JavbGk+k4dodZuWX9xAJndCYiQYJfpbuB1sj+cTTbGe4OoTA83XE4EWVv+7PgNmcizQ+TkuxnJsR2+B4zDZnXBVpu5MyGuxNK0u4=
+  file: codegen
+  on:
+    repo: nfinityllc/fastcode-codegen
+    tags: true
