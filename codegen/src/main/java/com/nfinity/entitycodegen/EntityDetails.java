@@ -13,14 +13,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import com.google.common.base.CaseFormat;
+import com.nfinity.codegen.CodeGeneratorUtils;
 
 @Component
 public class EntityDetails {
+	
+	@Autowired
+	CodeGeneratorUtils codeGeneratorUtils;
 
 	Map<String, FieldDetails> fieldsMap = new HashMap<>();
 	Map<String, RelationDetails> relationsMap = new HashMap<>();
@@ -180,7 +185,7 @@ public class EntityDetails {
 						relation.setRelation("ManyToOne");
 						relation.setfName(field.getName());
 						relation.seteName(details.getFieldType());
-						relation.seteModuleName(geteModuleName(details.getFieldType()));
+						relation.seteModuleName(codeGeneratorUtils.camelCaseToKebabCase(details.getFieldType()));
 						
 						joinDetails.setJoinEntityName(details.getFieldType());
 					}
@@ -189,7 +194,7 @@ public class EntityDetails {
 						OneToOne oneToOne= (javax.persistence.OneToOne) a;
 						relation.setfName(field.getName());
 						relation.seteName(details.getFieldType());
-						relation.seteModuleName(geteModuleName(details.getFieldType()));
+						relation.seteModuleName(codeGeneratorUtils.camelCaseToKebabCase(details.getFieldType()));
 						joinDetails.setJoinEntityName(details.getFieldType());
 
 						String mappedBy = oneToOne.mappedBy();
@@ -228,7 +233,9 @@ public class EntityDetails {
 								joinDetails.setJoinColumnType("Long");
 							else if(columnType.equals("serial") || columnType.equals("int4"))
 								joinDetails.setJoinColumnType("Integer");
-							else if(columnType.equals("decimal"))
+							else if(columnType.equals("int2"))
+								joinDetails.setJoinColumnType("Short");
+							else if(columnType.equals("decimal") || columnType.equals("numeric"))
 								joinDetails.setJoinColumnType("Double");
 							else
 								joinDetails.setJoinColumnType("String");
@@ -250,6 +257,10 @@ public class EntityDetails {
 							joinDetails.setJoinColumnType("Long");
 						else if(columnType.equals("serial") || columnType.equals("int4"))
 							joinDetails.setJoinColumnType("Integer");
+						else if(columnType.equals("int2"))
+							joinDetails.setJoinColumnType("Short");
+						else if(columnType.equals("decimal") || columnType.equals("numeric"))
+							joinDetails.setJoinColumnType("Double");
 						else
 							joinDetails.setJoinColumnType("String");
 
@@ -283,7 +294,7 @@ public class EntityDetails {
 						details.setFieldName(targetEntity.toLowerCase());
 						details.setFieldType(targetEntity);
 						relation.seteName(targetEntity);
-						relation.seteModuleName(geteModuleName(targetEntity));
+						relation.seteModuleName(codeGeneratorUtils.camelCaseToKebabCase(targetEntity));
 						relation.setfName(targetEntity.toLowerCase());
 					
 						joinDetails.setJoinEntityName(details.getFieldType());
@@ -318,16 +329,7 @@ public class EntityDetails {
 		return new EntityDetails(sortedMap, relationsMap,tableName,idClass);
 	}
 	
-	private static String geteModuleName(String className) {
-		String[] splittedNames = StringUtils.splitByCharacterTypeCamelCase(className);
-		splittedNames[0] = StringUtils.lowerCase(splittedNames[0]);
-		for (int i = 0; i < splittedNames.length; i++) {
-			splittedNames[i] = StringUtils.lowerCase(splittedNames[i]);
-		}
-		return StringUtils.join(splittedNames, "-");
-	}
-
-	private static String findPrimaryKey(String entityPackage, List<Class<?>> classList) {
+	public String findPrimaryKey(String entityPackage, List<Class<?>> classList) {
 		String primaryKey = null;
 
 		for (Class<?> currentClass : classList) {
@@ -359,7 +361,7 @@ public class EntityDetails {
 		return null;
 	}
 
-	private static List<FieldDetails> getFields(String relationEntityName, List<Class<?>> classList) {
+	public List<FieldDetails> getFields(String relationEntityName, List<Class<?>> classList) {
 		List<FieldDetails> fieldsList = new ArrayList<>();
 		for (Class<?> currentClass : classList) {
 			String entityName = currentClass.getName().substring(currentClass.getName().lastIndexOf(".") + 1);
@@ -402,7 +404,7 @@ public class EntityDetails {
 
 	}
 
-	public static Map<String, RelationDetails> FindOneToManyJoinColFromChildEntity( 
+	public Map<String, RelationDetails> FindOneToManyJoinColFromChildEntity( 
 			Map<String, RelationDetails> relationMap, List<Class<?>> classList) { 
 		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) { 
 			if (entry.getValue().getRelation() == "OneToMany") { 
@@ -465,7 +467,7 @@ public class EntityDetails {
 												joinDetails.setJoinColumnType("Integer");
 											else if(columnType.equals("int2"))
 												joinDetails.setJoinColumnType("Short");
-											else if(columnType.equals("decimal"))
+											else if(columnType.equals("decimal") || columnType.equals("numeric"))
 												joinDetails.setJoinColumnType("Double");
 											else
 												joinDetails.setJoinColumnType("String");
@@ -493,7 +495,9 @@ public class EntityDetails {
 											joinDetails.setJoinColumnType("Long");
 										else if(columnType.equals("serial") || columnType.equals("int4"))
 											joinDetails.setJoinColumnType("Integer");
-										else if(columnType.equals("decimal"))
+										else if(columnType.equals("int2"))
+											joinDetails.setJoinColumnType("Short");
+										else if(columnType.equals("decimal") || columnType.equals("numeric"))
 											joinDetails.setJoinColumnType("Double");
 										else 
 											joinDetails.setJoinColumnType("String"); 
@@ -526,7 +530,7 @@ public class EntityDetails {
 		return relationMap; 
 	} 
 
-	public static Map<String, RelationDetails> FindOneToOneJoinColFromChildEntity( 
+	public Map<String, RelationDetails> FindOneToOneJoinColFromChildEntity( 
 			Map<String, RelationDetails> relationMap, List<Class<?>> classList) { 
 		for (Map.Entry<String, RelationDetails> entry : relationMap.entrySet()) { 
 			if (entry.getValue().getRelation() == "OneToOne" && entry.getValue().getIsParent()) { 
@@ -596,7 +600,7 @@ public class EntityDetails {
 												joinDetails.setJoinColumnType("Integer");
 											else if(columnType.equals("int2"))
 												joinDetails.setJoinColumnType("Short");
-											else if(columnType.equals("decimal"))
+											else if(columnType.equals("decimal") || columnType.equals("numeric"))
 												joinDetails.setJoinColumnType("Double");
 											else
 												joinDetails.setJoinColumnType("String");
@@ -625,7 +629,7 @@ public class EntityDetails {
 											joinDetails.setJoinColumnType("Integer");
 										else if(columnType.equals("int2"))
 											joinDetails.setJoinColumnType("Short");
-										else if(columnType.equals("decimal"))
+										else if(columnType.equals("decimal") || columnType.equals("numeric"))
 											joinDetails.setJoinColumnType("Double");
 										else 
 											joinDetails.setJoinColumnType("String"); 

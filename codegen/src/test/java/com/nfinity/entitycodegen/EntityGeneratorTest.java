@@ -53,6 +53,9 @@ public class EntityGeneratorTest {
 	@Mock
 	UserInput mockedUserInput;
 	
+	@Mock
+	CGenClassLoader loader;
+	
     File destPath;
     List<String> tableList= new ArrayList<String>();
     
@@ -100,67 +103,81 @@ public class EntityGeneratorTest {
 	
 	}
 	
-//	public Map<String, EntityDetails> processAndGenerateRelevantEntities(String targetPath, String tempPackageName,String schema,String packageName, String destinationPath, String authenticationType, String authenticationTable)
-//	{
-//		loader.setPath(targetPath);
-//
-//		ArrayList<Class<?>> entityClasses;
-//		Map<String, EntityDetails> entityDetailsMap = new HashMap<>();
-//		Map<String,FieldDetails> descriptiveFieldEntities = new HashMap<>();
-//		List<String> compositePrimaryKeyEntities = new ArrayList<String>();
-//		try {
-//			entityClasses = loader.findClasses(tempPackageName);
-//
-//			List<Class<?>> classList = entityGeneratorUtils.filterOnlyRelevantEntities(entityClasses);// classDetails.getClassesList();
-//			compositePrimaryKeyEntities=entityGeneratorUtils.findCompositePrimaryKeyClasses(entityClasses);			
-//
-//			for (Class<?> currentClass : classList) {
-//				String entityName = currentClass.getName();
-//				String className = entityName.substring(entityName.lastIndexOf(".") + 1);
-//
-//				// process each entities except many to many association entities
-//				if (!entityName.endsWith("Id")) {
-//
-//					EntityDetails details = entityDetails.retreiveEntityFieldsAndRships(currentClass, entityName, classList);// GetEntityDetails.getDetails(currentClass,
-//					Map<String, RelationDetails> relationMap = details.getRelationsMap();
-//					details.setCompositeKeyClasses(compositePrimaryKeyEntities);
-//					details.setPrimaryKeys(entityGeneratorUtils.getPrimaryKeysFromMap(details.getFieldsMap()));
-//					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
-//					relationMap = EntityDetails.FindOneToOneJoinColFromChildEntity(relationMap, classList);
-//				
-//					//get descriptive fields
-//					details=setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(descriptiveFieldEntities,relationMap,details, className);
-//					details.setRelationsMap(relationMap);
-//					if(className.concat("Id") != details.getIdClass()) {
-//						details=updateFieldsListInRelationMap(details);
-//						details.setPrimaryKeys(entityGeneratorUtils.getPrimaryKeysFromMap(details.getFieldsMap()));
-//					}
-//					
-//					entityDetailsMap.put(entityName.substring(entityName.lastIndexOf(".") + 1), details);
-//					Map<String, Object> root =buildRootMap(details,entityName, packageName, schema, authenticationTable, authenticationType);
-//					// Generate Entity based on template
-//					Generate(root, details, packageName, destinationPath,compositePrimaryKeyEntities);
-//
-//				}
-//			}
-//
-//			if(authenticationTable !=null  && authenticationType != "none")
-//			{
-//				entityDetailsMap=validateAuthenticationTable(entityDetailsMap, authenticationTable);
-//			}
-//			
-//			if(authenticationType !="none")
-//			{
-//				GenerateAutheticationEntities(entityDetailsMap, schema, packageName, destinationPath,authenticationTable,authenticationType);
-//			}
-//
-//		} catch (ClassNotFoundException ex) {
-//			ex.printStackTrace();
-//		}
-//
-//		return entityDetailsMap;
-//	}
+	@Test
+	public void processAndGenerateRelevantEntities_authenticationTypeIsNotNone_returnMap() throws ClassNotFoundException
+	{
+		List<Class<?>> classList= new ArrayList<Class<?>>();
+		Class<?> c1 = Class.forName("java.lang.String"); 
+        Class<?> c2 = int.class; 
+        classList.add(c1);
+        classList.add(c2);
+        
+        List<String> compositePrimaryKeyEntities= new ArrayList<String>();
+        compositePrimaryKeyEntities.add("User");
+        
+        Map<String,EntityDetails> entityDetailsMap= new HashMap<String, EntityDetails>();
+        EntityDetails entityDetails = new EntityDetails();
+        entityDetails.setIdClass("blogId");
+        entityDetails.setRelationsMap(new HashMap<String, RelationDetails>());
+        entityDetails.setFieldsMap(new HashMap<String, FieldDetails>());
+        entityDetails.setCompositeKeyClasses(compositePrimaryKeyEntities);
+		entityDetailsMap.put("user", entityDetails);
+		
+		Mockito.doNothing().when(loader).setPath(anyString());
+		Mockito.doReturn(new ArrayList<Class<?>>()).when(loader).findClasses(anyString());
+		Mockito.doReturn(classList).when(mockedEntityGeneratorUtils).filterOnlyRelevantEntities(any(ArrayList.class));
+		Mockito.doReturn(compositePrimaryKeyEntities).when(mockedEntityGeneratorUtils).findCompositePrimaryKeyClasses(any(ArrayList.class));
+		Mockito.doReturn(entityDetails).when(mockedEntityDetails).retreiveEntityFieldsAndRships(any(Class.class),anyString(),any(List.class));
+		Mockito.doReturn(new HashMap<String,String>()).when(mockedEntityGeneratorUtils).getPrimaryKeysFromMap(any(HashMap.class));
+	    Mockito.doReturn(entityDetails.getRelationsMap()).when(mockedEntityDetails).FindOneToManyJoinColFromChildEntity(any(HashMap.class), any(List.class));
+	    Mockito.doReturn(entityDetails.getRelationsMap()).when(mockedEntityDetails).FindOneToOneJoinColFromChildEntity(any(HashMap.class), any(List.class));
+	    Mockito.doReturn(entityDetails).when(entityGenerator).setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(any(HashMap.class),any(HashMap.class),any(EntityDetails.class),anyString());
+	    Mockito.doReturn(entityDetails).when(entityGenerator).updateFieldsListInRelationMap(any(EntityDetails.class));
+	    Mockito.doReturn(new HashMap<String, Object>()).when(entityGenerator).buildRootMap(any(EntityDetails.class), anyString(), anyString(), anyString(), anyString(), anyString());
+	    Mockito.doNothing().when(entityGenerator).generateEntityAndIdClass(any(HashMap.class), any(EntityDetails.class),anyString(), anyString(),any(List.class));
+	    Mockito.doReturn(entityDetailsMap).when(entityGenerator).validateAuthenticationTable(any(HashMap.class), anyString());
+	    Mockito.doNothing().when(entityGenerator).generateAutheticationEntities(any(HashMap.class), anyString(), anyString(), anyString(), anyString(), anyString());
+	 
+	    Assertions.assertThat(entityGenerator.processAndGenerateRelevantEntities(destPath.getAbsolutePath(), PACKAGE_NAME, SCHEMA_NAME, PACKAGE_NAME, destPath.getAbsolutePath(), AUTHENTICATION_TYPE,AUTHENTICATION_TABLE)).isEqualTo(entityDetailsMap);
+	}
 	
+	@Test
+	public void processAndGenerateRelevantEntities_authenticationTypeIsNone_returnMap() throws ClassNotFoundException
+	{
+		List<Class<?>> classList= new ArrayList<Class<?>>();
+		Class<?> c1 = Class.forName("java.lang.String"); 
+        Class<?> c2 = int.class; 
+        classList.add(c1);
+        classList.add(c2);
+        
+        List<String> compositePrimaryKeyEntities= new ArrayList<String>();
+        compositePrimaryKeyEntities.add("User");
+        
+        Map<String,EntityDetails> entityDetailsMap= new HashMap<String, EntityDetails>();
+        EntityDetails entityDetails = new EntityDetails();
+        entityDetails.setIdClass("blogId");
+        entityDetails.setRelationsMap(new HashMap<String, RelationDetails>());
+        entityDetails.setFieldsMap(new HashMap<String, FieldDetails>());
+        entityDetails.setCompositeKeyClasses(compositePrimaryKeyEntities);
+		entityDetailsMap.put("String", entityDetails);
+		entityDetailsMap.put("int", entityDetails);
+		
+		Mockito.doNothing().when(loader).setPath(anyString());
+		Mockito.doReturn(new ArrayList<Class<?>>()).when(loader).findClasses(anyString());
+		Mockito.doReturn(classList).when(mockedEntityGeneratorUtils).filterOnlyRelevantEntities(any(ArrayList.class));
+		Mockito.doReturn(compositePrimaryKeyEntities).when(mockedEntityGeneratorUtils).findCompositePrimaryKeyClasses(any(ArrayList.class));
+		Mockito.doReturn(entityDetails).when(mockedEntityDetails).retreiveEntityFieldsAndRships(any(Class.class),anyString(),any(List.class));
+		Mockito.doReturn(new HashMap<String,String>()).when(mockedEntityGeneratorUtils).getPrimaryKeysFromMap(any(HashMap.class));
+	    Mockito.doReturn(entityDetails.getRelationsMap()).when(mockedEntityDetails).FindOneToManyJoinColFromChildEntity(any(HashMap.class), any(List.class));
+	    Mockito.doReturn(entityDetails.getRelationsMap()).when(mockedEntityDetails).FindOneToOneJoinColFromChildEntity(any(HashMap.class), any(List.class));
+	    Mockito.doReturn(entityDetails).when(entityGenerator).setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(any(HashMap.class),any(HashMap.class),any(EntityDetails.class),anyString());
+	    Mockito.doReturn(entityDetails).when(entityGenerator).updateFieldsListInRelationMap(any(EntityDetails.class));
+	    Mockito.doReturn(new HashMap<String, Object>()).when(entityGenerator).buildRootMap(any(EntityDetails.class), anyString(), anyString(), anyString(), anyString(), anyString());
+	    Mockito.doNothing().when(entityGenerator).generateEntityAndIdClass(any(HashMap.class), any(EntityDetails.class),anyString(), anyString(),any(List.class));
+	
+	    Assertions.assertThat(entityGenerator.processAndGenerateRelevantEntities(destPath.getAbsolutePath(), PACKAGE_NAME, SCHEMA_NAME, PACKAGE_NAME, destPath.getAbsolutePath(), "none",AUTHENTICATION_TABLE)).isEqualTo(entityDetailsMap);
+	}
+
 	@Test
 	public void findAndSetDescriptiveField_parametersAreValid_returnMap()
 	{
@@ -250,7 +267,6 @@ public class EntityGeneratorTest {
 		Mockito.doReturn(descriptiveFieldEntities).when(entityGenerator).findAndSetDescriptiveField(any(HashMap.class), any(RelationDetails.class));
 	
 		Assertions.assertThat(entityGenerator.setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(descriptiveFieldEntities, relationMap, new EntityDetails(), "blog")).isEqualToIgnoringNullFields(entityDetails);
-	
 	}
 	
 	@Test
@@ -704,6 +720,8 @@ public class EntityGeneratorTest {
 		Mockito.doNothing().when(entityGenerator).generateIdClass(any(HashMap.class), any(String.class));
 	
 	    entityGenerator.generateEntityAndIdClass(root, entityDetails, PACKAGE_NAME, destPath.getAbsolutePath(), compositePrimaryKeyEntities);
+	    Mockito.verify(entityGenerator,Mockito.times(1)).generateEntity(any(HashMap.class), any(String.class));
+	    Mockito.verify(entityGenerator,Mockito.times(1)).generateIdClass(any(HashMap.class), any(String.class));
 	}
 
 	@Test

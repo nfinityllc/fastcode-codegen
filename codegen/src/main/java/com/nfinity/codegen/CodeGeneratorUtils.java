@@ -85,7 +85,7 @@ public class CodeGeneratorUtils {
 				if(!dir.exists()) {
 					dir.mkdirs();
 				};
-				System.out.println("file name " +fileName);
+				//System.out.println("file name " +fileName);
 				PrintWriter writer = new PrintWriter(fileName);
 				template.process(root, writer);
 				writer.flush();

@@ -1,7 +1,7 @@
 package com.nfinity;
 
 import com.google.common.base.CaseFormat;
-import com.nfinity.codegen.GenerateAllModules;
+import com.nfinity.codegen.ModulesGenerator;
 import com.nfinity.entitycodegen.UserInput;
 
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class CodegenApplication implements ApplicationRunner {
 		ApplicationContext context = SpringApplication.run(CodegenApplication.class, args);
 
 		UserInput input = composeInput(context.getBean(UserInput.class));
-		GenerateAllModules generate = context.getBean(GenerateAllModules.class);
+		ModulesGenerator generate = context.getBean(ModulesGenerator.class);
 		generate.generateCode(input);
 
 	}

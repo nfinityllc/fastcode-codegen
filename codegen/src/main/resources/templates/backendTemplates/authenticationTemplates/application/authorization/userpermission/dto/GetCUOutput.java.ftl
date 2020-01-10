@@ -5,8 +5,8 @@ import java.util.Date;
 public class Get[=AuthenticationTable]Output {
  
    <#list Fields as key,value>
-   <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-   	private [=value] [=key];
+   <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+   private [=value.fieldType] [=key?uncap_first];
    </#if> 
    </#list>
 
@@ -48,14 +48,14 @@ public class Get[=AuthenticationTable]Output {
   	}
   
   <#list Fields as key,value>
-  <#if value?lower_case == "long" || value?lower_case == "integer" || value?lower_case == "short" || value?lower_case == "double" || value?lower_case == "boolean" || value?lower_case == "date" || value?lower_case == "string">
-  
-  	public [=value?cap_first] get[=key?cap_first]() {
-  		return [=key];
+ <#if value.fieldType?lower_case == "long" || value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short" || value.fieldType?lower_case == "double" || value.fieldType?lower_case == "boolean" || value.fieldType?lower_case == "date" || value.fieldType?lower_case == "string">
+   
+  	public [=value.fieldType?cap_first] get[=key?cap_first]() {
+  		return [=key?uncap_first];
   	}
 
-  	public void set[=key?cap_first]([=value?cap_first] [=key]){
-  		this.[=key] = [=key];
+  	public void set[=key?cap_first]([=value.fieldType?cap_first] [=key?uncap_first]) {
+  		this.[=key?uncap_first] = [=key?uncap_first];
   	}
   </#if>
 </#list>

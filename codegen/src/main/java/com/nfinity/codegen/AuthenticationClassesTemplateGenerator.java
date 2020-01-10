@@ -101,12 +101,20 @@ public class AuthenticationClassesTemplateGenerator {
 					outputFileName = outputFileName.replace("User", authenticationTable);
 					outputFileName = outputFileName.replace("user", authenticationTable.toLowerCase());
 				}
-				if(outputFileName.contains("GetCU"))
-					outputFileName = outputFileName.replace("CU", authenticationTable);
+			
+				if(!(outputFileName.toLowerCase().contains("user") && !(outputFileName.contains("UserDetailsServiceImpl")  || outputFileName.toLowerCase().contains(authenticationTable.toLowerCase()+"permission") || outputFileName.toLowerCase().contains(authenticationTable.toLowerCase()+"role"))))
+				{ 	
 
-				if(!(outputFileName.toLowerCase().contains("user") && !(outputFileName.contains("Get"+authenticationTable) || outputFileName.contains("UserDetailsServiceImpl")  || outputFileName.toLowerCase().contains(authenticationTable.toLowerCase()+"permission") || outputFileName.toLowerCase().contains(authenticationTable.toLowerCase()+"role"))))
-				{ 		
-					templates.put(filePath, outputFileName);
+					if(!outputFileName.contains("GetUser"))
+					{
+						if(outputFileName.contains("GetCU"))
+						{
+							outputFileName = outputFileName.replace("CU", authenticationTable);
+						}
+						
+						templates.put(filePath, outputFileName);
+					}
+					
 				}
 			}
 		}

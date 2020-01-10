@@ -50,6 +50,9 @@ public class CodeGeneratorTest {
 	CodeGenerator mockedCodeGenerator;
 	
 	@Mock
+	EntityGeneratorUtils mockEntityGeneratorUtils;
+	
+	@Mock
 	CodeGeneratorUtils mockedUtils;
 	
 	@Mock
@@ -139,27 +142,27 @@ public class CodeGeneratorTest {
 		list.add("Entity2");
 		
 		String connStr="jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode";
-		EntityGeneratorUtils eGenerator = mock(EntityGeneratorUtils.class);
+	//	EntityGeneratorUtils eGenerator = mock(EntityGeneratorUtils.class);
 		
-		Mockito.when(eGenerator.parseConnectionString(anyString())).thenReturn(new HashMap<String, String>());
+		Mockito.when(mockEntityGeneratorUtils.parseConnectionString(anyString())).thenReturn(new HashMap<String, String>());
 		
-		Mockito.doReturn(list).when(mockedCodeGenerator).generateAllModulesForEntities(any(HashMap.class), anyString(), anyString(), anyString(), any(Boolean.class),any(Boolean.class), anyString(), anyString(),anyString(),anyString(), any(Boolean.class), any(Boolean.class), any(Boolean.class),anyString());
-		Mockito.doNothing().when(mockedCodeGenerator).generateEntityHistoryComponent(anyString(), anyString(), any(HashMap.class));
-		Mockito.doNothing().when(mockedCodeGenerator).addhistoryComponentsToAppModule(anyString());
-		Mockito.doNothing().when(mockedCodeGenerator).addhistoryComponentsToAppRoutingModule(anyString(), anyString(),any(Boolean.class));
-		Mockito.doNothing().when(mockedCodeGenerator).generateAuditorController(any(HashMap.class), anyString(),anyString(),anyString(),anyString(),anyString(),any(Boolean.class),any(Boolean.class));
+		Mockito.doReturn(list).when(codeGenerator).generateAllModulesForEntities(any(HashMap.class), anyString(), anyString(), anyString(), any(Boolean.class),any(Boolean.class), anyString(), anyString(),anyString(),anyString(), any(Boolean.class), any(Boolean.class), any(Boolean.class),anyString());
+		Mockito.doNothing().when(codeGenerator).generateEntityHistoryComponent(anyString(), anyString(), any(HashMap.class));
+		Mockito.doNothing().when(codeGenerator).addhistoryComponentsToAppModule(anyString());
+		Mockito.doNothing().when(codeGenerator).addhistoryComponentsToAppRoutingModule(anyString(), anyString(),any(Boolean.class));
+		Mockito.doNothing().when(codeGenerator).generateAuditorController(any(HashMap.class), anyString(),anyString(),anyString(),anyString(),anyString(),any(Boolean.class),any(Boolean.class));
 
-		Mockito.doNothing().when(mockedCodeGenerator).updateAppRouting(anyString(),anyString(), any(List.class), anyString());
-		Mockito.doNothing().when(mockedCodeGenerator).updateAppModule(anyString(),anyString(), any(List.class));
+		Mockito.doNothing().when(codeGenerator).updateAppRouting(anyString(),anyString(), any(List.class), anyString());
+		Mockito.doNothing().when(codeGenerator).updateAppModule(anyString(),anyString(), any(List.class));
 	//	Mockito.doNothing().when(mockedCodeGenerator).updateTestUtils(anyString(),anyString(), any(List.class));
-		Mockito.doNothing().when(mockedCodeGenerator).updateEntitiesJsonFile(anyString(),any(List.class),anyString());
+		Mockito.doNothing().when(codeGenerator).updateEntitiesJsonFile(anyString(),any(List.class),anyString());
 
-		Mockito.when(mockedCodeGenerator.getInfoForApplicationPropertiesFile(anyString(),anyString(), anyString(), anyString(),anyString(), any(Boolean.class),any(Boolean.class), any(Boolean.class),any(Boolean.class))).thenReturn(new HashMap<String, Object>());
+		Mockito.when(codeGenerator.getInfoForApplicationPropertiesFile(anyString(),anyString(), anyString(), anyString(),anyString(), any(Boolean.class),any(Boolean.class), any(Boolean.class),any(Boolean.class))).thenReturn(new HashMap<String, Object>());
 
-		Mockito.doNothing().when(mockedCodeGenerator).generateApplicationProperties(any(HashMap.class), anyString());
-		Mockito.doNothing().when(mockedCodeGenerator).generateBeanConfig(anyString(),anyString(),anyString(),anyString(),any(HashMap.class),any(Boolean.class),anyString());
+		Mockito.doNothing().when(codeGenerator).generateApplicationProperties(any(HashMap.class), anyString());
+		Mockito.doNothing().when(codeGenerator).generateBeanConfig(anyString(),anyString(),anyString(),anyString(),any(HashMap.class),any(Boolean.class),anyString());
 		
-		Mockito.doNothing().when(mockedCodeGenerator).modifyMainClass(anyString(),anyString());
+		Mockito.doNothing().when(codeGenerator).modifyMainClass(anyString(),anyString());
 		
 		codeGenerator.generateAll(testValue, testValue, packageName, true, true, destPath.getAbsolutePath(), testValue, details, connStr, testValue, testValue, true, true, true, "Entity1");
 	   
@@ -180,11 +183,11 @@ public class CodeGeneratorTest {
 	public void getInfoForApplicationPropertiesFile_parameterListIsValid_ReturnMap()
 	{
 		String connStr="jdbc:postgresql://localhost:5432/Demo?username=postgres;password=fastcode";
-		EntityGeneratorUtils eGenerator = mock(EntityGeneratorUtils.class);
+		//EntityGeneratorUtils eGenerator = mock(EntityGeneratorUtils.class);
 		
 		Map<String,Object> propertyInfo = new HashMap<String,Object>();
 
-		propertyInfo.put("connectionStringInfo", eGenerator.parseConnectionString(connStr));
+		propertyInfo.put("connectionStringInfo", new HashMap<String, String>());
 		propertyInfo.put("appName", testValue);
 		propertyInfo.put("Schema", testValue);
 		propertyInfo.put("EmailModule",true);
@@ -197,7 +200,7 @@ public class CodeGeneratorTest {
 		propertyInfo.put("MjmlTempPath", destPath.getAbsolutePath() + "/" +testValue + "/mjmlTemp");
 		
 		
-		Mockito.when(eGenerator.parseConnectionString(anyString())).thenReturn(new HashMap<String, String>());
+		Mockito.when(mockEntityGeneratorUtils.parseConnectionString(anyString())).thenReturn(new HashMap<String, String>());
 		Assertions.assertThat(codeGenerator.getInfoForApplicationPropertiesFile(destPath.getAbsolutePath(),testValue,connStr,
 				testValue, testValue,true,true,true,true)).isEqualTo(propertyInfo);
 	}

@@ -22,11 +22,10 @@ public class CGenClassLoader extends ClassLoader {
 				String filePath = file.toString().replace('\\', '/');
 				if(filePath.endsWith(".class") && (packagePath==null || packagePath.isEmpty() || filePath.contains(packagePath)))
 				{
-
-					String qalifiedName =packagePath.isEmpty()? filePath.replace(rootDir.toString().replace('\\', '/') + "/" ,""):
+					String qualifiedName =packagePath.isEmpty()? filePath.replace(rootDir.toString().replace('\\', '/') + "/" ,""):
 						filePath.substring(filePath.indexOf(packagePath));      
-					qalifiedName = qalifiedName.replace(".class","").replace("/",".");     
-					classFiles.put(qalifiedName,filePath);
+					qualifiedName = qualifiedName.replace(".class","").replace("/",".");     
+					classFiles.put(qualifiedName,filePath);
 				}
 			
 				return FileVisitResult.CONTINUE;
@@ -45,9 +44,7 @@ public class CGenClassLoader extends ClassLoader {
 	
 	private static URLClassLoader classLoader;
 	private static String path =".";
-//	private static String packageName="";
-	
-	//@Autowired
+
 	public void setPath(String path) {
 		this.path = path;
 		

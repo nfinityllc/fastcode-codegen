@@ -83,7 +83,7 @@ public class EntityGenerator {
 		}
 		
 		Map<String, EntityDetails> entityDetailsMap = processAndGenerateRelevantEntities(targetPath, tempPackageName, schema, packageName, destinationPath, authenticationType, authenticationTable);
-		entityGeneratorUtils.deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
+	//	entityGeneratorUtils.deleteDirectory(destinationPath + "/" + tempPackageName.replaceAll("\\.", "/"));
 		System.out.println(" exit ");
 
 		return entityDetailsMap;
@@ -115,8 +115,8 @@ public class EntityGenerator {
 					Map<String, RelationDetails> relationMap = details.getRelationsMap();
 					details.setCompositeKeyClasses(compositePrimaryKeyEntities);
 					details.setPrimaryKeys(entityGeneratorUtils.getPrimaryKeysFromMap(details.getFieldsMap()));
-					relationMap = EntityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
-					relationMap = EntityDetails.FindOneToOneJoinColFromChildEntity(relationMap, classList);
+					relationMap = entityDetails.FindOneToManyJoinColFromChildEntity(relationMap, classList);
+					relationMap = entityDetails.FindOneToOneJoinColFromChildEntity(relationMap, classList);
 				
 					//get descriptive fields
 					details=setDescriptiveFieldsAndJoinColumnsInEntityDetailsMap(descriptiveFieldEntities,relationMap,details, className);

@@ -13,7 +13,7 @@ import com.nfinity.entitycodegen.EntityGenerator;
 import com.nfinity.entitycodegen.UserInput;
 
 @Component
-public class GenerateAllModules {
+public class ModulesGenerator {
 	
 	@Autowired
 	CommonModuleTemplateGenerator commonModule;

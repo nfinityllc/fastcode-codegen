@@ -132,24 +132,18 @@ public class EntityGeneratorUtilsTest {
 		entityGeneratorUtils.deleteDirectory(file.getAbsolutePath());
 	}
 	
+	@Test
+	public void filterOnlyRelevantEntities_entityClassesListIsNotEmpty_returnList() throws ClassNotFoundException
+	{
+		ArrayList<Class<?>> classList= new ArrayList<Class<?>>();
+		Class<?> c1 = Class.forName("java.lang.String"); 
+        Class<?> c2 = int.class; 
+        classList.add(c1);
+        classList.add(c2);
+		
+		Assertions.assertThat(entityGeneratorUtils.filterOnlyRelevantEntities(classList)).isEqualTo(classList);
+	}
 	
-//	@Test
-//	public void filterOnlyRelevantEntities_entityNameIsNotNull_returnMap()
-//	{
-//		String className = "Entity1";
-//		Map<String, Object> backEndTemplate = new HashMap<>();
-//		backEndTemplate.put("entityTemplate/idClass.java.ftl", className + "Id.java");
-//		
-//		Assertions.assertThat(entityGeneratorUtils.getEntityTemplate(className)).isEqualTo(backEndTemplate);
-//	}
-//
-//	public List<Class<?>> filterOnlyRelevantEntities(ArrayList<Class<?>> entityClasses) {
-//		List<Class<?>> relevantEntities = entityClasses.stream()
-//				.filter((e) -> !(e.getName().endsWith("Id$Tokenizer") || e.getName().endsWith("JvCommit") || e.getName().endsWith("JvCommitProperty") || e.getName().endsWith("JvCommitPropertyId") || e.getName().endsWith("JvSnapshot") || e.getName().endsWith("JvGlobalIdent")  ))
-//				.collect(Collectors.toList());
-//		return relevantEntities;
-//	}
-//	
 //	public List<String> findCompositePrimaryKeyClasses(ArrayList<Class<?>> entityClasses) {
 //		List<String> compositeKeyEntities = new ArrayList<>(); 
 //		List<Class<?>> otherEntities = entityClasses.stream().filter((e) -> e.getName().endsWith("Id")) 

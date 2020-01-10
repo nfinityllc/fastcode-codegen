@@ -47,7 +47,6 @@ public class PomFileModifierTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(pomFileModifier);
 		destPath = folder.newFolder("tempFolder");
-	
 	}
 
 	@After
@@ -81,7 +80,8 @@ public class PomFileModifierTest {
 		dependencies.add(h2);
 		
 		Mockito.doReturn(new ArrayList<>()).when(pomFileModifier).getPlugins(any(Document.class));
-		pomFileModifier.addDependenciesAndPluginsToPom(destPath.getAbsolutePath(), dependencies);
+		pomFileModifier.addDependenciesAndPluginsToPom(file.getAbsolutePath(), dependencies);
+		Mockito.verify(pomFileModifier,Mockito.times(1)).getPlugins(any(Document.class));
 	}
 	
 	@Test
@@ -93,7 +93,6 @@ public class PomFileModifierTest {
 		Element element=doc.createElement("plugin");
 	
 		Assertions.assertThat(pomFileModifier.getMapStructPlugIn(doc)).isNotSameAs(element);
-	
 	}
 	
 	@Test
@@ -108,6 +107,6 @@ public class PomFileModifierTest {
 	    elemList.add(element);
 	    Mockito.doReturn(element).when(pomFileModifier).getMapStructPlugIn(doc);
 	    
-	   Assertions.assertThat(pomFileModifier.getPlugins(doc)).contains(element);
-	    }
+	    Assertions.assertThat(pomFileModifier.getPlugins(doc)).contains(element);
+	}
 }

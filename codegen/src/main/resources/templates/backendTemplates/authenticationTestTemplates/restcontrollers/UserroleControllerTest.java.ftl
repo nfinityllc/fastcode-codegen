@@ -200,8 +200,10 @@ public class [=AuthenticationTable]roleControllerTest {
   		<#list PrimaryKeys as key,value>
 		<#if value?lower_case == "long">
 		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable][=key?cap_first](3L);
-		<#elseif value?lower_case == "integer" || value?lower_case == "short">
+		<#elseif value.fieldType?lower_case == "integer">
 		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable][=key?cap_first](3);
+		<#elseif value.fieldType?lower_case == "short">
+		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable][=key?cap_first]((short)3);
 		<#elseif value?lower_case == "double">
 		[=AuthenticationTable?uncap_first]role.set[=AuthenticationTable][=key?cap_first](3D);
 		<#elseif value?lower_case == "string">
@@ -229,8 +231,10 @@ public class [=AuthenticationTable]roleControllerTest {
   		<#if value.isNullable==false>
 		<#if value.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=key?cap_first](1L);
-		<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short">
+		<#elseif value.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=key?cap_first](1);
+		<#elseif value.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=key?cap_first]((short)1);
 		<#elseif value.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=key?cap_first](1D);
 		<#elseif value.fieldType?lower_case == "string">
@@ -243,8 +247,10 @@ public class [=AuthenticationTable]roleControllerTest {
 		<#if !Fields[authValue.fieldName]??>
 		<#if authValue.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](1L);
-		<#elseif authValue.fieldType?lower_case == "integer" || authValue.fieldType?lower_case == "short">
+		<#elseif authValue.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](1);
+		<#elseif authValue.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first]((short)1);
 		<#elseif authValue.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](1D);
 		<#elseif authValue.fieldType?lower_case == "boolean">
@@ -287,8 +293,10 @@ public class [=AuthenticationTable]roleControllerTest {
   		<#if value.isNullable==false && (AuthenticationFields?? && AuthenticationFields.Password.fieldName != value.fieldName)>
 		<#if value.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=key?cap_first](4L);
-		<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short">
+		<#elseif value.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=key?cap_first](4);
+		<#elseif value.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=key?cap_first]((short)4);
 		<#elseif value.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=key?cap_first](4D);
 		<#elseif value.fieldType?lower_case == "string">
@@ -301,8 +309,10 @@ public class [=AuthenticationTable]roleControllerTest {
 		<#if !Fields[authValue.fieldName]?? && authKey != "Password">
 		<#if authValue.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](4L);
-		<#elseif authValue.fieldType?lower_case == "integer" || authValue.fieldType?lower_case == "short">
+		<#elseif authValue.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](4);
+		<#elseif authValue.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first]((short)4);
 		<#elseif authValue.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](4D);
 		<#elseif authValue.fieldType?lower_case == "boolean">
@@ -334,8 +344,10 @@ public class [=AuthenticationTable]roleControllerTest {
   		<#if value.isNullable==false>
 		<#if value.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=key?cap_first](2L);
-		<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short">
+		<#elseif value.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=key?cap_first](2);
+		<#elseif value.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=key?cap_first]((short)2);
 		<#elseif value.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=key?cap_first](2D);
 		<#elseif value.fieldType?lower_case == "string">
@@ -348,8 +360,10 @@ public class [=AuthenticationTable]roleControllerTest {
 		<#if !Fields[authValue.fieldName]??>
 		<#if authValue.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](2L);
-		<#elseif authValue.fieldType?lower_case == "integer" || authValue.fieldType?lower_case == "short">
+		<#elseif authValue.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](2);
+		<#elseif authValue.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first]((short)2);
 		<#elseif authValue.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](2D);
 		<#elseif authValue.fieldType?lower_case == "boolean">
@@ -405,8 +419,10 @@ public class [=AuthenticationTable]roleControllerTest {
   		<#if value.isNullable==false>
 		<#if value.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=key?cap_first](5L);
-		<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short">
+		<#elseif value.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=key?cap_first](5);
+		<#elseif value.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=key?cap_first]((short)5);
 		<#elseif value.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=key?cap_first](5D);
 		<#elseif value.fieldType?lower_case == "string">
@@ -419,8 +435,10 @@ public class [=AuthenticationTable]roleControllerTest {
 		<#if !Fields[authValue.fieldName]?? && authKey != "Password">
 		<#if authValue.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](5L);
-		<#elseif authValue.fieldType?lower_case == "integer" || authValue.fieldType?lower_case == "short">
+		<#elseif authValue.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](5);
+		<#elseif authValue.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first]((short)5);
 		<#elseif authValue.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](5D);
 		<#elseif authValue.fieldType?lower_case == "boolean">
@@ -546,8 +564,10 @@ public class [=AuthenticationTable]roleControllerTest {
   		<#if value.isNullable==false>
 		<#if value.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=key?cap_first](3L);
-		<#elseif value.fieldType?lower_case == "integer" || value.fieldType?lower_case == "short">
+		<#elseif value.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=key?cap_first](3);
+		<#elseif value.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=key?cap_first]((short)3);
 		<#elseif value.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=key?cap_first](3D);
 		<#elseif value.fieldType?lower_case == "string">
@@ -560,8 +580,10 @@ public class [=AuthenticationTable]roleControllerTest {
 		<#if !Fields[authValue.fieldName]??>
 		<#if authValue.fieldType?lower_case == "long">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](3L);
-		<#elseif authValue.fieldType?lower_case == "integer" || authValue.fieldType?lower_case == "short">
+		<#elseif authValue.fieldType?lower_case == "integer">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](3);
+		<#elseif authValue.fieldType?lower_case == "short">
+		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first]((short)3);
 		<#elseif authValue.fieldType?lower_case == "double">
 		[=ClassName?uncap_first].set[=authValue.fieldName?cap_first](3D);
 		<#elseif authValue.fieldType?lower_case == "boolean">
