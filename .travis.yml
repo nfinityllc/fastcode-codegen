@@ -5,7 +5,7 @@ addons:
   sonarcloud:
     organization: "nfinityllc"
     token:
-    secure: ${SONAR_TOKEN}
+      secure: $SONAR_TOKEN
 
 jdk:
   - oraclejdk8
@@ -17,7 +17,7 @@ script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   # - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
 
-  - mvn clean -DskipTests verify sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
+  - mvn clean -DskipTests verify sonar:sonar -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=nfinityllc_fastcode-codegen
 
 cache:
   directories:
