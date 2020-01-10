@@ -15,7 +15,11 @@ jdk:
   - oraclejdk8
 
 # Only build tags
-if: tag IS present
+stages:
+  - name: test
+  - name: build
+  - name: release
+    if: tag IS present
   
 before_install:
 - chmod +x mvnw
@@ -24,7 +28,7 @@ script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   # - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
 
-  - mvn clean -DskipTests verify sonar:sonar
+  - mvn clean -DskipTests verify sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
 
 cache:
   directories:
