@@ -5,7 +5,7 @@ addons:
   sonarcloud:
     organization: "nfinityllc"
     token:
-      secure: $SONAR_TOKEN
+      secure: "tAdebjAMOXOr6HARaVvhc3AyZI2A8uFkAIEh3ft25ArOSsv+gA1HFp3bK5Sgbd2ICsuEVUOWv5rN2WVqwOjj2MkXd2nEvDzG+wU3vuQC9XX31NmfnlzEvd79IWSfbW9dPJ2/V51aEeZwNeRstopS8oDU0mn5hZ8fdyoF/m1Qo11JPQ+QXxQ8DOERoiUbQ+/3eSXcS6+OIjJjZqnpuFjhc9C/r5Y3zbFh+ry5Q3iyUe8Fw6zHEMGbMlY9Cta1jRJtaQNPAWJ7DhJj3mFqs6Y47sm6yHIyIotXpPvfTunIFheY+X7+ucVOjTyixj2S1L0Bg41GdnOWUwWBB5EhUEMdsLWbJ0rWB/wZP2djM77gERy40twm8wlaE9RuROBJMUqhVwjjZGEeZw7EbRnx3ppkCW5WjBSFfzfjWW9w5zQQ6D/ADluUeBieP4OX3CoA6RmyUtpZuq4u8FmHblKTleDjXqZbcOTXyeP52rlyybigTluZiae8IHbDSj7J2UGArWIZxn13FI8lwKBpGg50eZq4k+RLCu7+vInwmM3fcXR0ZyLzlqWVaQIXAhH9MgUKJGAMUlAMGKiiED6kQ+avweZbtJbEZcQ+YANBBweCIHqRfy5Kybf9qzIjbaunqClqU0Zckm/WXBakw1C7Z6fVGWRsPMtAdYR0rkJ2/875s0O/e/c="
 
 jdk:
   - oraclejdk8
@@ -17,7 +17,7 @@ script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   # - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=nfinityllc_fastcode-codegen
 
-  - mvn clean -DskipTests verify sonar:sonar -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=nfinityllc_fastcode-codegen
+  - mvn clean -DskipTests verify sonar:sonar
 
 cache:
   directories:
