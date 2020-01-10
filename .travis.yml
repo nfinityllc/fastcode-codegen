@@ -8,6 +8,9 @@ addons:
       secure: $SONAR_TOKEN
 jdk:
   - oraclejdk8
+  
+before_install:
+- chmod +x mvnw
 
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
