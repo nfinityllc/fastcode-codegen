@@ -23,7 +23,7 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: W1P07l0T4aQ7LEKOGcYhFQU4bdgh1IHv5Cgs3b2CNFWpe8X607/bbUc0PJ3z8MSivq7Qg8xd/zKmTPXDEslQwW05CfptYZs5K4EXSdn6Q/jpFFKbh9mboYaxi7x+xEEE2Q9LyvB3UDM7uWojCs34GOI3vFodwnUEKYL1uFowP2CjKItb+go3rgSNUH71mztb6PZnJVP7qsHg69nm2YbyCTvjyGaaT/3k1qpfMl3V3Pcbi/aMsDg5uCi5aOgQm4YgnxehQWlf2ZBWULyjOVgANsreJDOde6uWtXDneQe+dgI9AUreU1X8aGJlZnvD9+ygUsznOemMKyshEdhw2SH3/ONkrjwjNHKxG2llc8seQib7ejSX1OJnGwQdEnVBtnNPGgNCWID8t5foj7b0/s5knsGvFkP7gJXgN5xubMeh9IhuIsUqlkQ6Ef672NXfXX1Vlw6j/zmGGEeiKTQvR6Bem0mgzWeqbREUEFUlL2a8D+FamBU1wTZK+wChTtXJvDO6zooT8sDguETtJoHJcBXACgQmRjD+/hjR4lIHSqURhtaR5qDwtvD9K1G1uapa+NzH+C95Zq+JavbGk+k4dodZuWX9xAJndCYiQYJfpbuB1sj+cTTbGe4OoTA83XE4EWVv+7PgNmcizQ+TkuxnJsR2+B4zDZnXBVpu5MyGuxNK0u4=
-  file: codegen
+  file: /home/travis/build/nfinityllc/fastcode-codegen/target/codegen-RELEASE.jar
   on:
     repo: nfinityllc/fastcode-codegen
     tags: false
