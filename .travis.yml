@@ -26,5 +26,5 @@ deploy:
   file: codegen
   on:
     repo: nfinityllc/fastcode-codegen
-    tags: true
+    tags: false
     all_branches: true
