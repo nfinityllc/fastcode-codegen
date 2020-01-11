@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.nfinity</groupId>
 	<artifactId>codegen</artifactId>
-	<version>codegen</version>
+	<version>RELEASE</version>
 	<description>Code Gen Project</description>
 
 	<properties>
